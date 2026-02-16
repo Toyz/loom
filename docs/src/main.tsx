@@ -16,18 +16,34 @@ import "./pages/home";
 import "./pages/getting-started";
 import "./pages/first-app";
 
-// Pages — Core
-import "./pages/element";
-import "./pages/reactive";
-import "./pages/events";
-import "./pages/jsx";
-import "./pages/storage";
+// Pages — Element
+import "./pages/element/overview";
+import "./pages/element/lifecycle";
+import "./pages/element/timing";
+import "./pages/element/css";
+import "./pages/element/queries";
+import "./pages/element/jsx";
+import "./pages/element/virtual-list";
+import "./pages/element/icon";
 
-// Pages — Features
-import "./pages/decorators";
-import "./pages/router";
-import "./pages/virtual-list";
-import "./pages/di";
+// Pages — Store
+import "./pages/store/reactive";
+import "./pages/store/storage";
+import "./pages/store/patterns";
+
+// Pages — DI & Services
+import "./pages/di/overview";
+
+// Pages — Router
+import "./pages/router/overview";
+import "./pages/router/routes";
+import "./pages/router/guards";
+import "./pages/router/navigation";
+
+// Pages — Decorators
+import "./pages/decorators/overview";
+import "./pages/decorators/events";
+import "./pages/decorators/transform";
 
 // 404
 import "./pages/not-found";

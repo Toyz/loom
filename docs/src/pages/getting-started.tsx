@@ -114,6 +114,21 @@ app.start();`}></code-block>
             <strong>Note:</strong> Components use Shadow DOM by default. Styles are scoped — no leaking, no conflicts.
           </div>
         </div>
+
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">5</div>
+            <h2>Scripts</h2>
+          </div>
+          <p>Loom ships with test and build scripts out of the box:</p>
+          <code-block lang="bash" code={`npm test          # Run tests (Vitest)
+npm run build     # TypeScript → dist/
+npm run clean     # Remove dist/`}></code-block>
+          <div class="note">
+            <strong>Tip:</strong> Tests also run automatically before <span class="ic">npm publish</span> via the
+            <span class="ic">prepublishOnly</span> hook.
+          </div>
+        </div>
       </div>
     );
   }

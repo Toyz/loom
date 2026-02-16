@@ -1,62 +1,25 @@
 /**
  * Loom — Barrel exports
  *
- * Import everything from "loom":
- * import { EventBus, LoomEvent, Reactive, LoomElement, component, ... } from "loom";
+ * Import everything from "@toyz/loom":
+ * import { EventBus, LoomEvent, Reactive, LoomElement, component, ... } from "@toyz/loom";
  */
 
 // App entry point
 export { app } from "./app";
 export type { LoomApp } from "./app";
+
 // Event system
 export { LoomEvent } from "./event";
 export { EventBus, bus, useBus } from "./bus";
 export type { Constructor, Handler } from "./bus";
 
-// Reactive stores
-export { Reactive, CollectionStore } from "./reactive";
-export type { Subscriber, Updater, Identifiable } from "./reactive";
-
-// Storage mediums
-export { MemoryStorage, LocalMedium, SessionMedium } from "./storage";
-export type { StorageMedium, PersistOptions } from "./storage";
-
 // CSS
 export { css } from "./css";
 export type { CSSValue } from "./css";
 
-// Element base
-export { LoomElement } from "./element";
-
 // DOM morphing
 export { morph } from "./morph";
-
-// Decorators
-export {
-  component,
-  prop,
-  reactive,
-  computed,
-  on,
-  watch,
-  emit,
-  query,
-  queryAll,
-  catch_,
-  suspend,
-  mount,
-  unmount,
-  interval,
-  timeout,
-  animationFrame,
-  service,
-  inject,
-  factory,
-  params,
-  routeQuery,
-  transform,
-  typed,
-} from "./decorators";
 
 // JSX runtime (re-exported so jsxImportSource resolves)
 export { jsx, jsxs, Fragment } from "./jsx-runtime";
@@ -65,12 +28,43 @@ export { jsx, jsxs, Fragment } from "./jsx-runtime";
 export { renderLoop } from "./render-loop";
 export type { RenderLoop } from "./render-loop";
 
-// Icon
-export { LoomIcon } from "./icon";
+// ── Domain re-exports ──
 
-// Virtual list
-export { LoomVirtual } from "./virtual";
-export type { VirtualListOptions } from "./virtual";
+// Store: reactive state, persistence
+export {
+  Reactive, CollectionStore,
+  MemoryStorage, LocalAdapter, SessionAdapter, LocalMedium, SessionMedium,
+  reactive, prop, computed, params, routeQuery,
+  watch,
+} from "./store";
+export type {
+  Subscriber, Updater, Identifiable,
+  StorageAdapter, StorageMedium, PersistOptions,
+} from "./store";
+
+// DI: service container decorators
+export { service, inject, factory } from "./di";
+export { watch as watchService } from "./di";
+
+// Element: base class, element decorators
+export {
+  LoomElement,
+  component, query, queryAll,
+  catch_, suspend, mount, unmount,
+  interval, timeout, debounce, throttle, animationFrame,
+} from "./element";
+export type { VirtualListOptions } from "./element";
+
+// Transform: value transforms
+export {
+  transform, createTransform,
+  typed, typedTransformer,
+  toNumber, toBoolean, toDate, toJSON, toTrimmed, toInt, toFloat,
+} from "./transform";
+export type { TransformSchema } from "./transform";
+
+// Decorators: event decorators + factory
+export { on, emit, createDecorator } from "./decorators";
 
 // Router
 export {
@@ -86,4 +80,3 @@ export {
   HistoryMode,
 } from "./router";
 export type { RouterMode, RouterOptions, RouteInfo, RouteEntry } from "./router";
-

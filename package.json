@@ -34,16 +34,48 @@
     "./router": {
       "types": "./dist/router/index.d.ts",
       "import": "./dist/router/index.js"
+    },
+    "./store": {
+      "types": "./dist/store/index.d.ts",
+      "import": "./dist/store/index.js"
+    },
+    "./di": {
+      "types": "./dist/di/index.d.ts",
+      "import": "./dist/di/index.js"
+    },
+    "./element": {
+      "types": "./dist/element/index.d.ts",
+      "import": "./dist/element/index.js"
+    },
+    "./transform": {
+      "types": "./dist/transform/index.d.ts",
+      "import": "./dist/transform/index.js"
+    },
+    "./element/icon": {
+      "types": "./dist/element/icon.d.ts",
+      "import": "./dist/element/icon.js"
+    },
+    "./element/virtual": {
+      "types": "./dist/element/virtual.d.ts",
+      "import": "./dist/element/virtual.js"
+    },
+    "./decorators": {
+      "types": "./dist/decorators/index.d.ts",
+      "import": "./dist/decorators/index.js"
     }
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm test && npm run build"
   },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "happy-dom": "^20.6.1",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
   },
   "keywords": [
     "web-components",

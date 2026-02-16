@@ -1,4 +1,11 @@
-import { ON_HANDLERS, WATCHERS, EMITTERS } from "./symbols";
+/**
+ * Loom — Event decorators
+ *
+ * @on   — Declarative event subscription (bus events or DOM events)
+ * @emit — Auto-broadcast to the bus (field or method form)
+ */
+
+import { EMITTERS, ON_HANDLERS } from "./symbols";
 import { LoomEvent } from "../event";
 import { bus, type Constructor } from "../bus";
 
@@ -21,29 +28,28 @@ export function on<T extends LoomEvent>(type: Constructor<T>): (target: any, key
 export function on(target: EventTarget, event: string): (target: any, key: string) => void;
 export function on(typeOrTarget: any, event?: string) {
   return (target: any, key: string) => {
+    // Store metadata for service wiring by app.start()
     if (!target[ON_HANDLERS]) target[ON_HANDLERS] = [];
     if (event !== undefined) {
-      // DOM EventTarget binding: @on(window, "resize")
-      target[ON_HANDLERS].push({ domTarget: typeOrTarget, event, key });
+      target[ON_HANDLERS].push({ key, domTarget: typeOrTarget, event });
     } else {
-      // Bus event binding: @on(ColorSelect)
-      target[ON_HANDLERS].push({ type: typeOrTarget, key });
+      target[ON_HANDLERS].push({ key, type: typeOrTarget });
     }
-  };
-}
 
-/**
- * React to specific field changes. Receives new and previous values.
- *
- * ```ts
- * @watch("value")
- * onValueChange(newVal: number, oldVal: number) { ... }
- * ```
- */
-export function watch(field: string) {
-  return (target: any, key: string) => {
-    if (!target[WATCHERS]) target[WATCHERS] = [];
-    target[WATCHERS].push({ field, key });
+    // Patch connectedCallback for LoomElement self-wiring
+    const orig = target.connectedCallback;
+    target.connectedCallback = function () {
+      orig?.call(this);
+      if (event !== undefined) {
+        // DOM EventTarget: @on(window, "resize")
+        const fn = (e: Event) => (this as any)[key](e);
+        typeOrTarget.addEventListener(event, fn);
+        this.track(() => typeOrTarget.removeEventListener(event, fn));
+      } else {
+        // Bus event: @on(ColorSelect)
+        this.track(bus.on(typeOrTarget, (e: any) => (this as any)[key](e)));
+      }
+    };
   };
 }
 
@@ -69,7 +75,7 @@ export function emit<T extends LoomEvent>(
 ) {
   return (target: any, key: string, desc?: PropertyDescriptor) => {
     if (desc?.value) {
-      // Method decorator — wrap, emit return value
+      // Method decorator — wrap, emit return value (define-time)
       const orig = desc.value;
       desc.value = function (...args: any[]) {
         const result = orig.apply(this, args);
@@ -77,7 +83,7 @@ export function emit<T extends LoomEvent>(
         return result;
       };
     } else {
-      // Field decorator — hook into @reactive subscriber
+      // Field decorator — store metadata for @reactive subscriber wiring (define-time)
       if (!target[EMITTERS]) target[EMITTERS] = [];
       target[EMITTERS].push({ field: key, factory });
     }

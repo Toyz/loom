@@ -64,10 +64,29 @@ const JSON_RULES: [string, RegExp][] = [
   ["space",      /^\s+/],
 ];
 
+// TSX: TS + JSX tags. Order matters — JSX tags checked before plain punctuation.
+const TSX_RULES: [string, RegExp][] = [
+  ["comment",    /^\/\/.*$/m],
+  ["comment",    /^\/\*[\s\S]*?\*\//m],
+  ["decorator",  /^@\w+/],
+  ["string",     /^`(?:[^`\\]|\\.)*`/],
+  ["string",     /^"(?:[^"\\]|\\.)*"/],
+  ["string",     /^'(?:[^'\\]|\\.)*'/],
+  ["tag",        /^<\/[a-zA-Z][\w.-]*/],                   // closing tag </div
+  ["tag",        /^<[a-zA-Z][\w.-]*(?=\s|\/?>|\s[^>]*>)/], // opening tag <div
+  ["keyword",    /^(?:import|from|export|default|class|extends|return|const|let|var|function|if|else|for|while|do|switch|case|break|continue|new|this|super|typeof|instanceof|in|of|async|await|yield|throw|try|catch|finally|void|null|undefined|true|false|type|interface|enum|implements|declare|readonly|abstract|static|private|protected|public|as|is|keyof|never|unknown|any|get|set)\b/],
+  ["type",       /^(?:[A-Z][A-Za-z0-9_]*)/],
+  ["number",     /^(?:0[xXbBoO][\da-fA-F_]+|\d[\d_]*\.?\d*(?:[eE][+-]?\d+)?)/],
+  ["punctuation",/^[{}()\[\];:.,?!<>=+\-*/%&|^~@#\/]/],
+  ["ident",      /^[a-zA-Z_$][\w$]*/],
+  ["space",      /^\s+/],
+];
+
 const LANG_RULES: Record<string, [string, RegExp][]> = {
   ts: TS_RULES,
   typescript: TS_RULES,
-  tsx: TS_RULES,
+  tsx: TSX_RULES,
+  jsx: TSX_RULES,
   js: TS_RULES,
   javascript: TS_RULES,
   json: JSON_RULES,

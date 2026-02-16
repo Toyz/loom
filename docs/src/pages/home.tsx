@@ -3,6 +3,7 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { DECORATOR_COUNT } from "../data/decorators";
 
 @route("/")
 @component("page-home")
@@ -235,7 +236,7 @@ export class PageHome extends LoomElement {
             <div class="feature-icon ic-purple">
               <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
             </div>
-            <h3>19 Decorators</h3>
+            <h3>{DECORATOR_COUNT} Decorators</h3>
             <p>Component, prop, reactive, computed, watch, emit, query, on, mount, unmount — everything you need, nothing you don't.</p>
           </div>
           <div class="feature">
@@ -285,7 +286,7 @@ export class PageHome extends LoomElement {
             <div class="stat-label">Gzipped</div>
           </div>
           <div class="stat">
-            <div class="stat-value">19</div>
+            <div class="stat-value">{DECORATOR_COUNT}</div>
             <div class="stat-label">Decorators</div>
           </div>
           <div class="stat">

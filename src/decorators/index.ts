@@ -1,48 +1,44 @@
 /**
  * Loom — Decorators
  *
- * Barrel re-export for the full decorator arsenal:
- * @component, @prop, @reactive, @computed, @on, @watch, @emit,
- * @query, @queryAll, @catch_, @suspend, @mount, @unmount,
- * @interval, @timeout, @animationFrame, @service, @inject, @factory
+ * Barrel re-export for the full decorator arsenal.
+ * Re-exports from domain folders so imports from "@toyz/loom/decorators" still work.
  */
 
 // Symbols (consumed by LoomElement and App)
 export {
   REACTIVES,
   PROPS,
-  ON_HANDLERS,
   WATCHERS,
   EMITTERS,
   COMPUTED_DIRTY,
   CATCH_HANDLER,
-  MOUNT_HANDLERS,
-  UNMOUNT_HANDLERS,
   INJECT_PARAMS,
+  ON_HANDLERS,
   ROUTE_PROPS,
   TRANSFORMS,
 } from "./symbols";
 
-// Component registration
-export { component } from "./component";
+// Decorator factory (public API for user-defined decorators)
+export { createDecorator } from "./create";
 
-// State management
-export { reactive, prop, computed, params, routeQuery } from "./state";
+// Event system (stays in decorators/)
+export { on, emit } from "./events";
 
-// Type conversion
-export { transform, typed } from "./transform";
+// ── Re-exports from domain folders ──
 
-// Event system
-export { on, watch, emit } from "./events";
+// Store: reactive state, persistence, @watch(field/store)
+export { reactive, prop, computed, params, routeQuery, watch } from "../store";
 
-// DOM queries
-export { query, queryAll } from "./dom";
+// DI: service container decorators, @watch(Service)
+export { service, inject, factory } from "../di";
+export { watch as watchService } from "../di";
 
-// Lifecycle & error boundaries
-export { catch_, suspend, mount, unmount } from "./lifecycle";
+// Element: component registration, DOM queries, lifecycle, timing
+export { component, query, queryAll } from "../element";
+export { catch_, suspend, mount, unmount } from "../element";
+export { interval, timeout, debounce, throttle, animationFrame } from "../element";
 
-// Timers & animation
-export { interval, timeout, animationFrame } from "./timing";
-
-// Dependency injection
-export { service, inject, factory } from "./di";
+// Transform: value transforms, factory, typed helpers
+export { transform, createTransform, typed, typedTransformer } from "../transform";
+export { toNumber, toBoolean, toDate, toJSON, toTrimmed, toInt, toFloat } from "../transform";

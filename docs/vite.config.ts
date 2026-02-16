@@ -7,6 +7,9 @@ export default defineConfig({
   base: process.env.CI ? "/loom/" : "/",
   server: {
     port: 4200,
+    fs: {
+      allow: [".."],
+    },
   },
   build: {
     outDir: "dist",

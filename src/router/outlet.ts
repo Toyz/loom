@@ -9,11 +9,11 @@
  * RouteChanged fired before the outlet entered the DOM.
  */
 
-import { LoomElement } from "../element";
+import { LoomElement } from "../element/element";
 import { component, on, prop, ROUTE_PROPS, TRANSFORMS } from "../decorators";
 import { matchRoute } from "./route";
 import { RouteChanged } from "./events";
-import { params as paramsSentinel, routeQuery as querySentinel } from "../decorators/state";
+import { params as paramsSentinel, routeQuery as querySentinel } from "../store/decorators";
 
 @component("loom-outlet")
 class LoomOutlet extends LoomElement {

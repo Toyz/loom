@@ -7,7 +7,8 @@
 
 import { bus } from "../bus";
 import { type RouterMode, HashMode, HistoryMode } from "./mode";
-import { matchRoute, GUARD_HANDLERS, guardRegistry } from "./route";
+import { matchRoute, guardRegistry } from "./route";
+import { GUARD_HANDLERS } from "./decorators";
 import { RouteChanged } from "./events";
 import { INJECT_PARAMS } from "../decorators/symbols";
 import { app } from "../app";

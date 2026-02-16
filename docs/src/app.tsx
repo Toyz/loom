@@ -6,7 +6,7 @@ import { LoomElement, component, reactive, on, css, mount } from "@toyz/loom";
 import { LoomLink, RouteChanged } from "@toyz/loom/router";
 import { docStyles } from "./styles/doc-page";
 
-interface NavItem { label: string; to: string; icon: string }
+interface NavItem { label: string; to: string; icon: string; divider?: string }
 interface NavSection { title: string; items: NavItem[] }
 
 const sections: NavSection[] = [
@@ -18,22 +18,47 @@ const sections: NavSection[] = [
     ],
   },
   {
-    title: "Core",
+    title: "Element",
     items: [
-      { label: "LoomElement",      to: "/core/element",   icon: "cube" },
-      { label: "Reactive State",   to: "/core/reactive",  icon: "bolt" },
-      { label: "Event Bus",        to: "/core/events",    icon: "broadcast" },
-      { label: "JSX & Morphing",   to: "/core/jsx",       icon: "code" },
-      { label: "Storage",          to: "/core/storage",   icon: "database" },
+      { label: "Overview",        to: "/element/overview",       icon: "cube" },
+      { label: "Lifecycle",       to: "/element/lifecycle",      icon: "refresh" },
+      { label: "Timing",          to: "/element/timing",         icon: "zap" },
+      { label: "CSS",             to: "/element/css",            icon: "palette" },
+      { label: "DOM Queries",     to: "/element/queries",        icon: "search" },
+      { label: "JSX & Morphing",  to: "/element/jsx",            icon: "code" },
+      { label: "Virtual List",    to: "/element/virtual-list",   icon: "list",      divider: "Built-ins" },
+      { label: "Icon",            to: "/element/icon",           icon: "star" },
     ],
   },
   {
-    title: "Features",
+    title: "Store",
     items: [
-      { label: "Decorators",       to: "/features/decorators",    icon: "hash" },
-      { label: "Router",           to: "/features/router",        icon: "compass" },
-      { label: "Virtual List",     to: "/features/virtual-list",  icon: "list" },
-      { label: "App & DI",         to: "/features/di",            icon: "box" },
+      { label: "Reactive",    to: "/store/reactive",  icon: "bolt" },
+      { label: "Storage",     to: "/store/storage",   icon: "database" },
+      { label: "Patterns",    to: "/store/patterns",  icon: "layers" },
+    ],
+  },
+  {
+    title: "DI & Services",
+    items: [
+      { label: "Overview",    to: "/di/overview",     icon: "box" },
+    ],
+  },
+  {
+    title: "Router",
+    items: [
+      { label: "Overview",     to: "/router/overview",    icon: "compass" },
+      { label: "Routes",       to: "/router/routes",      icon: "map" },
+      { label: "Guards",       to: "/router/guards",      icon: "shield" },
+      { label: "Navigation",   to: "/router/navigation",  icon: "arrow-right" },
+    ],
+  },
+  {
+    title: "Decorators",
+    items: [
+      { label: "Overview",     to: "/decorators/overview",    icon: "hash" },
+      { label: "Events",       to: "/decorators/events",      icon: "broadcast" },
+      { label: "Transform",    to: "/decorators/transform",   icon: "refresh" },
     ],
   },
 ];
@@ -188,6 +213,18 @@ const styles = css`
     padding-top: 4px;
   }
 
+  /* Nav sub-group divider (e.g. "Built-ins") */
+  .nav-divider {
+    font-size: 0.5625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted, #5e5e74);
+    opacity: 0.6;
+    padding: 6px 18px 2px;
+    margin-top: 2px;
+  }
+
   /* Individual nav link */
   .nav-link {
     display: block;
@@ -265,7 +302,7 @@ const styles = css`
 export class DocsApp extends LoomElement {
 
   @reactive private currentPath: string = "/";
-  @reactive private openSections = new Set(["Guides", "Core", "Features"]);
+  @reactive private openSections = new Set(sections.map(s => s.title));
 
   @mount
   setup() {
@@ -324,14 +361,15 @@ export class DocsApp extends LoomElement {
                   <span class="section-title">{s.title}</span>
                 </div>
                 <div class="section-links">
-                  {s.items.map(item => (
+                  {s.items.map(item => ([
+                    item.divider ? <div class="nav-divider">{item.divider}</div> : null,
                     <div class={`nav-link ${this.isActive(item.to) ? 'active' : ''}`}>
                       <loom-link to={item.to}>
                         <loom-icon name={item.icon} size="18"></loom-icon>
                         {item.label}
                       </loom-link>
                     </div>
-                  ))}
+                  ]))}
                 </div>
               </div>
             ))}
