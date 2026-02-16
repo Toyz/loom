@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://toyz.github.io/loom/loom-logo.svg" alt="Loom" width="80" />
+  <img src="./logo.svg" alt="Loom" width="80" />
 </p>
 
 <h1 align="center">Loom</h1>
