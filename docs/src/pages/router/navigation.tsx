@@ -4,6 +4,7 @@
  */
 import { LoomElement, component, mount, css } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { RouterGroup } from "../../groups";
 import { docStyles } from "../../styles/doc-page";
 
 const styles = css`
@@ -34,7 +35,7 @@ const styles = css`
   }
 `;
 
-@route("/router/navigation")
+@route("/navigation", { group: RouterGroup })
 @component("page-router-navigation")
 export class PageRouterNavigation extends LoomElement {
 
@@ -56,17 +57,31 @@ export class PageRouterNavigation extends LoomElement {
           <h2>&lt;loom-link&gt;</h2>
           <p>
             A navigation component that renders an anchor tag. Handles hash vs history mode
-            automatically. Works anywhere in your component tree:
+            automatically. Adds <span class="ic">.active</span> when the current path matches:
           </p>
-          <code-block lang="tsx" code={`// In any component's update()
+          <code-block lang="tsx" code={`// Navigate by path
 <loom-link to="/users">Users</loom-link>
 <loom-link to="/users/123">User Detail</loom-link>
+
+// Navigate by named route
+<loom-link name="user-detail" params='{"id":"123"}'>
+  User Detail
+</loom-link>
 
 // With children
 <loom-link to="/settings">
   <loom-icon name="gear" size="16"></loom-icon>
   Settings
 </loom-link>`}></code-block>
+
+          <table class="api-table">
+            <thead><tr><th>Prop</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>to</td><td><code>string</code></td><td>Path to navigate to (default: <code>"/"</code>)</td></tr>
+              <tr><td>name</td><td><code>string</code></td><td>Named route — overrides <code>to</code> with the resolved path</td></tr>
+              <tr><td>params</td><td><code>string</code></td><td>JSON params for named route substitution</td></tr>
+            </tbody>
+          </table>
         </section>
 
         <section>
@@ -78,17 +93,25 @@ export class PageRouterNavigation extends LoomElement {
           <code-block lang="tsx" code={`import { app } from "@toyz/loom";
 import { LoomRouter } from "@toyz/loom/router";
 
-// Navigate
-app.get(LoomRouter).navigate("/users/123");
+const router = app.get(LoomRouter);
 
-// Navigate with query params
-app.get(LoomRouter).navigate("/search?q=hello");
+// Navigate by path
+router.go("/users/123");
+
+// Navigate by named route
+router.go({ name: "user-detail", params: { id: "123" } });
+
+// Replace without history entry
+router.replace("/login");
+
+// Build an href (respects hash/history mode)
+router.href({ name: "user-detail", params: { id: "42" } });
 
 // From inside a component
 @mount
 setup() {
   const router = this.app.get(LoomRouter);
-  if (!this.isAuthed) router.navigate("/login");
+  if (!this.isAuthed) router.go("/login");
 }`}></code-block>
         </section>
 
@@ -99,11 +122,17 @@ setup() {
               <tr><th>Method</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td>navigate(path)</td><td>Navigate to a path, running guards and updating the outlet</td></tr>
+              <tr><td>go(target)</td><td>Navigate to a path or named route, running guards</td></tr>
+              <tr><td>navigate(target)</td><td>Alias for <code>go()</code></td></tr>
+              <tr><td>replace(target)</td><td>Same as <code>go()</code> but replaces the current history entry</td></tr>
+              <tr><td>href(target)</td><td>Build an href string for the current mode (hash or history)</td></tr>
               <tr><td>start()</td><td>Initialize the router — read the current URL and render</td></tr>
-              <tr><td>current</td><td>Current route info: path, params, query</td></tr>
+              <tr><td>current</td><td>Current route info: <code>path</code>, <code>params</code>, <code>query</code></td></tr>
             </tbody>
           </table>
+          <p>
+            <strong>Target</strong> can be a <span class="ic">string</span> path or a <span class="ic">{`{ name, params? }`}</span> object for named routes.
+          </p>
         </section>
 
         <section>

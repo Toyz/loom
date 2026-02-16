@@ -13,10 +13,27 @@ export interface RouteEntry {
   ctor: any;
   /** Named guards to check before rendering this route */
   guards: string[];
+  /** Optional name for named-route navigation */
+  name?: string;
+}
+
+/** Symbol for @group metadata on a constructor */
+export const GROUP_META = Symbol("loom:route:group");
+
+/** Symbol for storing a route's group parent constructor */
+export const ROUTE_GROUP = Symbol("loom:route:group-parent");
+
+/** Metadata stored by @group on a constructor */
+export interface GroupMeta {
+  prefix: string;
+  guards: string[];
 }
 
 /** Global route table — populated by @route decorator */
 export const routes: RouteEntry[] = [];
+
+/** Named route lookup — populated by @route when name is provided */
+export const routeByName = new Map<string, RouteEntry>();
 
 /**
  * Global guard registry — populated by @guard decorator.
@@ -70,4 +87,21 @@ export function matchRoute(path: string): { entry: RouteEntry; params: Record<st
     }
   }
   return null;
+}
+
+/**
+ * Build a path from a named route, substituting :param segments.
+ *
+ * ```ts
+ * buildPath("user-detail", { id: "42" }); // → "/user/42"
+ * ```
+ */
+export function buildPath(name: string, params: Record<string, string> = {}): string {
+  const entry = routeByName.get(name);
+  if (!entry) throw new Error(`[Loom] Unknown route name: "${name}"`);
+
+  return entry.pattern.replace(/:([^/]+)/g, (_, key) => {
+    if (!(key in params)) throw new Error(`[Loom] Missing param "${key}" for route "${name}"`);
+    return params[key];
+  });
 }

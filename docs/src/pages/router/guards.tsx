@@ -4,9 +4,10 @@
  */
 import { LoomElement, component, mount } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { RouterGroup } from "../../groups";
 import { docStyles } from "../../styles/doc-page";
 
-@route("/router/guards")
+@route("/guards", { group: RouterGroup })
 @component("page-router-guards")
 export class PageRouterGuards extends LoomElement {
 

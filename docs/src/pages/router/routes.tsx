@@ -4,9 +4,10 @@
  */
 import { LoomElement, component, mount } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { RouterGroup } from "../../groups";
 import { docStyles } from "../../styles/doc-page";
 
-@route("/router/routes")
+@route("/routes", { group: RouterGroup })
 @component("page-router-routes")
 export class PageRouterRoutes extends LoomElement {
 
@@ -97,6 +98,67 @@ class PageUserDetail extends LoomElement {
     return <h1>User {this.userId}</h1>;
   }
 }`}></code-block>
+        </section>
+
+        <section>
+          <h2>Route Options</h2>
+          <p>
+            The second argument to <span class="ic">@route</span> is an optional options object:
+          </p>
+          <table class="api-table">
+            <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>guards</code></td>
+                <td><code>string[]</code></td>
+                <td>Named guards to run before rendering. See <loom-link to="/router/guards" style="color: var(--accent)">Guards</loom-link>.</td>
+              </tr>
+              <tr>
+                <td><code>group</code></td>
+                <td><code>class</code></td>
+                <td>Group constructor to inherit prefix and guards from. See <loom-link to="/router/groups" style="color: var(--accent)">Groups</loom-link>.</td>
+              </tr>
+              <tr>
+                <td><code>name</code></td>
+                <td><code>string</code></td>
+                <td>Named route identifier for programmatic navigation via <span class="ic">buildPath()</span> or <span class="ic">router.go({"{"} name {"}"} )</span>.</td>
+              </tr>
+            </tbody>
+          </table>
+          <code-block lang="ts" code={`@route("/users/:id", {
+  name: "user-detail",
+  guards: ["auth"],
+  group: ApiGroup,
+})
+@component("page-user-detail")
+class PageUserDetail extends LoomElement { }`}></code-block>
+        </section>
+
+        <section>
+          <h2>Named Routes</h2>
+          <p>
+            Give a route a <span class="ic">name</span> to navigate by name instead of raw path.
+            Use <span class="ic">buildPath()</span> to generate URLs, or pass a name target
+            to <span class="ic">router.go()</span> and <span class="ic">&lt;loom-link&gt;</span>:
+          </p>
+          <code-block lang="tsx" code={`import { buildPath } from "@toyz/loom/router";
+
+// Define
+@route("/user/:id/post/:slug", { name: "user-post" })
+@component("page-post")
+class PagePost extends LoomElement { }
+
+// Build a path
+buildPath("user-post", { id: "42", slug: "hello" });
+// → "/user/42/post/hello"
+
+// Navigate imperatively
+router.go({ name: "user-post", params: { id: "42", slug: "hello" } });
+
+// Navigate declaratively
+<loom-link name="user-post" params={{ id: "42", slug: "hello" }}>
+  View Post
+</loom-link>`}></code-block>
         </section>
 
         <section>

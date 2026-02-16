@@ -38,6 +38,7 @@ import "./pages/di/overview";
 import "./pages/router/overview";
 import "./pages/router/routes";
 import "./pages/router/guards";
+import "./pages/router/groups";
 import "./pages/router/navigation";
 
 // Pages — Decorators

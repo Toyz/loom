@@ -5,8 +5,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { ElementGroup } from "../../groups";
 
-@route("/element/icon")
+@route("/icon", { group: ElementGroup })
 @component("page-element-icon")
 export class PageElementIcon extends LoomElement {
   update() {

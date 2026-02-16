@@ -72,6 +72,7 @@ export {
   RouteChanged,
   route,
   guard,
+  group,
   matchRoute,
   routes,
   LoomOutlet,
@@ -79,4 +80,4 @@ export {
   HashMode,
   HistoryMode,
 } from "./router";
-export type { RouterMode, RouterOptions, RouteInfo, RouteEntry } from "./router";
+export type { RouterMode, RouterOptions, RouteInfo, RouteEntry, GroupMeta } from "./router";

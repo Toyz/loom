@@ -10,6 +10,7 @@
  */
 import { LoomElement, component, css, mount } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { DecoratorsGroup } from "../../groups";
 import { DECORATOR_LIST, DECORATOR_COUNT } from "../../data/decorators";
 
 /* ── Page-specific styles ── */
@@ -43,7 +44,7 @@ const styles = css`
   }
 `;
 
-@route("/decorators/overview")
+@route("/overview", { group: DecoratorsGroup })
 @component("page-decorators-overview")
 export class PageDecoratorsOverview extends LoomElement {
 
@@ -205,8 +206,13 @@ onTheme(val: string, prev: string) { }`}></code-block>
               </tr>
               <tr>
                 <td>DI</td>
-                <td><code>@service</code>, <code>@inject</code>, <code>@factory</code></td>
+                <td><code>@service</code>, <code>@inject</code>, <code>@factory</code>, <code>@watchService</code></td>
                 <td><loom-link to="/di/overview" style="color: var(--accent)">DI &amp; Services</loom-link></td>
+              </tr>
+              <tr>
+                <td>Router</td>
+                <td><code>@route</code>, <code>@group</code>, <code>@guard</code></td>
+                <td><loom-link to="/router/overview" style="color: var(--accent)">Router</loom-link></td>
               </tr>
             </tbody>
           </table>

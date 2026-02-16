@@ -5,8 +5,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { DIGroup } from "../../groups";
 
-@route("/di/overview")
+@route("/overview", { group: DIGroup })
 @component("page-di-overview")
 export class PageDIOverview extends LoomElement {
   update() {

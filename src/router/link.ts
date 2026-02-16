@@ -9,12 +9,17 @@
 import { LoomElement } from "../element";
 import { component, prop, on, query } from "../decorators";
 import { app } from "../app";
-import { LoomRouter } from "./router";
+import { LoomRouter, type RouteTarget } from "./router";
 import { RouteChanged } from "./events";
+import { buildPath } from "./route";
 
 @component("loom-link")
 class LoomLink extends LoomElement {
   @prop to = "/";
+  /** Named route — when set, overrides `to` with the resolved path */
+  @prop name = "";
+  /** Params for named route substitution (JSON string or object via JSX) */
+  @prop params = "";
 
   @query("a") private anchor!: HTMLAnchorElement;
 
@@ -49,8 +54,19 @@ class LoomLink extends LoomElement {
     // Intercept clicks — use router.go() instead of native nav
     this.shadow.addEventListener("click", (e: Event) => {
       e.preventDefault();
-      this.router.go(this.to);
+      this.router.go(this._target());
     });
+  }
+
+  /** Build a RouteTarget from current props */
+  private _target(): RouteTarget {
+    if (this.name) {
+      const p = typeof this.params === "string" && this.params
+        ? JSON.parse(this.params)
+        : (this.params || {});
+      return { name: this.name, params: p };
+    }
+    return this.to;
   }
 
   @on(RouteChanged)
@@ -61,8 +77,11 @@ class LoomLink extends LoomElement {
   private _sync(): void {
     const a = this.anchor;
     if (!a) return;
-    a.href = this.router.href(this.to);
-    a.className = this.router.current.path === this.to ? "active" : "";
+    const resolved = typeof this._target() === "string"
+      ? this._target() as string
+      : buildPath((this._target() as any).name, (this._target() as any).params);
+    a.href = this.router.href(this._target());
+    a.className = this.router.current.path === resolved ? "active" : "";
   }
 }
 

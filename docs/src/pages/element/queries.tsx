@@ -5,8 +5,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { ElementGroup } from "../../groups";
 
-@route("/element/queries")
+@route("/queries", { group: ElementGroup })
 @component("page-element-queries")
 export class PageElementQueries extends LoomElement {
   update() {

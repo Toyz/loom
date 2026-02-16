@@ -5,8 +5,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { ElementGroup } from "../../groups";
 
-@route("/element/overview")
+@route("/overview", { group: ElementGroup })
 @component("page-element-overview")
 export class PageElementOverview extends LoomElement {
   update() {

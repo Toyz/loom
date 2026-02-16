@@ -5,8 +5,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { DecoratorsGroup } from "../../groups";
 
-@route("/decorators/events")
+@route("/events", { group: DecoratorsGroup })
 @component("page-decorator-events")
 export class PageDecoratorEvents extends LoomElement {
   update() {

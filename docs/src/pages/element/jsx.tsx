@@ -3,8 +3,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { ElementGroup } from "../../groups";
 
-@route("/element/jsx")
+@route("/jsx", { group: ElementGroup })
 @component("page-jsx")
 export class PageJsx extends LoomElement {
   update() {

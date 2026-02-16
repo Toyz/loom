@@ -3,8 +3,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { StoreGroup } from "../../groups";
 
-@route("/store/patterns")
+@route("/patterns", { group: StoreGroup })
 @component("page-store-patterns")
 export class PageStorePatterns extends LoomElement {
   update() {

@@ -5,8 +5,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { DecoratorsGroup } from "../../groups";
 
-@route("/decorators/transform")
+@route("/transform", { group: DecoratorsGroup })
 @component("page-decorator-transform")
 export class PageDecoratorTransform extends LoomElement {
   update() {
@@ -44,6 +45,30 @@ interface UserParams {
 // Full schema via typed<T>()
 @prop({ params })
 @transform(typed<UserParams>({ id: Number, active: Boolean }))
+routeParams!: UserParams;`}></code-block>
+        </section>
+
+        <section>
+          <h2>@typedTransformer&lt;T&gt;()</h2>
+          <p>
+            Shorthand decorator that combines <span class="ic">@transform</span> and <span class="ic">typed&lt;T&gt;()</span> into
+            a single decorator. Use when you don't need to compose transforms:
+          </p>
+          <code-block lang="ts" code={`import { typedTransformer } from "@toyz/loom";
+
+interface UserParams {
+  id: number;
+  name: string;
+}
+
+// These two are equivalent:
+@prop({ params })
+@transform(typed<UserParams>({ id: Number }))
+routeParams!: UserParams;
+
+// Shorthand:
+@prop({ params })
+@typedTransformer<UserParams>({ id: Number })
 routeParams!: UserParams;`}></code-block>
         </section>
 

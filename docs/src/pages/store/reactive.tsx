@@ -3,8 +3,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { StoreGroup } from "../../groups";
 
-@route("/store/reactive")
+@route("/reactive", { group: StoreGroup })
 @component("page-store-reactive")
 export class PageStoreReactive extends LoomElement {
   update() {

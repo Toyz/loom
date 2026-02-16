@@ -3,8 +3,9 @@
  */
 import { LoomElement, component } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { StoreGroup } from "../../groups";
 
-@route("/store/storage")
+@route("/storage", { group: StoreGroup })
 @component("page-store-storage")
 export class PageStoreStorage extends LoomElement {
   update() {

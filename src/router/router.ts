@@ -7,7 +7,7 @@
 
 import { bus } from "../bus";
 import { type RouterMode, HashMode, HistoryMode } from "./mode";
-import { matchRoute, guardRegistry } from "./route";
+import { matchRoute, guardRegistry, buildPath } from "./route";
 import { GUARD_HANDLERS } from "./decorators";
 import { RouteChanged } from "./events";
 import { INJECT_PARAMS } from "../decorators/symbols";
@@ -16,6 +16,9 @@ import { app } from "../app";
 export interface RouterOptions {
   mode?: "hash" | "history";
 }
+
+/** Target for programmatic navigation — raw path or named route */
+export type RouteTarget = string | { name: string; params?: Record<string, string> };
 
 export interface RouteInfo {
   path: string;
@@ -43,20 +46,26 @@ export class LoomRouter {
     return cleanup;
   }
 
-  /** Navigate to a path */
-  async go(path: string): Promise<void> {
+  /** Navigate to a path or named route */
+  async go(target: RouteTarget): Promise<void> {
+    const path = this._resolvePath(target);
     const allowed = await this._checkGuards(path);
     if (allowed === false) return;
     if (typeof allowed === "string") {
-      // Redirect
       return this.go(allowed);
     }
     this.mode.write(path);
     this._resolve();
   }
 
+  /** Alias for go() */
+  navigate(target: RouteTarget): Promise<void> {
+    return this.go(target);
+  }
+
   /** Navigate without creating a history entry */
-  async replace(path: string): Promise<void> {
+  async replace(target: RouteTarget): Promise<void> {
+    const path = this._resolvePath(target);
     const allowed = await this._checkGuards(path);
     if (allowed === false) return;
     if (typeof allowed === "string") {
@@ -77,8 +86,14 @@ export class LoomRouter {
   }
 
   /** Build an href for the current mode */
-  href(path: string): string {
-    return this.mode.href(path);
+  href(target: RouteTarget): string {
+    return this.mode.href(this._resolvePath(target));
+  }
+
+  /** Resolve a RouteTarget to a path string */
+  private _resolvePath(target: RouteTarget): string {
+    if (typeof target === "string") return target;
+    return buildPath(target.name, target.params);
   }
 
   /** Resolve the current URL against the route table and emit RouteChanged */

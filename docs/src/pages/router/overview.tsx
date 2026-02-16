@@ -4,6 +4,7 @@
  */
 import { LoomElement, component, mount, css } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
+import { RouterGroup } from "../../groups";
 import { docStyles } from "../../styles/doc-page";
 
 const styles = css`
@@ -33,7 +34,7 @@ const styles = css`
   }
 `;
 
-@route("/router/overview")
+@route("/overview", { group: RouterGroup })
 @component("page-router-overview")
 export class PageRouterOverview extends LoomElement {
 
