@@ -10,7 +10,7 @@ import { type RouterMode, HashMode, HistoryMode } from "./mode";
 import { matchRoute, guardRegistry, buildPath } from "./route";
 import { GUARD_HANDLERS } from "./decorators";
 import { RouteChanged } from "./events";
-import { INJECT_PARAMS } from "../decorators/symbols";
+import { INJECT_PARAMS, ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
 import { app } from "../app";
 
 export interface RouterOptions {
@@ -29,6 +29,14 @@ export interface RouteInfo {
 export class LoomRouter {
   readonly mode: RouterMode;
   private _current: RouteInfo = { path: "/", params: {}, tag: null };
+  private _previousTag: string | null = null;
+  /** Optional outlet reference for lifecycle dispatch */
+  private _outlet: HTMLElement | null = null;
+
+  /** Register the outlet so lifecycle hooks can find rendered elements */
+  setOutlet(el: HTMLElement): void {
+    this._outlet = el;
+  }
 
   constructor(opts: RouterOptions = {}) {
     this.mode = opts.mode === "history" ? new HistoryMode() : new HashMode();
@@ -101,14 +109,48 @@ export class LoomRouter {
     const path = this.mode.read();
     const match = matchRoute(path);
     const previous = this._current.path;
+    const newTag = match?.entry.tag ?? null;
+
+    // ── Route lifecycle hooks ──
+    const tagChanged = this._previousTag !== newTag;
+
+    // Call @onRouteLeave on the old element
+    if (tagChanged && this._previousTag && this._outlet) {
+      const oldEl = this._outlet.shadowRoot?.querySelector(this._previousTag)
+        ?? this._outlet.querySelector(this._previousTag);
+      if (oldEl) {
+        const handlers: string[] = (oldEl as any)[ROUTE_LEAVE]
+          ?? Object.getPrototypeOf(oldEl)?.[ROUTE_LEAVE] ?? [];
+        for (const key of handlers) {
+          (oldEl as any)[key]?.();
+        }
+      }
+    }
 
     this._current = {
       path,
       params: match?.params ?? {},
-      tag: match?.entry.tag ?? null,
+      tag: newTag,
     };
 
     bus.emit(new RouteChanged(path, this._current.params, previous));
+
+    // Call @onRouteEnter on the new element (after DOM update via microtask)
+    if (tagChanged && newTag && this._outlet) {
+      queueMicrotask(() => {
+        const newEl = this._outlet?.shadowRoot?.querySelector(newTag)
+          ?? this._outlet?.querySelector(newTag);
+        if (newEl) {
+          const handlers: string[] = (newEl as any)[ROUTE_ENTER]
+            ?? Object.getPrototypeOf(newEl)?.[ROUTE_ENTER] ?? [];
+          for (const key of handlers) {
+            (newEl as any)[key]?.(this._current.params);
+          }
+        }
+      });
+    }
+
+    this._previousTag = newTag;
   }
 
   /**

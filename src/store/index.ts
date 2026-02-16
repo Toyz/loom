@@ -13,7 +13,7 @@ export { MemoryStorage, LocalAdapter, SessionAdapter, LocalMedium, SessionMedium
 export type { StorageAdapter, StorageMedium, PersistOptions } from "./storage";
 
 // Decorators
-export { reactive, prop, computed, params, routeQuery } from "./decorators";
+export { reactive, prop, computed, params, routeQuery, store } from "./decorators";
 
 // Watch
 export { watch } from "./watch";

@@ -36,6 +36,7 @@ export {
   MemoryStorage, LocalAdapter, SessionAdapter, LocalMedium, SessionMedium,
   reactive, prop, computed, params, routeQuery,
   watch,
+  store,
 } from "./store";
 export type {
   Subscriber, Updater, Identifiable,
@@ -79,5 +80,7 @@ export {
   LoomLink,
   HashMode,
   HistoryMode,
+  onRouteEnter,
+  onRouteLeave,
 } from "./router";
 export type { RouterMode, RouterOptions, RouteInfo, RouteEntry, GroupMeta } from "./router";

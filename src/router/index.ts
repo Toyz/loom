@@ -27,3 +27,6 @@ export type { RouterOptions, RouteInfo, RouteTarget } from "./router";
 // Components
 export { LoomOutlet } from "./outlet";
 export { LoomLink } from "./link";
+
+// Route lifecycle
+export { onRouteEnter, onRouteLeave } from "./route-lifecycle";

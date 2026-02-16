@@ -33,9 +33,10 @@ const sections: NavSection[] = [
   {
     title: "Store",
     items: [
-      { label: "Reactive",    to: "/store/reactive",  icon: "bolt" },
-      { label: "Storage",     to: "/store/storage",   icon: "database" },
-      { label: "Patterns",    to: "/store/patterns",  icon: "layers" },
+      { label: "Reactive",    to: "/store/reactive",         icon: "bolt" },
+      { label: "@store",      to: "/store/store-decorator",   icon: "archive" },
+      { label: "Storage",     to: "/store/storage",           icon: "database" },
+      { label: "Patterns",    to: "/store/patterns",          icon: "layers" },
     ],
   },
   {
@@ -47,11 +48,12 @@ const sections: NavSection[] = [
   {
     title: "Router",
     items: [
-      { label: "Overview",     to: "/router/overview",    icon: "compass" },
-      { label: "Routes",       to: "/router/routes",      icon: "map" },
-      { label: "Groups",       to: "/router/groups",      icon: "layers" },
-      { label: "Guards",       to: "/router/guards",      icon: "shield" },
-      { label: "Navigation",   to: "/router/navigation",  icon: "arrow-right" },
+      { label: "Overview",        to: "/router/overview",         icon: "compass" },
+      { label: "Routes",          to: "/router/routes",           icon: "map" },
+      { label: "Groups",          to: "/router/groups",           icon: "layers" },
+      { label: "Guards",          to: "/router/guards",           icon: "shield" },
+      { label: "Navigation",      to: "/router/navigation",       icon: "arrow-right" },
+      { label: "Route Lifecycle", to: "/router/route-lifecycle",  icon: "refresh-cw" },
     ],
   },
   {

@@ -28,6 +28,7 @@ import "./pages/element/icon";
 
 // Pages — Store
 import "./pages/store/reactive";
+import "./pages/store/store-decorator";
 import "./pages/store/storage";
 import "./pages/store/patterns";
 
@@ -40,6 +41,7 @@ import "./pages/router/routes";
 import "./pages/router/guards";
 import "./pages/router/groups";
 import "./pages/router/navigation";
+import "./pages/router/route-lifecycle";
 
 // Pages — Decorators
 import "./pages/decorators/overview";

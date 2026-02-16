@@ -4,11 +4,13 @@
  * @reactive — Internal reactive state backed by Reactive<T>
  * @prop     — External attribute with optional route binding
  * @computed — Cached derived getter
+ * @store    — Component-scoped reactive store with optional persistence
  */
 
 import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS } from "../decorators/symbols";
 import { Reactive } from "./reactive";
 import { bus } from "../bus";
+import type { PersistOptions } from "./storage";
 
 // ── Route sentinels ──
 // Used with @prop shorthand: @prop({params}) or @prop({query})
@@ -166,3 +168,132 @@ export function computed(
   if (!target[COMPUTED_DIRTY]) target[COMPUTED_DIRTY] = [];
   target[COMPUTED_DIRTY].push(dirtyKey);
 }
+
+// ── @store decorator ──
+
+// Symbol for store metadata on prototype
+const STORE_META = Symbol("loom:store:meta");
+
+interface StoreMeta {
+  key: string;         // property name
+  defaults: any;       // initial value (cloned per instance)
+  persist?: PersistOptions;
+}
+
+/**
+ * Create a deep proxy that intercepts mutations and notifies the Reactive.
+ * Handles nested objects and arrays (push, splice, etc.).
+ */
+function createDeepProxy<T extends object>(
+  obj: T,
+  onChange: () => void,
+  persist?: PersistOptions,
+): T {
+  const proxyCache = new WeakMap<object, any>();
+
+  function wrap(target: any): any {
+    if (target === null || typeof target !== "object") return target;
+    if (proxyCache.has(target)) return proxyCache.get(target);
+
+    const proxy = new Proxy(target, {
+      get(t, prop, receiver) {
+        const value = Reflect.get(t, prop, receiver);
+        // Wrap nested objects/arrays lazily
+        if (value !== null && typeof value === "object" && typeof prop !== "symbol") {
+          return wrap(value);
+        }
+        return value;
+      },
+      set(t, prop, value, receiver) {
+        const result = Reflect.set(t, prop, value, receiver);
+        // Persist directly — Reactive.set() would skip (same object ref)
+        if (persist) {
+          persist.storage.set(persist.key, JSON.stringify(obj));
+        }
+        onChange();
+        return result;
+      },
+      deleteProperty(t, prop) {
+        const result = Reflect.deleteProperty(t, prop);
+        if (persist) {
+          persist.storage.set(persist.key, JSON.stringify(obj));
+        }
+        onChange();
+        return result;
+      },
+    });
+
+    proxyCache.set(target, proxy);
+    return proxy;
+  }
+
+  return wrap(obj);
+}
+
+/**
+ * Component-scoped reactive store with optional persistence.
+ * Creates a deep Proxy so nested mutations trigger re-render.
+ *
+ * ```ts
+ * @store<TodoState>({ items: [], filter: "all" })
+ * state!: TodoState;
+ *
+ * // Persisted
+ * @store<TodoState>({ items: [], filter: "all" }, { key: "todos", storage: new LocalAdapter() })
+ * state!: TodoState;
+ * ```
+ */
+export function store<T extends object>(
+  defaults: T,
+  persist?: PersistOptions,
+) {
+  return function (target: any, propertyKey: string): void {
+    // Accumulate metadata on the prototype
+    if (!target[STORE_META]) target[STORE_META] = [];
+    const meta: StoreMeta = { key: propertyKey, defaults, persist };
+    target[STORE_META].push(meta);
+
+    // Storage symbol for the backing Reactive
+    const reactiveKey = Symbol(`store:${propertyKey}`);
+    const proxyKey = Symbol(`store:proxy:${propertyKey}`);
+
+    Object.defineProperty(target, propertyKey, {
+      get() {
+        // Lazy init on first access
+        if (!this[reactiveKey]) {
+          // Deep clone defaults so each instance is isolated
+          const initial = JSON.parse(JSON.stringify(defaults));
+          const r = new Reactive<T>(initial, persist);
+          this[reactiveKey] = r;
+
+          // Subscribe to trigger re-render
+          r.subscribe(() => this.scheduleUpdate?.());
+
+          // Create the proxy over the reactive's value
+          const notifyChange = () => this.scheduleUpdate?.();
+          this[proxyKey] = createDeepProxy(r.value, notifyChange, persist);
+        }
+        return this[proxyKey];
+      },
+      set(val: any) {
+        if (!this[reactiveKey]) {
+          // First set — init the reactive
+          const r = new Reactive<T>(val, persist);
+          this[reactiveKey] = r;
+          r.subscribe(() => this.scheduleUpdate?.());
+
+          const notifyChange = () => this.scheduleUpdate?.();
+          this[proxyKey] = createDeepProxy(r.value, notifyChange, persist);
+        } else {
+          // Full replacement
+          this[reactiveKey].set(val);
+          const notifyChange = () => this.scheduleUpdate?.();
+          this[proxyKey] = createDeepProxy(this[reactiveKey].value, notifyChange, persist);
+        }
+      },
+      enumerable: true,
+      configurable: true,
+    });
+  };
+}
+
