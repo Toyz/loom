@@ -149,4 +149,31 @@ export const docStyles = css`
   a:hover {
     text-decoration: underline;
   }
+
+  /* ── Mobile content ── */
+
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 1.75rem;
+    }
+    h2 {
+      font-size: 1.125rem;
+    }
+    .subtitle {
+      font-size: 1rem;
+    }
+    .ic {
+      white-space: normal;
+      word-break: break-word;
+    }
+    .api-table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    pre {
+      font-size: 0.8em;
+      padding: 0.75rem 1rem;
+    }
+  }
 `;

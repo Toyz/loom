@@ -2,7 +2,7 @@
  * Loom Docs — App Shell
  */
 
-import { LoomElement, component, reactive, on, css, mount } from "@toyz/loom";
+import { LoomElement, component, reactive, on, css, mount, query } from "@toyz/loom";
 import { LoomLink, RouteChanged } from "@toyz/loom/router";
 import { docStyles } from "./styles/doc-page";
 
@@ -73,6 +73,127 @@ const styles = css`
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
+  /* ─────────── Mobile Header (mobile only) ─────────── */
+
+  .mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    height: 56px;
+    background: var(--bg-surface, #121218);
+    border-bottom: 1px solid var(--border-subtle, #1e1e2a);
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+  }
+  .mobile-header .brand-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent, #818cf8), var(--rose, #f472b6));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(129, 140, 248, 0.2);
+  }
+  .mobile-header .brand-mark svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mobile-header h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary, #e8e8f0);
+    margin: 0;
+    flex: 1;
+  }
+  .hamburger {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary, #9898ad);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+  }
+  .hamburger:hover {
+    background: var(--bg-hover, #22222e);
+    color: var(--text-primary, #e8e8f0);
+  }
+  .hamburger svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  /* ── Sidebar close button ── */
+
+  .sidebar-close {
+    display: none;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted, #5e5e74);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .sidebar-close:hover {
+    background: var(--bg-hover, #22222e);
+    color: var(--text-primary, #e8e8f0);
+  }
+  .sidebar-close svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  /* ─────────── Backdrop (mobile only) ─────────── */
+
+  .backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   /* ─────────── Sidebar ─────────── */
 
   aside {
@@ -90,6 +211,7 @@ const styles = css`
     z-index: 100;
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.06) transparent;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* ── Brand ── */
@@ -299,6 +421,62 @@ const styles = css`
   loom-outlet {
     display: block;
   }
+
+  /* ─────────── Mobile ─────────── */
+
+  @media (max-width: 768px) {
+    .mobile-header {
+      display: flex;
+    }
+    .hamburger {
+      display: flex;
+    }
+    .sidebar-close {
+      display: flex;
+    }
+
+    .backdrop {
+      display: block;
+    }
+
+    aside {
+      transform: translateX(-100%);
+      box-shadow: 4px 0 32px rgba(0, 0, 0, 0.5);
+      z-index: 200;
+    }
+    aside.open {
+      transform: translateX(0);
+    }
+
+    .backdrop.visible {
+      z-index: 160;
+    }
+
+    /* Hide the version badge in sidebar on mobile (already in header) */
+    aside .brand-version {
+      display: none;
+    }
+
+    main {
+      margin-left: 0;
+      padding-top: 56px; /* below mobile header */
+    }
+    .page {
+      padding: 24px 20px 60px;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    aside {
+      width: 240px;
+    }
+    main {
+      margin-left: 240px;
+    }
+    .page {
+      padding: 48px 32px 60px;
+    }
+  }
 `;
 
 @component("docs-app")
@@ -306,6 +484,7 @@ export class DocsApp extends LoomElement {
 
   @reactive private currentPath: string = "/";
   @reactive private openSections = new Set(sections.map(s => s.title));
+  @reactive private sidebarOpen = false;
 
   @mount
   setup() {
@@ -315,6 +494,7 @@ export class DocsApp extends LoomElement {
   @on(RouteChanged)
   onRoute(e: RouteChanged) {
     this.currentPath = e.path;
+    this.sidebarOpen = false; // auto-close on mobile nav
     for (const s of sections) {
       if (s.items.some(i => e.path.startsWith(i.to))) {
         this.openSections.add(s.title);
@@ -336,7 +516,23 @@ export class DocsApp extends LoomElement {
   update() {
     return (
       <div>
-        <aside>
+        <header class="mobile-header">
+          <div class="brand-mark">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <h1>Loom</h1>
+          <button class="hamburger" onClick={() => { this.sidebarOpen = !this.sidebarOpen; this.scheduleUpdate(); }}>
+            <svg viewBox="0 0 24 24">
+              <path d="M3 6h18M3 12h18M3 18h18" />
+            </svg>
+          </button>
+        </header>
+        <div class={`backdrop ${this.sidebarOpen ? 'visible' : ''}`} onClick={() => { this.sidebarOpen = false; this.scheduleUpdate(); }}></div>
+        <aside class={this.sidebarOpen ? 'open' : ''}>
           <div class="brand">
             <div class="brand-mark">
               <svg viewBox="0 0 24 24">
@@ -347,6 +543,9 @@ export class DocsApp extends LoomElement {
             </div>
             <h1>Loom</h1>
             <span class="brand-version">{`v${__LOOM_VERSION__}`}</span>
+            <button class="sidebar-close" onClick={() => { this.sidebarOpen = false; this.scheduleUpdate(); }}>
+              <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+            </button>
           </div>
 
           <nav>
