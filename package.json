@@ -1,0 +1,58 @@
+{
+  "name": "@toyz/loom",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Decorator-driven web component framework with reactive state, DOM morphing, DI, and JSX",
+  "license": "MIT",
+  "author": "toyz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toyz/loom.git"
+  },
+  "homepage": "https://toyz.github.io/loom/",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./jsx-runtime": {
+      "types": "./dist/jsx-runtime.d.ts",
+      "import": "./dist/jsx-runtime.js"
+    },
+    "./jsx-dev-runtime": {
+      "types": "./dist/jsx-dev-runtime.d.ts",
+      "import": "./dist/jsx-dev-runtime.js"
+    },
+    "./router": {
+      "types": "./dist/router/index.d.ts",
+      "import": "./dist/router/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "keywords": [
+    "web-components",
+    "decorators",
+    "reactive",
+    "jsx",
+    "dom-morphing",
+    "shadow-dom",
+    "dependency-injection"
+  ]
+}
