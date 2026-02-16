@@ -1,6 +1,6 @@
 {
   "name": "@toyz/loom",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Decorator-driven web component framework with reactive state, DOM morphing, DI, and JSX",
   "license": "MIT",
@@ -10,7 +10,6 @@
     "url": "https://github.com/Toyz/loom.git"
   },
   "homepage": "https://toyz.github.io/loom/",
-
   "files": [
     "dist",
     "LICENSE",
