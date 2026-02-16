@@ -10,7 +10,7 @@
     "url": "https://github.com/Toyz/loom.git"
   },
   "homepage": "https://toyz.github.io/loom/",
-  "sideEffects": false,
+
   "files": [
     "dist",
     "LICENSE",
