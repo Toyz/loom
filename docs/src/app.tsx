@@ -306,7 +306,7 @@ export class DocsApp extends LoomElement {
               </svg>
             </div>
             <h1>Loom</h1>
-            <span class="brand-version">v0.1</span>
+            <span class="brand-version">{`v${__LOOM_VERSION__}`}</span>
           </div>
 
           <nav>

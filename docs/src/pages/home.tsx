@@ -206,7 +206,7 @@ export class PageHome extends LoomElement {
         <div class="hero">
           <div class="hero-badge">
             <loom-icon name="zap" size={12} color="var(--accent)"></loom-icon>
-            v0.1.0 — Zero dependencies
+            {`v${__LOOM_VERSION__} — Zero dependencies`}
           </div>
           <h1>
             Weave the web with <span>Loom</span>
