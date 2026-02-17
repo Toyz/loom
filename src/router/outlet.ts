@@ -10,7 +10,10 @@
  */
 
 import { LoomElement } from "../element/element";
-import { component, on, prop, ROUTE_PROPS, TRANSFORMS } from "../decorators";
+import { component } from "../element/decorators";
+import { on } from "../decorators/events";
+import { prop } from "../store/decorators";
+import { ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols";
 import { matchRoute } from "./route";
 import { RouteChanged } from "./events";
 import { params as paramsSentinel, routeQuery as querySentinel } from "../store/decorators";

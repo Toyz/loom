@@ -15,7 +15,7 @@
  */
 
 import { renderLoop } from "./render-loop";
-import { INJECT_PARAMS, ON_HANDLERS } from "./decorators";
+import { INJECT_PARAMS, ON_HANDLERS } from "./decorators/symbols";
 import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
 

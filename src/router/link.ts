@@ -6,8 +6,10 @@
  * Adds `.active` class when the current route matches.
  */
 
-import { LoomElement } from "../element";
-import { component, prop, on, query } from "../decorators";
+import { LoomElement } from "../element/element";
+import { component, query } from "../element/decorators";
+import { prop } from "../store/decorators";
+import { on } from "../decorators/events";
 import { app } from "../app";
 import { LoomRouter, type RouteTarget } from "./router";
 import { RouteChanged } from "./events";
