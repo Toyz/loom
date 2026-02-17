@@ -131,19 +131,15 @@ class ApiConfig {
 
         <section>
           <h2>Key Behaviors</h2>
-          <dl>
-            <dt>Stale-While-Revalidate</dt>
-            <dd>During a refetch, old data stays visible. <code>loading</code> is only <code>true</code> when there's no data yet.</dd>
-
-            <dt>Auto-Abort</dt>
-            <dd>When the key changes or the element disconnects, in-flight requests are automatically aborted via <code>AbortController</code>.</dd>
-
-            <dt>Retry</dt>
-            <dd>Failed requests retry with exponential backoff: 200ms, 400ms, 800ms…</dd>
-
-            <dt>Per-Instance State</dt>
-            <dd>Each element instance owns its own fetch lifecycle. For shared data, use a <code>@service</code> + <code>Reactive&lt;T&gt;</code>.</dd>
-          </dl>
+          <table class="api-table">
+            <thead><tr><th>Behavior</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>Stale-While-Revalidate</td><td>During a refetch, old data stays visible. <code>loading</code> is only <code>true</code> when there's no data yet.</td></tr>
+              <tr><td>Auto-Abort</td><td>When the key changes or the element disconnects, in-flight requests are automatically aborted via <code>AbortController</code>.</td></tr>
+              <tr><td>Retry</td><td>Failed requests retry with exponential backoff: 200ms, 400ms, 800ms...</td></tr>
+              <tr><td>Per-Instance State</td><td>Each element instance owns its own fetch lifecycle. For shared data, use a <code>@service</code> + <code>Reactive&lt;T&gt;</code>.</td></tr>
+            </tbody>
+          </table>
         </section>
       </div>
     );
