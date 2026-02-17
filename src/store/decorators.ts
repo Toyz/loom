@@ -1,83 +1,104 @@
 /**
- * Loom — Store decorators
+ * Loom — Store decorators (TC39 Stage 3)
  *
- * @reactive — Internal reactive state backed by Reactive<T>
- * @prop     — External attribute with optional route binding
+ * @reactive — Internal reactive state backed by Reactive<T> (auto-accessor)
+ * @prop     — External attribute with optional route binding (auto-accessor)
  * @computed — Cached derived getter
- * @store    — Component-scoped reactive store with optional persistence
+ * @store    — Component-scoped reactive store (auto-accessor)
  */
 
-import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS } from "../decorators/symbols";
+import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols";
 import { Reactive } from "./reactive";
 import { bus } from "../bus";
 import type { PersistOptions } from "./storage";
 
-// ── Route sentinels ──
-// Used with @prop shorthand: @prop({params}) or @prop({query})
+/**
+ * Staging area for @prop registrations.
+ * TC39 member decorators evaluate before class decorators,
+ * so @prop pushes here and @component flushes it.
+ */
+export const pendingProps: Array<{ key: string }> = [];
 
-/** Sentinel for full route-param decompose: `@prop({params}) p!: MyType` */
+// ── Route sentinels ──
+
+/** Sentinel for full route-param decompose: `@prop({params}) accessor p!: MyType` */
 export const params = Symbol("loom:sentinel:params");
 
-/** Sentinel for full query-param decompose: `@prop({query}) q!: MyType` */
-// NOTE: This is NOT the @query(".selector") DOM decorator — that's in element/decorators.
-// This sentinel is re-exported from "@toyz/loom/router".
+/** Sentinel for full query-param decompose: `@prop({query}) accessor q!: MyType` */
 export const routeQuery = Symbol("loom:sentinel:query");
 
 /**
- * Internal reactive state. Creates a getter/setter backed by Reactive<T>.
+ * Internal reactive state. Auto-accessor backed by Reactive<T>.
  * Changes schedule batched `update()` via microtask.
  *
  * ```ts
- * @reactive count = 0;
+ * @reactive accessor count = 0;
  * ```
  */
-export function reactive(target: any, key: string): void {
-  // Define-time: store field name and create getter/setter
-  if (!target[REACTIVES]) target[REACTIVES] = [];
-  target[REACTIVES].push(key);
-
+export function reactive<This extends object, V>(
+  target: ClassAccessorDecoratorTarget<This, V>,
+  context: ClassAccessorDecoratorContext<This, V>,
+): ClassAccessorDecoratorResult<This, V> {
+   const key = String(context.name);
   const storageKey = Symbol(key);
 
-  Object.defineProperty(target, key, {
-    get() {
-      return (this[storageKey] as Reactive<any>)?.value;
+  // Store field name for LoomElement introspection
+  context.addInitializer(function (this: any) {
+    if (!this.constructor[REACTIVES]) this.constructor[REACTIVES] = [];
+    if (!this.constructor[REACTIVES].includes(key)) {
+      this.constructor[REACTIVES].push(key);
+    }
+  });
+
+  return {
+    get(this: any): V {
+      // Before first explicit set, fall back to the backing storage value from init()
+      if (!this[storageKey]) return target.get.call(this);
+      return (this[storageKey] as Reactive<V>).value;
     },
-    set(val: any) {
+    set(this: any, val: V) {
       if (!this[storageKey]) {
-        // First set (from field initializer)
-        const r = new Reactive(val);
+        // First explicit set — create Reactive with the init'd backing value,
+        // wire all subscribers, then set the new value to fire them.
+        const backingValue = target.get.call(this) as V;
+        const r = new Reactive(backingValue);
         this[storageKey] = r;
         r.subscribe(() => this.scheduleUpdate?.());
 
-        // Wire @watch handlers for this field
+        // Wire @watch handlers (WATCHERS is populated because method
+        // addInitializer runs BEFORE accessor field init in TC39)
         for (const w of (this[WATCHERS] ?? []).filter(
-          (w: any) => w.field === key,
+          (w: { field: string }) => w.field === key,
         )) {
-          r.subscribe((v: any, prev: any) => this[w.key](v, prev));
+          r.subscribe((v: V, prev: V) => this[w.key](v, prev));
         }
 
-        // Wire @emit handlers for this field
+        // Wire @emit handlers
         for (const e of (this[EMITTERS] ?? []).filter(
-          (e: any) => e.field === key,
+          (e: { field: string }) => e.field === key,
         )) {
-          r.subscribe((v: any) => bus.emit(e.factory(v)));
+          r.subscribe((v: V) => bus.emit(e.factory(v)));
         }
+
+        // Now set the new value — this fires all subscribers
+        r.set(val);
       } else {
         this[storageKey].set(val);
       }
     },
-    enumerable: true,
-    configurable: true,
-  });
+    init(this: any, val: V): V {
+      return val;
+    },
+  };
 }
 
 // ── Route binding metadata ──
 
 interface RouteBinding {
   propKey: string;
-  param?: string | symbol;   // string = single pick, symbol = full decompose
-  params?: symbol;           // alias: full param decompose
-  query?: string | symbol;   // string = single pick, symbol = full decompose
+  param?: string | symbol;
+  params?: symbol;
+  query?: string | symbol;
 }
 
 type PropRouteOpts = {
@@ -92,50 +113,67 @@ type PropRouteOpts = {
  *
  * Bare decorator:
  * ```ts
- * @prop label = "Count";   // <my-counter label="Clicks">
+ * @prop accessor label = "Count";
  * ```
  *
  * Route param injection:
  * ```ts
- * @prop({ param: "id" }) userId!: string;      // single param
- * @prop({params}) params!: MyParamType;         // full decompose
- * @prop({ query: "tab" }) activeTab!: string;   // single query param
- * @prop({query: routeQuery}) query!: MyQuery;   // full query decompose
+ * @prop({ param: "id" }) accessor userId!: string;
+ * @prop({params}) accessor params!: MyParamType;
  * ```
  */
-export function prop(
-  targetOrOpts: any,
-  key?: any,
-): any {
-  if (typeof key === "string") {
-    // Bare @prop — existing behavior
-    _registerProp(targetOrOpts, key);
-    return;
+export function prop<This extends object, V>(
+  target: ClassAccessorDecoratorTarget<This, V>,
+  context: ClassAccessorDecoratorContext<This, V>,
+): ClassAccessorDecoratorResult<This, V>;
+export function prop(opts: PropRouteOpts): <This extends object, V>(
+  target: ClassAccessorDecoratorTarget<This, V>,
+  context: ClassAccessorDecoratorContext<This, V>,
+) => ClassAccessorDecoratorResult<This, V>;
+export function prop<This extends object, V>(
+  targetOrOpts: ClassAccessorDecoratorTarget<This, V> | PropRouteOpts,
+  context?: ClassAccessorDecoratorContext<This, V>,
+): ClassAccessorDecoratorResult<This, V> | ((
+  target: ClassAccessorDecoratorTarget<This, V>,
+  ctx: ClassAccessorDecoratorContext<This, V>,
+) => ClassAccessorDecoratorResult<This, V>) {
+  // Bare @prop — auto-accessor decorator applied directly
+  if (context) {
+    const key = String(context.name);
+    const result = reactive(targetOrOpts as ClassAccessorDecoratorTarget<This, V>, context);
+
+    // Stage for @component to flush at class-decoration time
+    pendingProps.push({ key });
+
+    return result;
   }
 
-  // @prop({ param: "id" }) or @prop({params}) etc.
+  // @prop({ param: "id" }) — returns decorator factory
   const opts = targetOrOpts as PropRouteOpts;
-  return (target: any, propKey: string) => {
-    // Store route binding metadata on the constructor
-    const ctor = target.constructor;
-    if (!ctor[ROUTE_PROPS]) ctor[ROUTE_PROPS] = [];
+  return <T2 extends object, V2>(
+    target: ClassAccessorDecoratorTarget<T2, V2>,
+    ctx: ClassAccessorDecoratorContext<T2, V2>,
+  ): ClassAccessorDecoratorResult<T2, V2> => {
+    const propKey = String(ctx.name);
+    const result = reactive(
+      target as unknown as ClassAccessorDecoratorTarget<T2, V2>,
+      ctx,
+    );
 
-    const binding: RouteBinding = { propKey };
-    if (opts.params) binding.params = opts.params;
-    if (opts.param) binding.param = opts.param;
-    if (opts.query) binding.query = opts.query;
-    ctor[ROUTE_PROPS].push(binding);
+    // Store route binding metadata
+    ctx.addInitializer(function (this: any) {
+      const ctor = this.constructor;
+      if (!ctor[ROUTE_PROPS]) ctor[ROUTE_PROPS] = [];
 
-    // Wire @reactive so changes trigger re-renders
-    reactive(target, propKey);
+      const binding: RouteBinding = { propKey };
+      if (opts.params) binding.params = opts.params;
+      if (opts.param) binding.param = opts.param;
+      if (opts.query) binding.query = opts.query;
+      ctor[ROUTE_PROPS].push(binding);
+    });
+
+    return result;
   };
-}
-
-/** Register a bare @prop (attribute-observed reactive) */
-function _registerProp(target: any, key: string): void {
-  if (!target.constructor[PROPS]) target.constructor[PROPS] = new Map();
-  target.constructor[PROPS].set(key.toLowerCase(), key);
-  reactive(target, key);
 }
 
 /**
@@ -146,75 +184,75 @@ function _registerProp(target: any, key: string): void {
  * get displayName() { return `${this.firstName} ${this.lastName}`; }
  * ```
  */
-export function computed(
-  target: any,
-  key: string,
-  desc: PropertyDescriptor,
-): void {
-  // Define-time: wrap getter with caching
-  const getter = desc.get!;
+export function computed<This extends object, V>(
+  target: (this: This) => V,
+  context: ClassGetterDecoratorContext<This, V>,
+): (this: This) => V {
+  const key = String(context.name);
   const cacheKey = Symbol(`computed:${key}`);
   const dirtyKey = Symbol(`dirty:${key}`);
 
-  desc.get = function () {
-    if ((this as any)[dirtyKey] !== false) {
-      (this as any)[cacheKey] = getter.call(this);
-      (this as any)[dirtyKey] = false;
+  // Track dirty key for scheduleUpdate invalidation
+  context.addInitializer(function (this: any) {
+    if (!this.constructor.prototype[COMPUTED_DIRTY]) {
+      this.constructor.prototype[COMPUTED_DIRTY] = [];
     }
-    return (this as any)[cacheKey];
-  };
+    if (!this.constructor.prototype[COMPUTED_DIRTY].includes(dirtyKey)) {
+      this.constructor.prototype[COMPUTED_DIRTY].push(dirtyKey);
+    }
+  });
 
-  // Track the dirty key so scheduleUpdate can dirty all computed properties
-  if (!target[COMPUTED_DIRTY]) target[COMPUTED_DIRTY] = [];
-  target[COMPUTED_DIRTY].push(dirtyKey);
+  return function (this: any): V {
+    if (this[dirtyKey] !== false) {
+      this[cacheKey] = target.call(this);
+      this[dirtyKey] = false;
+    }
+    return this[cacheKey];
+  };
 }
 
 // ── @store decorator ──
 
-// Symbol for store metadata on prototype
 const STORE_META = Symbol("loom:store:meta");
 
 interface StoreMeta {
-  key: string;         // property name
-  defaults: any;       // initial value (cloned per instance)
+  key: string;
+  defaults: unknown;
   persist?: PersistOptions;
 }
 
 /**
  * Create a deep proxy that intercepts mutations and notifies the Reactive.
- * Handles nested objects and arrays (push, splice, etc.).
  */
 function createDeepProxy<T extends object>(
   obj: T,
   onChange: () => void,
   persist?: PersistOptions,
 ): T {
-  const proxyCache = new WeakMap<object, any>();
+  const proxyCache = new WeakMap<object, unknown>();
 
-  function wrap(target: any): any {
+  function wrap(target: unknown): unknown {
     if (target === null || typeof target !== "object") return target;
-    if (proxyCache.has(target)) return proxyCache.get(target);
+    if (proxyCache.has(target as object)) return proxyCache.get(target as object);
 
-    const proxy = new Proxy(target, {
-      get(t, prop, receiver) {
-        const value = Reflect.get(t, prop, receiver);
-        // Wrap nested objects/arrays lazily
-        if (value !== null && typeof value === "object" && typeof prop !== "symbol") {
+    const proxy = new Proxy(target as object, {
+      get(t, p, receiver) {
+        const value = Reflect.get(t, p, receiver);
+        if (value !== null && typeof value === "object" && typeof p !== "symbol") {
           return wrap(value);
         }
         return value;
       },
-      set(t, prop, value, receiver) {
-        const result = Reflect.set(t, prop, value, receiver);
-        // Persist directly — Reactive.set() would skip (same object ref)
+      set(t, p, value, receiver) {
+        const result = Reflect.set(t, p, value, receiver);
         if (persist) {
           persist.storage.set(persist.key, JSON.stringify(obj));
         }
         onChange();
         return result;
       },
-      deleteProperty(t, prop) {
-        const result = Reflect.deleteProperty(t, prop);
+      deleteProperty(t, p) {
+        const result = Reflect.deleteProperty(t, p);
         if (persist) {
           persist.storage.set(persist.key, JSON.stringify(obj));
         }
@@ -223,77 +261,58 @@ function createDeepProxy<T extends object>(
       },
     });
 
-    proxyCache.set(target, proxy);
+    proxyCache.set(target as object, proxy);
     return proxy;
   }
 
-  return wrap(obj);
+  return wrap(obj) as T;
 }
 
 /**
- * Component-scoped reactive store with optional persistence.
- * Creates a deep Proxy so nested mutations trigger re-render.
+ * Component-scoped reactive store with optional persistence (auto-accessor).
  *
  * ```ts
  * @store<TodoState>({ items: [], filter: "all" })
- * state!: TodoState;
- *
- * // Persisted
- * @store<TodoState>({ items: [], filter: "all" }, { key: "todos", storage: new LocalAdapter() })
- * state!: TodoState;
+ * accessor state!: TodoState;
  * ```
  */
 export function store<T extends object>(
   defaults: T,
   persist?: PersistOptions,
 ) {
-  return function (target: any, propertyKey: string): void {
-    // Accumulate metadata on the prototype
-    if (!target[STORE_META]) target[STORE_META] = [];
-    const meta: StoreMeta = { key: propertyKey, defaults, persist };
-    target[STORE_META].push(meta);
+  return <This extends object>(
+    _target: ClassAccessorDecoratorTarget<This, T>,
+    context: ClassAccessorDecoratorContext<This, T>,
+  ): ClassAccessorDecoratorResult<This, T> => {
+    const key = String(context.name);
+    const reactiveKey = Symbol(`store:${key}`);
+    const proxyKey = Symbol(`store:proxy:${key}`);
 
-    // Storage symbol for the backing Reactive
-    const reactiveKey = Symbol(`store:${propertyKey}`);
-    const proxyKey = Symbol(`store:proxy:${propertyKey}`);
-
-    Object.defineProperty(target, propertyKey, {
-      get() {
-        // Lazy init on first access
+    return {
+      get(this: any): T {
         if (!this[reactiveKey]) {
-          // Deep clone defaults so each instance is isolated
           const initial = JSON.parse(JSON.stringify(defaults));
           const r = new Reactive<T>(initial, persist);
           this[reactiveKey] = r;
-
-          // Subscribe to trigger re-render
           r.subscribe(() => this.scheduleUpdate?.());
-
-          // Create the proxy over the reactive's value
           const notifyChange = () => this.scheduleUpdate?.();
           this[proxyKey] = createDeepProxy(r.value, notifyChange, persist);
         }
         return this[proxyKey];
       },
-      set(val: any) {
+      set(this: any, val: T) {
         if (!this[reactiveKey]) {
-          // First set — init the reactive
           const r = new Reactive<T>(val, persist);
           this[reactiveKey] = r;
           r.subscribe(() => this.scheduleUpdate?.());
-
           const notifyChange = () => this.scheduleUpdate?.();
           this[proxyKey] = createDeepProxy(r.value, notifyChange, persist);
         } else {
-          // Full replacement
           this[reactiveKey].set(val);
           const notifyChange = () => this.scheduleUpdate?.();
           this[proxyKey] = createDeepProxy(this[reactiveKey].value, notifyChange, persist);
         }
       },
-      enumerable: true,
-      configurable: true,
-    });
+    };
   };
 }
-

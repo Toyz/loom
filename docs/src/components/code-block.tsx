@@ -224,8 +224,8 @@ const styles = css`
 
 @component("code-block")
 export class CodeBlock extends LoomElement {
-  @prop lang = "ts";
-  @prop code = "";
+  @prop accessor lang = "ts";
+  @prop accessor code = "";
 
   @mount
   setup() {

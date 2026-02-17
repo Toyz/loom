@@ -15,13 +15,13 @@ import { buildPath } from "./route";
 
 @component("loom-link")
 class LoomLink extends LoomElement {
-  @prop to = "/";
+  @prop accessor to = "/";
   /** Named route — when set, overrides `to` with the resolved path */
-  @prop name = "";
+  @prop accessor name = "";
   /** Params for named route substitution (JSON string or object via JSX) */
-  @prop params = "";
+  @prop accessor params = "";
 
-  @query("a") private anchor!: HTMLAnchorElement;
+  @query("a") accessor anchor!: HTMLAnchorElement;
 
   private get router(): LoomRouter {
     return app.get(LoomRouter);

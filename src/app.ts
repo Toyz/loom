@@ -20,7 +20,7 @@ import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
 
 interface FactoryMeta {
-  proto: any;
+  fn: Function;
   method: string;
   key?: any;
 }
@@ -85,13 +85,18 @@ class LoomApp {
   }
 
   /** Queue a @factory method for invocation on start() */
-  registerFactory(key: any, proto: any, method: string): void {
-    this.factories.push({ proto, method, key });
+  registerFactory(key: any, info: { method: string; fn: Function }): void {
+    this.factories.push({ key, ...info });
   }
 
   /** Queue a @component for customElements.define() on start() */
   register(tag: string, ctor: CustomElementConstructor): void {
     this.components.push({ tag, ctor });
+    // Late registration (after start): define immediately so lazy-loaded
+    // components get upgraded by the browser's custom element registry.
+    if (this._started && !customElements.get(tag)) {
+      customElements.define(tag, ctor);
+    }
   }
 
   // ── Resolution ──
@@ -152,12 +157,8 @@ class LoomApp {
     }
 
     // 2. Run @factory methods on instantiated services
-    for (const { proto, method, key } of this.factories) {
-      // Find the service instance that owns this factory method
-      const svc = this.providers.get(proto.constructor);
-      if (!svc) continue;
-      const args = this.resolveParams(proto, method);
-      const result = await svc[method](...args);
+    for (const { fn, method, key } of this.factories) {
+      const result = await fn();
       if (result != null) {
         this.providers.set(key ?? result.constructor, result);
       }

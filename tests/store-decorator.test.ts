@@ -27,7 +27,7 @@ describe("@store basic", () => {
   it("provides default state on first access", () => {
     class MyEl {
       @store<TodoState>({ items: [], filter: "all" })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);
@@ -37,7 +37,7 @@ describe("@store basic", () => {
   it("triggers scheduleUpdate on top-level set", () => {
     class MyEl {
       @store<TodoState>({ items: [], filter: "all" })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);
@@ -55,7 +55,7 @@ describe("@store nested mutations", () => {
   it("triggers scheduleUpdate on nested property set", () => {
     class MyEl {
       @store<TodoState>({ items: [], filter: "all", meta: { count: 0 } })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);
@@ -70,7 +70,7 @@ describe("@store nested mutations", () => {
   it("triggers scheduleUpdate on array push", () => {
     class MyEl {
       @store<TodoState>({ items: [], filter: "all" })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);
@@ -85,7 +85,7 @@ describe("@store nested mutations", () => {
   it("triggers scheduleUpdate on array splice", () => {
     class MyEl {
       @store<TodoState>({ items: ["a", "b", "c"], filter: "all" })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);
@@ -102,7 +102,7 @@ describe("@store isolation", () => {
   it("each instance has its own state", () => {
     class MyEl {
       @store<TodoState>({ items: [], filter: "all" })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el1 = createMockElement(MyEl.prototype);
@@ -118,7 +118,7 @@ describe("@store full replacement", () => {
   it("replaces state and triggers update", () => {
     class MyEl {
       @store<TodoState>({ items: [], filter: "all" })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);
@@ -137,7 +137,7 @@ describe("@store persistence", () => {
 
     class MyEl {
       @store<TodoState>({ items: [], filter: "all" }, { key: "test:store", storage })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);
@@ -155,7 +155,7 @@ describe("@store persistence", () => {
 
     class MyEl {
       @store<TodoState>({ items: [], filter: "all" }, { key: "test:hydrate", storage })
-      state!: TodoState;
+      accessor state!: TodoState;
     }
 
     const el = createMockElement(MyEl.prototype);

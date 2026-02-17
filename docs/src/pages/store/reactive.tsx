@@ -1,13 +1,9 @@
 /**
  * Store — Reactive  /store/reactive
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { StoreGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/reactive", { group: StoreGroup })
-@component("page-store-reactive")
-export class PageStoreReactive extends LoomElement {
+export default class PageStoreReactive extends LoomElement {
   update() {
     return (
       <div>
@@ -99,6 +95,29 @@ todos.remove(todo.id);
 todos.subscribe((items) => {
   console.log(\`\${items.length} todos\`);
 });`}></code-block>
+        </section>
+
+        <section>
+          <h2>Persistence Migration</h2>
+          <p>
+            Use <span class="ic">swapStorage</span> to upgrade storage backend at runtime — for example,
+            starting in-memory and switching to localStorage once the user logs in:
+          </p>
+          <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom";
+
+// Start in-memory (anonymous user)
+const prefs = new Reactive({ theme: "dark", lang: "en" });
+
+// Later: user logs in, persist to localStorage
+prefs.swapStorage({
+  key: \`user:\${userId}:prefs\`,
+  storage: new LocalAdapter(),
+});
+// Current value is saved to localStorage immediately.
+// Future changes are automatically persisted.
+
+// Log out: remove storage, keep in-memory
+prefs.clear({ theme: "dark", lang: "en" });`}></code-block>
         </section>
       </div>
     );

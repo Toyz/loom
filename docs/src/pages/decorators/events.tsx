@@ -3,13 +3,9 @@
  *
  * LoomEvent, EventBus, @on, @emit
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { DecoratorsGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/events", { group: DecoratorsGroup })
-@component("page-decorator-events")
-export class PageDecoratorEvents extends LoomElement {
+export default class PageDecoratorEvents extends LoomElement {
   update() {
     return (
       <div>
@@ -82,7 +78,7 @@ placePixel(x: bigint, y: bigint): PixelPlaced {
 
 // Field — factory converts value → event
 @reactive @emit(ColorSelect, idx => new ColorSelect(idx, 0))
-selectedIndex = 0;`}></code-block>
+accessor selectedIndex = 0;`}></code-block>
         </section>
 
         <section>
@@ -111,6 +107,49 @@ const testBus = new EventBus();
 useBus(testBus);
 
 // All @on decorators and bus.emit() now use testBus`}></code-block>
+        </section>
+
+        <section>
+          <h2>Example: Cross-Component Communication</h2>
+          <p>
+            Events decouple components. A toolbar emits; any page can listen — no shared state needed:
+          </p>
+          <code-block lang="ts" code={`// shared/events.ts
+import { LoomEvent } from "@toyz/loom";
+
+export class ThemeChanged extends LoomEvent {
+  constructor(public theme: "light" | "dark") { super(); }
+}
+
+// components/toolbar.ts
+@component("app-toolbar")
+class Toolbar extends LoomElement {
+  @emit()
+  toggleTheme(): ThemeChanged {
+    const next = document.body.dataset.theme === "dark" ? "light" : "dark";
+    return new ThemeChanged(next);
+  }
+
+  update() {
+    return <button onClick={() => this.toggleTheme()}>Toggle Theme</button>;
+  }
+}
+
+// components/page.ts — no imports from toolbar needed
+@component("app-page")
+class Page extends LoomElement {
+  @reactive accessor theme: "light" | "dark" = "dark";
+
+  @on(ThemeChanged)
+  onTheme(e: ThemeChanged) {
+    this.theme = e.theme;
+    document.body.dataset.theme = e.theme;
+  }
+
+  update() {
+    return <main class={this.theme}>{/* ... */}</main>;
+  }
+}`}></code-block>
         </section>
       </div>
     );

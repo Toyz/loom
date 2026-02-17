@@ -1,23 +1,19 @@
 /**
  * CSS — /element/css
  *
- * The css`` tagged template, CSSStyleSheet, scoped styles model.
+ * The css`` tagged template, @styles decorator, scoped styles model.
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/css", { group: ElementGroup })
-@component("page-element-css")
-export class PageElementCSS extends LoomElement {
+export default class PageElementCSS extends LoomElement {
   update() {
     return (
       <div>
         <h1>CSS</h1>
-        <p class="subtitle">Scoped styles via tagged template literals and CSSStyleSheet.</p>
+        <p class="subtitle">Scoped styles via tagged template literals, the @styles decorator, and CSSStyleSheet.</p>
 
         <section>
-          <h2>The css\`\` Tagged Template</h2>
+          <h2>The css`` Tagged Template</h2>
           <p>
             Loom provides a <span class="ic">css</span> tagged template literal that creates a
             <span class="ic">CSSStyleSheet</span> object. The sheet is parsed once and cached — subsequent
@@ -33,9 +29,45 @@ const styles = css\`
         </section>
 
         <section>
+          <h2>@styles Decorator</h2>
+          <p>
+            The <span class="ic">@styles</span> class decorator is the recommended way to apply styles.
+            It auto-adopts one or more <span class="ic">CSSStyleSheet</span>s when the element connects.
+            No boilerplate needed.
+          </p>
+          <code-block lang="ts" code={`import { component, styles, css, LoomElement } from "@toyz/loom";
+
+const sheet = css\`
+  :host { display: block; }
+  .card {
+    padding: 16px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+  }
+\`;
+
+@component("my-card")
+@styles(sheet)
+class MyCard extends LoomElement {
+  update() {
+    return <div class="card"><slot></slot></div>;
+  }
+}`}></code-block>
+          <p>
+            Multiple <span class="ic">@styles()</span> calls stack — all sheets are adopted. This is useful
+            for composing shared + component-specific styles:
+          </p>
+          <code-block lang="ts" code={`import { baseStyles } from "../styles/base";
+import { buttonStyles } from "../styles/buttons";
+
+@component("my-form")
+@styles(baseStyles, buttonStyles, formSheet)
+class MyForm extends LoomElement { ... }`}></code-block>
+        </section>
+
+        <section>
           <h2>Inline Styles in update()</h2>
           <p>
-            The most common pattern is calling <span class="ic">this.css\`\`</span> inside <span class="ic">update()</span>.
+            For quick prototyping, you can call <span class="ic">this.css``</span> inside <span class="ic">update()</span>.
             The sheet is adopted into the shadow root automatically. Since it's cached, there's no
             performance penalty from calling it on every render.
           </p>
@@ -43,12 +75,7 @@ const styles = css\`
 class MyCard extends LoomElement {
   update() {
     this.css\`
-      :host {
-        display: block;
-        border: 1px solid #333;
-        border-radius: 8px;
-        padding: 16px;
-      }
+      :host { display: block; border-radius: 8px; padding: 16px; }
       .title { font-weight: 700; }
     \`;
 
@@ -60,35 +87,10 @@ class MyCard extends LoomElement {
     );
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <h2>Shared Stylesheets</h2>
-          <p>
-            For styles shared across components, create the sheet in a separate module and
-            adopt it manually in <span class="ic">@mount</span>:
+          <p class="hint" style="color:var(--text-muted);font-size:0.85rem;">
+            ⚡ Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
+            and avoids style adoption on every render call.
           </p>
-          <code-block lang="ts" code={`// styles/shared.ts
-import { css } from "@toyz/loom";
-
-export const sharedStyles = css\`
-  .btn { padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-  .btn-primary { background: var(--accent); color: #fff; }
-\`;`}></code-block>
-
-          <code-block lang="ts" code={`// components/my-form.tsx
-import { sharedStyles } from "../styles/shared";
-
-@component("my-form")
-class MyForm extends LoomElement {
-  @mount
-  setup() {
-    this.shadow.adoptedStyleSheets = [
-      ...this.shadow.adoptedStyleSheets,
-      sharedStyles,
-    ];
-  }
-}`}></code-block>
         </section>
 
         <section>
@@ -96,10 +98,10 @@ class MyForm extends LoomElement {
           <table class="api-table">
             <thead><tr><th>Step</th><th>What Happens</th></tr></thead>
             <tbody>
-              <tr><td>1</td><td><code>css\`...\`</code> parses the template into a <code>CSSStyleSheet</code></td></tr>
+              <tr><td>1</td><td><code>css`...`</code> parses the template into a <code>CSSStyleSheet</code></td></tr>
               <tr><td>2</td><td>The sheet is cached by template identity — same template, same sheet</td></tr>
-              <tr><td>3</td><td>When called as <code>this.css\`\`</code>, the sheet is adopted into <code>this.shadow.adoptedStyleSheets</code></td></tr>
-              <tr><td>4</td><td>Shadow DOM scoping ensures styles don't leak out or collide with other components</td></tr>
+              <tr><td>3</td><td><code>@styles(sheet)</code> adopts it into <code>shadow.adoptedStyleSheets</code> on connect</td></tr>
+              <tr><td>4</td><td>Shadow DOM scoping ensures styles don't leak or collide with other components</td></tr>
             </tbody>
           </table>
         </section>
@@ -111,7 +113,7 @@ class MyForm extends LoomElement {
             component's outer element, and <span class="ic">:host(.class)</span> for conditional styling based on
             host attributes or classes.
           </p>
-          <code-block lang="ts" code={`this.css\`
+          <code-block lang="ts" code={`const sheet = css\`
   :host { display: flex; gap: 8px; }
   :host([disabled]) { opacity: 0.5; pointer-events: none; }
   :host(.compact) { padding: 4px; }
@@ -125,21 +127,34 @@ class MyForm extends LoomElement {
             Use CSS custom properties for dynamic values. The template is parsed once, and you
             update custom properties on the host to change styles:
           </p>
-          <code-block lang="ts" code={`@component("theme-card")
+          <code-block lang="ts" code={`const sheet = css\`
+  :host { border: 2px solid var(--card-accent); }
+  .title { color: var(--card-accent); }
+\`;
+
+@component("theme-card")
+@styles(sheet)
 class ThemeCard extends LoomElement {
-  @prop accent = "#818cf8";
+  @prop accessor accent = "#818cf8";
 
   update() {
     this.style.setProperty("--card-accent", this.accent);
-
-    this.css\`
-      :host { border: 2px solid var(--card-accent); }
-      .title { color: var(--card-accent); }
-    \`;
-
     return <h2 class="title"><slot></slot></h2>;
   }
 }`}></code-block>
+        </section>
+
+        <section>
+          <h2>API Reference</h2>
+          <table class="api-table">
+            <thead><tr><th>API</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>css`...`</code></td><td>Tagged template</td><td>Create a cached CSSStyleSheet</td></tr>
+              <tr><td><code>@styles(sheet, ...)</code></td><td>Class decorator</td><td>Auto-adopt stylesheets on connect</td></tr>
+              <tr><td><code>this.css`...`</code></td><td>Instance method</td><td>Adopt inline styles in update()</td></tr>
+              <tr><td><code>this.adoptStyles(sheets)</code></td><td>Instance method</td><td>Programmatic style adoption</td></tr>
+            </tbody>
+          </table>
         </section>
       </div>
     );

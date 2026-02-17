@@ -8,9 +8,7 @@
  *   - Lifecycle/Timing/DOM: under /element/*
  *   - DI: /di/overview
  */
-import { LoomElement, component, css, mount } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { DecoratorsGroup } from "../../groups";
+import { LoomElement, css, mount } from "@toyz/loom";
 import { DECORATOR_LIST, DECORATOR_COUNT } from "../../data/decorators";
 
 /* ── Page-specific styles ── */
@@ -44,9 +42,7 @@ const styles = css`
   }
 `;
 
-@route("/overview", { group: DecoratorsGroup })
-@component("page-decorators-overview")
-export class PageDecoratorsOverview extends LoomElement {
+export default class PageDecoratorsOverview extends LoomElement {
 
   @mount
   setup() {
@@ -118,9 +114,9 @@ const tag = createDecorator<[string]>((ctor, name) => {
               Internal reactive state backed by <span class="ic">Reactive&lt;T&gt;</span>.
               Changes schedule batched <span class="ic">update()</span> via microtask.
             </div>
-            <code-block lang="ts" code={`@reactive count = 0;
-@reactive userName = "";
-@reactive items: string[] = [];`}></code-block>
+            <code-block lang="ts" code={`@reactive accessor count = 0;
+@reactive accessor userName = "";
+@reactive accessor items: string[] = [];`}></code-block>
           </div>
 
           <div class="decorator-entry" id="prop">
@@ -129,9 +125,9 @@ const tag = createDecorator<[string]>((ctor, name) => {
               External property. Auto-parses HTML attributes (number, boolean, string)
               and accepts any type via JSX. Uses <span class="ic">@reactive</span> under the hood.
             </div>
-            <code-block lang="ts" code={`@prop label = "Count";   // <my-counter label="Clicks">
-@prop initial = 0;       // parsed as number
-@prop disabled = false;  // parsed as boolean`}></code-block>
+            <code-block lang="ts" code={`@prop accessor label = "Count";   // <my-counter label="Clicks">
+@prop accessor initial = 0;       // parsed as number
+@prop accessor disabled = false;  // parsed as boolean`}></code-block>
           </div>
 
           <div class="decorator-entry" id="computed">

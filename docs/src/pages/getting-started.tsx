@@ -1,12 +1,9 @@
 /**
  * Getting Started — /guides/getting-started
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
+import { LoomElement } from "@toyz/loom";
 
-@route("/guides/getting-started")
-@component("page-getting-started")
-export class PageGettingStarted extends LoomElement {
+export default class PageGettingStarted extends LoomElement {
   update() {
     this.css`
       .step {
@@ -71,8 +68,7 @@ export class PageGettingStarted extends LoomElement {
           <code-block lang="json" code={`{
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "@toyz/loom",
-    "experimentalDecorators": true
+    "jsxImportSource": "@toyz/loom"
   }
 }`}></code-block>
         </div>
@@ -86,7 +82,7 @@ export class PageGettingStarted extends LoomElement {
 
 @component("my-counter")
 export class MyCounter extends LoomElement {
-  @reactive count = 0;
+  @reactive accessor count = 0;
 
   update() {
     return (

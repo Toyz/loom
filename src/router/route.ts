@@ -40,7 +40,7 @@ export const routeByName = new Map<string, RouteEntry>();
  * Maps guard name → { proto, key }
  */
 export interface GuardRegistration {
-  proto: any;
+  method: Function;
   key: string;
 }
 export const guardRegistry = new Map<string, GuardRegistration>();

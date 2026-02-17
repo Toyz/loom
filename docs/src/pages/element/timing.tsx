@@ -3,13 +3,9 @@
  *
  * @interval, @timeout, @debounce, @throttle, @animationFrame
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/timing", { group: ElementGroup })
-@component("page-element-timing")
-export class PageElementTiming extends LoomElement {
+export default class PageElementTiming extends LoomElement {
   update() {
     return (
       <div>
@@ -96,6 +92,58 @@ draw(dt: number) {
             All timing decorators are built on <span class="ic">createDecorator</span> and automatically
             clean up when the element disconnects from the DOM — no manual teardown needed.
           </p>
+        </section>
+
+        <section>
+          <h2>Architecture: The Render Loop</h2>
+          <p>
+            All <span class="ic">@animationFrame</span> callbacks are managed by a single,
+            centralized <span class="ic">RenderLoop</span> instance. This means multiple components
+            using <span class="ic">@animationFrame</span> share one <span class="ic">requestAnimationFrame</span>{" "}
+            loop — no duplicate frame requests, no wasted cycles. Layers control execution order
+            (lower layers run first), making it easy to separate physics from rendering.
+          </p>
+        </section>
+
+        <section>
+          <h2>Example: Search As You Type</h2>
+          <p>
+            Combine <span class="ic">@debounce</span> with <span class="ic">@reactive</span> for
+            efficient search input handling:
+          </p>
+          <code-block lang="ts" code={`@component("live-search")
+class LiveSearch extends LoomElement {
+  @reactive accessor results: SearchResult[] = [];
+  @reactive accessor query = "";
+  @reactive accessor loading = false;
+
+  onInput(e: Event) {
+    this.query = (e.target as HTMLInputElement).value;
+    this.search(this.query);
+  }
+
+  @debounce(300)
+  async search(q: string) {
+    if (!q.trim()) { this.results = []; return; }
+    this.loading = true;
+    const res = await fetch(\`/api/search?q=\${encodeURIComponent(q)}\`);
+    this.results = await res.json();
+    this.loading = false;
+  }
+
+  update() {
+    return (
+      <div>
+        <input value={this.query} onInput={e => this.onInput(e)}
+               placeholder="Search..." />
+        {this.loading && <div class="spinner" />}
+        <ul>
+          {this.results.map(r => <li>{r.title}</li>)}
+        </ul>
+      </div>
+    );
+  }
+}`}></code-block>
         </section>
       </div>
     );

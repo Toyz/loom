@@ -1,14 +1,13 @@
 /**
- * Tests: createDecorator — universal decorator factory
+ * Tests: createDecorator — universal decorator factory (TC39 Stage 3)
  *
- * New API: setup runs at DEFINE time on the prototype.
+ * New API: setup runs at DEFINE time.
  * If setup returns a function, it runs on CONNECT.
  * If the connect function returns a function, it runs on DISCONNECT.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createDecorator } from "../src/decorators/create";
 import { LoomElement } from "../src/element";
-import { app } from "../src/app";
 
 // Reset app state between tests
 beforeEach(() => {
@@ -25,13 +24,15 @@ describe("createDecorator", () => {
     const myDec = createDecorator(setup);
     const tag = nextTag();
 
-    class El extends LoomElement {}
-    myDec()(El.prototype, "myMethod");
+    class El extends LoomElement {
+      @myDec()
+      myMethod() {}
+    }
 
     // Setup is called at define-time (before element creation)
     expect(setup).toHaveBeenCalledOnce();
-    // Can't deep-compare El.prototype (HappyDOM DOM objects break Vitest matcher)
-    expect(setup.mock.calls[0][0]).toBe(El.prototype);
+    // First arg is the method function, second is "myMethod"
+    expect(typeof setup.mock.calls[0][0]).toBe("function");
     expect(setup.mock.calls[0][1]).toBe("myMethod");
   });
 
@@ -39,11 +40,13 @@ describe("createDecorator", () => {
     const setup = vi.fn();
     const myDec = createDecorator<[url: string, retries: number]>(setup);
 
-    class El extends LoomElement {}
-    myDec("ws://localhost", 3)(El.prototype, "connect");
+    class El extends LoomElement {
+      @myDec("ws://localhost", 3)
+      connect() {}
+    }
 
     expect(setup).toHaveBeenCalledOnce();
-    expect(setup.mock.calls[0][0]).toBe(El.prototype);
+    expect(typeof setup.mock.calls[0][0]).toBe("function");
     expect(setup.mock.calls[0][1]).toBe("connect");
     expect(setup.mock.calls[0][2]).toBe("ws://localhost");
     expect(setup.mock.calls[0][3]).toBe(3);
@@ -51,13 +54,15 @@ describe("createDecorator", () => {
 
   it("runs connect function on connectedCallback", () => {
     const connectFn = vi.fn();
-    const myDec = createDecorator((_proto, _key) => {
+    const myDec = createDecorator((_method, _key) => {
       return connectFn;  // connect function
     });
     const tag = nextTag();
 
-    class El extends LoomElement {}
-    myDec()(El.prototype, "handler");
+    class El extends LoomElement {
+      @myDec()
+      handler() {}
+    }
     customElements.define(tag, El);
 
     expect(connectFn).not.toHaveBeenCalled();
@@ -70,13 +75,15 @@ describe("createDecorator", () => {
 
   it("tracks cleanup function for disconnect", () => {
     const cleanup = vi.fn();
-    const myDec = createDecorator((_proto, _key) => {
+    const myDec = createDecorator((_method, _key) => {
       return (_el: any) => cleanup;  // connect returns cleanup
     });
     const tag = nextTag();
 
-    class El extends LoomElement {}
-    myDec()(El.prototype, "handler");
+    class El extends LoomElement {
+      @myDec()
+      handler() {}
+    }
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -88,11 +95,13 @@ describe("createDecorator", () => {
   });
 
   it("does not break if setup returns void (define-time only)", () => {
-    const myDec = createDecorator((_proto, _key) => { /* no connect */ });
+    const myDec = createDecorator((_method, _key) => { /* no connect */ });
     const tag = nextTag();
 
-    class El extends LoomElement {}
-    myDec()(El.prototype, "handler");
+    class El extends LoomElement {
+      @myDec()
+      handler() {}
+    }
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -106,8 +115,8 @@ describe("createDecorator", () => {
     const setup = vi.fn();
     const myDec = createDecorator<[tag: string]>(setup, { class: true });
 
+    @myDec("my-widget")
     class El extends LoomElement {}
-    myDec("my-widget")(El);
 
     expect(setup).toHaveBeenCalledOnce();
     expect(setup).toHaveBeenCalledWith(El, "my-widget");
@@ -116,15 +125,15 @@ describe("createDecorator", () => {
   it("works with typed element generic", () => {
     interface MyApi { fetchData(): void }
     const connectFn = vi.fn();
-    const myDec = createDecorator<[], MyApi>((_proto, _key) => {
+    const myDec = createDecorator<[], MyApi>((_method, _key) => {
       return connectFn;
     });
     const tag = nextTag();
 
     class El extends LoomElement {
+      @myDec()
       fetchData() {}
     }
-    myDec()(El.prototype, "fetchData");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);

@@ -3,13 +3,9 @@
  *
  * @mount, @unmount, @catch_, @suspend, firstUpdated
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/lifecycle", { group: ElementGroup })
-@component("page-element-lifecycle")
-export class PageElementLifecycle extends LoomElement {
+export default class PageElementLifecycle extends LoomElement {
   update() {
     return (
       <div>
@@ -58,13 +54,62 @@ class MyWidget extends LoomElement { ... }`}></code-block>
           <p>
             Async suspense. Wraps async methods to set <span class="ic">loading</span>/<span class="ic">error</span> state automatically.
           </p>
-          <code-block lang="ts" code={`@reactive loading = false;
-@reactive error: Error | null = null;
+          <code-block lang="ts" code={`@reactive accessor loading = false;
+@reactive accessor error: Error | null = null;
 
 @suspend()
 async fetchUser() {
   const res = await fetch(\`/api/users/\${this.userId}\`);
   this.user = await res.json();
+}`}></code-block>
+        </section>
+
+        <section>
+          <h2>Combined Example</h2>
+          <p>
+            A component with error boundary, async loading, and cleanup:
+          </p>
+          <code-block lang="ts" code={`@component("user-card")
+@catch_((err, el) => {
+  el.shadow.replaceChildren(
+    <div class="error">
+      <p>Failed to load user</p>
+      <button onClick={() => el.fetchUser()}>Retry</button>
+    </div>
+  );
+})
+class UserCard extends LoomElement {
+  @prop accessor userId!: string;
+  @reactive accessor user: User | null = null;
+  @reactive accessor loading = false;
+
+  @mount
+  setup() {
+    this.fetchUser();
+  }
+
+  @suspend()
+  async fetchUser() {
+    const res = await fetch(\`/api/users/\${this.userId}\`);
+    if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+    this.user = await res.json();
+  }
+
+  @unmount
+  cleanup() {
+    this.user = null;
+  }
+
+  update() {
+    if (this.loading) return <div class="skeleton" />;
+    if (!this.user) return <div>No user</div>;
+    return (
+      <div class="card">
+        <h3>{this.user.name}</h3>
+        <p>{this.user.email}</p>
+      </div>
+    );
+  }
 }`}></code-block>
         </section>
 

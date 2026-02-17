@@ -2,9 +2,7 @@
  * Router — Overview
  * /router/overview
  */
-import { LoomElement, component, mount, css } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { RouterGroup } from "../../groups";
+import { LoomElement, mount, css } from "@toyz/loom";
 import { docStyles } from "../../styles/doc-page";
 
 const styles = css`
@@ -34,9 +32,7 @@ const styles = css`
   }
 `;
 
-@route("/overview", { group: RouterGroup })
-@component("page-router-overview")
-export class PageRouterOverview extends LoomElement {
+export default class PageRouterOverview extends LoomElement {
 
   @mount
   setup() {

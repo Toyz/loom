@@ -1,5 +1,5 @@
 /**
- * Tests: @on, @emit, event bus integration
+ * Tests: @on, @emit, event bus integration (TC39 Stage 3)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { LoomElement } from "../src/element";
@@ -25,11 +25,9 @@ describe("@on", () => {
     const tag = nextTag();
 
     class El extends LoomElement {
+      @on(CountUpdated)
       onCountUpdated(ev: CountUpdated) { fn(ev.count); }
     }
-
-    // Apply @on(CountUpdated) directly — self-wires connectedCallback
-    on(CountUpdated)(El.prototype, "onCountUpdated");
 
     customElements.define(tag, El);
 
@@ -45,10 +43,9 @@ describe("@on", () => {
     const tag = nextTag();
 
     class El extends LoomElement {
+      @on(CountUpdated)
       onCountUpdated(ev: CountUpdated) { fn(ev.count); }
     }
-
-    on(CountUpdated)(El.prototype, "onCountUpdated");
 
     customElements.define(tag, El);
 
@@ -67,14 +64,11 @@ describe("@emit (method)", () => {
     const tag = nextTag();
 
     class El extends LoomElement {
+      @emit()
       doThing(): CountUpdated {
         return new CountUpdated(7);
       }
     }
-    // Apply @emit() to the method via descriptor
-    const desc = Object.getOwnPropertyDescriptor(El.prototype, "doThing")!;
-    emit()(El.prototype, "doThing", desc);
-    Object.defineProperty(El.prototype, "doThing", desc);
 
     customElements.define(tag, El);
 

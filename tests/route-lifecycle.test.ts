@@ -2,6 +2,9 @@
  * Tests: @onRouteEnter / @onRouteLeave
  *
  * Covers: metadata registration, handler dispatch, multi-handler, param passing
+ *
+ * Note: TC39 decorators run addInitializer on first instantiation,
+ * so we create an instance to trigger metadata registration.
  */
 import { describe, it, expect, vi } from "vitest";
 import { onRouteEnter, onRouteLeave } from "../src/router/route-lifecycle";
@@ -13,6 +16,7 @@ describe("@onRouteEnter", () => {
       @onRouteEnter
       handleEnter() {}
     }
+    new Page(); // trigger addInitializer
 
     const handlers = Page.prototype[ROUTE_ENTER as any] as string[];
     expect(handlers).toBeDefined();
@@ -27,6 +31,7 @@ describe("@onRouteEnter", () => {
       @onRouteEnter
       trackAnalytics() {}
     }
+    new Page(); // trigger addInitializer
 
     const handlers = Page.prototype[ROUTE_ENTER as any] as string[];
     expect(handlers).toHaveLength(2);
@@ -41,6 +46,7 @@ describe("@onRouteLeave", () => {
       @onRouteLeave
       cleanup() {}
     }
+    new Page(); // trigger addInitializer
 
     const handlers = Page.prototype[ROUTE_LEAVE as any] as string[];
     expect(handlers).toBeDefined();
@@ -55,6 +61,7 @@ describe("@onRouteLeave", () => {
       @onRouteLeave
       clearTimers() {}
     }
+    new Page(); // trigger addInitializer
 
     const handlers = Page.prototype[ROUTE_LEAVE as any] as string[];
     expect(handlers).toHaveLength(2);
@@ -72,6 +79,7 @@ describe("combined usage", () => {
       @onRouteLeave
       left() {}
     }
+    new Page(); // trigger addInitializer
 
     const enterHandlers = Page.prototype[ROUTE_ENTER as any] as string[];
     const leaveHandlers = Page.prototype[ROUTE_LEAVE as any] as string[];

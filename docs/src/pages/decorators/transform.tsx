@@ -1,15 +1,11 @@
 /**
  * Transform — /decorators/transform
  *
- * @transform, typed<T>(), built-in transformers.
+ * @lazy loaded — registered in main.tsx
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { DecoratorsGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/transform", { group: DecoratorsGroup })
-@component("page-decorator-transform")
-export class PageDecoratorTransform extends LoomElement {
+export default class PageDecoratorTransform extends LoomElement {
   update() {
     return (
       <div>
@@ -25,7 +21,7 @@ export class PageDecoratorTransform extends LoomElement {
           <code-block lang="ts" code={`// Single param conversion
 @prop({ param: "id" })
 @transform(Number)      // "42" → 42
-userId!: number;`}></code-block>
+accessor userId!: number;`}></code-block>
         </section>
 
         <section>
@@ -45,7 +41,7 @@ interface UserParams {
 // Full schema via typed<T>()
 @prop({ params })
 @transform(typed<UserParams>({ id: Number, active: Boolean }))
-routeParams!: UserParams;`}></code-block>
+accessor routeParams!: UserParams;`}></code-block>
         </section>
 
         <section>
@@ -64,12 +60,12 @@ interface UserParams {
 // These two are equivalent:
 @prop({ params })
 @transform(typed<UserParams>({ id: Number }))
-routeParams!: UserParams;
+accessor routeParams!: UserParams;
 
 // Shorthand:
 @prop({ params })
 @typedTransformer<UserParams>({ id: Number })
-routeParams!: UserParams;`}></code-block>
+accessor routeParams!: UserParams;`}></code-block>
         </section>
 
         <section>
@@ -92,9 +88,9 @@ routeParams!: UserParams;`}></code-block>
           </table>
           <code-block lang="ts" code={`import { toNumber, toBoolean, toDate } from "@toyz/loom";
 
-@prop @transform(toNumber) count!: number;
-@prop @transform(toBoolean) enabled!: boolean;
-@prop @transform(toDate) createdAt!: Date;`}></code-block>
+@prop @transform(toNumber) accessor count!: number;
+@prop @transform(toBoolean) accessor enabled!: boolean;
+@prop @transform(toDate) accessor createdAt!: Date;`}></code-block>
         </section>
 
         <section>
@@ -108,7 +104,7 @@ const toUpperCase = createTransform<string, string>(
   (value) => value.toUpperCase()
 );
 
-@prop @transform(toUpperCase) title!: string;`}></code-block>
+@prop @transform(toUpperCase) accessor title!: string;`}></code-block>
         </section>
       </div>
     );

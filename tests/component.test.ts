@@ -5,30 +5,26 @@
  * For tests, we call customElements.define() directly and test the
  * decorator's attribute wiring separately.
  */
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { component } from "../src/element/decorators";
 import { prop } from "../src/store/decorators";
-import { PROPS } from "../src/decorators/symbols";
+import { fixture, cleanup } from "../src/testing";
 
 let tagCounter = 0;
 function nextTag() { return `test-comp-${++tagCounter}`; }
 
-beforeEach(() => {
-  document.body.innerHTML = "";
-});
+afterEach(() => cleanup());
 
 describe("@component", () => {
   it("wires observedAttributes from @prop fields", () => {
     const tag = nextTag();
 
+    @component(tag)
     class El extends LoomElement {
-      label = "";
-      count = 0;
+      @prop accessor label = "";
+      @prop accessor count = 0;
     }
-    prop(El.prototype, "label");
-    prop(El.prototype, "count");
-    component(tag)(El);
 
     expect((El as any).observedAttributes).toContain("label");
     expect((El as any).observedAttributes).toContain("count");
@@ -37,40 +33,35 @@ describe("@component", () => {
   it("sets __loom_tag on the constructor", () => {
     const tag = nextTag();
 
+    @component(tag)
     class El extends LoomElement {}
-    component(tag)(El);
     expect((El as any).__loom_tag).toBe(tag);
   });
 
-  it("auto-parses number attributes via attributeChangedCallback", () => {
+  it("auto-parses number attributes via attributeChangedCallback", async () => {
     const tag = nextTag();
 
+    @component(tag)
     class El extends LoomElement {
-      count = 0;
+      @prop accessor count = 0;
     }
-    prop(El.prototype, "count");
-    component(tag)(El);
-
-    // Manually define to avoid app.start() dependency
     customElements.define(tag, El);
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+
+    const el = await fixture<El>(tag);
     el.setAttribute("count", "42");
     expect(el.count).toBe(42);
   });
 
-  it("auto-parses boolean attributes via attributeChangedCallback", () => {
+  it("auto-parses boolean attributes via attributeChangedCallback", async () => {
     const tag = nextTag();
 
+    @component(tag)
     class El extends LoomElement {
-      disabled = false;
+      @prop accessor disabled = false;
     }
-    prop(El.prototype, "disabled");
-    component(tag)(El);
-
     customElements.define(tag, El);
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+
+    const el = await fixture<El>(tag);
     el.setAttribute("disabled", "true");
     expect(el.disabled).toBe(true);
 
@@ -78,19 +69,33 @@ describe("@component", () => {
     expect(el.disabled).toBe(false);
   });
 
-  it("auto-parses string attributes via attributeChangedCallback", () => {
+  it("auto-parses string attributes via attributeChangedCallback", async () => {
     const tag = nextTag();
 
+    @component(tag)
     class El extends LoomElement {
-      label = "";
+      @prop accessor label = "";
     }
-    prop(El.prototype, "label");
-    component(tag)(El);
-
     customElements.define(tag, El);
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+
+    const el = await fixture<El>(tag);
     el.setAttribute("label", "Hello");
     expect(el.label).toBe("Hello");
+  });
+
+  it("mounts from fixtureHTML with pre-set attributes", async () => {
+    const tag = nextTag();
+
+    @component(tag)
+    class El extends LoomElement {
+      @prop accessor label = "";
+      @prop accessor count = 0;
+    }
+    customElements.define(tag, El);
+
+    const { fixtureHTML } = await import("../src/testing");
+    const el = await fixtureHTML<El>(`<${tag} label="World" count="7"></${tag}>`);
+    expect(el.label).toBe("World");
+    expect(el.count).toBe(7);
   });
 });

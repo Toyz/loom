@@ -26,6 +26,9 @@ const sections: NavSection[] = [
       { label: "CSS",             to: "/element/css",            icon: "palette" },
       { label: "DOM Queries",     to: "/element/queries",        icon: "search" },
       { label: "JSX & Morphing",  to: "/element/jsx",            icon: "code" },
+      { label: "Decorators",      to: "/element/decorators",     icon: "hash" },
+      { label: "Lazy Loading",    to: "/element/lazy",           icon: "download" },
+      { label: "Forms",           to: "/element/forms",          icon: "clipboard" },
       { label: "Virtual List",    to: "/element/virtual-list",   icon: "list",      divider: "Built-ins" },
       { label: "Icon",            to: "/element/icon",           icon: "star" },
     ],
@@ -33,8 +36,9 @@ const sections: NavSection[] = [
   {
     title: "Store",
     items: [
-      { label: "Reactive",    to: "/store/reactive",         icon: "bolt" },
-      { label: "@store",      to: "/store/store-decorator",   icon: "archive" },
+      { label: "Overview",    to: "/store/overview",          icon: "archive" },
+      { label: "Reactive",    to: "/store/reactive",          icon: "bolt" },
+      { label: "Decorator",       to: "/store/store-decorator", icon: "package" },
       { label: "Storage",     to: "/store/storage",           icon: "database" },
       { label: "Patterns",    to: "/store/patterns",          icon: "layers" },
     ],
@@ -43,6 +47,7 @@ const sections: NavSection[] = [
     title: "DI & Services",
     items: [
       { label: "Overview",    to: "/di/overview",     icon: "box" },
+      { label: "Decorators",  to: "/di/decorators",   icon: "hash" },
     ],
   },
   {
@@ -53,7 +58,8 @@ const sections: NavSection[] = [
       { label: "Groups",          to: "/router/groups",           icon: "layers" },
       { label: "Guards",          to: "/router/guards",           icon: "shield" },
       { label: "Navigation",      to: "/router/navigation",       icon: "arrow-right" },
-      { label: "Route Lifecycle", to: "/router/route-lifecycle",  icon: "refresh-cw" },
+      { label: "Lifecycle",       to: "/router/route-lifecycle",  icon: "refresh" },
+      { label: "Decorators",      to: "/router/decorators",       icon: "hash" },
     ],
   },
   {
@@ -62,6 +68,15 @@ const sections: NavSection[] = [
       { label: "Overview",     to: "/decorators/overview",    icon: "hash" },
       { label: "Events",       to: "/decorators/events",      icon: "broadcast" },
       { label: "Transform",    to: "/decorators/transform",   icon: "refresh" },
+    ],
+  },
+  {
+    title: "Examples",
+    items: [
+      { label: "Clock",           to: "/examples/clock",          icon: "zap" },
+      { label: "Todo List",       to: "/examples/todo",           icon: "check" },
+      { label: "Theme Switcher",  to: "/examples/theme-switcher", icon: "eye" },
+      { label: "Contact Form",    to: "/examples/form",            icon: "edit" },
     ],
   },
 ];
@@ -482,9 +497,9 @@ const styles = css`
 @component("docs-app")
 export class DocsApp extends LoomElement {
 
-  @reactive private currentPath: string = "/";
-  @reactive private openSections = new Set(sections.map(s => s.title));
-  @reactive private sidebarOpen = false;
+  @reactive accessor currentPath: string = "/";
+  @reactive accessor openSections = new Set(sections.map(s => s.title));
+  @reactive accessor sidebarOpen = false;
 
   @mount
   setup() {

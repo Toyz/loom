@@ -1,18 +1,19 @@
 /**
- * Loom — DI decorators
+ * Loom — DI decorators (TC39 Stage 3)
  *
  * @service — Auto-instantiated singleton, registered on app.start()
- * @inject  — Dual-mode dependency injection (property or constructor param)
+ * @inject  — Auto-accessor dependency injection (property mode only)
  * @factory — Method decorator, return value registered as a provider
+ *
+ * Note: TC39 does not support parameter decorators.
+ * Use @inject as a property accessor: `@inject(Foo) accessor foo!: Foo;`
  */
 
-import { INJECT_PARAMS } from "../decorators/symbols";
 import { app } from "../app";
 import { createDecorator } from "../decorators/create";
 
 /**
  * Auto-instantiated singleton. Registered on app.start().
- * Constructor @inject params are resolved automatically.
  *
  * ```ts
  * @service
@@ -24,49 +25,43 @@ export const service = createDecorator<[]>((ctor) => {
 }, { class: true });
 
 /**
- * Dual-mode dependency injection.
+ * Property-mode dependency injection via auto-accessor.
+ * Resolves lazily from the DI container on first access.
  *
- * Property:     @inject(Foo) foo!: Foo;
- * Constructor:  constructor(@inject(Config) config: Config)
- * Factory arg:  createChat(@inject(NatsConn) nc: NatsConn)
- *
- * T is optional — use for explicit typing if desired.
+ * ```ts
+ * @inject(AuthService) accessor auth!: AuthService;
+ * ```
  */
-export function inject<T = any>(key: any) {
-  return (target: any, propOrMethod: string | undefined, index?: number) => {
-    if (index !== undefined) {
-      // Parameter decorator → store metadata for resolution on start()
-      const proto = propOrMethod ? target : target.prototype;
-      const method = propOrMethod ?? "constructor";
-      if (!proto[INJECT_PARAMS]) proto[INJECT_PARAMS] = [];
-      proto[INJECT_PARAMS].push({ method, index, key });
-    } else {
-      // Property decorator → lazy getter (define-time)
-      Object.defineProperty(target, propOrMethod!, {
-        get() {
-          return app.get<T>(key);
-        },
-        configurable: true,
-      });
-    }
+export function inject<T = unknown>(key: new (...args: unknown[]) => T) {
+  return <This extends object>(
+    _target: ClassAccessorDecoratorTarget<This, T>,
+    _context: ClassAccessorDecoratorContext<This, T>,
+  ): ClassAccessorDecoratorResult<This, T> => {
+    return {
+      get(): T {
+        return app.get<T>(key);
+      },
+      set(_val: T) {
+        // Injection is read-only
+      },
+    };
   };
 }
 
 /**
  * Method decorator on @service classes.
  * Return value is registered as a provider on app.start().
- * Supports @inject on parameters. Async methods are awaited.
  *
  * ```ts
  * @service
  * class Boot {
  *   @factory(ChatServiceNatsClient)
- *   createChat(@inject(NatsConnection) nc: NatsConnection) {
- *     return new ChatServiceNatsClient(nc);
+ *   createChat() {
+ *     return new ChatServiceNatsClient(app.get(NatsConnection));
  *   }
  * }
  * ```
  */
-export const factory = createDecorator<[key?: any]>((proto, method, key) => {
-  app.registerFactory(key, proto, method);
+export const factory = createDecorator<[key?: unknown]>((method, methodName, key) => {
+  app.registerFactory(key, { method: methodName, fn: method });
 });

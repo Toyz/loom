@@ -1,29 +1,28 @@
 /**
  * Tests: LoomElement — lifecycle, track, shadow, scheduleUpdate
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { app } from "../src/app";
+import { fixture, cleanup, nextRender } from "../src/testing";
 
 let tagCounter = 0;
 function nextTag() { return `test-el-${++tagCounter}`; }
 
-beforeEach(() => {
-  document.body.innerHTML = "";
-});
+afterEach(() => cleanup());
 
 describe("LoomElement", () => {
-  it("creates a shadow root on construction", () => {
+  it("creates a shadow root on construction", async () => {
     const tag = nextTag();
     customElements.define(tag, class extends LoomElement {});
-    const el = document.createElement(tag);
+    const el = await fixture(tag);
     expect(el.shadowRoot).toBeTruthy();
   });
 
-  it("exposes app singleton", () => {
+  it("exposes app singleton", async () => {
     const tag = nextTag();
     customElements.define(tag, class extends LoomElement {});
-    const el = document.createElement(tag) as LoomElement;
+    const el = await fixture<LoomElement>(tag);
     expect(el.app).toBe(app);
   });
 
@@ -37,32 +36,27 @@ describe("LoomElement", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-
-    // Wait for microtask (scheduleUpdate uses queueMicrotask)
-    await new Promise((r) => queueMicrotask(r));
+    await fixture<El>(tag);
     expect(fn).toHaveBeenCalledOnce();
   });
 
-  it("track() cleanup runs on disconnect", () => {
-    const cleanup = vi.fn();
+  it("track() cleanup runs on disconnect", async () => {
+    const cleanupFn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
       connectedCallback() {
         super.connectedCallback();
-        this.track(cleanup);
+        this.track(cleanupFn);
       }
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    expect(cleanup).not.toHaveBeenCalled();
+    await fixture<El>(tag);
+    expect(cleanupFn).not.toHaveBeenCalled();
 
-    document.body.removeChild(el);
-    expect(cleanup).toHaveBeenCalledOnce();
+    cleanup(); // triggers disconnectedCallback
+    expect(cleanupFn).toHaveBeenCalledOnce();
   });
 
   it("$(selector) queries shadow DOM", async () => {
@@ -77,10 +71,7 @@ describe("LoomElement", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as El;
-    document.body.appendChild(el);
-    await new Promise((r) => queueMicrotask(r));
-
+    const el = await fixture<El>(tag);
     expect(el.$(".target")).toBeTruthy();
   });
 
@@ -100,10 +91,7 @@ describe("LoomElement", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as El;
-    document.body.appendChild(el);
-    await new Promise((r) => queueMicrotask(r));
-
+    const el = await fixture<El>(tag);
     expect(el.$$(".item")).toHaveLength(3);
   });
 
@@ -117,9 +105,8 @@ describe("LoomElement", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    await new Promise((r) => queueMicrotask(r));
+    await fixture<El>(tag);
+    await nextRender();
     expect(fn).not.toHaveBeenCalled();
   });
 });

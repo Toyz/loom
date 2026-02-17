@@ -179,8 +179,8 @@ export class LoomRouter {
         continue;
       }
 
-      const args = this._resolveInjectParams(reg.proto, reg.key);
-      const result = await reg.proto[reg.key].apply(reg.proto, args);
+      const args = this._resolveInjectParams(reg.method, reg.key);
+      const result = await reg.method.apply(null, args);
       if (result === false) return false;
       if (typeof result === "string") return result;
     }

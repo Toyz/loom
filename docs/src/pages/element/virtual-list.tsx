@@ -1,13 +1,9 @@
 /**
  * Virtual List — /element/virtual-list
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/virtual-list", { group: ElementGroup })
-@component("page-virtual-list")
-export class PageVirtualList extends LoomElement {
+export default class PageVirtualList extends LoomElement {
   update() {
     return (
       <div>

@@ -1,13 +1,9 @@
 /**
  * JSX & Morphing — /element/jsx
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/jsx", { group: ElementGroup })
-@component("page-jsx")
-export class PageJsx extends LoomElement {
+export default class PageJsx extends LoomElement {
   update() {
     this.css`
       .warn { background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.25); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4); }

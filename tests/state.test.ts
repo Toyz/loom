@@ -1,10 +1,11 @@
 /**
  * Tests: @reactive, @prop, @computed
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { reactive, prop, computed } from "../src/store/decorators";
-import { REACTIVES, PROPS } from "../src/decorators/symbols";
+import { component } from "../src/element/decorators";
+import { cleanup } from "../src/testing";
 
 let tagCounter = 0;
 function nextTag() { return `test-state-${++tagCounter}`; }
@@ -12,15 +13,15 @@ function nextTag() { return `test-state-${++tagCounter}`; }
 beforeEach(() => {
   document.body.innerHTML = "";
 });
+afterEach(() => cleanup());
 
 describe("@reactive", () => {
   it("creates a reactive backing store", () => {
     const tag = nextTag();
 
     class El extends LoomElement {
-      count = 0;
+      @reactive accessor count = 0;
     }
-    reactive(El.prototype, "count");
     customElements.define(tag, El);
 
     const el = document.createElement(tag) as any;
@@ -31,23 +32,15 @@ describe("@reactive", () => {
 
   it("notifies subscribers on change (triggers scheduleUpdate pipeline)", () => {
     const tag = nextTag();
-    const subscriber = vi.fn();
 
     class El extends LoomElement {
-      count = 0;
+      @reactive accessor count = 0;
     }
-    reactive(El.prototype, "count");
     customElements.define(tag, El);
 
     const el = document.createElement(tag) as any;
     document.body.appendChild(el);
 
-    // The internal Reactive<number> backs el.count.
-    // We can verify the reactive pipeline works by subscribing
-    // to changes via watch decorator pattern (field → Reactive.set → subscribers)
-    // Since we can't easily access the internal Reactive, we verify
-    // indirectly: setting triggers the getter to return the new value
-    // and the Reactive change detection is proven by @reactive tests above.
     el.count = 42;
     expect(el.count).toBe(42);
 
@@ -59,36 +52,38 @@ describe("@reactive", () => {
     el.count = 99;
     expect(el.count).toBe(99);
   });
-
-  it("registers field in REACTIVES symbol", () => {
-    class El extends LoomElement {
-      name = "";
-    }
-    reactive(El.prototype, "name");
-    expect((El.prototype as any)[REACTIVES]).toContain("name");
-  });
 });
 
 describe("@prop", () => {
-  it("registers field in PROPS map on constructor", () => {
+  it("makes the field reactive", () => {
     const tag = nextTag();
 
     class El extends LoomElement {
-      title = "";
+      @prop accessor title = "";
     }
-    prop(El.prototype, "title");
     customElements.define(tag, El);
 
-    // PROPS is a Map<lowercase, camelCase> on the constructor
-    expect((El as any)[PROPS]).toBeDefined();
-    expect((El as any)[PROPS].get("title")).toBe("title");
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    el.title = "Hello";
+    expect(el.title).toBe("Hello");
   });
 
-  it("is also reactive", () => {
+  it("registers as an observed attribute", () => {
+    const tag = nextTag();
+
+    @component(tag)
     class El extends LoomElement {
-      value = "";
+      @prop accessor value = "";
     }
-    prop(El.prototype, "value");
-    expect((El.prototype as any)[REACTIVES]).toContain("value");
+    customElements.define(tag, El);
+
+    // The class should have the static observedAttributes getter
+    // that includes "value"
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    el.setAttribute("value", "test");
+    expect(el.value).toBe("test");
   });
 });
+

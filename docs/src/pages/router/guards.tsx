@@ -3,13 +3,9 @@
  * /router/guards
  */
 import { LoomElement, component, mount } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { RouterGroup } from "../../groups";
 import { docStyles } from "../../styles/doc-page";
 
-@route("/guards", { group: RouterGroup })
-@component("page-router-guards")
-export class PageRouterGuards extends LoomElement {
+export default class PageRouterGuards extends LoomElement {
 
   @mount
   setup() {}
@@ -21,6 +17,12 @@ export class PageRouterGuards extends LoomElement {
         <p class="subtitle">
           Protect routes with named, injectable guard functions.
         </p>
+
+        <aside class="callout">
+          <strong>🧭 See It Live</strong> — This docs site uses a <span class="ic">docs-log</span> guard
+          on every section. Open <strong>DevTools → Console</strong> and click any nav link
+          to watch it fire in real-time!
+        </aside>
 
         <section>
           <h2>@guard(name?)</h2>

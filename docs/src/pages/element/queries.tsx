@@ -3,13 +3,9 @@
  *
  * @query, @queryAll
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/queries", { group: ElementGroup })
-@component("page-element-queries")
-export class PageElementQueries extends LoomElement {
+export default class PageElementQueries extends LoomElement {
   update() {
     return (
       <div>

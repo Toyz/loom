@@ -1,13 +1,9 @@
 /**
  * Store — @store decorator  /store/store-decorator
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { StoreGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/store-decorator", { group: StoreGroup })
-@component("page-store-decorator")
-export class PageStoreDecorator extends LoomElement {
+export default class PageStoreDecorator extends LoomElement {
   update() {
     return (
       <div>

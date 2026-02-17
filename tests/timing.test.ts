@@ -1,74 +1,72 @@
 /**
- * Tests: @interval, @timeout, @debounce, @throttle
+ * Tests: @interval, @timeout, @debounce, @throttle (TC39 Stage 3)
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { interval, timeout, debounce, throttle } from "../src/element/timing";
+import { fixture, cleanup } from "../src/testing";
 
 let tagCounter = 0;
 function nextTag() { return `test-timing-${++tagCounter}`; }
 
 beforeEach(() => {
   vi.useFakeTimers();
-  document.body.innerHTML = "";
 });
 
 afterEach(() => {
+  cleanup();
   vi.useRealTimers();
 });
 
 describe("@interval", () => {
-  it("calls method repeatedly at the given interval", () => {
+  it("calls method repeatedly at the given interval", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @interval(100)
       tick() { fn(); }
     }
-    interval(100)(El.prototype, "tick");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
 
     vi.advanceTimersByTime(350);
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
-  it("stops on disconnect", () => {
+  it("stops on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @interval(100)
       tick() { fn(); }
     }
-    interval(100)(El.prototype, "tick");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
     vi.advanceTimersByTime(150);
     expect(fn).toHaveBeenCalledTimes(1);
 
-    document.body.removeChild(el);
+    cleanup(); // triggers disconnectedCallback, should clear interval
     vi.advanceTimersByTime(500);
     expect(fn).toHaveBeenCalledTimes(1); // no more calls
   });
 });
 
 describe("@timeout", () => {
-  it("calls method once after delay", () => {
+  it("calls method once after delay", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @timeout(200)
       delayed() { fn(); }
     }
-    timeout(200)(El.prototype, "delayed");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
 
     vi.advanceTimersByTime(100);
     expect(fn).not.toHaveBeenCalled();
@@ -77,19 +75,18 @@ describe("@timeout", () => {
     expect(fn).toHaveBeenCalledOnce();
   });
 
-  it("cancels on disconnect", () => {
+  it("cancels on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @timeout(200)
       delayed() { fn(); }
     }
-    timeout(200)(El.prototype, "delayed");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    document.body.removeChild(el);
+    await fixture<El>(tag);
+    cleanup(); // disconnect before timeout fires
 
     vi.advanceTimersByTime(500);
     expect(fn).not.toHaveBeenCalled();
@@ -97,18 +94,17 @@ describe("@timeout", () => {
 });
 
 describe("@debounce", () => {
-  it("delays execution until idle period", () => {
+  it("delays execution until idle period", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @debounce(100)
       handler() { fn(); }
     }
-    debounce(100)(El.prototype, "handler");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
 
     el.handler();
     el.handler();
@@ -119,18 +115,17 @@ describe("@debounce", () => {
     expect(fn).toHaveBeenCalledOnce();
   });
 
-  it("restarts timer on each call", () => {
+  it("restarts timer on each call", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @debounce(100)
       handler() { fn(); }
     }
-    debounce(100)(El.prototype, "handler");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
 
     el.handler();
     vi.advanceTimersByTime(50);
@@ -142,20 +137,19 @@ describe("@debounce", () => {
     expect(fn).toHaveBeenCalledOnce();
   });
 
-  it("cancels on disconnect", () => {
+  it("cancels on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @debounce(100)
       handler() { fn(); }
     }
-    debounce(100)(El.prototype, "handler");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
     el.handler();
-    document.body.removeChild(el);
+    cleanup(); // disconnect cancels pending debounce
 
     vi.advanceTimersByTime(200);
     expect(fn).not.toHaveBeenCalled();
@@ -163,35 +157,33 @@ describe("@debounce", () => {
 });
 
 describe("@throttle", () => {
-  it("fires immediately on first call", () => {
+  it("fires immediately on first call", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @throttle(100)
       handler() { fn(); }
     }
-    throttle(100)(El.prototype, "handler");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
 
     el.handler();
     expect(fn).toHaveBeenCalledOnce();
   });
 
-  it("throttles subsequent calls within window", () => {
+  it("throttles subsequent calls within window", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @throttle(100)
       handler() { fn(); }
     }
-    throttle(100)(El.prototype, "handler");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
 
     el.handler(); // fires
     el.handler(); // queued
@@ -202,21 +194,20 @@ describe("@throttle", () => {
     expect(fn).toHaveBeenCalledTimes(2); // trailing fires
   });
 
-  it("cancels trailing on disconnect", () => {
+  it("cancels trailing on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @throttle(100)
       handler() { fn(); }
     }
-    throttle(100)(El.prototype, "handler");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
     el.handler(); // fires
     el.handler(); // queued
-    document.body.removeChild(el);
+    cleanup(); // disconnect cancels trailing
 
     vi.advanceTimersByTime(200);
     expect(fn).toHaveBeenCalledTimes(1); // trailing was cancelled

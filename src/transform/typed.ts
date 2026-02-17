@@ -22,7 +22,7 @@
 import { TRANSFORMS } from "../decorators/symbols";
 
 export interface TransformSchema<T> {
-  [key: string]: (v: string) => any;
+  [key: string]: (v: string) => T[keyof T];
 }
 
 /**
@@ -31,7 +31,7 @@ export interface TransformSchema<T> {
  */
 export function typed<T>(schema: TransformSchema<T>): (raw: Record<string, string>) => T {
   return (raw) => {
-    const out: any = {};
+    const out = {} as Record<string, unknown>;
     for (const [k, fn] of Object.entries(schema)) {
       if (k in raw) out[k] = fn(raw[k]);
     }

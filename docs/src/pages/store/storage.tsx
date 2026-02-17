@@ -1,13 +1,9 @@
 /**
  * Store — Storage  /store/storage
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { StoreGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/storage", { group: StoreGroup })
-@component("page-store-storage")
-export class PageStoreStorage extends LoomElement {
+export default class PageStoreStorage extends LoomElement {
   update() {
     return (
       <div>

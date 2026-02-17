@@ -3,12 +3,9 @@
  *
  * End-to-end walkthrough building a todo app.
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
+import { LoomElement } from "@toyz/loom";
 
-@route("/guides/your-first-app")
-@component("page-first-app")
-export class PageFirstApp extends LoomElement {
+export default class PageFirstApp extends LoomElement {
   update() {
     this.css`
       /* ── Custom list bullets ── */
@@ -207,8 +204,8 @@ import { todos, Todo } from "./store";
 
 @component("todo-app")
 export class TodoApp extends LoomElement {
-  @reactive input = "";
-  @reactive items: Todo[] = [];
+  @reactive accessor input = "";
+  @reactive accessor items: Todo[] = [];
 
   // Re-render when the store changes
   @watch(todos)

@@ -45,13 +45,13 @@ const registry = new Map<string, string>();
 export class LoomIcon extends LoomElement {
 
   /** Icon name (must be registered via LoomIcon.register) */
-  @prop name = "";
+  @prop accessor name = "";
 
   /** Size in pixels */
-  @prop size = 24;
+  @prop accessor size = 24;
 
   /** Stroke color (CSS value) */
-  @prop color = "currentColor";
+  @prop accessor color = "currentColor";
 
   /** Register an icon. `svgInner` is the SVG inner content (paths, circles, etc). */
   static register(name: string, svgInner: string): void {

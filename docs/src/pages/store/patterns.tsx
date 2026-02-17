@@ -1,13 +1,11 @@
 /**
  * Store — Patterns  /store/patterns
+ *
+ * @lazy loaded — registered in main.tsx
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { StoreGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/patterns", { group: StoreGroup })
-@component("page-store-patterns")
-export class PageStorePatterns extends LoomElement {
+export default class PageStorePatterns extends LoomElement {
   update() {
     return (
       <div>
@@ -89,7 +87,7 @@ class ThemeToggle extends LoomElement {
           <p>Pass a field name as a string to watch a local <span class="ic">@reactive</span> property:</p>
           <code-block lang="ts" code={`@component("my-counter")
 class MyCounter extends LoomElement {
-  @reactive count = 0;
+  @reactive accessor count = 0;
 
   @watch("count")
   onCountChanged(value: number, prev: number) {

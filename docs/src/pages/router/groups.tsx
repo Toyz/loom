@@ -3,13 +3,9 @@
  * /router/groups
  */
 import { LoomElement, component, mount } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { RouterGroup } from "../../groups";
 import { docStyles } from "../../styles/doc-page";
 
-@route("/groups", { group: RouterGroup })
-@component("page-router-groups")
-export class PageRouterGroups extends LoomElement {
+export default class PageRouterGroups extends LoomElement {
 
   @mount
   setup() {}

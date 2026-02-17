@@ -15,3 +15,5 @@ export const ROUTE_PROPS = Symbol("loom:route:props");
 export const TRANSFORMS = Symbol("loom:transforms");
 export const ROUTE_ENTER = Symbol("loom:route:enter");
 export const ROUTE_LEAVE = Symbol("loom:route:leave");
+export const CONNECT_HOOKS = Symbol("loom:connect:hooks");
+export const FIRST_UPDATED_HOOKS = Symbol("loom:first-updated:hooks");

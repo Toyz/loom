@@ -1,70 +1,66 @@
 /**
- * Tests: @mount, @unmount, @catch_, @suspend
+ * Tests: @mount, @unmount, @catch_, @suspend (TC39 Stage 3)
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { mount, unmount, catch_, suspend } from "../src/element/lifecycle";
-import { MOUNT_HANDLERS, UNMOUNT_HANDLERS } from "../src/decorators/symbols";
+import { fixture, cleanup, nextRender } from "../src/testing";
 
 let tagCounter = 0;
 function nextTag() { return `test-lc-${++tagCounter}`; }
 
-beforeEach(() => {
-  document.body.innerHTML = "";
-});
+afterEach(() => cleanup());
 
 describe("@mount", () => {
-  it("runs on connect", () => {
+  it("runs on connect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @mount
       setup() { fn(); }
     }
-    mount(El.prototype, "setup");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
     expect(fn).toHaveBeenCalledOnce();
   });
 
-  it("supports multiple @mount methods", () => {
+  it("supports multiple @mount methods", async () => {
     const fn1 = vi.fn();
     const fn2 = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @mount
       a() { fn1(); }
+
+      @mount
       b() { fn2(); }
     }
-    mount(El.prototype, "a");
-    mount(El.prototype, "b");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
     expect(fn1).toHaveBeenCalledOnce();
     expect(fn2).toHaveBeenCalledOnce();
   });
 });
 
 describe("@unmount", () => {
-  it("runs on disconnect", () => {
+  it("runs on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
     class El extends LoomElement {
+      @unmount
       teardown() { fn(); }
     }
-    unmount(El.prototype, "teardown");
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
     expect(fn).not.toHaveBeenCalled();
 
-    document.body.removeChild(el);
+    cleanup(); // triggers disconnectedCallback
     expect(fn).toHaveBeenCalledOnce();
   });
 });
@@ -80,9 +76,8 @@ describe("@catch_", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    await new Promise((r) => queueMicrotask(r));
+    await fixture<El>(tag);
+    await nextRender();
 
     expect(handler).toHaveBeenCalledOnce();
     expect(handler.mock.calls[0][0].message).toBe("boom");
@@ -105,9 +100,7 @@ describe("@suspend", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
-
+    const el = await fixture<El>(tag);
     const promise = el.fetchData();
     expect(el.loading).toBe(true);
 
@@ -130,12 +123,11 @@ describe("@suspend", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
     await el.fetchData();
 
     expect(el.loading).toBe(false);
     expect(el.error).toBeInstanceOf(Error);
-    expect(el.error.message).toBe("fail");
+    expect(el.error!.message).toBe("fail");
   });
 });

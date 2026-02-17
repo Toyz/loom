@@ -1,7 +1,7 @@
 import { bus, type Constructor, type Handler } from "../bus";
 import { type LoomEvent } from "../event";
 import { type CSSValue, adoptCSS } from "../css";
-import { COMPUTED_DIRTY, REACTIVES } from "../decorators/symbols";
+import { COMPUTED_DIRTY, REACTIVES, CONNECT_HOOKS, FIRST_UPDATED_HOOKS } from "../decorators/symbols";
 import { morph } from "../morph";
 import { app } from "../app";
 
@@ -78,8 +78,13 @@ export abstract class LoomElement extends HTMLElement {
   // ── Lifecycle ──
 
   connectedCallback(): void {
-    // Decorators self-wire via createDecorator's connectedCallback chain.
-    // We only need to trigger the initial render for reactive components.
+    // Run decorator-registered connect hooks (from @mount, @interval, @watch, etc.)
+    for (const hook of ((this as any)[CONNECT_HOOKS] ?? [])) {
+      const cleanup = hook(this);
+      if (typeof cleanup === "function") this.cleanups.push(cleanup);
+    }
+
+    // Trigger initial render for reactive components
     const hasReactives = ((this as any)[REACTIVES]?.length ?? 0) > 0;
     const overridesUpdate = this.update !== LoomElement.prototype.update;
     if (hasReactives || overridesUpdate) this.scheduleUpdate();
@@ -137,6 +142,12 @@ export abstract class LoomElement extends HTMLElement {
       if (!this._hasUpdated) {
         this._hasUpdated = true;
         this.firstUpdated();
+        // Run decorator-registered first-updated hooks (from @form, etc.)
+        // These fire after the first morph(), so shadow DOM content exists.
+        for (const hook of ((this as any)[FIRST_UPDATED_HOOKS] ?? [])) {
+          const cleanup = hook(this);
+          if (typeof cleanup === "function") this.cleanups.push(cleanup);
+        }
       }
     });
   }

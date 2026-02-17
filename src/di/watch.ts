@@ -1,11 +1,5 @@
-/**
- * Loom — DI @watch
- *
- * Form 3: Watch a DI-resolved service (or a reactive property on it).
- * Resolves via app.get() at connectedCallback time.
- */
-
 import { app } from "../app";
+import { CONNECT_HOOKS } from "../decorators/symbols";
 
 /**
  * React to changes on a DI-resolved service.
@@ -22,23 +16,24 @@ import { app } from "../app";
  * onTheme(value: string, prev: string) { ... }
  * ```
  */
-export function watch(service: new (...args: any[]) => any, prop?: string) {
-  return (proto: any, key: string) => {
-    const orig = proto.connectedCallback;
-    proto.connectedCallback = function () {
-      orig?.call(this);
-      const svc = app.get(service);
-      const reactive = prop ? (svc as any)[prop] : svc;
-      if (typeof reactive?.subscribe !== "function") {
-        throw new Error(
-          `[loom] @watch: ${service.name}${prop ? "." + prop : ""} is not a Reactive`,
-        );
-      }
-      const unsub = reactive.subscribe((v: any, p: any) => {
-        this[key](v, p);
-        this.scheduleUpdate?.();
+export function watch(service: new (...args: unknown[]) => unknown, prop?: string) {
+  return (method: Function, context: ClassMethodDecoratorContext) => {
+    context.addInitializer(function (this: any) {
+      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
+      this[CONNECT_HOOKS].push((el: any) => {
+        const svc = app.get(service);
+        const reactive = prop ? (svc as Record<string, unknown>)[prop] : svc;
+        if (typeof (reactive as { subscribe?: Function })?.subscribe !== "function") {
+          throw new Error(
+            `[loom] @watch: ${service.name}${prop ? "." + prop : ""} is not a Reactive`,
+          );
+        }
+        const unsub = (reactive as { subscribe: Function }).subscribe((v: unknown, p: unknown) => {
+          method.call(el, v, p);
+          el.scheduleUpdate?.();
+        });
+        return unsub;
       });
-      this.track(unsub);
-    };
+    });
   };
 }

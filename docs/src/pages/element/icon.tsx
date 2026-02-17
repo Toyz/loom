@@ -3,13 +3,9 @@
  *
  * LoomIcon built-in element documentation.
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/icon", { group: ElementGroup })
-@component("page-element-icon")
-export class PageElementIcon extends LoomElement {
+export default class PageElementIcon extends LoomElement {
   update() {
     return (
       <div>

@@ -3,13 +3,9 @@
  *
  * LoomApp container, @service, @inject, @factory.
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { DIGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/overview", { group: DIGroup })
-@component("page-di-overview")
-export class PageDIOverview extends LoomElement {
+export default class PageDIOverview extends LoomElement {
   update() {
     return (
       <div>

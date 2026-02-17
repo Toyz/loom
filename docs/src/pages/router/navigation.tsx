@@ -3,8 +3,6 @@
  * /router/navigation
  */
 import { LoomElement, component, mount, css } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { RouterGroup } from "../../groups";
 import { docStyles } from "../../styles/doc-page";
 
 const styles = css`
@@ -35,9 +33,7 @@ const styles = css`
   }
 `;
 
-@route("/navigation", { group: RouterGroup })
-@component("page-router-navigation")
-export class PageRouterNavigation extends LoomElement {
+export default class PageRouterNavigation extends LoomElement {
 
   @mount
   setup() {

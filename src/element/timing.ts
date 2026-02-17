@@ -1,5 +1,5 @@
 /**
- * Loom — Element timing decorators
+ * Loom — Element timing decorators (TC39 Stage 3)
  *
  * @interval       — Auto-cleaned setInterval
  * @timeout        — Auto-cleaned setTimeout
@@ -10,6 +10,7 @@
 
 import { renderLoop } from "../render-loop";
 import { createDecorator } from "../decorators/create";
+import { CONNECT_HOOKS } from "../decorators/symbols";
 
 /**
  * Auto-cleaned setInterval. Runs the method every `ms` milliseconds.
@@ -20,9 +21,9 @@ import { createDecorator } from "../decorators/create";
  * tick() { this.time = new Date(); }
  * ```
  */
-export const interval = createDecorator<[ms: number]>((_proto, key, ms) => {
+export const interval = createDecorator<[ms: number]>((method, _key, ms) => {
   return (el: any) => {
-    const id = setInterval(() => el[key](), ms);
+    const id = setInterval(() => method.call(el), ms);
     return () => clearInterval(id);
   };
 });
@@ -36,9 +37,9 @@ export const interval = createDecorator<[ms: number]>((_proto, key, ms) => {
  * hideWelcome() { this.$(".welcome")?.remove(); }
  * ```
  */
-export const timeout = createDecorator<[ms: number]>((_proto, key, ms) => {
+export const timeout = createDecorator<[ms: number]>((method, _key, ms) => {
   return (el: any) => {
-    const id = setTimeout(() => el[key](), ms);
+    const id = setTimeout(() => method.call(el), ms);
     return () => clearTimeout(id);
   };
 });
@@ -52,21 +53,27 @@ export const timeout = createDecorator<[ms: number]>((_proto, key, ms) => {
  * onInput(e: Event) { this.query = (e.target as HTMLInputElement).value; }
  * ```
  */
-export const debounce = createDecorator<[ms: number]>((proto, key, ms) => {
-  const original = proto[key];
-  const timerKey = `__debounce_${key}`;
+export function debounce(ms: number) {
+  return (method: Function, context: ClassMethodDecoratorContext) => {
+    const timerKey = `__debounce_${String(context.name)}`;
 
-  // Define-time: replace method with debounced version
-  proto[key] = function (this: any, ...args: any[]) {
-    clearTimeout(this[timerKey]);
-    this[timerKey] = setTimeout(() => original.apply(this, args), ms);
-  };
+    // Replace with debounced version
+    function replacement(this: any, ...args: unknown[]) {
+      clearTimeout(this[timerKey]);
+      this[timerKey] = setTimeout(() => method.apply(this, args), ms);
+    }
 
-  // Lifecycle: cancel pending timer on disconnect
-  return (el: any) => {
-    return () => clearTimeout(el[timerKey]);
+    // Lifecycle: cancel pending timer on disconnect
+    context.addInitializer(function (this: any) {
+      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
+      this[CONNECT_HOOKS].push((el: any) => {
+        return () => clearTimeout(el[timerKey]);
+      });
+    });
+
+    return replacement;
   };
-});
+}
 
 /**
  * Throttle a method — fires at most once per `ms` milliseconds.
@@ -78,32 +85,38 @@ export const debounce = createDecorator<[ms: number]>((proto, key, ms) => {
  * onScroll() { this.offset = this.scrollTop; }
  * ```
  */
-export const throttle = createDecorator<[ms: number]>((proto, key, ms) => {
-  const original = proto[key];
-  const lastKey = `__throttle_last_${key}`;
-  const timerKey = `__throttle_timer_${key}`;
+export function throttle(ms: number) {
+  return (method: Function, context: ClassMethodDecoratorContext) => {
+    const lastKey = `__throttle_last_${String(context.name)}`;
+    const timerKey = `__throttle_timer_${String(context.name)}`;
 
-  // Define-time: replace method with throttled version
-  proto[key] = function (this: any, ...args: any[]) {
-    const now = Date.now();
+    // Replace with throttled version
+    function replacement(this: any, ...args: unknown[]) {
+      const now = Date.now();
 
-    if (!this[lastKey] || now - this[lastKey] >= ms) {
-      this[lastKey] = now;
-      original.apply(this, args);
-    } else {
-      clearTimeout(this[timerKey]);
-      this[timerKey] = setTimeout(() => {
-        this[lastKey] = Date.now();
-        original.apply(this, args);
-      }, ms - (now - this[lastKey]));
+      if (!this[lastKey] || now - this[lastKey] >= ms) {
+        this[lastKey] = now;
+        method.apply(this, args);
+      } else {
+        clearTimeout(this[timerKey]);
+        this[timerKey] = setTimeout(() => {
+          this[lastKey] = Date.now();
+          method.apply(this, args);
+        }, ms - (now - this[lastKey]));
+      }
     }
-  };
 
-  // Lifecycle: cancel pending timer on disconnect
-  return (el: any) => {
-    return () => clearTimeout(el[timerKey]);
+    // Lifecycle: cancel pending timer on disconnect
+    context.addInitializer(function (this: any) {
+      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
+      this[CONNECT_HOOKS].push((el: any) => {
+        return () => clearTimeout(el[timerKey]);
+      });
+    });
+
+    return replacement;
   };
-});
+}
 
 /**
  * Centralized rAF loop via RenderLoop. Method receives (deltaTime, timestamp).
@@ -115,29 +128,33 @@ export const throttle = createDecorator<[ms: number]>((proto, key, ms) => {
  *
  * @animationFrame()          // default layer 0
  * physics(dt: number) { ... }
+ *
+ * @animationFrame            // also valid
+ * render(dt: number) { ... }
  * ```
  */
-export function animationFrame(layer?: number): (target: any, key: string) => void;
-export function animationFrame(target: any, key: string): void;
+export function animationFrame(layer?: number): (method: Function, context: ClassMethodDecoratorContext) => void;
+export function animationFrame(method: Function, context: ClassMethodDecoratorContext): void;
 export function animationFrame(
-  targetOrLayer?: any,
-  key?: string,
-): void | ((target: any, key: string) => void) {
-  // Called as @animationFrame (no parens)
-  if (typeof targetOrLayer === "object" && typeof key === "string") {
-    wireAnimationFrame(targetOrLayer, key, 0);
+  methodOrLayer?: Function | number,
+  context?: ClassMethodDecoratorContext,
+): void | ((method: Function, context: ClassMethodDecoratorContext) => void) {
+  // Called as @animationFrame (no parens) — method is first arg
+  if (typeof methodOrLayer === "function" && context) {
+    wireAnimationFrame(methodOrLayer, context, 0);
     return;
   }
   // Called as @animationFrame() or @animationFrame(layer)
-  const layer = typeof targetOrLayer === "number" ? targetOrLayer : 0;
-  return (target: any, key: string) => wireAnimationFrame(target, key, layer);
+  const layer = typeof methodOrLayer === "number" ? methodOrLayer : 0;
+  return (method: Function, ctx: ClassMethodDecoratorContext) => wireAnimationFrame(method, ctx, layer);
 }
 
-/** Internal: uses createDecorator pattern manually for overload support */
-function wireAnimationFrame(target: any, key: string, layer: number): void {
-  const orig = target.connectedCallback;
-  target.connectedCallback = function () {
-    orig?.call(this);
-    this.track(renderLoop.add(layer, (dt: number, t: number) => this[key](dt, t)));
-  };
+/** Internal: wire rAF lifecycle via addInitializer */
+function wireAnimationFrame(method: Function, context: ClassMethodDecoratorContext, layer: number): void {
+  context.addInitializer(function (this: any) {
+    if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
+    this[CONNECT_HOOKS].push((el: any) => {
+      return renderLoop.add(layer, (dt: number, t: number) => method.call(el, dt, t));
+    });
+  });
 }

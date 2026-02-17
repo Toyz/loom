@@ -50,11 +50,12 @@ export { watch as watchService } from "./di";
 // Element: base class, element decorators
 export {
   LoomElement,
-  component, query, queryAll,
+  component, query, queryAll, styles,
   catch_, suspend, mount, unmount,
   interval, timeout, debounce, throttle, animationFrame,
+  form, lazy, slot, transition,
 } from "./element";
-export type { VirtualListOptions } from "./element";
+export type { VirtualListOptions, FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions } from "./element";
 
 // Transform: value transforms
 export {

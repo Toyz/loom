@@ -3,13 +3,9 @@
  *
  * Base class, shadow DOM, update(), css(), API reference.
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { ElementGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/overview", { group: ElementGroup })
-@component("page-element-overview")
-export class PageElementOverview extends LoomElement {
+export default class PageElementOverview extends LoomElement {
   update() {
     return (
       <div>
@@ -22,7 +18,7 @@ export class PageElementOverview extends LoomElement {
             <span class="ic">LoomElement</span> extends <span class="ic">HTMLElement</span> and provides Shadow DOM,
             scoped CSS, lifecycle management, and automatic DOM morphing. Every Loom component inherits from it.
           </p>
-          <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
+          <code-block lang="ts" code={`import { LoomElement } from "@toyz/loom";
 
 @component("my-widget")
 export class MyWidget extends LoomElement {
@@ -86,8 +82,8 @@ export class MyWidget extends LoomElement {
           </p>
           <code-block lang="ts" code={`@component("my-counter")
 class MyCounter extends LoomElement {
-  @prop label = "Count";
-  @reactive count = 0;
+  @prop accessor label = "Count";
+  @reactive accessor count = 0;
 
   update() {
     return (

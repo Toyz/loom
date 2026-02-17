@@ -28,15 +28,14 @@ describe("@watch (local @reactive field)", () => {
     const tag = nextTag();
 
     class El extends LoomElement {
-      declare count: number;
+      @reactive accessor count = 0;
+
+      @watch("count")
       onCount(val: number, prev: number) { fn(val, prev); }
     }
-    watch("count")(El.prototype, "onCount");
-    reactive(El.prototype, "count");
     customElements.define(tag, El);
 
     const el = document.createElement(tag) as any;
-    el.count = 0; // Initialize through the reactive setter (creates the Reactive)
     document.body.appendChild(el);
     el.count = 5;
     expect(fn).toHaveBeenCalledWith(5, 0);
@@ -47,15 +46,14 @@ describe("@watch (local @reactive field)", () => {
     const tag = nextTag();
 
     class El extends LoomElement {
-      declare count: number;
+      @reactive accessor count = 0;
+
+      @watch("count")
       onCount(val: number) { fn(val); }
     }
-    watch("count")(El.prototype, "onCount");
-    reactive(El.prototype, "count");
     customElements.define(tag, El);
 
     const el = document.createElement(tag) as any;
-    el.count = 0; // Initialize through the reactive setter
     document.body.appendChild(el);
     el.count = 1;
     el.count = 2;
@@ -72,9 +70,9 @@ describe("@watch (direct Reactive instance)", () => {
     const counter = new Reactive(0);
 
     class El extends LoomElement {
+      @watch(counter)
       onCounter(val: number, prev: number) { fn(val, prev); }
     }
-    watch(counter)(El.prototype, "onCounter");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -90,10 +88,10 @@ describe("@watch (direct Reactive instance)", () => {
     const renderFn = vi.fn();
 
     class El extends LoomElement {
+      @watch(counter)
       onCounter() {}
       update() { renderFn(counter.value); return document.createElement("div"); }
     }
-    watch(counter)(El.prototype, "onCounter");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -114,9 +112,9 @@ describe("@watch (direct Reactive instance)", () => {
     const counter = new Reactive(0);
 
     class El extends LoomElement {
+      @watch(counter)
       onCounter(val: number) { fn(val); }
     }
-    watch(counter)(El.prototype, "onCounter");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -135,9 +133,9 @@ describe("@watch (direct Reactive instance)", () => {
     const store = new CollectionStore<Item>();
 
     class El extends LoomElement {
+      @watch(store)
       onItems(items: Item[]) { fn(items.length); }
     }
-    watch(store)(El.prototype, "onItems");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -163,9 +161,9 @@ describe("@watch (DI-resolved service)", () => {
     app.use(CounterService, new CounterService());
 
     class El extends LoomElement {
+      @watchService(CounterService)
       onCount(val: number, prev: number) { fn(val, prev); }
     }
-    watchService(CounterService)(El.prototype, "onCount");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -190,9 +188,9 @@ describe("@watch (DI-resolved service)", () => {
     app.use(ThemeService, new ThemeService());
 
     class El extends LoomElement {
+      @watchService(ThemeService, "theme")
       onTheme(val: string, prev: string) { fn(val, prev); }
     }
-    watchService(ThemeService, "theme")(El.prototype, "onTheme");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -212,9 +210,9 @@ describe("@watch (DI-resolved service)", () => {
     app.use(BadService, new BadService());
 
     class El extends LoomElement {
+      @watchService(BadService, "name")
       onName() {}
     }
-    watchService(BadService, "name")(El.prototype, "onName");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
@@ -233,9 +231,9 @@ describe("@watch (DI-resolved service)", () => {
     app.use(ScoreService, new ScoreService());
 
     class El extends LoomElement {
+      @watchService(ScoreService)
       onScore(val: number) { fn(val); }
     }
-    watchService(ScoreService)(El.prototype, "onScore");
     customElements.define(tag, El);
 
     const el = document.createElement(tag);

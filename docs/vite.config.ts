@@ -20,5 +20,6 @@ export default defineConfig({
   esbuild: {
     jsx: "automatic",
     jsxImportSource: "@toyz/loom",
+    target: "es2022",
   },
 });

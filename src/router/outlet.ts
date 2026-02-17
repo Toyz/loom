@@ -18,8 +18,8 @@ import { params as paramsSentinel, routeQuery as querySentinel } from "../store/
 @component("loom-outlet")
 class LoomOutlet extends LoomElement {
   /** Stylesheets to pass down to routed components via adoptStyles() */
-  @prop styles: CSSStyleSheet[] = [];
-  @prop scrollToTop = true;
+  @prop accessor styles: CSSStyleSheet[] = [];
+  @prop accessor scrollToTop = true;
 
   /** Optional callback invoked with the routed element after mount */
   routeMount: ((el: HTMLElement) => void) | null = null;

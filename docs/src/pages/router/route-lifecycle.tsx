@@ -1,13 +1,9 @@
 /**
  * Router — Route Lifecycle  /router/route-lifecycle
  */
-import { LoomElement, component } from "@toyz/loom";
-import { route } from "@toyz/loom/router";
-import { RouterGroup } from "../../groups";
+import { LoomElement } from "@toyz/loom";
 
-@route("/route-lifecycle", { group: RouterGroup })
-@component("page-route-lifecycle")
-export class PageRouteLifecycle extends LoomElement {
+export default class PageRouteLifecycle extends LoomElement {
   update() {
     return (
       <div>
