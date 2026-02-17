@@ -198,7 +198,7 @@ export class TodoList extends LoomElement {
       <div>
         <div class="todo-input">
           <input type="text" placeholder="What needs to be done?"
-                 onkeydown={(e: KeyboardEvent) => e.key === "Enter" && this.add()} />
+                 onKeyDown={(e: KeyboardEvent) => e.key === "Enter" && this.add()} />
           <button class="add-btn" onClick={() => this.add()}>
             <loom-icon name="plus" size={14} color="#fff"></loom-icon>
             Add
