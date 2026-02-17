@@ -142,30 +142,25 @@ export class ApiDemo extends LoomElement {
   accessor team!: ApiState<TeamMember[]>;
 
   update() {
-    const q = this.team;
-
-    return (
-      <div>
-        <div class="toolbar">
-          <button onClick={() => q.refetch()}>↻ Refetch</button>
-          <button onClick={() => q.invalidate()}>⟳ Invalidate</button>
-          <span class="status">
-            {q.loading ? "loading..." : q.stale ? "stale" : "fresh"}
-            {q.data ? ` · ${q.data.length} members` : ""}
-          </span>
+    return this.team.match({
+      loading: () => (
+        <div class="loading">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
         </div>
-
-        {q.loading && !q.data ? (
-          <div class="loading">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
+      ),
+      ok: (team) => (
+        <div>
+          <div class="toolbar">
+            <button onClick={() => this.team.refetch()}>↻ Refetch</button>
+            <button onClick={() => this.team.invalidate()}>⟳ Invalidate</button>
+            <span class="status">
+              {this.team.stale ? "stale" : "fresh"} · {team.length} members
+            </span>
           </div>
-        ) : q.error ? (
-          <div class="error">{q.error.message}</div>
-        ) : (
           <div class="card-grid">
-            {q.data!.map((m: TeamMember) => (
+            {team.map((m: TeamMember) => (
               <div class="card">
                 <div class="avatar">{m.initials}</div>
                 <div class="name">{m.name}</div>
@@ -173,8 +168,9 @@ export class ApiDemo extends LoomElement {
               </div>
             ))}
           </div>
-        )}
-      </div>
-    );
+        </div>
+      ),
+      err: (e) => <div class="error">{e.message}</div>,
+    });
   }
 }

@@ -55,9 +55,10 @@ class ContactForm extends LoomElement {
   accessor contact!: FormState<ContactData>;
 
   handleSubmit() {
-    if (this.contact?.validate()) {
-      console.log("Submitted:", this.contact.data);
-    }
+    this.contact.validate().match({
+      ok:  (data)   => console.log("Submitted:", data),
+      err: (errors) => console.log("Fix:", errors),
+    });
   }
 
   update() {
@@ -136,7 +137,7 @@ export default class ExampleForm extends LoomElement {
               </tr>
               <tr>
                 <td><code>validate</code></td>
-                <td>Returns <code>true</code> for valid, or an error string</td>
+                <td>Returns <code>LoomResult&lt;T, errors&gt;</code> — use <code>.match()</code> for exhaustive handling</td>
               </tr>
               <tr>
                 <td><code>.valid / .dirty</code></td>

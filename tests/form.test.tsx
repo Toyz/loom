@@ -115,11 +115,11 @@ describe("@form", () => {
       };
 
       const state = createFormState(schema, () => {});
-      expect(state.validate()).toBe(false);
+      expect(state.validate().ok).toBe(false);
 
       const handler = state.bind("email");
       handler({ target: { value: "valid@test.com" } } as any);
-      expect(state.validate()).toBe(true);
+      expect(state.validate().ok).toBe(true);
     });
 
     it("bind() returns cached handlers", () => {

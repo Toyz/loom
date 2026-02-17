@@ -10,6 +10,8 @@ import { interceptRegistry } from "./registry";
 import { app } from "../app";
 import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
 import { INJECT_PARAMS } from "../decorators/symbols";
+import { LoomResult } from "../result";
+
 
 /** Create an ApiState<T> instance bound to a host element */
 export function createApiState<T>(
@@ -187,6 +189,9 @@ export function createApiState<T>(
   }
 
   const state: ApiState<T> = {
+    get ok() {
+      return data !== undefined && error === undefined;
+    },
     get data() {
       checkKey();
       checkStale();
@@ -208,6 +213,37 @@ export function createApiState<T>(
     invalidate() {
       stale = true;
       runFetch();
+    },
+
+    // ── LoomResult combinators ──
+
+    unwrap(): T {
+      if (data !== undefined && error === undefined) return data;
+      throw error ?? new Error("unwrap() called on loading ApiState");
+    },
+    unwrap_or(fallback: T): T {
+      return (data !== undefined && error === undefined) ? data : fallback;
+    },
+    map<U>(fn: (value: T) => U): LoomResult<U, Error> {
+      if (data !== undefined && error === undefined) return LoomResult.ok(fn(data));
+      return LoomResult.err(error ?? new Error("No data"));
+    },
+    map_err<F>(fn: (e: Error) => F): LoomResult<T, F> {
+      if (data !== undefined && error === undefined) return LoomResult.ok(data);
+      return LoomResult.err(fn(error ?? new Error("No data")));
+    },
+    and_then<U>(fn: (value: T) => LoomResult<U, Error>): LoomResult<U, Error> {
+      if (data !== undefined && error === undefined) return fn(data);
+      return LoomResult.err(error ?? new Error("No data"));
+    },
+    match<R>(cases: { ok: (data: T) => R; err: (error: Error) => R; loading?: () => R; [_: string]: unknown }): R {
+      // Tri-state: loading (initial fetch, no data yet) → ok → err
+      if (loading && data === undefined && error === undefined && cases.loading) {
+        return cases.loading();
+      }
+      return (data !== undefined && error === undefined)
+        ? cases.ok(data)
+        : cases.err(error ?? new Error("No data"));
     },
   };
 

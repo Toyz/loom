@@ -28,6 +28,12 @@ class LazyGettingStarted extends LoomElement {}
 @lazy(() => import("./first-app"))
 class LazyFirstApp extends LoomElement {}
 
+// ── Standalone ──
+
+@route("/result")
+@component("page-result")
+@lazy(() => import("./result"))
+class LazyResult extends LoomElement {}
 // ── Element ──
 
 @route("/overview", { group: ElementGroup })

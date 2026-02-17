@@ -28,12 +28,16 @@ export default class PageFetch extends LoomElement {
           <table class="api-table">
             <thead><tr><th>Property / Method</th><th>Description</th></tr></thead>
             <tbody>
+              <tr><td><code>.ok</code></td><td>True if the last fetch succeeded</td></tr>
               <tr><td><code>.data</code></td><td>Resolved data (<code>T | undefined</code>)</td></tr>
               <tr><td><code>.error</code></td><td>Error from the last fetch attempt</td></tr>
               <tr><td><code>.loading</code></td><td><code>true</code> during initial fetch (not refetch)</td></tr>
               <tr><td><code>.stale</code></td><td><code>true</code> after <code>staleTime</code> has elapsed</td></tr>
               <tr><td><code>.refetch()</code></td><td>Manually re-run the fetch</td></tr>
               <tr><td><code>.invalidate()</code></td><td>Mark stale + trigger refetch</td></tr>
+              <tr><td><code>.match({'{'}ok, err, loading?{'}'})</code></td><td>Tri-state pattern match — <code>loading</code> is optional</td></tr>
+              <tr><td><code>.unwrap()</code></td><td>Return data or throw the error</td></tr>
+              <tr><td><code>.unwrap_or(fallback)</code></td><td>Return data or fallback value</td></tr>
             </tbody>
           </table>
         </section>
@@ -135,10 +139,11 @@ class Profile extends LoomElement {
   accessor user!: ApiState<User>;
 
   update() {
-    const q = this.user;
-    if (q.loading) return <div class="skeleton" />;
-    if (q.error)   return <p class="error">{q.error.message}</p>;
-    return <h1>{q.data!.name}</h1>;
+    return this.user.match({
+      loading: () => <div class="skeleton" />,
+      ok:      (u) => <h1>{u.name}</h1>,
+      err:     (e) => <p class="error">{e.message}</p>,
+    });
   }
 }`;
 

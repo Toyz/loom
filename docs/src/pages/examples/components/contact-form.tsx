@@ -141,17 +141,22 @@ class ContactForm extends LoomElement {
   private submitted = false;
 
   private handleSubmit() {
-    if (this.contact?.validate()) {
-      this.submitted = true;
-      console.log("Form submitted:", this.contact.data);
-      // Auto-hide after 3s
-      setTimeout(() => {
-        this.submitted = false;
-        this.contact.reset();
+    this.contact?.validate().match({
+      ok: (data) => {
+        this.submitted = true;
+        console.log("Form submitted:", data);
+        // Auto-hide after 3s
+        setTimeout(() => {
+          this.submitted = false;
+          this.contact.reset();
+          this.scheduleUpdate();
+        }, 3000);
         this.scheduleUpdate();
-      }, 3000);
-      this.scheduleUpdate();
-    }
+      },
+      err: (errors) => {
+        console.log("Validation failed:", errors);
+      },
+    });
   }
 
   private handleReset() {

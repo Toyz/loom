@@ -286,7 +286,16 @@ const styles = css`
 
   /* Home link */
   .home-item {
-    margin: 0 16px 16px;
+    margin: 0 16px 4px;
+  }
+
+  /* Standalone top-level nav links (outside collapsible sections) */
+  .nav-link.standalone {
+    margin: 0 16px 12px;
+  }
+  .nav-link.standalone loom-link::part(anchor) {
+    font-size: 0.875rem;
+    font-weight: 500;
   }
   .home-item loom-link::part(anchor) {
     display: flex;
@@ -572,6 +581,14 @@ export class DocsApp extends LoomElement {
                 Home
               </loom-link>
             </div>
+
+            <div class={`nav-link standalone ${this.isActive("/result") ? "active" : ""}`}>
+              <loom-link to="/result">
+                <loom-icon name="sparkles" size="18"></loom-icon>
+                LoomResult
+              </loom-link>
+            </div>
+
 
             {sections.map(s => (
               <div class={`section ${this.openSections.has(s.title) ? "open" : ""}`}>

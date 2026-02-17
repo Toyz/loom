@@ -13,17 +13,17 @@
  * accessor login!: FormState<LoginForm>;
  *
  * update() {
- *   const f = this.login;
- *   return (
- *     <form>
- *       <input value={f.data.email} onInput={f.bind("email")} />
- *       <input value={f.data.password} onInput={f.bind("password")} />
- *       <button disabled={!f.valid}>Submit</button>
- *     </form>
- *   );
+ *   const result = this.login.validate();
+ *   result.match({
+ *     ok:  (data) => submit(data),
+ *     err: (errors) => showErrors(errors),
+ *   });
  * }
  * ```
  */
+
+import { LoomResult } from "../result";
+
 
 // ── Types ──
 
@@ -49,8 +49,8 @@ export interface FormState<T> {
   readonly dirty: boolean;
   /** Reset all fields to their initial values */
   reset(): void;
-  /** Manually trigger validation on all fields, returns validity */
-  validate(): boolean;
+  /** Manually trigger validation — returns LoomResult<T, errors> */
+  validate(): LoomResult<T, Partial<Record<keyof T, string>>>;
   /** Returns an onInput event handler bound to a specific field */
   bind(field: keyof T): (e: Event) => void;
 }
@@ -155,11 +155,12 @@ export function createFormState<T extends object>(
       }
       scheduleUpdate();
     },
-    validate() {
+    validate(): LoomResult<T, Partial<Record<keyof T, string>>> {
       validatedAll = true;
-      const result = runValidation();
+      const valid = runValidation();
       scheduleUpdate();
-      return result;
+      if (valid) return LoomResult.ok(current as unknown as T);
+      return LoomResult.err({ ...errors });
     },
     bind(field: keyof T): (e: Event) => void {
       const key = field as string;

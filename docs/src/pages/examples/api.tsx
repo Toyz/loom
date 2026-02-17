@@ -84,17 +84,12 @@ class ApiDemo extends LoomElement {
   accessor team!: ApiState<TeamMember[]>;
 
   update() {
-    const q = this.team;
-
-    if (q.loading && !q.data) return <div>Loading…</div>;
-    if (q.error) return <div class="error">{q.error.message}</div>;
-
-    return (
-      <div>
-        <button onClick={() => q.refetch()}>↻ Refetch</button>
-        <button onClick={() => q.invalidate()}>⟳ Invalidate</button>
+    // Tri-state match — loading, ok, err in one call
+    return this.team.match({
+      loading: () => <div>Loading…</div>,
+      ok:  (team) => (
         <div class="card-grid">
-          {q.data!.map(m => (
+          {team.map(m => (
             <div class="card">
               <div class="avatar">{m.initials}</div>
               <div>{m.name}</div>
@@ -102,7 +97,8 @@ class ApiDemo extends LoomElement {
             </div>
           ))}
         </div>
-      </div>
-    );
+      ),
+      err: (e) => <div class="error">{e.message}</div>,
+    });
   }
 }`;

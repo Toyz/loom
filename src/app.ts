@@ -18,6 +18,7 @@ import { renderLoop } from "./render-loop";
 import { INJECT_PARAMS, ON_HANDLERS } from "./decorators/symbols";
 import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
+import { LoomResult } from "./result";
 
 interface FactoryMeta {
   fn: Function;
@@ -110,9 +111,11 @@ class LoomApp {
     return v as T;
   }
 
-  /** Retrieve a provider/service, or undefined if not registered. */
-  maybe<T = any>(key: any): T | undefined {
-    return this.providers.get(key) as T | undefined;
+  /** Retrieve a provider/service — returns LoomResult instead of undefined. */
+  maybe<T = any>(key: any): LoomResult<T, Error> {
+    const v = this.providers.get(key);
+    if (v !== undefined) return LoomResult.ok(v as T);
+    return LoomResult.err(new Error(`[loom] no provider for ${key?.name ?? key}`));
   }
 
   /** Resolve @inject parameter metadata for a constructor or method. */

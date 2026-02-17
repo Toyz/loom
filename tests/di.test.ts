@@ -50,14 +50,18 @@ describe("app.get()", () => {
 });
 
 describe("app.maybe()", () => {
-  it("returns undefined for missing provider", () => {
-    expect(app.maybe(Logger)).toBeUndefined();
+  it("returns Err result for missing provider", () => {
+    const result = app.maybe(Logger);
+    expect(result.ok).toBe(false);
+    expect(result.error).toBeInstanceOf(Error);
   });
 
-  it("returns provider when registered", () => {
+  it("returns Ok result when registered", () => {
     const logger = new Logger();
     app.use(logger);
-    expect(app.maybe(Logger)).toBe(logger);
+    const result = app.maybe(Logger);
+    expect(result.ok).toBe(true);
+    expect(result.data).toBe(logger);
   });
 });
 

@@ -32,12 +32,14 @@ export interface InterceptRegistration {
 
 // ── API State ──
 
-/** Reactive state container for an @api-decorated accessor */
-export interface ApiState<T> {
+/** Reactive state container for an @api-decorated accessor — extends LoomResult<T> */
+export interface ApiState<T, E = Error> {
+  /** True if the last fetch succeeded (or data exists from cache) */
+  readonly ok: boolean;
   /** Resolved data (undefined while loading or on error) */
   readonly data: T | undefined;
   /** Error from the last fetch attempt */
-  readonly error: Error | undefined;
+  readonly error: E | undefined;
   /** True during the initial fetch or refetch */
   readonly loading: boolean;
   /** True when staleTime has elapsed since last successful fetch */
@@ -46,6 +48,21 @@ export interface ApiState<T> {
   refetch(): Promise<void>;
   /** Mark data as stale and trigger refetch */
   invalidate(): void;
+
+  // ── LoomResult combinators ──
+
+  /** Return data or throw the error */
+  unwrap(): T;
+  /** Return data or the fallback */
+  unwrap_or(fallback: T): T;
+  /** Transform the Ok value */
+  map<U>(fn: (value: T) => U): import("../result").LoomResult<U, E>;
+  /** Transform the Err value */
+  map_err<F>(fn: (error: E) => F): import("../result").LoomResult<T, F>;
+  /** Chain a fallible operation */
+  and_then<U>(fn: (value: T) => import("../result").LoomResult<U, E>): import("../result").LoomResult<U, E>;
+  /** Composable pattern match — extends base ok/err with optional `loading` branch */
+  match<R>(cases: { ok: (data: T) => R; err: (error: E) => R; loading?: () => R; [_: string]: unknown }): R;
 }
 
 /** Options object form for @api */

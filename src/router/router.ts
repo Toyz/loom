@@ -8,6 +8,7 @@
 import { bus } from "../bus";
 import { type RouterMode, HashMode, HistoryMode } from "./mode";
 import { matchRoute, guardRegistry, buildPath } from "./route";
+import { LoomResult } from "../result";
 import { GUARD_HANDLERS } from "./decorators";
 import { RouteChanged } from "./events";
 import { INJECT_PARAMS, ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
@@ -181,6 +182,10 @@ export class LoomRouter {
 
       const args = this._resolveInjectParams(reg.method, reg.key);
       const result = await reg.method.apply(null, args);
+      if (result instanceof LoomResult) {
+        if (!result.ok) return result.error as string ?? false;
+        continue;
+      }
       if (result === false) return false;
       if (typeof result === "string") return result;
     }
@@ -193,6 +198,10 @@ export class LoomRouter {
 
       const args = this._resolveInjectParams(proto, key);
       const result = await proto[key].apply(proto, args);
+      if (result instanceof LoomResult) {
+        if (!result.ok) return result.error as string ?? false;
+        continue;
+      }
       if (result === false) return false;
       if (typeof result === "string") return result;
     }
