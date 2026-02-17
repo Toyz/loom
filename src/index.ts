@@ -45,6 +45,7 @@ export type {
 
 // DI: service container decorators
 export { service, inject, factory } from "./di";
+/** @deprecated Use `@watch(Service)` or `@watch(Service, "prop")` instead. Will be removed in v1.0. */
 export { watch as watchService } from "./di";
 
 // Element: base class, element decorators

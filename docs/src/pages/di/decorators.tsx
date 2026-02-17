@@ -69,14 +69,14 @@ class Boot {
         </section>
 
         <section>
-          <h2>@watchService</h2>
+          <h2>@watch(Service) <span class="badge deprecated">unified</span></h2>
           <p>
             Subscribe a component method to changes on a DI-resolved service.
-            The service (or its property) must extend <span class="ic">Reactive</span>.
-            Auto-subscribes on connect, auto-cleans on disconnect, and calls
-            <span class="ic">scheduleUpdate()</span> so the component re-renders.
+            This is now part of the unified <span class="ic">@watch</span> decorator —
+            it detects whether you pass a string (local field), a <span class="ic">Reactive</span> instance,
+            or a <strong>class constructor</strong> (DI lookup) and does the right thing.
           </p>
-          <code-block lang="ts" code={`import { watchService } from "@toyz/loom";
+          <code-block lang="ts" code={`import { watch } from "@toyz/loom";
 import { TodoStore } from "./stores/todo-store";
 import { ThemeService } from "./services/theme";
 
@@ -86,13 +86,13 @@ class TodoPage extends LoomElement {
   theme = "dark";
 
   // Watch the service itself (must extend Reactive)
-  @watchService(TodoStore)
+  @watch(TodoStore)
   onTodos(items: Todo[], prev: Todo[]) {
     this.items = items;
   }
 
   // Watch a specific reactive property on the service
-  @watchService(ThemeService, "theme")
+  @watch(ThemeService, "theme")
   onTheme(val: string, prev: string) {
     this.theme = val;
   }
@@ -102,11 +102,8 @@ class TodoPage extends LoomElement {
   }
 }`}></code-block>
           <p>
-            <strong>Note:</strong> <span class="ic">@watchService</span> is the DI-aware
-            counterpart of <span class="ic">@watch</span>. Use <span class="ic">@watch</span> for
-            local reactive fields and direct <span class="ic">Reactive</span> instances;
-            use <span class="ic">@watchService</span> when the reactive value is resolved
-            through the DI container.
+            <strong>Deprecation:</strong> The <span class="ic">watchService</span> export still works
+            but is deprecated and will be removed in v1.0. Use <span class="ic">@watch(Service)</span> instead.
           </p>
         </section>
 
@@ -118,7 +115,7 @@ class TodoPage extends LoomElement {
               <tr><td><code>@service</code></td><td>Class</td><td>Auto-instantiated singleton, registered on <code>app.start()</code></td></tr>
               <tr><td><code>@inject(Key)</code></td><td>Property / Parameter</td><td>Lazy getter or constructor param resolution</td></tr>
               <tr><td><code>@factory(Key?)</code></td><td>Method</td><td>Return value registered as provider</td></tr>
-              <tr><td><code>@watchService(Svc, prop?)</code></td><td>Method</td><td>Subscribe to DI-resolved Reactive service changes</td></tr>
+              <tr><td><code>@watch(Svc, prop?)</code></td><td>Method</td><td>Subscribe to DI-resolved Reactive service changes</td></tr>
             </tbody>
           </table>
         </section>
