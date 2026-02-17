@@ -41,6 +41,7 @@ const sections: NavSection[] = [
       { label: "Decorator",       to: "/store/store-decorator", icon: "package" },
       { label: "Storage",     to: "/store/storage",           icon: "database" },
       { label: "Patterns",    to: "/store/patterns",          icon: "layers" },
+      { label: "@api",        to: "/store/api",               icon: "zap" },
     ],
   },
   {
@@ -77,6 +78,7 @@ const sections: NavSection[] = [
       { label: "Todo List",       to: "/examples/todo",           icon: "check" },
       { label: "Theme Switcher",  to: "/examples/theme-switcher", icon: "eye" },
       { label: "Contact Form",    to: "/examples/form",            icon: "edit" },
+      { label: "Fetch",          to: "/examples/api",             icon: "download" },
     ],
   },
 ];

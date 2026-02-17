@@ -86,3 +86,7 @@ export {
   onRouteLeave,
 } from "./router";
 export type { RouterMode, RouterOptions, RouteInfo, RouteEntry, GroupMeta } from "./router";
+
+// Query: @api data fetching + @intercept middleware
+export { api, intercept, createApiState } from "./query";
+export type { ApiCtx, ApiState, ApiOptions } from "./query";

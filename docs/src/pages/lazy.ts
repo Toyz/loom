@@ -112,6 +112,11 @@ class LazyStoreStorage extends LoomElement {}
 @lazy(() => import("./store/patterns"))
 class LazyStorePatterns extends LoomElement {}
 
+@route("/api", { group: StoreGroup })
+@component("page-store-api")
+@lazy(() => import("./store/api"))
+class LazyStoreApi extends LoomElement {}
+
 // ── DI & Services ──
 
 @route("/overview", { group: DIGroup })
@@ -199,3 +204,8 @@ class LazyExampleTheme extends LoomElement {}
 @component("page-example-form")
 @lazy(() => import("./examples/form"))
 class LazyExampleForm extends LoomElement {}
+
+@route("/api", { group: ExamplesGroup })
+@component("page-example-api")
+@lazy(() => import("./examples/api"))
+class LazyExampleApi extends LoomElement {}

@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Ada Lovelace",     "role": "Analyst",  "initials": "AL" },
+  { "id": 2, "name": "Grace Hopper",     "role": "Engineer", "initials": "GH" },
+  { "id": 3, "name": "Alan Turing",      "role": "Theorist", "initials": "AT" },
+  { "id": 4, "name": "Margaret Hamilton", "role": "Director", "initials": "MH" },
+  { "id": 5, "name": "Hedy Lamarr",      "role": "Inventor", "initials": "HL" }
+]
