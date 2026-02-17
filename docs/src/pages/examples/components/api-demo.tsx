@@ -120,7 +120,7 @@ export class ApiDemo extends LoomElement {
   @mount
   setup() {
     this.state = createApiState<TeamMember[]>(
-      { fn: () => fetch("/api/team.json").then(r => r.json()) },
+      { fn: () => fetch(`${import.meta.env.BASE_URL}api/team.json`).then(r => r.json()) },
       () => this.scheduleUpdate(),
       this,
     );
