@@ -191,4 +191,121 @@ describe("@form", () => {
       expect(info.data.name).toBe("Ada");
     });
   });
+
+  describe("edge cases", () => {
+    it("handles checkbox inputs (checked → 'true', unchecked → 'false')", () => {
+      const schema: FormSchema<{ remember: boolean }> = {
+        remember: { transform: (v) => v === "true" },
+      };
+      const state = createFormState(schema, () => {});
+
+      const handler = state.bind("remember");
+      // Use a real HTMLInputElement so instanceof check passes in readInputValue
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+
+      checkbox.checked = true;
+      handler({ target: checkbox } as any);
+      expect(state.data.remember).toBe(true);
+
+      checkbox.checked = false;
+      handler({ target: checkbox } as any);
+      expect(state.data.remember).toBe(false);
+    });
+
+    it("dirty is false when value changes back to initial", () => {
+      const schema: FormSchema<{ name: string }> = { name: {} };
+      const state = createFormState(schema, () => {});
+
+      const handler = state.bind("name");
+      handler({ target: { value: "changed" } } as any);
+      expect(state.dirty).toBe(true);
+
+      handler({ target: { value: "" } } as any); // back to initial
+      expect(state.dirty).toBe(false);
+    });
+
+    it("multi-field: valid only when ALL fields pass", () => {
+      const schema: FormSchema<{ a: string; b: string }> = {
+        a: { validate: (v) => v.length > 0 || "Required" },
+        b: { validate: (v) => v.length > 0 || "Required" },
+      };
+      const state = createFormState(schema, () => {});
+      expect(state.valid).toBe(false);
+
+      state.bind("a")({ target: { value: "ok" } } as any);
+      expect(state.valid).toBe(false); // b still invalid
+
+      state.bind("b")({ target: { value: "ok" } } as any);
+      expect(state.valid).toBe(true);
+    });
+
+    it("validate() then input — errors clear for valid touched fields", () => {
+      const schema: FormSchema<{ email: string }> = {
+        email: { validate: (v) => v.includes("@") || "Bad" },
+      };
+      const state = createFormState(schema, () => {});
+
+      // Force all errors visible
+      state.validate();
+      expect(state.errors.email).toBe("Bad");
+
+      // Fix the field
+      state.bind("email")({ target: { value: "a@b.c" } } as any);
+      expect(state.errors.email).toBeUndefined();
+      expect(state.valid).toBe(true);
+    });
+
+    it("double reset is idempotent", () => {
+      const schema: FormSchema<{ name: string }> = { name: {} };
+      const state = createFormState(schema, () => {});
+
+      state.bind("name")({ target: { value: "x" } } as any);
+      state.reset();
+      state.reset(); // should not throw or corrupt
+      expect(state.data.name).toBe("");
+      expect(state.dirty).toBe(false);
+    });
+
+    it("fields without schema entries are ignored gracefully", () => {
+      const schema: FormSchema<{ email: string }> = { email: {} };
+      const state = createFormState(schema, () => {});
+      expect(Object.keys(state.data as any)).toEqual(["email"]);
+    });
+
+    it("transform + validate pipeline runs in correct order", () => {
+      const calls: string[] = [];
+      const schema: FormSchema<{ num: number }> = {
+        num: {
+          transform: (v) => { calls.push("transform"); return Number(v); },
+          validate: (v) => { calls.push("validate"); return v > 0 || "Must be positive"; },
+        },
+      };
+      const state = createFormState(schema, () => {});
+
+      state.bind("num")({ target: { value: "5" } } as any);
+      // Init runs transform+validate, then bind runs transform+validate
+      expect(calls).toEqual(["transform", "validate", "transform", "validate"]);
+    });
+
+    it("scheduleUpdate fires on validate() even when already valid", () => {
+      const fn = vi.fn();
+      const schema: FormSchema<{ name: string }> = { name: {} };
+      const state = createFormState(schema, fn);
+
+      fn.mockClear();
+      state.validate();
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
+
+    it("scheduleUpdate fires on reset()", () => {
+      const fn = vi.fn();
+      const schema: FormSchema<{ name: string }> = { name: {} };
+      const state = createFormState(schema, fn);
+
+      fn.mockClear();
+      state.reset();
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
+  });
 });
