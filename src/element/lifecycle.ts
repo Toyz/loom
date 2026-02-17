@@ -8,25 +8,77 @@
  */
 
 import { CONNECT_HOOKS } from "../decorators/symbols";
+import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
 
-/** Function called when update() throws */
+/** Function called when update() throws or an @api fetch fails */
 type CatchFn = (
   error: unknown,
   element: HTMLElement & { shadow: ShadowRoot },
 ) => void;
 
 /**
- * Error-boundary decorator. If update() throws, catches the error
- * and calls the handler with (error, element).
+ * Error-boundary decorator — works as class or method decorator.
  *
+ * Also handles @api fetch errors — when an API call fails,
+ * the same handler is invoked automatically.
+ *
+ * **Class decorator** (inline handler — catch-all):
  * ```ts
- * @component("my-page")
  * @catch_((err, el) => { el.shadow.innerHTML = `<p>Error: ${err}</p>`; })
  * class MyPage extends LoomElement { ... }
  * ```
+ *
+ * **Method decorator** (catch-all):
+ * ```ts
+ * @catch_
+ * handleError(err: unknown) { ... }
+ * ```
+ *
+ * **Named method decorator** (scoped to a specific @api accessor):
+ * ```ts
+ * @catch_("team")
+ * handleTeamError(err: unknown) { ... }
+ * ```
  */
-export function catch_(handler: CatchFn) {
+export function catch_(
+  handlerOrMethodOrName: CatchFn | Function | string,
+  context?: ClassDecoratorContext | ClassMethodDecoratorContext,
+): any {
+  // ── @catch_ (bare method decorator) ──
+  if (context && context.kind === "method") {
+    const method = handlerOrMethodOrName as Function;
+    context.addInitializer(function (this: any) {
+      const handler: CatchFn = (err, el) => method.call(el, err, el);
+      this[CATCH_HANDLER] = handler;
+
+      const origUpdate = this.update?.bind(this);
+      if (origUpdate) {
+        this.update = function () {
+          try { return origUpdate(); }
+          catch (err) { handler(err, this); return null; }
+        };
+      }
+    });
+    return;
+  }
+
+  // ── @catch_("name") (named method decorator) ──
+  if (typeof handlerOrMethodOrName === "string") {
+    const name = handlerOrMethodOrName;
+    return (method: Function, ctx: ClassMethodDecoratorContext) => {
+      ctx.addInitializer(function (this: any) {
+        if (!this[CATCH_HANDLERS]) this[CATCH_HANDLERS] = new Map();
+        const handler: CatchFn = (err, el) => method.call(el, err, el);
+        this[CATCH_HANDLERS].set(name, handler);
+      });
+    };
+  }
+
+  // ── @catch_((err, el) => { ... }) (class decorator — catch-all) ──
+  const handler = handlerOrMethodOrName as CatchFn;
   return (value: Function, _context: ClassDecoratorContext) => {
+    (value.prototype as any)[CATCH_HANDLER] = handler;
+
     const origUpdate = value.prototype.update;
     value.prototype.update = function () {
       try {

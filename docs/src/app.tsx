@@ -41,7 +41,7 @@ const sections: NavSection[] = [
       { label: "Decorator",       to: "/store/store-decorator", icon: "package" },
       { label: "Storage",     to: "/store/storage",           icon: "database" },
       { label: "Patterns",    to: "/store/patterns",          icon: "layers" },
-      { label: "@api",        to: "/store/api",               icon: "zap" },
+      { label: "Fetch",       to: "/store/api",               icon: "zap" },
     ],
   },
   {

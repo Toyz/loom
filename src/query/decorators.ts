@@ -92,7 +92,7 @@ export function api<T extends object>(
       get(this: any): ApiState<T> {
         if (!this[stateKey]) {
           const scheduleUpdate = () => this.scheduleUpdate?.();
-          this[stateKey] = createApiState<T>(opts, scheduleUpdate, this);
+          this[stateKey] = createApiState<T>(opts, scheduleUpdate, this, String(context.name));
         }
         return this[stateKey];
       },

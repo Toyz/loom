@@ -373,4 +373,106 @@ describe("@api", () => {
       expect(fn).toHaveBeenCalled();
     });
   });
+
+  describe("@catch_ integration", () => {
+    it("invokes CATCH_HANDLER on fetch error", async () => {
+      const { CATCH_HANDLER } = await import("../src/decorators/symbols");
+      const catchSpy = vi.fn();
+
+      // Simulate a host element with @catch_ handler on prototype
+      const host = { [CATCH_HANDLER]: catchSpy } as any;
+      const state = createApiState(
+        { fn: async () => { throw new Error("api fail"); } },
+        () => {},
+        host,
+      );
+      await flush();
+
+      expect(catchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ message: "api fail" }),
+        host,
+      );
+      expect(state.error?.message).toBe("api fail");
+    });
+
+    it("does not blow up if CATCH_HANDLER throws", async () => {
+      const { CATCH_HANDLER } = await import("../src/decorators/symbols");
+      const host = {
+        [CATCH_HANDLER]: () => { throw new Error("handler broke"); },
+      } as any;
+
+      const state = createApiState(
+        { fn: async () => { throw new Error("api fail"); } },
+        () => {},
+        host,
+      );
+      await flush();
+
+      // Error still captured, handler exception swallowed
+      expect(state.error?.message).toBe("api fail");
+    });
+
+    it("invokes named CATCH_HANDLERS when apiName matches", async () => {
+      const { CATCH_HANDLERS } = await import("../src/decorators/symbols");
+      const namedSpy = vi.fn();
+      const namedMap = new Map([["team", namedSpy]]);
+      const host = { [CATCH_HANDLERS]: namedMap } as any;
+
+      const state = createApiState(
+        { fn: async () => { throw new Error("team fail"); } },
+        () => {},
+        host,
+        "team",
+      );
+      await flush();
+
+      expect(namedSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ message: "team fail" }),
+        host,
+      );
+      expect(state.error?.message).toBe("team fail");
+    });
+
+    it("named handler takes priority over catch-all", async () => {
+      const { CATCH_HANDLER, CATCH_HANDLERS } = await import("../src/decorators/symbols");
+      const namedSpy = vi.fn();
+      const catchAllSpy = vi.fn();
+      const namedMap = new Map([["team", namedSpy]]);
+      const host = {
+        [CATCH_HANDLERS]: namedMap,
+        [CATCH_HANDLER]: catchAllSpy,
+      } as any;
+
+      createApiState(
+        { fn: async () => { throw new Error("team fail"); } },
+        () => {},
+        host,
+        "team",
+      );
+      await flush();
+
+      expect(namedSpy).toHaveBeenCalled();
+      expect(catchAllSpy).not.toHaveBeenCalled();
+    });
+
+    it("falls back to catch-all when no named handler matches", async () => {
+      const { CATCH_HANDLER, CATCH_HANDLERS } = await import("../src/decorators/symbols");
+      const catchAllSpy = vi.fn();
+      const namedMap = new Map([["other", vi.fn()]]);
+      const host = {
+        [CATCH_HANDLERS]: namedMap,
+        [CATCH_HANDLER]: catchAllSpy,
+      } as any;
+
+      createApiState(
+        { fn: async () => { throw new Error("data fail"); } },
+        () => {},
+        host,
+        "data",
+      );
+      await flush();
+
+      expect(catchAllSpy).toHaveBeenCalled();
+    });
+  });
 });

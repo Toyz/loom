@@ -8,6 +8,7 @@
 import type { ApiState, ApiOptions, ApiCtx, InterceptRegistration } from "./types";
 import { interceptRegistry } from "./registry";
 import { app } from "../app";
+import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
 import { INJECT_PARAMS } from "../decorators/symbols";
 
 /** Create an ApiState<T> instance bound to a host element */
@@ -15,6 +16,7 @@ export function createApiState<T>(
   opts: ApiOptions<T>,
   scheduleUpdate: () => void,
   host?: any,
+  apiName?: string,
 ): ApiState<T> {
   let data: T | undefined;
   let error: Error | undefined;
@@ -129,6 +131,15 @@ export function createApiState<T>(
           error = e instanceof Error ? e : new Error(String(e));
           loading = false;
           fetching = false;
+
+          // Invoke @catch_ handler if present on host
+          // Named handler (@catch_("name")) takes priority over catch-all
+          const namedMap = (host as any)?.[CATCH_HANDLERS];
+          const catchFn = (apiName && namedMap?.get(apiName)) || (host as any)?.[CATCH_HANDLER];
+          if (typeof catchFn === "function") {
+            try { catchFn(error, host); } catch (_) { /* handler threw — swallow */ }
+          }
+
           scheduleUpdate();
           return;
         }

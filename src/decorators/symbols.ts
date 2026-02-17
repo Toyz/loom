@@ -8,6 +8,7 @@ export const WATCHERS = Symbol("loom:watch");
 export const EMITTERS = Symbol("loom:emit");
 export const COMPUTED_DIRTY = Symbol("loom:computed:dirty");
 export const CATCH_HANDLER = Symbol("loom:catch");
+export const CATCH_HANDLERS = Symbol("loom:catch:named");
 export const MOUNT_HANDLERS = Symbol("loom:mount");
 export const UNMOUNT_HANDLERS = Symbol("loom:unmount");
 export const INJECT_PARAMS = Symbol("loom:inject:params");
