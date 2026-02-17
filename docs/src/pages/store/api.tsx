@@ -56,9 +56,10 @@ class Profile extends LoomElement {
           <h2>Options Form</h2>
           <p>Use an options object for dynamic keys, interceptors, retries, or stale time.</p>
           <code-block lang="ts" code={`@api<Post>({
-  fn:  (el) => fetch(\`/api/posts/\${el.postId}\`).then(r => r.json()),
+  fn:  (el) => fetch(\`/api/posts/\${el.postId}\`),
   key: (el) => \`/api/posts/\${el.postId}\`, // re-fetches when key changes
-  use: ["auth", "json"],                    // named interceptors
+  use: ["auth"],                            // pre-fetch interceptors
+  pipe: ["json"],                           // post-fetch response transformers
   staleTime: 30_000,                        // ms before data is stale
   retry: 3,                                 // retry count on failure
 })
@@ -70,6 +71,7 @@ accessor post!: ApiState<Post>;`}></code-block>
               <tr><td><code>fn</code></td><td><code>(el) =&gt; Promise&lt;T&gt;</code></td><td>The fetch function. Receives the host element.</td></tr>
               <tr><td><code>key</code></td><td><code>(el) =&gt; string</code></td><td>Dynamic key — when it changes, abort + refetch.</td></tr>
               <tr><td><code>use</code></td><td><code>string[]</code></td><td>Named interceptors to run before each fetch.</td></tr>
+              <tr><td><code>pipe</code></td><td><code>string[]</code></td><td>Named interceptors to run after fetch (response transformers).</td></tr>
               <tr><td><code>staleTime</code></td><td><code>number</code></td><td>ms before data is considered stale (default: 0).</td></tr>
               <tr><td><code>retry</code></td><td><code>number</code></td><td>Retry count with exponential backoff (default: 0).</td></tr>
             </tbody>

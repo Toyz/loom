@@ -95,6 +95,24 @@ export function createApiState<T>(
         // Interceptors modify the context which the user accesses if they want,
         // but the PRIMARY use is: interceptor sets headers, we wrap fetch.
         data = await opts.fn(host);
+
+        // ── Run pipe (after) interceptors ──
+        if (opts.pipe) {
+          for (const name of opts.pipe) {
+            const reg = interceptRegistry.get(name);
+            if (!reg) {
+              console.warn(`[Loom] @intercept pipe "${name}" not found in registry`);
+              continue;
+            }
+            ctx.response = data as any; // expose raw result to transformer
+            const args = resolveInjectParams(reg.method, reg.key);
+            const result = await reg.method.call(null, ctx, ...args);
+            if (result !== undefined) {
+              data = result;
+            }
+          }
+        }
+
         error = undefined;
         loading = false;
         fetching = false;

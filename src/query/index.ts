@@ -10,3 +10,4 @@ export { createApiState } from "./state";
 
 // Decorators
 export { api, intercept, interceptRegistry } from "./decorators";
+export type { InterceptOptions } from "./decorators";

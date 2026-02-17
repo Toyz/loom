@@ -89,4 +89,4 @@ export type { RouterMode, RouterOptions, RouteInfo, RouteEntry, GroupMeta } from
 
 // Query: @api data fetching + @intercept middleware
 export { api, intercept, createApiState } from "./query";
-export type { ApiCtx, ApiState, ApiOptions } from "./query";
+export type { ApiCtx, ApiState, ApiOptions, InterceptOptions } from "./query";

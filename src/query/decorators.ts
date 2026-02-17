@@ -19,6 +19,13 @@ export { interceptRegistry } from "./registry";
 
 // ── @intercept (method decorator via createDecorator) ──
 
+/** Options for @intercept */
+export interface InterceptOptions {
+  name?: string;
+  /** When true, runs after the fetch (response transformer) instead of before */
+  after?: boolean;
+}
+
 /**
  * Mark a method as a named API interceptor.
  *
@@ -26,17 +33,23 @@ export { interceptRegistry } from "./registry";
  * Return false to block the request (same as @guard).
  * Name defaults to the method name if not provided (same as @guard).
  *
+ * Pre-fetch (default):
  * ```ts
  * @intercept()
- * auth(ctx: ApiCtx, @inject(TokenStore) t: TokenStore) {
- *   ctx.headers["Authorization"] = `Bearer ${t.jwt}`;
- * }
+ * auth(ctx: ApiCtx) { ctx.headers["Authorization"] = `Bearer ${jwt}`; }
+ * ```
+ *
+ * Post-fetch (response transformer):
+ * ```ts
+ * @intercept({ after: true })
+ * json(ctx: ApiCtx) { return ctx.response!.json(); }
  * ```
  */
-export const intercept = createDecorator<[name?: string]>(
-  (method, key, name) => {
-    const interceptName = name ?? key;
-    interceptRegistry.set(interceptName, { method, key });
+export const intercept = createDecorator<[nameOrOpts?: string | InterceptOptions]>(
+  (method, key, nameOrOpts) => {
+    const opts = typeof nameOrOpts === "string" ? { name: nameOrOpts } : (nameOrOpts ?? {});
+    const interceptName = opts.name ?? key;
+    interceptRegistry.set(interceptName, { method, key, after: opts.after });
   },
 );
 

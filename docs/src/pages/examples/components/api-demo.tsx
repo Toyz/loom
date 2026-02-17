@@ -4,8 +4,8 @@
  * Live demo of @api fetching /api/team.json
  */
 import { LoomElement, component, css, mount, styles } from "@toyz/loom";
-import { createApiState } from "@toyz/loom";
-import type { ApiState } from "@toyz/loom";
+import { createApiState, intercept } from "@toyz/loom";
+import type { ApiState, ApiCtx } from "@toyz/loom";
 
 interface TeamMember {
   id: number;
@@ -117,10 +117,19 @@ const sheet = css`
 export class ApiDemo extends LoomElement {
   private state: ApiState<TeamMember[]> | null = null;
 
+  // Post-fetch interceptor: parses Response → JSON
+  @intercept({ after: true })
+  json(ctx: ApiCtx) {
+    return (ctx.response as any as Response).json();
+  }
+
   @mount
   setup() {
     this.state = createApiState<TeamMember[]>(
-      { fn: () => fetch(`${import.meta.env.BASE_URL}api/team.json`).then(r => r.json()) },
+      {
+        fn: (() => fetch(`${import.meta.env.BASE_URL}api/team.json`)) as any,
+        pipe: ["json"],
+      },
       () => this.scheduleUpdate(),
       this,
     );

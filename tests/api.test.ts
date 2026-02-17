@@ -257,6 +257,97 @@ describe("@api", () => {
     });
   });
 
+  describe("pipe (post-fetch interceptors)", () => {
+    it("pipe interceptor transforms the result", async () => {
+      interceptRegistry.set("double", {
+        method: (ctx: ApiCtx) => {
+          const raw = ctx.response as any as { value: number };
+          return { value: raw.value * 2 };
+        },
+        key: "double",
+        after: true,
+      });
+
+      const state = createApiState(
+        {
+          fn: async () => ({ value: 5 }),
+          pipe: ["double"],
+        },
+        () => {},
+      );
+      await flush();
+      expect(state.data).toEqual({ value: 10 });
+    });
+
+    it("pipe interceptors chain in order", async () => {
+      interceptRegistry.set("addTag", {
+        method: (ctx: ApiCtx) => {
+          const raw = ctx.response as any as { tags: string[] };
+          return { tags: [...raw.tags, "piped"] };
+        },
+        key: "addTag",
+        after: true,
+      });
+      interceptRegistry.set("sort", {
+        method: (ctx: ApiCtx) => {
+          const raw = ctx.response as any as { tags: string[] };
+          return { tags: [...raw.tags].sort() };
+        },
+        key: "sort",
+        after: true,
+      });
+
+      const state = createApiState(
+        {
+          fn: async () => ({ tags: ["b", "a"] }),
+          pipe: ["addTag", "sort"],
+        },
+        () => {},
+      );
+      await flush();
+      expect(state.data).toEqual({ tags: ["a", "b", "piped"] });
+    });
+
+    it("pipe interceptor receives data via ctx.response", async () => {
+      let received: any = null;
+      interceptRegistry.set("spy", {
+        method: (ctx: ApiCtx) => {
+          received = ctx.response;
+          return ctx.response; // pass-through
+        },
+        key: "spy",
+        after: true,
+      });
+
+      const original = { id: 42, name: "Test" };
+      const state = createApiState(
+        {
+          fn: async () => original,
+          pipe: ["spy"],
+        },
+        () => {},
+      );
+      await flush();
+      expect(received).toEqual(original);
+      expect(state.data).toEqual(original);
+    });
+
+    it("warns on unknown pipe name", async () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const state = createApiState(
+        {
+          fn: async () => ({ ok: true }),
+          pipe: ["missing"],
+        },
+        () => {},
+      );
+      await flush();
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("missing"));
+      expect(state.data).toEqual({ ok: true });
+      warn.mockRestore();
+    });
+  });
+
   describe("scheduleUpdate", () => {
     it("fires on initial fetch completion", async () => {
       const fn = vi.fn();

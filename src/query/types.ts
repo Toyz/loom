@@ -18,12 +18,16 @@ export interface ApiCtx {
   init: RequestInit;
   /** Auto-managed AbortSignal — read-only */
   signal: AbortSignal;
+  /** Raw Response object — available in `pipe` (after) interceptors */
+  response?: Response;
 }
 
 /** Registration entry in the global intercept registry */
 export interface InterceptRegistration {
   method: Function;
   key: string;
+  /** When true, this interceptor runs after the fetch (response transformer) */
+  after?: boolean;
 }
 
 // ── API State ──
@@ -52,6 +56,8 @@ export interface ApiOptions<T, El = any> {
   key?: (el: El) => string;
   /** Named interceptors to run before fetch (like guards on @route) */
   use?: string[];
+  /** Named interceptors to run after fetch — transform the response (e.g. `.json()`) */
+  pipe?: string[];
   /** Milliseconds before data is considered stale (default: 0 = always stale) */
   staleTime?: number;
   /** Number of retries on failure with exponential backoff (default: 0) */
