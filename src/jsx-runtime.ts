@@ -6,6 +6,7 @@
  */
 
 import { LOOM_EVENTS, type LoomEventMap } from "./morph";
+import { startSubTrace, endSubTrace, addBinding } from "./trace";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const SVG_TAGS = new Set([
@@ -43,10 +44,32 @@ export function jsx(
     } else if (key === "style" && typeof val === "object") {
       Object.assign((el as HTMLElement).style, val);
     } else if (key === "className" || key === "class") {
-      if (isSVG) {
-        el.setAttribute("class", val);
+      if (typeof val === "function") {
+        // Closure binding for class
+        startSubTrace();
+        try {
+          const res = val();
+          if (isSVG) el.setAttribute("class", String(res));
+          else (el as HTMLElement).className = String(res);
+
+          const deps = endSubTrace();
+          if (deps.size > 0) {
+            addBinding(deps, el, () => {
+              const v = val();
+              if (isSVG) el.setAttribute("class", String(v));
+              else (el as HTMLElement).className = String(v);
+            });
+          }
+        } catch (e) {
+          console.error("Loom: Error executing class binding", e);
+          endSubTrace();
+        }
       } else {
-        (el as HTMLElement).className = val;
+        if (isSVG) {
+          el.setAttribute("class", val);
+        } else {
+          (el as HTMLElement).className = val;
+        }
       }
     } else if (key === "htmlFor") {
       el.setAttribute("for", val);
@@ -61,8 +84,22 @@ export function jsx(
       // Non-primitive values (arrays, objects) — set as JS property
       (el as any)[key] = val;
     } else {
-      if (isSVG) {
-        el.setAttribute(key, String(val));
+      // Check for closure binding: class={() => this.theme}
+      if (typeof val === "function") {
+        startSubTrace();
+        try {
+          const res = val();
+          el.setAttribute(key, String(res));
+          const deps = endSubTrace();
+          if (deps.size > 0) {
+            addBinding(deps, el, () => el.setAttribute(key, String(val())));
+          }
+        } catch (e) {
+          // Fallback or error handling for failed binding execution
+          console.error(`Loom: Error executing binding for attribute '${key}'`, e);
+          el.setAttribute(key, "");
+          endSubTrace(); // Ensure trace stack is popped
+        }
       } else {
         el.setAttribute(key, String(val));
       }
@@ -88,6 +125,27 @@ function appendChildren(parent: Node, children: any): void {
     children.forEach((c) => appendChildren(parent, c));
   } else if (children instanceof Node) {
     parent.appendChild(children);
+  } else if (typeof children === "function") {
+    // Phase 2: Closure binding for text — {() => this.count}
+    const textNode = document.createTextNode("");
+    parent.appendChild(textNode);
+
+    startSubTrace();
+    try {
+      const res = children();
+      textNode.textContent = String(res);
+      const deps = endSubTrace();
+
+      if (deps.size > 0) {
+        // Create binding with the closure itself as the patcher
+        addBinding(deps, textNode, () => {
+          textNode.textContent = String(children());
+        });
+      }
+    } catch (e) {
+      console.error("Loom: Error executing text binding", e);
+      endSubTrace();
+    }
   } else {
     parent.appendChild(document.createTextNode(String(children)));
   }

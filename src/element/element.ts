@@ -4,7 +4,7 @@ import { type CSSValue, adoptCSS } from "../css";
 import { COMPUTED_DIRTY, REACTIVES, CONNECT_HOOKS, FIRST_UPDATED_HOOKS } from "../decorators/symbols";
 import { morph } from "../morph";
 import { app } from "../app";
-import { startTrace, endTrace, hasDirtyDeps, type TraceDeps } from "../trace";
+import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, type TraceDeps } from "../trace";
 
 export abstract class LoomElement extends HTMLElement {
   /** Access the LoomApp instance for inline provider resolution */
@@ -105,13 +105,13 @@ export abstract class LoomElement extends HTMLElement {
    * Batched re-render. Fires once per microtask when any @reactive/@prop changes.
    * Override this to render your component.
    */
-  update(): Node | Node[] | void {}
+  update(): Node | Node[] | void { }
 
   /**
    * Called after the very first update(). DOM is guaranteed to exist.
    * Perfect for wiring up canvas, charts, third-party libs, or initial focus.
    */
-  firstUpdated(): void {}
+  firstUpdated(): void { }
 
   /**
    * Return false to skip this render cycle. Called before each update().
@@ -134,9 +134,21 @@ export abstract class LoomElement extends HTMLElement {
       this._updateScheduled = false;
       if (!this.shouldUpdate()) return;
 
-      // FAST PATH: skip update+morph if no traced dependency changed
+      // Tier 1 — SKIP: no traced dependency changed
       if (this.__traceDeps && !hasDirtyDeps(this.__traceDeps)) return;
 
+      // Tier 2 — FAST PATCH: all dirty deps have bindings
+      if (this.__traceDeps && canFastPatch(this.__traceDeps)) {
+        // Dirty @computed caches (they may depend on a fast-patched reactive)
+        for (const dirtyKey of (this as any)[COMPUTED_DIRTY] ?? []) {
+          (this as any)[dirtyKey] = true;
+        }
+        applyBindings(this.__traceDeps);
+        refreshSnapshots(this.__traceDeps);
+        return;
+      }
+
+      // Tier 3 — FULL MORPH: structural change or first render
       // Dirty all @computed caches
       for (const dirtyKey of (this as any)[COMPUTED_DIRTY] ?? []) {
         (this as any)[dirtyKey] = true;
@@ -151,7 +163,7 @@ export abstract class LoomElement extends HTMLElement {
         morph(this.shadow, result);
       }
 
-      // Capture/refresh dependency tracking
+      // Capture/refresh dependency tracking + bindings
       this.__traceDeps = endTrace();
 
       if (!this._hasUpdated) {
