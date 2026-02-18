@@ -55,7 +55,7 @@ export default class PageGettingStarted extends LoomElement {
             <div class="step-num">1</div>
             <h2>Scaffold a Project</h2>
           </div>
-          <code-block lang="bash" code={`npm create loom my-app\ncd my-app\nnpm install\nnpm run dev`}></code-block>
+          <code-block lang="bash" code={`npm create @toyz/loom my-app\ncd my-app\nnpm install\nnpm run dev`}></code-block>
           <p>That's it — you're running. The scaffolder sets up TypeScript, Vite, and the Loom JSX runtime for you.</p>
           <div class="note">
             <strong>Prefer manual setup?</strong> Skip to step 2.

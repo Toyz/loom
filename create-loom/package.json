@@ -1,5 +1,5 @@
 {
-  "name": "create-loom",
+  "name": "@toyz/create-loom",
   "version": "0.1.0",
   "description": "Scaffold a new Loom + TypeScript + Vite project",
   "license": "MIT",

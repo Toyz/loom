@@ -1,4 +1,4 @@
-name: Publish create-loom
+name: Publish @toyz/create-loom
 
 on:
   push:

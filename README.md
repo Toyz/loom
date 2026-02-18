@@ -48,7 +48,7 @@ It powers [placing.space](https://placing.space) in production — a real-time c
 ## Create a Project
 
 ```bash
-npm create loom my-app
+npm create @toyz/loom my-app
 cd my-app
 npm install
 npm run dev

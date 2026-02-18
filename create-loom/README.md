@@ -2,14 +2,14 @@
   <img src="../logo.svg" alt="Loom" width="60" />
 </p>
 
-<h1 align="center">create-loom</h1>
+<h1 align="center">@toyz/create-loom</h1>
 
 <p align="center">
   Scaffold a new Loom + TypeScript + Vite project in seconds.
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/create-loom"><img src="https://img.shields.io/npm/v/create-loom?color=c084fc&label=npm" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/@toyz/create-loom"><img src="https://img.shields.io/npm/v/@toyz/create-loom?color=c084fc&label=npm" alt="npm" /></a>
   <a href="https://github.com/Toyz/loom"><img src="https://img.shields.io/badge/framework-@toyz/loom-86efac" alt="loom" /></a>
   <a href="../LICENSE"><img src="https://img.shields.io/badge/license-MIT-fbbf24" alt="MIT" /></a>
 </p>
@@ -19,7 +19,7 @@
 ## Usage
 
 ```bash
-npm create loom my-app
+npm create @toyz/loom my-app
 cd my-app
 npm install
 npm run dev
@@ -56,7 +56,7 @@ No other packages. No plugins. No polyfills.
 To scaffold into the current directory:
 
 ```bash
-npm create loom .
+npm create @toyz/loom .
 ```
 
 ## Links
