@@ -53,7 +53,19 @@ export default class PageGettingStarted extends LoomElement {
         <div class="step">
           <div class="step-header">
             <div class="step-num">1</div>
-            <h2>Install</h2>
+            <h2>Scaffold a Project</h2>
+          </div>
+          <code-block lang="bash" code={`npm create loom my-app\ncd my-app\nnpm install\nnpm run dev`}></code-block>
+          <p>That's it — you're running. The scaffolder sets up TypeScript, Vite, and the Loom JSX runtime for you.</p>
+          <div class="note">
+            <strong>Prefer manual setup?</strong> Skip to step 2.
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">2</div>
+            <h2>Install (manual)</h2>
           </div>
           <code-block lang="bash" code={`npm install @toyz/loom`}></code-block>
           <p>Loom has zero dependencies. The package includes TypeScript declarations and a JSX runtime.</p>
@@ -61,7 +73,7 @@ export default class PageGettingStarted extends LoomElement {
 
         <div class="step">
           <div class="step-header">
-            <div class="step-num">2</div>
+            <div class="step-num">3</div>
             <h2>Configure TypeScript</h2>
           </div>
           <p>Add JSX and decorator support to your <span class="ic">tsconfig.json</span>:</p>
@@ -75,7 +87,7 @@ export default class PageGettingStarted extends LoomElement {
 
         <div class="step">
           <div class="step-header">
-            <div class="step-num">3</div>
+            <div class="step-num">4</div>
             <h2>Create a Component</h2>
           </div>
           <code-block lang="ts" code={`import { LoomElement, component, reactive } from "@toyz/loom";
@@ -97,7 +109,7 @@ export class MyCounter extends LoomElement {
 
         <div class="step">
           <div class="step-header">
-            <div class="step-num">4</div>
+            <div class="step-num">5</div>
             <h2>Boot the App</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -113,7 +125,7 @@ app.start();`}></code-block>
 
         <div class="step">
           <div class="step-header">
-            <div class="step-num">5</div>
+            <div class="step-num">6</div>
             <h2>Scripts</h2>
           </div>
           <p>Loom ships with test and build scripts out of the box:</p>

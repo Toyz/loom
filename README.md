@@ -25,16 +25,36 @@ It powers [placing.space](https://placing.space) in production — a real-time c
 
 ## Features
 
-- **`@component`** — register custom elements in one line
+- **`@component` / `@styles`** — register custom elements and scoped styles in one line
 - **`@reactive` / `@prop`** — fine-grained reactivity that only re-renders what changed
 - **`@computed` / `@watch`** — derived state and side effects
-- **`@on` / `@emit`** — declarative event handling
+- **`@on` / `@emit`** — declarative event handling via typed event bus
 - **JSX + DOM morphing** — write JSX, get surgical DOM patches (no virtual DOM)
-- **`@inject` / `@service`** — dependency injection container
-- **Hash & history router** — `@route`, `@guard`, `<loom-outlet>`
+- **`@inject` / `@service` / `@factory`** — full dependency injection container
+- **Hash & history router** — `@route`, `@guard`, `@group`, `<loom-outlet>`, `<loom-link>`
+- **`@api` / `@intercept`** — declarative data fetching with SWR, retry, and Result combinators
+- **`@lazy`** — code-split components with one decorator
+- **`@catch_` / `@suspend`** — error boundaries and async loading state
+- **`@interval` / `@timeout` / `@debounce` / `@throttle` / `@animationFrame`** — auto-cleaned timing
+- **`@mount` / `@unmount`** — lifecycle hooks
+- **`@form`** — declarative form binding with validation
+- **`@transform`** — typed value transforms for props and route params
+- **`Reactive<T>` / `CollectionStore<T>`** — observable state with `LocalAdapter` persistence
 - **`css\`\``** — adopted stylesheets with zero FOUC
 - **`<loom-virtual>`** — virtualized list for huge datasets
+- **`createDecorator`** — build your own decorators with the same factory Loom uses
 - **Zero dependencies** — just TypeScript and the platform
+
+## Create a Project
+
+```bash
+npm create loom my-app
+cd my-app
+npm install
+npm run dev
+```
+
+Or install manually:
 
 ## Install
 
@@ -44,20 +64,27 @@ npm install @toyz/loom
 
 ## Quick Start
 
-```ts
-import { LoomElement, component, reactive, css } from "@toyz/loom";
+```tsx
+import { LoomElement, component, reactive, css, styles } from "@toyz/loom";
 
-const styles = css`
-  button { padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
-  span   { font-weight: bold; margin-left: 0.5rem; }
+const counterStyles = css`
+  button {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  span {
+    font-weight: bold;
+    margin-left: 0.5rem;
+  }
 `;
 
 @component("click-counter")
+@styles(counterStyles)
 class ClickCounter extends LoomElement {
-  @reactive count = 0;
+  @reactive accessor count = 0;
 
   update() {
-    this.shadow.adoptedStyleSheets = [styles];
     return (
       <button onClick={() => this.count++}>
         Clicks: <span>{this.count}</span>

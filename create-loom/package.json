@@ -1,0 +1,29 @@
+{
+  "name": "create-loom",
+  "version": "0.1.0",
+  "description": "Scaffold a new Loom + TypeScript + Vite project",
+  "license": "MIT",
+  "author": "toyz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Toyz/loom.git",
+    "directory": "create-loom"
+  },
+  "type": "module",
+  "bin": {
+    "create-loom": "./bin/create-loom.js"
+  },
+  "files": [
+    "bin",
+    "template"
+  ],
+  "keywords": [
+    "loom",
+    "create",
+    "scaffold",
+    "vite",
+    "web-components",
+    "decorators",
+    "typescript"
+  ]
+}
