@@ -4,6 +4,7 @@ import { type CSSValue, adoptCSS } from "../css";
 import { COMPUTED_DIRTY, REACTIVES, CONNECT_HOOKS, FIRST_UPDATED_HOOKS } from "../decorators/symbols";
 import { morph } from "../morph";
 import { app } from "../app";
+import { startTrace, endTrace, hasDirtyDeps, type TraceDeps } from "../trace";
 
 export abstract class LoomElement extends HTMLElement {
   /** Access the LoomApp instance for inline provider resolution */
@@ -11,6 +12,8 @@ export abstract class LoomElement extends HTMLElement {
 
   protected shadow: ShadowRoot;
   private cleanups: (() => void)[] = [];
+  /** @internal — dependency tracking for traced template projection */
+  __traceDeps: TraceDeps | null = null;
 
   constructor() {
     super();
@@ -130,15 +133,27 @@ export abstract class LoomElement extends HTMLElement {
     queueMicrotask(() => {
       this._updateScheduled = false;
       if (!this.shouldUpdate()) return;
+
+      // FAST PATH: skip update+morph if no traced dependency changed
+      if (this.__traceDeps && !hasDirtyDeps(this.__traceDeps)) return;
+
       // Dirty all @computed caches
       for (const dirtyKey of (this as any)[COMPUTED_DIRTY] ?? []) {
         (this as any)[dirtyKey] = true;
       }
+
+      // Trace reactive reads during update()
+      startTrace();
       const result = this.update();
+
       // Auto-morph if update() returned DOM nodes
       if (result != null) {
         morph(this.shadow, result);
       }
+
+      // Capture/refresh dependency tracking
+      this.__traceDeps = endTrace();
+
       if (!this._hasUpdated) {
         this._hasUpdated = true;
         this.firstUpdated();

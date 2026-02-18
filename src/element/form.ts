@@ -23,6 +23,7 @@
  */
 
 import { LoomResult } from "../result";
+import { Reactive } from "../store/reactive";
 
 
 // ── Types ──
@@ -70,7 +71,9 @@ function readInputValue(input: HTMLInputElement | HTMLSelectElement | HTMLTextAr
 // ── Core ──
 
 /**
- * Create a FormState<T> instance — pure reactive data, no DOM dependency.
+ * Create a FormState<T> instance — backed by Reactive primitives.
+ * All state reads go through Reactive.value (traceable),
+ * all mutations go through Reactive.set()/notify() (fires subscribers).
  */
 export function createFormState<T extends object>(
   schema: FormSchema<T>,
@@ -78,49 +81,56 @@ export function createFormState<T extends object>(
 ): FormState<T> {
   // Initialize all fields to empty string (or transform of empty)
   const initial: Record<string, unknown> = {};
-  const current: Record<string, unknown> = {};
-  const errors: Partial<Record<keyof T, string>> = {};
-  const touched = new Set<string>();
-  let validatedAll = false;
+  const initData: Record<string, unknown> = {};
 
   for (const key of Object.keys(schema)) {
     const fieldSchema = schema[key as keyof T];
     const raw = "";
     const transformed = fieldSchema?.transform ? fieldSchema.transform(raw) : raw;
     initial[key] = transformed;
-    current[key] = transformed;
+    initData[key] = transformed;
   }
 
-  let isValid = true;
+  // Reactive-backed state
+  const currentR = new Reactive<Record<string, unknown>>({ ...initData });
+  const errorsR = new Reactive<Partial<Record<keyof T, string>>>({});
+  const validR = new Reactive<boolean>(true);
+  const touched = new Set<string>();
+  let validatedAll = false;
 
   // Compute initial validity (without surfacing errors)
+  let initValid = true;
   for (const key of Object.keys(schema)) {
     const fieldSchema = schema[key as keyof T];
     if (fieldSchema?.validate) {
-      const result = fieldSchema.validate(current[key] as T[keyof T]);
-      if (result !== true) isValid = false;
+      const result = fieldSchema.validate(initData[key] as T[keyof T]);
+      if (result !== true) initValid = false;
     }
   }
+  validR.set(initValid);
 
   // Validation — only surfaces errors for touched fields (or all if validate() was called)
   function runValidation(): boolean {
+    const current = currentR.value;
+    const newErrors: Partial<Record<keyof T, string>> = {};
     let allValid = true;
     for (const key of Object.keys(schema)) {
       const fieldSchema = schema[key as keyof T];
       if (fieldSchema?.validate) {
         const result = fieldSchema.validate(current[key] as T[keyof T]);
         if (result === true) {
-          delete errors[key as keyof T];
+          // valid — no error
         } else {
           allValid = false;
           // Only surface error if field was touched or validate() was called
           if (touched.has(key) || validatedAll) {
-            (errors as Record<string, string>)[key] = result;
+            (newErrors as Record<string, string>)[key] = result;
           }
         }
       }
     }
-    isValid = allValid;
+    errorsR.set(newErrors);
+    validR.set(allValid);
     return allValid;
   }
 
@@ -129,38 +139,35 @@ export function createFormState<T extends object>(
 
   const state: FormState<T> = {
     get data() {
-      return current as unknown as T;
+      return currentR.value as unknown as T;
     },
     get errors() {
-      return errors;
+      return errorsR.value;
     },
     get valid() {
-      return isValid;
+      return validR.value;
     },
     get dirty() {
+      const current = currentR.value;
       for (const key of Object.keys(schema)) {
         if (current[key] !== initial[key]) return true;
       }
       return false;
     },
     reset() {
-      for (const key of Object.keys(schema)) {
-        current[key] = initial[key];
-      }
+      currentR.set({ ...initial });
       touched.clear();
       validatedAll = false;
-      // Clear all errors on reset
-      for (const key of Object.keys(errors)) {
-        delete errors[key as keyof T];
-      }
+      errorsR.set({});
+      validR.set(true);
       scheduleUpdate();
     },
     validate(): LoomResult<T, Partial<Record<keyof T, string>>> {
       validatedAll = true;
       const valid = runValidation();
       scheduleUpdate();
-      if (valid) return LoomResult.ok(current as unknown as T);
-      return LoomResult.err({ ...errors });
+      if (valid) return LoomResult.ok(currentR.value as unknown as T);
+      return LoomResult.err({ ...errorsR.value });
     },
     bind(field: keyof T): (e: Event) => void {
       const key = field as string;
@@ -170,7 +177,9 @@ export function createFormState<T extends object>(
           const raw = readInputValue(input);
           const fieldSchema = schema[field];
           const transformed = fieldSchema?.transform ? fieldSchema.transform(raw) : raw;
+          const current = currentR.value;
           current[key] = transformed;
+          currentR.notify();
           touched.add(key);
           runValidation();
           scheduleUpdate();

@@ -8,6 +8,7 @@
  */
 
 import type { PersistOptions, StorageAdapter } from "./storage";
+import { isTracing, recordRead } from "../trace";
 
 export type Subscriber<T> = (value: T, prev: T) => void;
 export type Updater<T> = T | ((prev: T) => T);
@@ -29,6 +30,8 @@ export class Reactive<T> {
   private subs = new Set<Subscriber<T>>();
   private _key?: string;
   private _storage?: StorageAdapter;
+  /** Monotonic version counter — bumps on every set() and notify() */
+  private _version = 0;
 
   constructor(initial: T, persist?: PersistOptions) {
     this._key = persist?.key;
@@ -52,7 +55,18 @@ export class Reactive<T> {
   }
 
   get value(): T {
+    if (isTracing()) recordRead(this);
     return this._value;
+  }
+
+  /** Read without triggering trace recording — used for snapshot comparisons */
+  peek(): T {
+    return this._value;
+  }
+
+  /** Read the version counter without triggering trace — used by hasDirtyDeps */
+  peekVersion(): number {
+    return this._version;
   }
 
   set(next: Updater<T>): void {
@@ -60,6 +74,7 @@ export class Reactive<T> {
     this._value =
       typeof next === "function" ? (next as (prev: T) => T)(prev) : next;
     if (this._value !== prev) {
+      this._version++;
       // Persist
       if (this._key && this._storage) {
         this._storage.set(this._key, JSON.stringify(this._value));
@@ -78,6 +93,19 @@ export class Reactive<T> {
   watch(fn: Subscriber<T>): () => void {
     fn(this._value, this._value);
     return this.subscribe(fn);
+  }
+
+  /**
+   * Force-notify all subscribers without changing the value.
+   * Used for in-place mutations (e.g. deep proxy on @store)
+   * where the reference doesn't change but contents did.
+   */
+  notify(): void {
+    this._version++;
+    if (this._key && this._storage) {
+      this._storage.set(this._key, JSON.stringify(this._value));
+    }
+    this.subs.forEach((s) => s(this._value, this._value));
   }
 
   /** Clear persisted data and reset to a value */

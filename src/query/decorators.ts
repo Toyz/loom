@@ -9,6 +9,7 @@
 
 import { createDecorator } from "../decorators/create";
 import type { ApiState, ApiOptions, InterceptRegistration } from "./types";
+import { Reactive } from "../store/reactive";
 import { createApiState } from "./state";
 import { interceptRegistry } from "./registry";
 
@@ -84,6 +85,7 @@ export function api<T extends object>(
     context: ClassAccessorDecoratorContext<This, ApiState<T>>,
   ): ClassAccessorDecoratorResult<This, ApiState<T>> => {
     const stateKey = Symbol(`api:${String(context.name)}`);
+    const traceKey = Symbol(`api:trace:${String(context.name)}`);
 
     const opts: ApiOptions<T> =
       typeof fnOrOpts === "function" ? { fn: fnOrOpts } : fnOrOpts;
@@ -91,9 +93,15 @@ export function api<T extends object>(
     return {
       get(this: any): ApiState<T> {
         if (!this[stateKey]) {
-          const scheduleUpdate = () => this.scheduleUpdate?.();
-          this[stateKey] = createApiState<T>(opts, scheduleUpdate, this, String(context.name));
+          // Sentinel Reactive for trace integration — notified on every state change
+          const sentinel = new Reactive(0);
+          this[traceKey] = sentinel;
+          sentinel.subscribe(() => this.scheduleUpdate?.());
+          const notify = () => { sentinel.set((v: number) => v + 1); };
+          this[stateKey] = createApiState<T>(opts, notify, this, String(context.name));
         }
+        // Read sentinel.value so recordRead() fires during traced update()
+        (this[traceKey] as Reactive<number>).value;
         return this[stateKey];
       },
       set(this: any, _val: ApiState<T>) {

@@ -215,3 +215,8 @@ class LazyExampleForm extends LoomElement {}
 @component("page-example-api")
 @lazy(() => import("./examples/api"))
 class LazyExampleApi extends LoomElement {}
+
+@route("/stress-test", { group: ExamplesGroup })
+@component("page-example-stress")
+@lazy(() => import("./examples/stress-test"))
+class LazyExampleStress extends LoomElement {}

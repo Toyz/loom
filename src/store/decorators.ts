@@ -52,14 +52,9 @@ export function reactive<This extends object, V>(
 
   return {
     get(this: any): V {
-      // Before first explicit set, fall back to the backing storage value from init()
-      if (!this[storageKey]) return target.get.call(this);
-      return (this[storageKey] as Reactive<V>).value;
-    },
-    set(this: any, val: V) {
+      // Eagerly create the Reactive on first read so recordRead() fires
+      // during traced update() calls — ensures this dep is tracked.
       if (!this[storageKey]) {
-        // First explicit set — create Reactive with the init'd backing value,
-        // wire all subscribers, then set the new value to fire them.
         const backingValue = target.get.call(this) as V;
         const r = new Reactive(backingValue);
         this[storageKey] = r;
@@ -79,12 +74,14 @@ export function reactive<This extends object, V>(
         )) {
           r.subscribe((v: V) => bus.emit(e.factory(v)));
         }
-
-        // Now set the new value — this fires all subscribers
-        r.set(val);
-      } else {
-        this[storageKey].set(val);
       }
+      return (this[storageKey] as Reactive<V>).value;
+    },
+    set(this: any, val: V) {
+      // Ensure Reactive exists (getter may not have run yet,
+      // e.g. attributeChangedCallback before connectedCallback)
+      if (!this[storageKey]) (this as any)[key];
+      this[storageKey].set(val);
     },
     init(this: any, val: V): V {
       return val;
@@ -226,8 +223,7 @@ interface StoreMeta {
  */
 function createDeepProxy<T extends object>(
   obj: T,
-  onChange: () => void,
-  persist?: PersistOptions,
+  reactive: Reactive<T>,
 ): T {
   const proxyCache = new WeakMap<object, unknown>();
 
@@ -245,18 +241,12 @@ function createDeepProxy<T extends object>(
       },
       set(t, p, value, receiver) {
         const result = Reflect.set(t, p, value, receiver);
-        if (persist) {
-          persist.storage.set(persist.key, JSON.stringify(obj));
-        }
-        onChange();
+        reactive.notify();
         return result;
       },
       deleteProperty(t, p) {
         const result = Reflect.deleteProperty(t, p);
-        if (persist) {
-          persist.storage.set(persist.key, JSON.stringify(obj));
-        }
-        onChange();
+        reactive.notify();
         return result;
       },
     });
@@ -295,9 +285,10 @@ export function store<T extends object>(
           const r = new Reactive<T>(initial, persist);
           this[reactiveKey] = r;
           r.subscribe(() => this.scheduleUpdate?.());
-          const notifyChange = () => this.scheduleUpdate?.();
-          this[proxyKey] = createDeepProxy(r.value, notifyChange, persist);
+          this[proxyKey] = createDeepProxy(r.value, r);
         }
+        // Touch Reactive.value so recordRead() fires during traced update()
+        (this[reactiveKey] as Reactive<T>).value;
         return this[proxyKey];
       },
       set(this: any, val: T) {
@@ -305,12 +296,10 @@ export function store<T extends object>(
           const r = new Reactive<T>(val, persist);
           this[reactiveKey] = r;
           r.subscribe(() => this.scheduleUpdate?.());
-          const notifyChange = () => this.scheduleUpdate?.();
-          this[proxyKey] = createDeepProxy(r.value, notifyChange, persist);
+          this[proxyKey] = createDeepProxy(r.value, r);
         } else {
           this[reactiveKey].set(val);
-          const notifyChange = () => this.scheduleUpdate?.();
-          this[proxyKey] = createDeepProxy(this[reactiveKey].value, notifyChange, persist);
+          this[proxyKey] = createDeepProxy(this[reactiveKey].value, this[reactiveKey]);
         }
       },
     };
