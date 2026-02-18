@@ -1,3 +1,4 @@
+import { CollectionStore } from "@toyz/loom";
 import { LocalAdapter, Reactive, service, LoomEvent, bus } from "@toyz/loom";
 
 export type FilterType = "all" | "active" | "completed";
@@ -15,7 +16,7 @@ export class TodoChanged extends LoomEvent {
 
 @service()
 export class TodoStore {
-    todos = new Reactive<Todo[]>([], {
+    todos = new CollectionStore<Todo>([], {
         key: "loom-todomvc-v3",
         storage: new LocalAdapter(),
     });
