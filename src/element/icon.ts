@@ -13,8 +13,9 @@
  */
 
 import { LoomElement } from "./element";
-import { component } from "./decorators";
+import { component, styles } from "./decorators";
 import { prop } from "../store/decorators";
+import { watch } from "../store/watch";
 import { css } from "../css";
 
 const baseStyles = css`
@@ -42,6 +43,7 @@ const baseStyles = css`
 const registry = new Map<string, string>();
 
 @component("loom-icon")
+@styles(baseStyles)
 export class LoomIcon extends LoomElement {
 
   /** Icon name (must be registered via LoomIcon.register) */
@@ -75,36 +77,19 @@ export class LoomIcon extends LoomElement {
     return Array.from(registry.keys());
   }
 
-  /** Immediately apply size/color from attributes — runs before connectedCallback */
-  attributeChangedCallback(name: string, _old: string | null, val: string | null) {
-    // Note: @component decorator wraps this method and parses @prop values
-    // before calling us. We just sync the CSS custom properties immediately.
-    if (name === "size" && val !== null) {
-      this.style.setProperty("--_s", `${val}px`);
-    } else if (name === "color" && val !== null) {
-      this.style.setProperty("--_c", val);
-    }
-  }
-
-  connectedCallback() {
-    // Set CSS vars from current attributes before first paint
-    const s = this.getAttribute("size");
-    const c = this.getAttribute("color");
-    this.style.setProperty("--_s", `${s ?? this.size}px`);
-    if (c) this.style.setProperty("--_c", c);
-    super.connectedCallback();
+  @watch("size")
+  @watch("color")
+  private syncVars() {
+    this.style.setProperty("--_s", `${this.size}px`);
+    this.style.setProperty("--_c", this.color);
   }
 
   update() {
-    this.shadow.adoptedStyleSheets = [baseStyles];
     this.style.setProperty("--_s", `${this.size}px`);
     this.style.setProperty("--_c", this.color);
 
     const inner = registry.get(this.name);
-    if (!inner) {
-      const placeholder = document.createElement("span");
-      return placeholder;
-    }
+    if (!inner) return document.createElement("span");
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 24 24");

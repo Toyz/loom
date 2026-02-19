@@ -56,7 +56,7 @@ export {
   interval, timeout, debounce, throttle, animationFrame,
   form, lazy, slot, transition,
 } from "./element";
-export type { VirtualListOptions, FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions } from "./element";
+export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions } from "./element";
 
 // Transform: value transforms
 export {

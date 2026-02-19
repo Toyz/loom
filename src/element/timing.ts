@@ -133,6 +133,12 @@ export function throttle(ms: number) {
  * render(dt: number) { ... }
  * ```
  */
+const _af = createDecorator<[layer: number]>((method, _key, layer) => {
+  return (el: HTMLElement) => {
+    return renderLoop.add(layer, (dt: number, t: number) => method.call(el, dt, t));
+  };
+});
+
 export function animationFrame(layer?: number): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function animationFrame(method: Function, context: ClassMethodDecoratorContext): void;
 export function animationFrame(
@@ -141,20 +147,10 @@ export function animationFrame(
 ): void | ((method: Function, context: ClassMethodDecoratorContext) => void) {
   // Called as @animationFrame (no parens) — method is first arg
   if (typeof methodOrLayer === "function" && context) {
-    wireAnimationFrame(methodOrLayer, context, 0);
+    _af(0)(methodOrLayer, context);
     return;
   }
   // Called as @animationFrame() or @animationFrame(layer)
   const layer = typeof methodOrLayer === "number" ? methodOrLayer : 0;
-  return (method: Function, ctx: ClassMethodDecoratorContext) => wireAnimationFrame(method, ctx, layer);
-}
-
-/** Internal: wire rAF lifecycle via addInitializer */
-function wireAnimationFrame(method: Function, context: ClassMethodDecoratorContext, layer: number): void {
-  context.addInitializer(function (this: any) {
-    if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-    this[CONNECT_HOOKS].push((el: any) => {
-      return renderLoop.add(layer, (dt: number, t: number) => method.call(el, dt, t));
-    });
-  });
+  return _af(layer);
 }

@@ -220,3 +220,8 @@ class LazyExampleApi extends LoomElement {}
 @component("page-example-stress")
 @lazy(() => import("./examples/stress-test"))
 class LazyExampleStress extends LoomElement {}
+
+@route("/virtual-list-demo", { group: ExamplesGroup })
+@component("page-example-virtual-list")
+@lazy(() => import("./examples/virtual-list"))
+class LazyExampleVirtualList extends LoomElement {}

@@ -5,7 +5,7 @@
  * Configure via tsconfig: "jsxImportSource": "loom"
  */
 
-import { LOOM_EVENTS, type LoomEventMap } from "./morph";
+import { LOOM_EVENTS, LOOM_PROPS, type LoomEventMap, type LoomPropMap } from "./morph";
 import { startSubTrace, endSubTrace, addBinding } from "./trace";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -83,6 +83,10 @@ export function jsx(
     } else if (typeof val === "object" || typeof val === "function") {
       // Non-primitive values (arrays, objects) — set as JS property
       (el as any)[key] = val;
+      // Track for morph diffing (so morph copies them to the existing element)
+      let tracked: LoomPropMap = (el as any)[LOOM_PROPS];
+      if (!tracked) { tracked = new Map(); (el as any)[LOOM_PROPS] = tracked; }
+      tracked.set(key, val);
     } else {
       // Check for closure binding: class={() => this.theme}
       if (typeof val === "function") {
@@ -126,6 +130,14 @@ function appendChildren(parent: Node, children: any): void {
   } else if (children instanceof Node) {
     parent.appendChild(children);
   } else if (typeof children === "function") {
+    // Template function for custom elements: {(item) => <div>...</div>}
+    // Distinguished from text closures by having declared parameters (fn.length > 0)
+    if ((parent as any).nodeType === 1 &&
+        (parent as any).tagName?.includes('-') &&
+        children.length > 0) {
+      (parent as any).__childTemplate = children;
+      return;
+    }
     // Phase 2: Closure binding for text — {() => this.count}
     const textNode = document.createTextNode("");
     parent.appendChild(textNode);

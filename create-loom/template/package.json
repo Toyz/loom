@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@toyz/loom": "^0.10.0"
+    "@toyz/loom": "latest"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

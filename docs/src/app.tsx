@@ -79,6 +79,7 @@ const sections: NavSection[] = [
       { label: "Theme Switcher",  to: "/examples/theme-switcher", icon: "eye" },
       { label: "Contact Form",    to: "/examples/form",            icon: "edit" },
       { label: "Fetch",          to: "/examples/api",             icon: "download" },
+      { label: "Virtual List",    to: "/examples/virtual-list-demo", icon: "list" },
       { label: "Stress Test",     to: "/examples/stress-test",   icon: "zap" },
     ],
   },

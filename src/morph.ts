@@ -15,8 +15,14 @@
 /** Expando key for tracked event listeners */
 export const LOOM_EVENTS = "__loomEvents";
 
+/** Expando key for tracked JS properties (non-attribute, non-event) */
+export const LOOM_PROPS = "__loomProps";
+
 /** Type for tracked events on an element */
 export type LoomEventMap = Map<string, EventListener>;
+
+/** Type for tracked JS properties on an element */
+export type LoomPropMap = Map<string, any>;
 
 // ── Public API ──
 
@@ -133,6 +139,9 @@ function morphNode(old: Node, next: Node): void {
     // Patch special DOM properties
     patchProperties(oldEl as HTMLElement, nextEl as HTMLElement);
 
+    // Patch JSX-set JS properties (items, estimatedHeight, etc.)
+    patchJSProps(oldEl as HTMLElement, nextEl as HTMLElement);
+
     // innerHTML / rawHTML — if the new element used rawHTML, just slam it
     // The JSX runtime sets a __loomRawHTML marker
     if ((nextEl as any).__loomRawHTML) {
@@ -208,6 +217,31 @@ function patchProperties(old: HTMLElement, next: HTMLElement): void {
     if (key in next && (old as any)[key] !== (next as any)[key]) {
       (old as any)[key] = (next as any)[key];
     }
+  }
+}
+
+// ── JSX JS-property patching ──
+
+function patchJSProps(old: HTMLElement, next: HTMLElement): void {
+  const newProps: LoomPropMap | undefined = (next as any)[LOOM_PROPS];
+  const oldProps: LoomPropMap = (old as any)[LOOM_PROPS] ?? new Map();
+
+  // Remove old props not in new
+  for (const key of oldProps.keys()) {
+    if (!newProps?.has(key)) {
+      oldProps.delete(key);
+    }
+  }
+
+  // Set/update props from new
+  if (newProps) {
+    for (const [key, val] of newProps) {
+      if ((old as any)[key] !== val) {
+        (old as any)[key] = val;
+      }
+      oldProps.set(key, val);
+    }
+    (old as any)[LOOM_PROPS] = oldProps;
   }
 }
 
