@@ -79,15 +79,36 @@ export default class PageGettingStarted extends LoomElement {
           <p>Add JSX and decorator support to your <span class="ic">tsconfig.json</span>:</p>
           <code-block lang="json" code={`{
   "compilerOptions": {
+    "target": "es2022",
     "jsx": "react-jsx",
     "jsxImportSource": "@toyz/loom"
   }
 }`}></code-block>
+          <div class="note">
+            <strong>Important:</strong> <span class="ic">target: "es2022"</span> is required — Loom uses TC39 decorators, which need native class field support.
+          </div>
         </div>
 
         <div class="step">
           <div class="step-header">
             <div class="step-num">4</div>
+            <h2>Configure Vite</h2>
+          </div>
+          <p>If you're using Vite, add the JSX runtime and target to <span class="ic">vite.config.ts</span>:</p>
+          <code-block lang="ts" code={`import { defineConfig } from "vite";
+
+export default defineConfig({
+  esbuild: {
+    target: "es2022",
+    jsx: "automatic",
+    jsxImportSource: "@toyz/loom",
+  },
+});`}></code-block>
+        </div>
+
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">5</div>
             <h2>Create a Component</h2>
           </div>
           <code-block lang="ts" code={`import { LoomElement, component, reactive } from "@toyz/loom";
@@ -109,7 +130,7 @@ export class MyCounter extends LoomElement {
 
         <div class="step">
           <div class="step-header">
-            <div class="step-num">5</div>
+            <div class="step-num">6</div>
             <h2>Boot the App</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -125,7 +146,7 @@ app.start();`}></code-block>
 
         <div class="step">
           <div class="step-header">
-            <div class="step-num">6</div>
+            <div class="step-num">7</div>
             <h2>Scripts</h2>
           </div>
           <p>Loom ships with test and build scripts out of the box:</p>

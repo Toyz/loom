@@ -101,11 +101,12 @@ class ClickCounter extends LoomElement {
 
 ## TSConfig
 
-Loom ships its own JSX runtime. Point your config at it:
+Loom uses TC39 decorators, which require `es2022` or later. Point your config at the Loom JSX runtime:
 
 ```json
 {
   "compilerOptions": {
+    "target": "es2022",
     "jsx": "react-jsx",
     "jsxImportSource": "@toyz/loom"
   }
@@ -118,6 +119,7 @@ For Vite:
 // vite.config.ts
 export default defineConfig({
   esbuild: {
+    target: "es2022",
     jsx: "automatic",
     jsxImportSource: "@toyz/loom",
   },
