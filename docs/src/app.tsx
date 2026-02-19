@@ -81,6 +81,7 @@ const sections: NavSection[] = [
       { label: "Fetch",          to: "/examples/api",             icon: "download" },
       { label: "Virtual List",    to: "/examples/virtual-list-demo", icon: "list" },
       { label: "Stress Test",     to: "/examples/stress-test",   icon: "zap" },
+      { label: "Timing",          to: "/examples/timing-demo",   icon: "clock" },
     ],
   },
 ];
