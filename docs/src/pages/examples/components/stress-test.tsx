@@ -109,9 +109,9 @@ class StressCell extends LoomElement {
   update() {
     this._renders++;
     return (
-      <div class={`cell${this.hot ? " hot" : ""}`}>
-        <div class="value">{() => this.hot ? this.ticks : "—"}</div>
-        <div class="tag">{this.hot ? <span><loom-icon name="bolt" size={10} color="var(--accent)"></loom-icon> HOT</span> : `#${this.index}`}</div>
+      <div class={() => `cell${this.hot ? " hot" : ""}`}>
+        <div class="value">{() => { const t = this.ticks; return this.hot ? t : "—"; }}</div>
+        <div class="tag">{() => this.hot ? `⚡ HOT` : `#${this.index}`}</div>
         <div class="renders">renders: {this._renders}</div>
       </div>
     );

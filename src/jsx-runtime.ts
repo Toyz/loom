@@ -133,8 +133,8 @@ function appendChildren(parent: Node, children: any): void {
     // Template function for custom elements: {(item) => <div>...</div>}
     // Distinguished from text closures by having declared parameters (fn.length > 0)
     if ((parent as any).nodeType === 1 &&
-        (parent as any).tagName?.includes('-') &&
-        children.length > 0) {
+      (parent as any).tagName?.includes('-') &&
+      children.length > 0) {
       (parent as any).__childTemplate = children;
       return;
     }
@@ -170,7 +170,7 @@ type EventHandler<E extends Event = Event> = (event: E) => void;
 export interface LoomHTMLAttributes {
   id?: string;
   className?: string;
-  class?: string;
+  class?: string | (() => string);
   style?: string | Partial<CSSStyleDeclaration>;
   slot?: string;
   title?: string;
