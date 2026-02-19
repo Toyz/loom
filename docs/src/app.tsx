@@ -31,6 +31,7 @@ const sections: NavSection[] = [
       { label: "Forms",           to: "/element/forms",          icon: "clipboard" },
       { label: "Virtual List",    to: "/element/virtual-list",   icon: "list",      divider: "Built-ins" },
       { label: "Icon",            to: "/element/icon",           icon: "star" },
+      { label: "Canvas",          to: "/element/canvas",         icon: "canvas" },
     ],
   },
   {
@@ -82,6 +83,7 @@ const sections: NavSection[] = [
       { label: "Virtual List",    to: "/examples/virtual-list-demo", icon: "list" },
       { label: "Timing",          to: "/examples/timing-demo",   icon: "clock" },
       { label: "Stress Test",     to: "/examples/stress-test",   icon: "zap" },
+      { label: "Canvas Game",     to: "/examples/canvas-game",   icon: "canvas" },
     ],
   },
 ];
@@ -363,7 +365,7 @@ const styles = css`
     padding: 0 12px;
   }
   .section.open .section-links {
-    max-height: 500px;
+    max-height: 800px;
     padding-top: 4px;
   }
 

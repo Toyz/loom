@@ -59,6 +59,10 @@
       "types": "./dist/element/virtual.d.ts",
       "import": "./dist/element/virtual.js"
     },
+    "./element/canvas": {
+      "types": "./dist/element/canvas.d.ts",
+      "import": "./dist/element/canvas.js"
+    },
     "./decorators": {
       "types": "./dist/decorators/index.d.ts",
       "import": "./dist/decorators/index.js"

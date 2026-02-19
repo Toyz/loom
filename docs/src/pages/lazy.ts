@@ -76,6 +76,11 @@ class LazyElementVirtualList extends LoomElement {}
 @lazy(() => import("./element/icon"))
 class LazyElementIcon extends LoomElement {}
 
+@route("/canvas", { group: ElementGroup })
+@component("page-element-canvas")
+@lazy(() => import("./element/canvas"))
+class LazyElementCanvas extends LoomElement {}
+
 @route("/decorators", { group: ElementGroup })
 @component("page-element-decorators")
 @lazy(() => import("./element/decorators"))
@@ -230,3 +235,8 @@ class LazyExampleVirtualList extends LoomElement {}
 @component("page-example-timing")
 @lazy(() => import("./examples/timing"))
 class LazyExampleTiming extends LoomElement {}
+
+@route("/canvas-game", { group: ExamplesGroup })
+@component("page-example-canvas-game")
+@lazy(() => import("./examples/canvas-game"))
+class LazyExampleCanvasGame extends LoomElement {}
