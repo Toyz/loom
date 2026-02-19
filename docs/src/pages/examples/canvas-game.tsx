@@ -46,7 +46,7 @@ export default class ExampleCanvasGame extends LoomElement {
   }
 }
 
-const SOURCE = `import { LoomElement, component, reactive, css, styles, mount, event, observer } from "@toyz/loom";
+const SOURCE = `import { LoomElement, component, reactive, css, styles, mount } from "@toyz/loom";
 import "@toyz/loom/element/canvas";
 import type { DrawCallback } from "@toyz/loom/element/canvas";
 

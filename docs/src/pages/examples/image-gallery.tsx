@@ -48,13 +48,29 @@ const IMAGES = [
     aspect-ratio: 1;
     width: 100%;
   }
+  .skeleton {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    background-size: 200% 200%;
+    animation: pulse 2s ease-in-out infinite;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.75rem; font-family: monospace;
+    border-radius: inherit;
+  }
+  @keyframes pulse {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
 \`)
 class ImageGallery extends LoomElement {
   update() {
     return (
       <div class="grid">
         {IMAGES.map((url, i) => (
-          <loom-image src={url} alt={"Swatch " + (i+1)} />
+          <loom-image src={url} alt={"Swatch " + (i+1)} fit="cover">
+            <div slot="placeholder" class="skeleton">loading...</div>
+          </loom-image>
         ))}
       </div>
     );

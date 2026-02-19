@@ -59,6 +59,30 @@ interface TeamMember {
   initials: string;
 }
 
+const sheet = css\`
+  :host { display: block; }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+  .card {
+    padding: 1rem; border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+  }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent); color: white;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem;
+  }
+  .name { font-weight: 600; font-size: 0.9rem; }
+  .role { font-size: 0.75rem; opacity: 0.5; margin-top: 0.25rem; }
+  .error { color: #f87171; padding: 1rem; border-radius: 8px; }
+\`;
+
 @component("api-demo")
 @styles(sheet)
 class ApiDemo extends LoomElement {

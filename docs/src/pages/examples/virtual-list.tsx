@@ -57,7 +57,7 @@ const LAST  = ["Zhao", "Smith", "Patel", "Kim", "Borg", "Lee", "Davis", "Chen"];
 function generate(n: number): Person[] {
   return Array.from({ length: n }, (_, i) => ({
     id: i,
-    name: \`\${FIRST[i % FIRST.length]} \${LAST[Math.floor(i / FIRST.length) % LAST.length]}\`,
+    name: FIRST[i % FIRST.length] + " " + LAST[Math.floor(i / FIRST.length) % LAST.length],
     role: ROLES[i % ROLES.length],
   }));
 }
@@ -76,15 +76,10 @@ const sheet = css\`
     color: var(--text);
     cursor: pointer;
   }
-  .controls button:hover {
-    border-color: var(--accent);
-  }
   .count {
     font-size: 0.8rem; color: var(--text-muted);
     margin-left: auto; font-family: monospace;
   }
-
-  /* The host element needs display: block + a fixed height */
   loom-virtual {
     display: block;
     height: 400px;
@@ -105,7 +100,7 @@ const sheet = css\`
     border-radius: 4px; background: var(--accent-glow);
     color: var(--accent); border: 1px solid var(--accent-dim);
   }
-\\\`;
+\`;
 
 @component("my-list")
 @styles(sheet)

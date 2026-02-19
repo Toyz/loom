@@ -59,68 +59,91 @@ export default class ExampleStressTest extends LoomElement {
   }
 }
 
-const SOURCE = `import { LoomElement, component, reactive, computed, css, styles, interval, mount, unmount, watch } from "@toyz/loom";
+const SOURCE = `import {
+  LoomElement, component, reactive, prop, computed,
+  css, styles, mount, unmount, watch,
+} from "@toyz/loom";
 
-const sheet = css\`
-  .stress-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 6px;
+// ── Cell component — fully independent ──
+
+const cellSheet = css\`
+  :host { display: block; }
+  .cell {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px; text-align: center; cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .cell { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; cursor: pointer; }
-  .cell.hot { border-color: var(--accent); box-shadow: 0 0 8px oklch(0.7 0.18 150 / 0.3); }
+  .cell.hot {
+    border-color: var(--accent);
+    box-shadow: 0 0 8px oklch(0.7 0.18 150 / 0.3);
+  }
+  .value { font-size: 1.1rem; font-weight: 600; }
+  .tag { font-size: 0.6rem; color: var(--text-muted); margin-top: 2px; }
+  .renders { font-size: 0.55rem; margin-top: 1px; color: oklch(0.55 0.12 25); }
 \`;
 
-@component("stress-test")
-@styles(sheet)
-class StressTest extends LoomElement {
-  @reactive accessor cells: number[] = Array.from({ length: 100 }, () => 0);
-  @reactive accessor hotCell = 0;
+@component("stress-cell")
+@styles(cellSheet)
+class StressCell extends LoomElement {
   @reactive accessor ticks = 0;
-  @reactive accessor renderCount = 0;
+  @prop accessor hot = 0;
+  @prop accessor index = 0;
 
-  // Derived — cached until deps dirty
-  @computed get hotValue() { return this.cells[this.hotCell] ?? 0; }
-  @computed get skipRate() {
-    if (this.ticks === 0) return "—";
-    const skipped = Math.max(0, this.ticks - this.renderCount);
-    return ((skipped / this.ticks) * 100).toFixed(1) + "%";
+  private _renders = 0;
+  private _timer: number | null = null;
+
+  @watch("hot")
+  onHotChange(val: number) {
+    this._syncTimer(!!val);
   }
 
-  // 60fps tick — auto-cleaned by Loom
-  @interval(16)
-  tick() {
-    this.ticks++;
-    const next = [...this.cells];
-    next[this.hotCell] = this.ticks;
-    this.cells = next;
-  }
+  @mount onMount() { if (this.hot) this._syncTimer(true); }
+  @unmount cleanup() { if (this._timer) { clearInterval(this._timer); this._timer = null; } }
 
-  // React to hot cell changing
-  @watch("hotCell")
-  onHotCellChange(newIdx: number, oldIdx: number) {
-    const next = [...this.cells];
-    next[oldIdx] = 0;
-    this.cells = next;
+  private _syncTimer(active: boolean) {
+    if (active && !this._timer) {
+      this._timer = window.setInterval(() => { this.ticks++; }, 16);
+    } else if (!active && this._timer) {
+      clearInterval(this._timer);
+      this._timer = null;
+      this.ticks = 0;
+    }
   }
-
-  @mount onMount() { /* state set via @reactive defaults */ }
-  @unmount onUnmount() { /* @interval auto-cleaned */ }
 
   update() {
-    this.renderCount++;
+    this._renders++;
+    return (
+      <div class={"cell" + (this.hot ? " hot" : "")}>
+        <div class="value">{this.hot ? this.ticks : "—"}</div>
+        <div class="tag">{this.hot ? "⚡ HOT" : "#" + this.index}</div>
+        <div class="renders">renders: {this._renders}</div>
+      </div>
+    );
+  }
+}
+
+// ── Parent orchestrator ──
+
+@component("stress-test")
+class StressTest extends LoomElement {
+  @reactive accessor cellCount = 50;
+  @reactive accessor hotCell = 0;
+
+  update() {
+    const cells = [];
+    for (let i = 0; i < this.cellCount; i++) {
+      cells.push(
+        <stress-cell
+          index={i}
+          hot={i === this.hotCell ? 1 : 0}
+          onClick={() => { this.hotCell = i; }}
+        ></stress-cell>
+      );
+    }
     return (
       <div>
-        <div class="stress-grid">
-          {this.cells.map((val, i) => (
-            <div class={\`cell\${i === this.hotCell ? " hot" : ""}\`}
-                 onClick={() => { this.hotCell = i; }}>
-              <div class="value">{val}</div>
-              <div class="tag">{i === this.hotCell ? "HOT" : \`#\${i}\`}</div>
-            </div>
-          ))}
-        </div>
-        <p>Ticks: {this.ticks} | Renders: {this.renderCount} | Hot: {this.hotValue}</p>
+        <div class="grid">{cells}</div>
+        <p>Cells: {this.cellCount} | Hot: #{this.hotCell}</p>
       </div>
     );
   }
