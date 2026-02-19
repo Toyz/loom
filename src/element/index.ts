@@ -18,6 +18,12 @@ export { component, query, queryAll, styles } from "./decorators";
 // Lifecycle decorators
 export { catch_, suspend, mount, unmount } from "./lifecycle";
 
+// Event decorator
+export { event } from "./events";
+
+// Observer decorator
+export { observer } from "./observers";
+
 // Timing decorators
 export { interval, timeout, debounce, throttle, animationFrame } from "./timing";
 

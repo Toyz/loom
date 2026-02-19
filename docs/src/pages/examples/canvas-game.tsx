@@ -46,8 +46,9 @@ export default class ExampleCanvasGame extends LoomElement {
   }
 }
 
-const SOURCE = `import { LoomElement, component, reactive, css, styles, mount } from "@toyz/loom";
+const SOURCE = `import { LoomElement, component, reactive, css, styles, mount, event, observer } from "@toyz/loom";
 import "@toyz/loom/element/canvas";
+import type { DrawCallback } from "@toyz/loom/element/canvas";
 
 const sheet = css\`
   .game-wrapper { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
@@ -65,43 +66,86 @@ class BreakoutGame extends LoomElement {
   @reactive accessor score = 0;
   @reactive accessor lives = 3;
 
-  private paddleX = 0;
-  private ballX = 0; private ballY = 0;
-  private ballDX = 0; private ballDY = -300;
-  private bricks: { x: number; y: number; w: number; h: number; alive: boolean }[] = [];
+  private paddleX = 300;
+  private ball = { x: 300, y: 250, dx: 200, dy: -300 };
+  private bricks: { x: number; y: number; alive: boolean }[] = [];
+  private running = false;
 
   @mount init() {
-    this.buildBricks();
-    this.resetBall();
-    this.shadow.querySelector(".canvas-container")!
-      .addEventListener("mousemove", (e: MouseEvent) => {
-        const rect = (e.target as Element).getBoundingClientRect();
-        this.paddleX = ((e.clientX - rect.left) / rect.width) * 600;
-      });
+    // Build a 10×4 grid of bricks
+    for (let row = 0; row < 4; row++)
+      for (let col = 0; col < 10; col++)
+        this.bricks.push({ x: 20 + col * 56, y: 30 + row * 24, alive: true });
   }
 
-  buildBricks() { /* create 10×5 grid of bricks */ }
-  resetBall()   { /* center ball, random upward angle */ }
-
-  draw = (ctx: CanvasRenderingContext2D, dt: number) => {
-    const W = ctx.canvas.width, H = ctx.canvas.height;
+  draw: DrawCallback = (ctx, dt) => {
+    const W = 600, H = 400;
     ctx.clearRect(0, 0, W, H);
 
-    // Draw bricks, paddle, ball...
-    // Update physics: wall bounce, paddle bounce, brick collision
-    // Decrement lives on bottom edge, check win condition
+    // Bricks
+    for (const b of this.bricks) {
+      if (!b.alive) continue;
+      ctx.fillStyle = "#f472b6";
+      ctx.fillRect(b.x, b.y, 50, 18);
+    }
 
-    this.score += 10; // on brick hit
+    // Paddle
+    ctx.fillStyle = "#818cf8";
+    ctx.fillRect(this.paddleX - 40, H - 20, 80, 10);
+
+    // Ball
+    ctx.beginPath();
+    ctx.arc(this.ball.x, this.ball.y, 6, 0, Math.PI * 2);
+    ctx.fillStyle = "#34d399";
+    ctx.fill();
+
+    if (!this.running) return;
+
+    // Physics
+    this.ball.x += this.ball.dx * dt;
+    this.ball.y += this.ball.dy * dt;
+
+    // Wall bounce
+    if (this.ball.x < 6 || this.ball.x > W - 6) this.ball.dx *= -1;
+    if (this.ball.y < 6) this.ball.dy *= -1;
+
+    // Paddle bounce
+    if (this.ball.y > H - 26 &&
+        Math.abs(this.ball.x - this.paddleX) < 44) {
+      this.ball.dy = -Math.abs(this.ball.dy);
+    }
+
+    // Brick collision
+    for (const b of this.bricks) {
+      if (!b.alive) continue;
+      if (this.ball.x > b.x && this.ball.x < b.x + 50 &&
+          this.ball.y > b.y && this.ball.y < b.y + 18) {
+        b.alive = false;
+        this.ball.dy *= -1;
+        this.score += 10;
+      }
+    }
+
+    // Bottom edge — lose a life
+    if (this.ball.y > H) {
+      this.lives--;
+      this.ball = { x: 300, y: 250, dx: 200, dy: -300 };
+      this.running = false;
+    }
   };
 
   update() {
     return (
       <div class="game-wrapper">
         <div class="hud">Score: {this.score} | Lives: {this.lives}</div>
-        <div class="canvas-container">
+        <div class="canvas-container"
+             onMousemove={(e: MouseEvent) => {
+               const r = (e.target as Element).getBoundingClientRect();
+               this.paddleX = ((e.clientX - r.left) / r.width) * 600;
+             }}
+             onClick={() => { this.running = true; }}>
           <loom-canvas draw={this.draw} />
         </div>
-        <button onClick={() => this.resetGame()}>New Game</button>
       </div>
     );
   }

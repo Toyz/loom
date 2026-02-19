@@ -2,7 +2,7 @@
  * Loom — Canvas Element
  *
  * Built-in `<loom-canvas>` web component that wraps a `<canvas>`
- * with loom-keep, auto-resize via ResizeObserver, and per-frame
+ * with loom-keep, auto-resize via @observer, and per-frame
  * draw callbacks through Loom's centralized RenderLoop.
  *
  * Usage:
@@ -20,7 +20,8 @@ import { component, query, styles } from "./decorators";
 import { prop } from "../store/decorators";
 import { css } from "../css";
 import { animationFrame } from "./timing";
-import { mount, unmount } from "./lifecycle";
+import { event } from "./events";
+import { observer } from "./observers";
 
 const canvasStyles = css`
   :host {
@@ -56,7 +57,7 @@ export class LoomCanvas extends LoomElement {
   @prop accessor autoResize = true;
 
   /** Per-frame draw callback: (ctx, deltaTime, timestamp) => void */
-  draw: DrawCallback | null = null;
+  @event<DrawCallback>() accessor draw: DrawCallback | null = null;
 
   // ── DOM refs ──
 
@@ -66,7 +67,6 @@ export class LoomCanvas extends LoomElement {
   // ── Internal ──
 
   private _ctx: CanvasRenderingContext2D | null = null;
-  private _ro: ResizeObserver | null = null;
 
   /** Cached 2D rendering context */
   get ctx(): CanvasRenderingContext2D {
@@ -95,26 +95,14 @@ export class LoomCanvas extends LoomElement {
     return c;
   }
 
-  @mount
-  onMount() {
-    if (this.autoResize) {
-      this._ro = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const { width, height } = entry.contentRect;
-          const dpr = window.devicePixelRatio || 1;
-          this.canvasEl.width = Math.round(width * dpr);
-          this.canvasEl.height = Math.round(height * dpr);
-          this.ctx.scale(dpr, dpr);
-        }
-      });
-      this._ro.observe(this);
-    }
-  }
-
-  @unmount
-  onUnmount() {
-    this._ro?.disconnect();
-    this._ro = null;
+  @observer("resize")
+  private onResize(entry: ResizeObserverEntry) {
+    if (!this.autoResize) return;
+    const { width, height } = entry.contentRect;
+    const dpr = window.devicePixelRatio || 1;
+    this.canvasEl.width = Math.round(width * dpr);
+    this.canvasEl.height = Math.round(height * dpr);
+    this.ctx.scale(dpr, dpr);
   }
 
   /** Clear the full canvas */

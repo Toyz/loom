@@ -2,7 +2,8 @@
  * Element — Decorators  /element/decorators
  *
  * @component, @reactive, @prop, @computed, @mount, @unmount,
- * @query, @queryAll, @catch_, @suspend, @slot, @transition reference page.
+ * @query, @queryAll, @catch_, @suspend, @slot, @transition,
+ * @event, @observer reference page.
  */
 import { LoomElement } from "@toyz/loom";
 
@@ -158,6 +159,131 @@ renderDrawer() {
         </section>
 
         <section>
+          <h2>@event&lt;T&gt;</h2>
+          <p>
+            Typed callback prop for component-to-parent communication. Decorates an
+            auto-accessor that stores a function reference. The JSX runtime sets it as
+            a JS property — no <span class="ic">addEventListener</span> heuristic interference.
+          </p>
+          <h3>Declaring an event</h3>
+          <code-block lang="ts" code={`import { event, component, LoomElement } from "@toyz/loom";
+
+type DrawFn = (ctx: CanvasRenderingContext2D, dt: number, t: number) => void;
+
+@component("my-canvas")
+class MyCanvas extends LoomElement {
+  // Declare the callback prop with a type
+  @event<DrawFn>() accessor draw: DrawFn | null = null;
+
+  // Call it when you need to — null-safe
+  tick(dt: number, t: number) {
+    this.draw?.(this.ctx, dt, t);
+  }
+}`}></code-block>
+          <h3>Consumer usage</h3>
+          <code-block lang="tsx" code={`// Parent component passes a callback via JSX — clean, declarative
+<my-canvas draw={(ctx, dt, t) => {
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.fillStyle = "#818cf8";
+  ctx.fillRect(Math.sin(t) * 100 + 200, 100, 40, 40);
+}} />`}></code-block>
+          <h3>With custom form events</h3>
+          <code-block lang="ts" code={`type SubmitFn = (data: Record<string, string>) => void;
+
+@component("my-form")
+class MyForm extends LoomElement {
+  @event<SubmitFn>() accessor onsubmit: SubmitFn | null = null;
+
+  handleSubmit() {
+    const data = this.collectFormData();
+    this.onsubmit?.(data);
+  }
+}
+
+// Usage:
+<my-form onsubmit={(data) => console.log("Submitted:", data)} />`}></code-block>
+        </section>
+
+        <section>
+          <h2>@observer</h2>
+          <p>
+            Auto-managed DOM observers. Creates the observer when the element connects,
+            calls <span class="ic">.observe(this)</span>, and auto-disconnects on unmount.
+            The decorated method receives each entry individually. Supports three modes:
+          </p>
+
+          <h3>Resize</h3>
+          <p>
+            Respond to element size changes — perfect for canvas scaling,
+            responsive layouts, or chart redrawing.
+          </p>
+          <code-block lang="ts" code={`import { observer, component, LoomElement, query } from "@toyz/loom";
+
+@component("responsive-canvas")
+class ResponsiveCanvas extends LoomElement {
+  @query("canvas") accessor canvas!: HTMLCanvasElement;
+
+  @observer("resize")
+  onResize(entry: ResizeObserverEntry) {
+    const { width, height } = entry.contentRect;
+    const dpr = devicePixelRatio;
+    this.canvas.width = Math.round(width * dpr);
+    this.canvas.height = Math.round(height * dpr);
+    this.canvas.getContext("2d")!.scale(dpr, dpr);
+    this.redraw();
+  }
+}`}></code-block>
+
+          <h3>Intersection</h3>
+          <p>
+            Detect when components enter or leave the viewport — ideal for
+            lazy loading, analytics tracking, or play/pause behavior.
+          </p>
+          <code-block lang="ts" code={`@component("lazy-image")
+class LazyImage extends LoomElement {
+  @prop accessor src = "";
+  @reactive accessor loaded = false;
+
+  @observer("intersection", { threshold: 0.1, rootMargin: "200px" })
+  onVisible(entry: IntersectionObserverEntry) {
+    if (entry.isIntersecting && !this.loaded) {
+      this.loaded = true;  // triggers re-render with real <img>
+    }
+  }
+
+  update() {
+    return this.loaded
+      ? <img src={this.src} />
+      : <div class="skeleton" />;
+  }
+}`}></code-block>
+
+          <h3>Mutation</h3>
+          <p>
+            Watch for DOM changes inside the element — useful for auto-counting
+            children, syncing state with light DOM, or tracking slot content.
+          </p>
+          <code-block lang="ts" code={`@component("auto-counter")
+class AutoCounter extends LoomElement {
+  @reactive accessor childCount = 0;
+
+  @observer("mutation", { childList: true, subtree: true })
+  onChildChange(record: MutationRecord) {
+    this.childCount = this.children.length;
+  }
+
+  update() {
+    return (
+      <div>
+        <span class="badge">{this.childCount} items</span>
+        <slot></slot>
+      </div>
+    );
+  }
+}`}></code-block>
+        </section>
+
+        <section>
           <h2>API Reference</h2>
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
@@ -175,6 +301,8 @@ renderDrawer() {
               <tr><td><code>@queryAll(sel)</code></td><td>Field</td><td>Shadow DOM querySelectorAll</td></tr>
               <tr><td><code>@slot(name?)</code></td><td>Field</td><td>Typed slot-assigned elements, auto-updates on slotchange</td></tr>
               <tr><td><code>@transition(opts)</code></td><td>Method</td><td>Enter/leave CSS animations for conditional DOM</td></tr>
+              <tr><td><code>@event&lt;T&gt;()</code></td><td>Accessor</td><td>Typed callback prop (stored as JS property)</td></tr>
+              <tr><td><code>@observer(type, opts?)</code></td><td>Method</td><td>Auto-managed Resize/Intersection/Mutation observer</td></tr>
             </tbody>
           </table>
         </section>

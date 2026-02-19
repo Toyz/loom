@@ -53,6 +53,7 @@ export {
   LoomElement,
   component, query, queryAll, styles,
   catch_, suspend, mount, unmount,
+  event, observer,
   interval, timeout, debounce, throttle, animationFrame,
   form, lazy, slot, transition,
 } from "./element";
