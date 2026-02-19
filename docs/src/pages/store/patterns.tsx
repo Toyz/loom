@@ -44,7 +44,7 @@ class TodoList extends LoomElement {
     return (
       <ul>
         {todos.value.map(t => (
-          <li data-loom-key={t.id}>{t.text}</li>
+          <li loom-key={t.id}>{t.text}</li>
         ))}
       </ul>
     );

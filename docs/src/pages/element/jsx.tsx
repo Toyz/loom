@@ -34,14 +34,14 @@ export default class PageJsx extends LoomElement {
         <section>
           <h2>Keyed Reconciliation</h2>
           <p>
-            Use <span class="ic">data-loom-key</span> to enable efficient list diffing. Without keys, Loom re-uses
+            Use <span class="ic">loom-key</span> to enable efficient list diffing. Without keys, Loom re-uses
             nodes positionally. With keys, it correctly handles insertions, deletions, and reordering.
           </p>
           <code-block lang="ts" code={`update() {
   return (
     <ul>
       {this.items.map(item => (
-        <li data-loom-key={item.id}>{item.name}</li>
+        <li loom-key={item.id}>{item.name}</li>
       ))}
     </ul>
   );

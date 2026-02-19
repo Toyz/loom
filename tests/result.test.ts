@@ -50,6 +50,26 @@ describe("LoomResult", () => {
     });
   });
 
+  describe("value getter", () => {
+    it("returns same value as .data on Ok", () => {
+      const r = LoomResult.ok(42);
+      expect(r.value).toBe(42);
+      expect(r.value).toBe(r.data);
+    });
+
+    it("returns undefined on Err", () => {
+      const r = LoomResult.err(new Error("fail"));
+      expect(r.value).toBeUndefined();
+    });
+
+    it("works with complex types", () => {
+      const obj = { name: "test", items: [1, 2] };
+      const r = LoomResult.ok(obj);
+      expect(r.value).toBe(obj);
+      expect(r.value!.name).toBe("test");
+    });
+  });
+
   // ── Combinators ──
 
   describe("unwrap()", () => {

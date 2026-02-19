@@ -25,6 +25,11 @@ export class LoomResult<T, E = Error> {
     this.error = error;
   }
 
+  /** Alias for `data` — ergonomic access to the Ok value. */
+  get value(): T | undefined {
+    return this.data;
+  }
+
   // ── Static constructors ──
 
   /** Create an Ok result wrapping `data`. */

@@ -166,19 +166,30 @@ function appendChildren(parent: Node, children: any): void {
 /* ── JSX type declarations ─────────────────────────────────── */
 
 type EventHandler<E extends Event = Event> = (event: E) => void;
+type MaybeReactive<T> = T | (() => T);
+type ClassValue = MaybeReactive<string>;
 
 export interface LoomHTMLAttributes {
   id?: string;
-  className?: string;
-  class?: string | (() => string);
-  style?: string | Partial<CSSStyleDeclaration>;
+  className?: ClassValue;
+  class?: ClassValue;
+  style?: MaybeReactive<string | Partial<CSSStyleDeclaration>>;
   slot?: string;
-  title?: string;
-  tabIndex?: number;
-  hidden?: boolean;
+  title?: MaybeReactive<string>;
+  tabIndex?: MaybeReactive<number>;
+  hidden?: MaybeReactive<boolean>;
   draggable?: boolean;
+  contentEditable?: boolean | "true" | "false" | "inherit";
+  spellcheck?: boolean;
+  dir?: "ltr" | "rtl" | "auto";
+  lang?: string;
+  role?: MaybeReactive<string>;
+  accessKey?: string;
+  inputMode?: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search";
+  enterKeyHint?: "enter" | "done" | "go" | "next" | "previous" | "search" | "send";
   innerHTML?: string;
   rawHTML?: string;
+  [key: `aria-${string}`]: MaybeReactive<string | number | boolean | undefined>;
   [key: `data-${string}`]: string | number | boolean | undefined;
   ref?: (el: HTMLElement) => void;
   onClick?: EventHandler<MouseEvent>;
@@ -228,52 +239,58 @@ export interface LoomHTMLAttributes {
 }
 
 export interface LoomInputAttributes extends LoomHTMLAttributes {
-  type?: string; value?: string | number; placeholder?: string;
-  disabled?: boolean; readonly?: boolean; required?: boolean;
-  checked?: boolean; min?: string | number; max?: string | number;
+  type?: string; value?: MaybeReactive<string | number>; placeholder?: MaybeReactive<string>;
+  disabled?: MaybeReactive<boolean>; readonly?: MaybeReactive<boolean>; required?: MaybeReactive<boolean>;
+  checked?: MaybeReactive<boolean>; min?: MaybeReactive<string | number>; max?: MaybeReactive<string | number>;
   step?: string | number; name?: string; pattern?: string;
   autocomplete?: string; autofocus?: boolean; maxLength?: number; minLength?: number;
+  list?: string; accept?: string; multiple?: boolean; size?: number; form?: string;
+  capture?: string;
 }
 
 export interface LoomTextAreaAttributes extends LoomHTMLAttributes {
-  value?: string; placeholder?: string; disabled?: boolean;
-  readonly?: boolean; required?: boolean; rows?: number; cols?: number;
+  value?: MaybeReactive<string>; placeholder?: MaybeReactive<string>; disabled?: MaybeReactive<boolean>;
+  readonly?: MaybeReactive<boolean>; required?: MaybeReactive<boolean>; rows?: number; cols?: number;
   name?: string; maxLength?: number; minLength?: number;
+  wrap?: "hard" | "soft" | "off"; autocomplete?: string; form?: string;
 }
 
 export interface LoomSelectAttributes extends LoomHTMLAttributes {
-  value?: string; disabled?: boolean; required?: boolean; multiple?: boolean; name?: string;
+  value?: MaybeReactive<string>; disabled?: MaybeReactive<boolean>; required?: MaybeReactive<boolean>; multiple?: boolean; name?: string;
+  size?: number; form?: string; autocomplete?: string;
 }
 
 export interface LoomOptionAttributes extends LoomHTMLAttributes {
-  value?: string; disabled?: boolean; selected?: boolean; label?: string;
+  value?: MaybeReactive<string>; disabled?: MaybeReactive<boolean>; selected?: MaybeReactive<boolean>; label?: string;
 }
 
 export interface LoomAnchorAttributes extends LoomHTMLAttributes {
-  href?: string; target?: string; rel?: string; download?: string | boolean;
+  href?: MaybeReactive<string>; target?: string; rel?: string; download?: string | boolean;
+  type?: string; hreflang?: string; referrerPolicy?: string;
 }
 
 export interface LoomImageAttributes extends LoomHTMLAttributes {
-  src?: string; alt?: string; width?: string | number; height?: string | number;
+  src?: MaybeReactive<string>; alt?: MaybeReactive<string>; width?: string | number; height?: string | number;
   loading?: "lazy" | "eager"; crossOrigin?: string;
 }
 
-export interface LoomLabelAttributes extends LoomHTMLAttributes { htmlFor?: string; }
+export interface LoomLabelAttributes extends LoomHTMLAttributes { htmlFor?: string; for?: string; }
 export interface LoomCanvasAttributes extends LoomHTMLAttributes { width?: string | number; height?: string | number; }
 export interface LoomButtonAttributes extends LoomHTMLAttributes {
-  type?: "button" | "submit" | "reset"; disabled?: boolean; name?: string; value?: string;
+  type?: "button" | "submit" | "reset"; disabled?: MaybeReactive<boolean>; name?: string; value?: string;
 }
 export interface LoomFormAttributes extends LoomHTMLAttributes {
   action?: string; method?: string; encType?: string; noValidate?: boolean;
+  target?: string; autocomplete?: string; name?: string;
 }
 export interface LoomVideoAttributes extends LoomHTMLAttributes {
-  src?: string; controls?: boolean; autoplay?: boolean; loop?: boolean;
-  muted?: boolean; poster?: string; width?: string | number; height?: string | number;
+  src?: MaybeReactive<string>; controls?: boolean; autoplay?: boolean; loop?: boolean;
+  muted?: MaybeReactive<boolean>; poster?: MaybeReactive<string>; width?: string | number; height?: string | number;
 }
 export interface LoomAudioAttributes extends LoomHTMLAttributes {
-  src?: string; controls?: boolean; autoplay?: boolean; loop?: boolean; muted?: boolean;
+  src?: MaybeReactive<string>; controls?: boolean; autoplay?: boolean; loop?: boolean; muted?: MaybeReactive<boolean>;
 }
-export interface LoomSourceAttributes extends LoomHTMLAttributes { src?: string; type?: string; media?: string; }
+export interface LoomSourceAttributes extends LoomHTMLAttributes { src?: MaybeReactive<string>; type?: string; media?: string; }
 export interface LoomSVGAttributes extends LoomHTMLAttributes {
   viewBox?: string; xmlns?: string; fill?: string; stroke?: string;
   width?: string | number; height?: string | number;
@@ -313,8 +330,8 @@ export namespace JSX {
     caption: LoomHTMLAttributes; colgroup: LoomHTMLAttributes;
     col: LoomHTMLAttributes & { span?: number };
     br: LoomHTMLAttributes; hr: LoomHTMLAttributes;
-    details: LoomHTMLAttributes & { open?: boolean }; summary: LoomHTMLAttributes;
-    dialog: LoomHTMLAttributes & { open?: boolean }; template: LoomHTMLAttributes;
+    details: LoomHTMLAttributes & { open?: MaybeReactive<boolean> }; summary: LoomHTMLAttributes;
+    dialog: LoomHTMLAttributes & { open?: MaybeReactive<boolean> }; template: LoomHTMLAttributes;
     slot: LoomHTMLAttributes & { name?: string };
     svg: LoomSVGAttributes; path: LoomSVGAttributes & { d?: string };
     circle: LoomSVGAttributes & { cx?: number; cy?: number; r?: number };

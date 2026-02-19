@@ -6,7 +6,7 @@
  * Event listeners are tracked via __loomEvents expando for diffing.
  *
  * Key features:
- *   - Keyed reconciliation via `data-loom-key`
+ *   - Keyed reconciliation via `loom-key`
  *   - `loom-keep` skips nodes entirely (escape hatch for imperative DOM)
  *   - Preserves focus, selection, scroll position
  *   - Concurrent-safe: void update() = no morph, returned Node = auto-morph
@@ -249,7 +249,7 @@ function patchJSProps(old: HTMLElement, next: HTMLElement): void {
 
 function getKey(node: Node): string | null {
   if (node.nodeType !== Node.ELEMENT_NODE) return null;
-  return (node as Element).getAttribute("data-loom-key");
+  return (node as Element).getAttribute("loom-key");
 }
 
 function isKeep(node: Node): boolean {

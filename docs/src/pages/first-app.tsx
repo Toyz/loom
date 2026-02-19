@@ -140,7 +140,7 @@ export default class PageFirstApp extends LoomElement {
               <div class="desc">React to store changes</div>
             </div>
             <div class="concept-card">
-              <div class="name">data-loom-key</div>
+              <div class="name">loom-key</div>
               <div class="desc">Keyed DOM diffing</div>
             </div>
           </div>
@@ -288,7 +288,7 @@ export class TodoApp extends LoomElement {
           : this.items.map(t => (
               <div
                 class={\`todo \${t.done ? "done" : ""}\`}
-                data-loom-key={t.id}
+                loom-key={t.id}
               >
                 <span class="label" onClick={() => this.toggle(t.id)}>
                   {t.done ? "[x] " : "[ ] "}{t.text}
@@ -377,7 +377,7 @@ app.start();`}></code-block>
           <ul>
             <li><span class="ic">@reactive</span> triggers re-renders when properties change</li>
             <li><span class="ic">@watch(store)</span> auto-subscribes to stores — no manual cleanup needed</li>
-            <li><span class="ic">data-loom-key</span> enables efficient keyed DOM reconciliation</li>
+            <li><span class="ic">loom-key</span> enables efficient keyed DOM reconciliation</li>
             <li>Persistence is a single constructor option — swap <span class="ic">LocalAdapter</span> for <span class="ic">SessionAdapter</span> or your own backend</li>
             <li>No build config beyond <span class="ic">tsconfig.json</span> — see <loom-link to="/guides/getting-started" style="color: var(--accent)">Getting Started</loom-link></li>
           </ul>

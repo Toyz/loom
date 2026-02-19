@@ -57,7 +57,7 @@ export class TodoList extends LoomElement {
         <label htmlFor="toggle-all">Mark all as complete</label>
         <ul class="todo-list">
           {visible.map((todo) => (
-            <todo-item data-loom-key={todo.id} todo={todo}></todo-item>
+            <todo-item loom-key={todo.id} todo={todo}></todo-item>
           ))}
         </ul>
       </section>
