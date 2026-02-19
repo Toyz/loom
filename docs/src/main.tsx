@@ -4,6 +4,7 @@
 import "./styles.css";
 import "./icons";       // register icons before any component uses them
 import "./components/code-block";  // syntax-highlighted code blocks
+import "./components/source-block"; // live source from GitHub raw API
 
 import { app } from "@toyz/loom";
 import { LoomRouter } from "@toyz/loom/router";

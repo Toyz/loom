@@ -42,87 +42,9 @@ export default class ExampleApi extends LoomElement {
 
         <section>
           <h2>Source</h2>
-          <code-block lang="ts" code={SOURCE}></code-block>
+          <source-block file="docs/src/pages/examples/components/api-demo.tsx"></source-block>
         </section>
       </div>
     );
   }
 }
-
-const SOURCE = `import { LoomElement, component, css, styles, catch_ } from "@toyz/loom";
-import { api, intercept } from "@toyz/loom";
-import type { ApiState, ApiCtx } from "@toyz/loom";
-
-interface TeamMember {
-  name: string;
-  role: string;
-  initials: string;
-}
-
-const sheet = css\`
-  :host { display: block; }
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 0.75rem;
-  }
-  .card {
-    padding: 1rem; border-radius: 8px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    text-align: center;
-  }
-  .avatar {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--accent); color: white;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem;
-  }
-  .name { font-weight: 600; font-size: 0.9rem; }
-  .role { font-size: 0.75rem; opacity: 0.5; margin-top: 0.25rem; }
-  .error { color: #f87171; padding: 1rem; border-radius: 8px; }
-\`;
-
-@component("api-demo")
-@styles(sheet)
-class ApiDemo extends LoomElement {
-  // Scoped error boundary — only catches errors from the "team" accessor
-  @catch_("team")
-  handleTeamError(err: unknown) {
-    this.shadow.innerHTML = \`<p>⚠ \${err}</p>\`;
-  }
-
-  // Post-fetch interceptor: Response → JSON
-  @intercept({ after: true })
-  json(ctx: ApiCtx) {
-    return ctx.response.json();
-  }
-
-  // Declarative data fetching — no manual setup needed
-  @api<TeamMember[]>({
-    fn: () => fetch("/api/team.json"),
-    pipe: ["json"],      // runs the @intercept method above after fetch
-    staleTime: 30_000,   // data considered fresh for 30s
-    retry: 2,            // retry up to 2 times on failure
-  })
-  accessor team!: ApiState<TeamMember[]>;
-
-  update() {
-    // Tri-state match — loading, ok, err in one call
-    return this.team.match({
-      loading: () => <div>Loading…</div>,
-      ok:  (team) => (
-        <div class="card-grid">
-          {team.map(m => (
-            <div class="card">
-              <div class="avatar">{m.initials}</div>
-              <div>{m.name}</div>
-              <div>{m.role}</div>
-            </div>
-          ))}
-        </div>
-      ),
-      err: (e) => <div class="error">{e.message}</div>,
-    });
-  }
-}`;

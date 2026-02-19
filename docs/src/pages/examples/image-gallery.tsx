@@ -22,61 +22,6 @@ const IMAGES = [
   "https://rgba.lol/95/6f/f5/ff/300x300.png",
 ];
 
-const SOURCE = `import { LoomElement, component, styles, css } from "@toyz/loom";
-import "@toyz/loom/element/image";
-
-const IMAGES = [
-  "https://rgba.lol/e8/45/6b/ff/300x300.png",
-  "https://rgba.lol/81/8c/f8/ff/300x300.png",
-  "https://rgba.lol/34/d3/99/ff/300x300.png",
-  "https://rgba.lol/fb/bc/04/ff/300x300.png",
-  "https://rgba.lol/a7/8b/fa/ff/300x300.png",
-  "https://rgba.lol/f9/73/16/ff/300x300.png",
-  "https://rgba.lol/06/b6/d4/ff/300x300.png",
-  "https://rgba.lol/ec/48/99/ff/300x300.png",
-];
-
-@component("image-gallery")
-@styles(css\`
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
-  }
-  loom-image {
-    border-radius: 12px;
-    aspect-ratio: 1;
-    width: 100%;
-  }
-  .skeleton {
-    width: 100%; height: 100%;
-    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-    background-size: 200% 200%;
-    animation: pulse 2s ease-in-out infinite;
-    display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.25);
-    font-size: 0.75rem; font-family: monospace;
-    border-radius: inherit;
-  }
-  @keyframes pulse {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-\`)
-class ImageGallery extends LoomElement {
-  update() {
-    return (
-      <div class="grid">
-        {IMAGES.map((url, i) => (
-          <loom-image src={url} alt={"Swatch " + (i+1)} fit="cover">
-            <div slot="placeholder" class="skeleton">loading...</div>
-          </loom-image>
-        ))}
-      </div>
-    );
-  }
-}`;
-
 export default class PageExampleImageGallery extends LoomElement {
   update() {
     return (
@@ -137,7 +82,7 @@ export default class PageExampleImageGallery extends LoomElement {
 
         <section>
           <h2>Source</h2>
-          <code-block lang="tsx" code={SOURCE}></code-block>
+          <source-block file="docs/src/pages/examples/image-gallery.tsx"></source-block>
         </section>
       </div>
     );

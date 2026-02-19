@@ -58,6 +58,7 @@ LoomIcon.registerAll({
   "moon":          '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />',
 
   // Misc
+  "alert-triangle":  '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />',
   "clock":           '<circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />',
   "canvas":          '<rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18" /><circle cx="7" cy="6" r="1" fill="currentColor" stroke="none" /><circle cx="11" cy="6" r="1" fill="currentColor" stroke="none" />',
   "image":           '<rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" />',

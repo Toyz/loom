@@ -34,40 +34,10 @@ export default class ExampleTiming extends LoomElement {
         </section>
 
         <section>
-          <h2>Source Highlights</h2>
-          <code-block lang="ts" code={SOURCE}></code-block>
+          <h2>Source</h2>
+          <source-block file="docs/src/pages/examples/components/timing-showcase.tsx"></source-block>
         </section>
       </div>
     );
   }
 }
-
-const SOURCE = `// Stopwatch — @interval ticks every 100ms
-@interval(100)
-tick() { this.elapsed++; }
-
-// Toast — @timeout auto-dismisses after 3s
-@timeout(3000)
-hideToast() { this.toastVisible = false; }
-
-// Search — @debounce waits for idle keystrokes
-@debounce(300)
-search(query: string) {
-  this.debouncedCount++;
-  this.debouncedValue = query;
-}
-
-// Mouse — @throttle rate-limits move events
-@throttle(60)
-onMove(x: number, y: number) {
-  this.throttledMoves++;
-  this.dotX = x; this.dotY = y;
-}
-
-// Ball — @animationFrame with layer 0
-@animationFrame(0)
-bounce(dt: number) {
-  this.ballX += this.vx * dt;
-  this.ballY += this.vy * dt;
-  // wall collision…
-}`;
