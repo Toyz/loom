@@ -63,6 +63,10 @@
       "types": "./dist/element/canvas.d.ts",
       "import": "./dist/element/canvas.js"
     },
+    "./element/image": {
+      "types": "./dist/element/image.d.ts",
+      "import": "./dist/element/image.js"
+    },
     "./decorators": {
       "types": "./dist/decorators/index.d.ts",
       "import": "./dist/decorators/index.js"

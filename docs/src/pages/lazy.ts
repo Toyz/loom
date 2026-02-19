@@ -81,6 +81,11 @@ class LazyElementIcon extends LoomElement {}
 @lazy(() => import("./element/canvas"))
 class LazyElementCanvas extends LoomElement {}
 
+@route("/image", { group: ElementGroup })
+@component("page-element-image")
+@lazy(() => import("./element/image"))
+class LazyElementImage extends LoomElement {}
+
 @route("/decorators", { group: ElementGroup })
 @component("page-element-decorators")
 @lazy(() => import("./element/decorators"))
@@ -240,3 +245,8 @@ class LazyExampleTiming extends LoomElement {}
 @component("page-example-canvas-game")
 @lazy(() => import("./examples/canvas-game"))
 class LazyExampleCanvasGame extends LoomElement {}
+
+@route("/image-gallery", { group: ExamplesGroup })
+@component("page-example-image-gallery")
+@lazy(() => import("./examples/image-gallery"))
+class LazyExampleImageGallery extends LoomElement {}

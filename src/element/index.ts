@@ -11,6 +11,7 @@ export { LoomElement } from "./element";
 // e.g. import { LoomVirtual } from "@toyz/loom/element/virtual"
 // e.g. import { LoomIcon } from "@toyz/loom/element/icon"
 // e.g. import { LoomCanvas } from "@toyz/loom/element/canvas"
+// e.g. import { LoomImage } from "@toyz/loom/element/image"
 
 // Element decorators
 export { component, query, queryAll, styles } from "./decorators";

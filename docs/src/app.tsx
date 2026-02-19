@@ -32,6 +32,7 @@ const sections: NavSection[] = [
       { label: "Virtual List",    to: "/element/virtual-list",   icon: "list",      divider: "Built-ins" },
       { label: "Icon",            to: "/element/icon",           icon: "star" },
       { label: "Canvas",          to: "/element/canvas",         icon: "canvas" },
+      { label: "Image",           to: "/element/image",          icon: "image" },
     ],
   },
   {
@@ -84,6 +85,7 @@ const sections: NavSection[] = [
       { label: "Timing",          to: "/examples/timing-demo",   icon: "clock" },
       { label: "Stress Test",     to: "/examples/stress-test",   icon: "zap" },
       { label: "Canvas Game",     to: "/examples/canvas-game",   icon: "canvas" },
+      { label: "Image Gallery",   to: "/examples/image-gallery", icon: "image" },
     ],
   },
 ];
