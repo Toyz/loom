@@ -64,6 +64,17 @@ describe("MockTransport", () => {
     expect(result).toEqual({ id: "1", name: "Alice" });
   });
 
+  it("supports class references for router identifiers", async () => {
+    // mock using the class reference
+    transport.mock(UserRouter, "getUser", { id: "2", name: "Bob" });
+    // call using the string name (what the transport does internally)
+    const result = await transport.call<any>("UserRouter", "getUser", ["2"]);
+    expect(result).toEqual({ id: "2", name: "Bob" });
+
+    // assertCalled using the class reference
+    expect(() => transport.assertCalled(UserRouter, "getUser", ["2"])).not.toThrow();
+  });
+
   it("throws for unmocked calls", async () => {
     await expect(
       transport.call("UserRouter", "getUser", ["1"]),

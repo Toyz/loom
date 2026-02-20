@@ -44,21 +44,21 @@ const MOCK_USERS: User[] = [
 
 const transport = new MockTransport();
 transport
-  .mock("UserRouter", "listUsers", () => [...MOCK_USERS])
-  .mock("UserRouter", "getUser", (id: string) => {
+  .mock(UserRouter, "listUsers", () => [...MOCK_USERS])
+  .mock(UserRouter, "getUser", (id: string) => {
     const user = MOCK_USERS.find(u => u.id === id);
     if (!user) throw new Error(`User ${id} not found`);
     return { ...user };
   })
-  .mock("UserRouter", "updateRole", (id: string, role: "admin" | "member") => {
+  .mock(UserRouter, "updateRole", (id: string, role: "admin" | "member") => {
     const user = MOCK_USERS.find(u => u.id === id);
     if (!user) throw new Error(`User ${id} not found`);
     user.role = role;
     return { ...user };
   })
-  .delay("UserRouter", "listUsers", 400)
-  .delay("UserRouter", "getUser", 250)
-  .delay("UserRouter", "updateRole", 600);
+  .delay(UserRouter, "listUsers", 400)
+  .delay(UserRouter, "getUser", 250)
+  .delay(UserRouter, "updateRole", 600);
 
 app.use(RpcTransport, transport);
 
