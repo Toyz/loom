@@ -16,6 +16,9 @@ npm install @toyz/loom-rpc
 
 ```ts
 // contracts/user.ts — shared between client and server
+import { service } from "@toyz/loom-rpc";
+
+@service("UserService")
 export class UserRouter {
   getUser(id: string): User {
     return null!;
@@ -29,7 +32,7 @@ export class UserRouter {
 }
 ```
 
-The class is the type contract. Methods have dummy bodies — they exist for TypeScript to extract parameter and return types. Nothing runs. Nothing ships to the client.
+The class is the type contract. Methods have dummy bodies — they exist for TypeScript to extract parameter and return types. The `@service` decorator assigns a stable name that survives minification; without it, `class.name` is used as a fallback.
 
 ### 2. Register a Transport
 

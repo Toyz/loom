@@ -23,6 +23,8 @@ import { LoomResult } from "@toyz/loom";
 import type { RpcMethods, InferReturn, RpcQueryOptions } from "./types";
 import { RpcTransport } from "./transport";
 
+import { resolveServiceName } from "./service";
+
 /**
  * @rpc(Router, method, opts?) — Query decorator
  *
@@ -47,7 +49,7 @@ export function rpc<
   opts?: RpcQueryOptions<TRouter, TMethod>,
 ) {
   type TReturn = InferReturn<TRouter, TMethod>;
-  const routerName = router.name;
+  const routerName = resolveServiceName(router);
 
   return <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, ApiState<TReturn>>,

@@ -46,7 +46,10 @@ export default class PageRpcOverview extends LoomElement {
             <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>1. Define a Contract</h2>
           </div>
-          <code-block lang="ts" code={`// contracts/user.ts — shared between client & server
+          <code-block lang="ts" code={`import { service } from "@toyz/loom-rpc";
+
+// contracts/user.ts — shared between client & server
+@service("UserService")
 export class UserRouter {
   getUser(id: string): User { return null!; }
   listUsers(page: number, limit: number): User[] { return null!; }
@@ -54,8 +57,8 @@ export class UserRouter {
 }`}></code-block>
           <p>
             Methods have dummy <span class="ic">return null!</span> bodies — they exist solely for
-            type inference. Method names autocomplete, argument types are checked at compile time,
-            and return types flow into <span class="ic">ApiState&lt;T&gt;</span> automatically.
+            type inference. The <span class="ic">@service</span> decorator assigns a stable name
+            that survives minification. Without it, <span class="ic">class.name</span> is used as a fallback.
           </p>
         </section>
 

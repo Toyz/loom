@@ -13,7 +13,7 @@ import {
   app,
 } from "@toyz/loom";
 import type { ApiState } from "@toyz/loom";
-import { rpc, mutate, RpcTransport } from "@toyz/loom-rpc";
+import { rpc, mutate, RpcTransport, service } from "@toyz/loom-rpc";
 import { MockTransport } from "@toyz/loom-rpc/testing";
 import type { RpcMutator } from "@toyz/loom-rpc";
 import { scrollbar } from "../../../shared/scrollbar";
@@ -27,6 +27,7 @@ interface User {
   role: "admin" | "member";
 }
 
+@service("UserService")
 class UserRouter {
   getUser(id: string): User { return null!; }
   listUsers(): User[] { return null!; }

@@ -16,6 +16,8 @@ import { Reactive } from "@toyz/loom/store";
 import type { RpcMethods, InferArgs, InferReturn, RpcMutator } from "./types";
 import { RpcTransport } from "./transport";
 
+import { resolveServiceName } from "./service";
+
 /**
  * @mutate(Router, method) — Mutation decorator
  *
@@ -41,7 +43,7 @@ export function mutate<
 ) {
   type TArgs = InferArgs<TRouter, TMethod>;
   type TReturn = InferReturn<TRouter, TMethod>;
-  const routerName = router.name;
+  const routerName = resolveServiceName(router);
 
   return <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, RpcMutator<TArgs extends any[] ? TArgs : [TArgs], TReturn>>,

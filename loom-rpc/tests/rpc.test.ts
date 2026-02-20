@@ -6,8 +6,9 @@
 
 import { describe, it, expect, beforeEach } from "vitest";
 import { app } from "@toyz/loom";
-import { RpcTransport, HttpTransport, RpcError } from "@toyz/loom-rpc";
+import { RpcTransport, HttpTransport, RpcError, service, SERVICE_NAME } from "@toyz/loom-rpc";
 import { MockTransport } from "@toyz/loom-rpc/testing";
+import { resolveServiceName } from "../src/service";
 
 // ── Contract classes for testing ──
 
@@ -15,6 +16,11 @@ class UserRouter {
   getUser(id: string): { id: string; name: string } { return null!; }
   listUsers(page: number, limit: number): { id: string; name: string }[] { return null!; }
   createUser(name: string, email: string): { id: string } { return null!; }
+}
+
+@service("OrderService")
+class OrderRouter {
+  getOrder(id: string): { id: string; total: number } { return null!; }
 }
 
 // ── Transport Tests ──
@@ -216,5 +222,38 @@ describe("DI integration", () => {
     const resolved = app.get(RpcTransport);
     expect(resolved).toBe(transport);
     expect(resolved).toBeInstanceOf(HttpTransport);
+  });
+});
+
+// ── @service Decorator Tests ──
+
+describe("@service decorator", () => {
+  it("stamps SERVICE_NAME on the class", () => {
+    expect((OrderRouter as any)[SERVICE_NAME]).toBe("OrderService");
+  });
+
+  it("resolveServiceName returns @service name when present", () => {
+    expect(resolveServiceName(OrderRouter)).toBe("OrderService");
+  });
+
+  it("resolveServiceName falls back to class.name when no @service", () => {
+    expect(resolveServiceName(UserRouter)).toBe("UserRouter");
+  });
+
+  it("MockTransport resolves @service names from class references", async () => {
+    const transport = new MockTransport();
+    transport.mock(OrderRouter, "getOrder", { id: "1", total: 99 });
+
+    // transport.call uses the string — @rpc would send resolveServiceName(OrderRouter) = "OrderService"
+    const result = await transport.call<any>("OrderService", "getOrder", ["1"]);
+    expect(result).toEqual({ id: "1", total: 99 });
+  });
+
+  it("MockTransport assertCalled works with @service class refs", async () => {
+    const transport = new MockTransport();
+    transport.mock(OrderRouter, "getOrder", { id: "1", total: 50 });
+    await transport.call("OrderService", "getOrder", ["1"]);
+
+    expect(() => transport.assertCalled(OrderRouter, "getOrder", ["1"])).not.toThrow();
   });
 });

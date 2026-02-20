@@ -8,6 +8,7 @@
 // Decorators
 export { rpc } from "./rpc";
 export { mutate } from "./mutate";
+export { service, SERVICE_NAME } from "./service";
 
 // Transport
 export { RpcTransport, HttpTransport, RpcError } from "./transport";

@@ -16,8 +16,9 @@
  */
 
 import { RpcTransport } from "./transport";
+import { resolveServiceName } from "./service";
 
-type RouterIdent = string | { name: string };
+type RouterIdent = string | (new (...args: any[]) => any);
 
 export class MockTransport extends RpcTransport {
   private mocks = new Map<string, any>();
@@ -26,7 +27,7 @@ export class MockTransport extends RpcTransport {
   private delays = new Map<string, number>();
 
   private getRouterName(router: RouterIdent): string {
-    return typeof router === "string" ? router : router.name;
+    return typeof router === "string" ? router : resolveServiceName(router);
   }
 
   /** Register a mock response for a specific router.method */
