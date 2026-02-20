@@ -5,6 +5,7 @@
 import { LoomElement, component, reactive, on, css, mount, query } from "@toyz/loom";
 import { LoomLink, RouteChanged } from "@toyz/loom/router";
 import { docStyles } from "./styles/doc-page";
+import "./components/doc-search";
 
 interface NavItem { label: string; to: string; icon: string; divider?: string; dividerVersion?: string }
 interface NavSection { title: string; items: NavItem[] }
@@ -296,6 +297,43 @@ const styles = css`
     white-space: nowrap;
   }
 
+  /* ── Search Bar ── */
+
+  .search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 16px 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-subtle, #1e1e2a);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .search-trigger:hover {
+    background: var(--bg-hover, #22222e);
+    border-color: rgba(129, 140, 248, 0.3);
+  }
+  .search-trigger loom-icon {
+    flex-shrink: 0;
+    color: var(--text-muted, #5e5e74);
+  }
+  .search-trigger-text {
+    flex: 1;
+    font-size: 0.8rem;
+    color: var(--text-muted, #5e5e74);
+  }
+  .search-trigger-kbd {
+    font-size: 0.6rem;
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    color: var(--text-muted, #5e5e74);
+    border: 1px solid var(--border-subtle, #1e1e2a);
+    padding: 2px 5px;
+    border-radius: 4px;
+    opacity: 0.7;
+  }
+
   /* ── Navigation ── */
 
   nav {
@@ -572,6 +610,11 @@ export class DocsApp extends LoomElement {
     return this.currentPath === to || this.currentPath.startsWith(to + "/");
   }
 
+  openSearch() {
+    const search = this.shadow.querySelector("doc-search") as any;
+    search?.open();
+  }
+
   update() {
     return (
       <div>
@@ -606,6 +649,12 @@ export class DocsApp extends LoomElement {
               <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
             </button>
           </div>
+
+          <button class="search-trigger" onClick={() => this.openSearch()}>
+            <loom-icon name="search" size={15}></loom-icon>
+            <span class="search-trigger-text">Search...</span>
+            <span class="search-trigger-kbd">⌘K</span>
+          </button>
 
           <nav>
             <div class="home-item">
@@ -650,6 +699,7 @@ export class DocsApp extends LoomElement {
             <loom-outlet styles={[docStyles]}></loom-outlet>
           </div>
         </main>
+        <doc-search></doc-search>
       </div>
     );
   }
