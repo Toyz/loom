@@ -82,3 +82,42 @@ describe("@emit (method)", () => {
     expect(fn.mock.calls[0][0].count).toBe(7);
   });
 });
+
+describe("@on (resolver)", () => {
+  it("lazily resolves target via callback and subscribes", () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @on((el: any) => el.shadowRoot!, "custom-event")
+      onShadowEvent(e: Event) { fn((e as CustomEvent).detail); }
+    }
+
+    customElements.define(tag, El);
+
+    const el = document.createElement(tag);
+    document.body.appendChild(el);
+
+    el.shadowRoot!.dispatchEvent(new CustomEvent("custom-event", { detail: "hello" }));
+    expect(fn).toHaveBeenCalledWith("hello");
+  });
+
+  it("cleans up resolver-bound listeners on disconnect", () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @on((el: any) => el.shadowRoot!, "custom-event")
+      onShadowEvent(e: Event) { fn(); }
+    }
+
+    customElements.define(tag, El);
+
+    const el = document.createElement(tag);
+    document.body.appendChild(el);
+    document.body.removeChild(el);
+
+    el.shadowRoot!.dispatchEvent(new CustomEvent("custom-event"));
+    expect(fn).not.toHaveBeenCalled();
+  });
+});

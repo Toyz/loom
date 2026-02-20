@@ -23,10 +23,17 @@ import { bus, type Constructor } from "../bus";
  * @on(window, "resize")
  * onResize(e: Event) { ... }
  * ```
+ *
+ * Resolver — lazily resolve target at connect time (shadow DOM, @query, etc.):
+ * ```ts
+ * @on(el => el.shadow, "scroll")
+ * onShadowScroll(e: Event) { ... }
+ * ```
  */
 export function on<T extends LoomEvent>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function on(target: EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
-export function on(typeOrTarget: Constructor<LoomEvent> | EventTarget, event?: string) {
+export function on(resolver: (el: any) => EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
+export function on(typeOrTarget: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget), event?: string) {
   return (method: Function, context: ClassMethodDecoratorContext) => {
     const key = String(context.name);
 
@@ -43,9 +50,13 @@ export function on(typeOrTarget: Constructor<LoomEvent> | EventTarget, event?: s
       if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
       this[CONNECT_HOOKS].push((el: any) => {
         if (event !== undefined) {
+          // Resolve target: arrow/function resolver has no .prototype, class constructors do
+          const target = typeof typeOrTarget === "function" && !(typeOrTarget as any).prototype
+            ? (typeOrTarget as (el: any) => EventTarget)(el)
+            : typeOrTarget as EventTarget;
           const fn = (e: Event) => method.call(el, e);
-          (typeOrTarget as EventTarget).addEventListener(event!, fn);
-          return () => (typeOrTarget as EventTarget).removeEventListener(event!, fn);
+          target.addEventListener(event!, fn);
+          return () => target.removeEventListener(event!, fn);
         } else {
           return bus.on(typeOrTarget as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
         }

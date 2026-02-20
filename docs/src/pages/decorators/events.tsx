@@ -65,6 +65,25 @@ onResize() { this.width = window.innerWidth; }`}></code-block>
         </section>
 
         <section>
+          <h2>Shadow DOM &amp; Instance Targets</h2>
+          <p>
+            Pass a <span class="ic">resolver</span> function to lazily bind to targets that only exist at instance time —
+            like the component's own shadow root, or elements resolved via <span class="ic">@query</span>.
+          </p>
+          <code-block lang="ts" code={`// Listen to scroll events on the shadow root
+@on(el => el.shadow, "scroll")
+onShadowScroll(e: Event) { this.scrollY = (e.target as Element).scrollTop; }
+
+// Listen to input events on a queried element
+@on(el => el.formEl, "submit")
+onSubmit(e: Event) { e.preventDefault(); this.save(); }`}></code-block>
+          <p>
+            The resolver receives the component instance and must return an <span class="ic">EventTarget</span>.
+            Listeners are auto-cleaned on disconnect, just like the static form.
+          </p>
+        </section>
+
+        <section>
           <h2>@emit Decorator</h2>
           <p>
             Auto-broadcast to the bus. On a method, the return value is emitted.
