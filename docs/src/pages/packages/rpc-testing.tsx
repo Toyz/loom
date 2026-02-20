@@ -36,7 +36,7 @@ app.use(RpcTransport, transport);`}></code-block>
           <p>
             Return a fixed value for any router/method combination:
           </p>
-          <code-block lang="ts" code={`transport.mock("UserRouter", "getUser", {
+          <code-block lang="ts" code={`transport.mock(UserRouter, "getUser", {
   id: "1",
   name: "Alice",
   email: "alice@test.dev",
@@ -51,13 +51,13 @@ app.use(RpcTransport, transport);`}></code-block>
           <p>
             Pass a function to compute the response based on the call arguments:
           </p>
-          <code-block lang="ts" code={`transport.mock("UserRouter", "getUser", (id: string) => ({
+          <code-block lang="ts" code={`transport.mock(UserRouter, "getUser", (id: string) => ({
   id,
   name: \`User \${id}\`,
   email: \`user\${id}@test.dev\`,
 }));
 
-transport.mock("UserRouter", "listUsers", () => [
+transport.mock(UserRouter, "listUsers", () => [
   { id: "1", name: "Alice" },
   { id: "2", name: "Bob" },
 ]);`}></code-block>
@@ -72,7 +72,7 @@ transport.mock("UserRouter", "listUsers", () => [
             Simulate server errors to test error handling paths:
           </p>
           <code-block lang="ts" code={`transport.mockError(
-  "UserRouter",
+  UserRouter,
   "deleteUser",
   new Error("Forbidden"),
 );`}></code-block>
@@ -87,10 +87,10 @@ transport.mock("UserRouter", "listUsers", () => [
             Add artificial latency to test loading states and skeleton UI:
           </p>
           <code-block lang="ts" code={`// 500ms delay on getUser
-transport.delay("UserRouter", "getUser", 500);
+transport.delay(UserRouter, "getUser", 500);
 
 // 200ms on listUsers
-transport.delay("UserRouter", "listUsers", 200);`}></code-block>
+transport.delay(UserRouter, "listUsers", 200);`}></code-block>
         </section>
 
         <section>
@@ -102,10 +102,10 @@ transport.delay("UserRouter", "listUsers", 200);`}></code-block>
             Verify that specific calls were (or were not) made:
           </p>
           <code-block lang="ts" code={`// Assert a call was made with specific args
-transport.assertCalled("UserRouter", "getUser", ["1"]);
+transport.assertCalled(UserRouter, "getUser", ["1"]);
 
 // Assert a call was NOT made
-transport.assertNotCalled("UserRouter", "deleteUser");
+transport.assertNotCalled(UserRouter, "deleteUser");
 
 // Inspect full call history
 console.log(transport.history);
@@ -143,16 +143,16 @@ describe("UserProfile", () => {
   const transport = new MockTransport();
 
   transport
-    .mock("UserRouter", "getUser", (id: string) => ({
+    .mock(UserRouter, "getUser", (id: string) => ({
       id,
       name: "Test User",
       role: "member",
     }))
-    .delay("UserRouter", "getUser", 100);
+    .delay(UserRouter, "getUser", 100);
 
   it("loads user on connect", async () => {
     // ... render component, wait for fetch
-    transport.assertCalled("UserRouter", "getUser", ["1"]);
+    transport.assertCalled(UserRouter, "getUser", ["1"]);
   });
 
   afterEach(() => transport.reset());

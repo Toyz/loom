@@ -196,27 +196,27 @@ import { MockTransport } from "@toyz/loom-rpc/testing";
 
 const transport = new MockTransport();
 
-// Static mocks
-transport.mock("UserRouter", "getUser", { id: "1", name: "Alice" });
+// Static mocks — pass the class, not a string
+transport.mock(UserRouter, "getUser", { id: "1", name: "Alice" });
 
 // Dynamic mocks
-transport.mock("UserRouter", "getUser", (id: string) => ({
+transport.mock(UserRouter, "getUser", (id: string) => ({
   id,
   name: `User ${id}`,
 }));
 
 // Error mocks
-transport.mockError("UserRouter", "deleteUser", new Error("Forbidden"));
+transport.mockError(UserRouter, "deleteUser", new Error("Forbidden"));
 
 // Delay simulation
-transport.delay("UserRouter", "getUser", 500);
+transport.delay(UserRouter, "getUser", 500);
 
 // Register and go
 app.use(RpcTransport, transport);
 
 // Assertions
-transport.assertCalled("UserRouter", "getUser", ["1"]);
-transport.assertNotCalled("UserRouter", "deleteUser");
+transport.assertCalled(UserRouter, "getUser", ["1"]);
+transport.assertNotCalled(UserRouter, "deleteUser");
 console.log(transport.history); // [{ router, method, args }]
 ```
 

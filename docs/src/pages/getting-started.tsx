@@ -102,6 +102,7 @@ export default defineConfig({
     target: "es2022",
     jsx: "automatic",
     jsxImportSource: "@toyz/loom",
+    keepNames: true,
   },
 });`}></code-block>
         </div>
