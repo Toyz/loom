@@ -24,11 +24,12 @@ jobs:
         with:
           node-version: 22
 
-      # Build the Loom package first (docs depend on it)
-      - name: Build Loom
+      # Build all packages (docs depend on core + loom-rpc)
+      - name: Build Packages
         run: |
           npm ci
           npm run build
+          cd loom-rpc && npm ci && npm run build
 
       # Build the docs site
       - name: Build Docs

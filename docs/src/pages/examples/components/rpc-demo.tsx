@@ -335,7 +335,7 @@ class RpcDemo extends LoomElement {
   accessor users!: ApiState<User[]>;
 
   @rpc(UserRouter, "getUser", {
-    fn: (el): [string] => [el.selectedId ?? "1"],
+    fn: (el: RpcDemo): [string] => [el.selectedId ?? "1"],
     eager: false,
   })
   accessor selectedUser!: ApiState<User>;
