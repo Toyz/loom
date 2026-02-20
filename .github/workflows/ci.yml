@@ -7,7 +7,30 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  # ── Detect which packages have changes ──
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      core: ${{ steps.filter.outputs.core }}
+      rpc: ${{ steps.filter.outputs.rpc }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            core:
+              - 'src/**'
+              - 'tests/**'
+              - 'package.json'
+              - 'tsconfig.json'
+            rpc:
+              - 'loom-rpc/**'
+
+  # ── Core: @toyz/loom ──
+  core:
+    needs: changes
+    if: needs.changes.outputs.core == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,6 +71,71 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: `## no.\n\nLoom is a **zero-dependency** framework. This PR introduces production dependencies:\n\n\`${deps}\`\n\nMove them to \`devDependencies\` or remove them entirely.`
+            });
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  # ── LoomRPC: @toyz/loom-rpc ──
+  rpc:
+    needs: changes
+    if: needs.changes.outputs.rpc == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: loom-rpc
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (root — Loom core)
+        run: npm ci
+        working-directory: .
+
+      - name: Install (loom-rpc)
+        run: npm ci
+
+      - name: Single-dependency check
+        id: depcheck
+        if: github.event_name == 'pull_request'
+        run: |
+          node -e "
+            const pkg = require('./package.json');
+            const deps = Object.keys(pkg.dependencies || {});
+            const allowed = ['@toyz/loom'];
+            const violations = deps.filter(d => !allowed.includes(d));
+            if (violations.length > 0) {
+              console.error('ERROR: Unauthorized dependencies detected!');
+              console.error('LoomRPC may only depend on @toyz/loom.');
+              console.error('Found:', violations.join(', '));
+              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'failed=true\n');
+              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'deps=' + violations.join(', ') + '\n');
+              process.exit(1);
+            }
+            console.log('Dependencies clean — only @toyz/loom.');
+          "
+
+      - name: Comment on PR (dependency violation)
+        if: failure() && steps.depcheck.outputs.failed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deps = '${{ steps.depcheck.outputs.deps }}';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## no.\n\nLoomRPC may only depend on \`@toyz/loom\`. This PR introduces unauthorized dependencies:\n\n\`${deps}\`\n\nRemove them or move them to \`devDependencies\`.`
             });
 
       - name: Typecheck
