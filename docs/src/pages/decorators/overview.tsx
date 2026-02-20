@@ -166,6 +166,24 @@ onTodos(items: Todo[], prev: Todo[]) { }
 @watch(ThemeService, "theme")
 onTheme(val: string, prev: string) { }`}></code-block>
           </div>
+
+          <div class="decorator-entry" id="readonly">
+            <div class="dec-sig">@readonly</div>
+            <div class="dec-desc">
+              Composable immutability. Freezes the value after the first set — subsequent
+              assignments throw. Objects and arrays are <span class="ic">Object.freeze()</span>'d
+              in the getter. Stack with <span class="ic">@reactive</span> or <span class="ic">@prop</span>
+              by placing <span class="ic">@readonly</span> first (outermost).
+            </div>
+            <code-block lang="ts" code={`// Set once, locked forever
+@readonly @reactive accessor id = crypto.randomUUID();
+
+// Props from parent update, but child can't mutate
+@readonly @prop accessor users!: User[];
+
+// Standalone — frozen after init
+@readonly accessor config = { theme: "dark" };`}></code-block>
+          </div>
         </section>
 
         {/* ═══════════ See Also ═══════════ */}

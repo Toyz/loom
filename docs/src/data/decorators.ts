@@ -23,6 +23,7 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   { name: "@prop",           id: "prop",           color: "var(--amber)",           category: "State" },
   { name: "@computed",       id: "computed",       color: "var(--amber)",           category: "State" },
   { name: "@watch",          id: "watch",          color: "var(--amber)",           category: "State" },
+  { name: "@readonly",       id: "readonly",       color: "var(--amber)",           category: "State" },
 
   // Events
   { name: "@on",             id: "on",             color: "var(--rose)",            category: "Events" },

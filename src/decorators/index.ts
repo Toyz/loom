@@ -29,6 +29,7 @@ export { on, emit } from "./events";
 
 // Store: reactive state, persistence, @watch(field/store)
 export { reactive, prop, computed, params, routeQuery, watch } from "../store";
+export { readonly } from "../store";
 
 // DI: service container decorators, @watch(Service)
 export { service, inject, factory } from "../di";
