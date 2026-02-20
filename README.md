@@ -23,6 +23,16 @@ Loom was born out of pure spite for boilerplate. What began as an ironic "what i
 
 It powers [placing.space](https://placing.space) in production — a real-time collaborative pixel canvas — so it's been battle-tested with WebSocket streams, thousands of DOM nodes, and zero framework overhead.
 
+## Why Loom?
+
+Most frameworks make you choose: **lightweight or batteries-included.** Loom doesn't.
+
+- **~20KB gzipped baseline** — smaller than React + ReactDOM alone, but includes a router, DI container, reactivity system, and lifecycle management out of the box.
+- **No virtual DOM** — JSX compiles to real DOM nodes. The morpher diffs the live DOM directly and patches in-place. No throwaway object trees, no GC pressure, no overhead on top of the work you were going to do anyway.
+- **Zero dependencies** — the entire framework is one `package.json` entry. No version conflicts, no transitive supply chain risk, no "which router do we pick" debates.
+- **Pay-as-you-go** — built-in components (`<loom-virtual>`, `<loom-canvas>`, `<loom-icon>`, `<loom-image>`) and systems (`@form`, `@api`, `CollectionStore`) are tree-shaken if you don't import them. You only ship what you use.
+- **Web standards** — built on custom elements, Shadow DOM, and TC39 Stage 3 decorators. When browsers ship native decorator support, your code gets faster for free.
+
 ## Features
 
 - **`@component` / `@styles`** — register custom elements and scoped styles in one line
