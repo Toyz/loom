@@ -14,7 +14,7 @@ export default class PageRpcMutations extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20}></loom-icon>
+            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <p>
@@ -26,7 +26,7 @@ export default class PageRpcMutations extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <code-block lang="ts" code={`import { mutate } from "@toyz/loom-rpc";
@@ -63,7 +63,7 @@ class EditProfile extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>RpcMutator&lt;Args, Return&gt;</h2>
           </div>
           <p>
@@ -84,7 +84,7 @@ class EditProfile extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20}></loom-icon>
+            <loom-icon name="refresh" size={20} color="var(--emerald)"></loom-icon>
             <h2>Refetching After Mutation</h2>
           </div>
           <p>
@@ -106,7 +106,7 @@ class EditProfile extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20}></loom-icon>
+            <loom-icon name="shield" size={20} color="var(--cyan)"></loom-icon>
             <h2>Type Inference</h2>
           </div>
           <p>

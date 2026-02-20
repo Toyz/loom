@@ -14,7 +14,7 @@ export default class PageRpcOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20}></loom-icon>
+            <loom-icon name="download" size={20} color="var(--emerald)"></loom-icon>
             <h2>Install</h2>
           </div>
           <code-block lang="bash" code={`npm install @toyz/loom-rpc`}></code-block>
@@ -25,7 +25,7 @@ export default class PageRpcOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20}></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <p>
@@ -43,7 +43,7 @@ export default class PageRpcOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>1. Define a Contract</h2>
           </div>
           <code-block lang="ts" code={`// contracts/user.ts — shared between client & server
@@ -61,7 +61,7 @@ export class UserRouter {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>2. Register a Transport</h2>
           </div>
           <code-block lang="ts" code={`// main.tsx
@@ -81,7 +81,7 @@ app.start();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>3. Use in Components</h2>
           </div>
           <code-block lang="tsx" code={`import { rpc, mutate } from "@toyz/loom-rpc";
@@ -112,7 +112,7 @@ class UserProfile extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20}></loom-icon>
+            <loom-icon name="shield" size={20} color="var(--cyan)"></loom-icon>
             <h2>Type Safety</h2>
           </div>
           <p>Everything is inferred from the contract class:</p>

@@ -17,7 +17,7 @@ export default class ExampleVirtualList extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20}></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
             <h2>Demo</h2>
           </div>
           <p class="hint" style="margin-bottom:0.75rem;color:var(--text-muted);font-size:0.85rem;">
@@ -28,7 +28,7 @@ export default class ExampleVirtualList extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20}></loom-icon>
+            <loom-icon name="list" size={20} color="var(--accent)"></loom-icon>
             <h2>What This Shows</h2>
           </div>
           <ul>
@@ -44,7 +44,7 @@ export default class ExampleVirtualList extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>Source</h2>
           </div>
           <source-block file="docs/src/pages/examples/components/virtual-list-demo.tsx"></source-block>

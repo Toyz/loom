@@ -35,7 +35,7 @@ export default class PageExampleImageGallery extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20}></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
             <h2>Demo</h2>
           </div>
           <p class="hint" style="margin-bottom:0.5rem;color:var(--text-muted);font-size:0.85rem;">
@@ -85,7 +85,7 @@ export default class PageExampleImageGallery extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>Source</h2>
           </div>
           <source-block file="docs/src/pages/examples/image-gallery.tsx"></source-block>

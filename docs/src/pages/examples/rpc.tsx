@@ -19,7 +19,7 @@ export default class ExampleRpc extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20}></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
             <h2>Demo</h2>
           </div>
           <p>
@@ -33,7 +33,7 @@ export default class ExampleRpc extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20}></loom-icon>
+            <loom-icon name="list" size={20} color="var(--accent)"></loom-icon>
             <h2>What This Shows</h2>
           </div>
           <ul>
@@ -48,7 +48,7 @@ export default class ExampleRpc extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="clipboard" size={20}></loom-icon>
+            <loom-icon name="clipboard" size={20} color="var(--accent)"></loom-icon>
             <h2>Contract</h2>
           </div>
           <source-block file="docs/src/pages/examples/components/rpc-demo.tsx" start={22} end={34}></source-block>
@@ -56,7 +56,7 @@ export default class ExampleRpc extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>Source</h2>
           </div>
           <source-block file="docs/src/pages/examples/components/rpc-demo.tsx"></source-block>

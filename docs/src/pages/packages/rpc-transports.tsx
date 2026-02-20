@@ -14,7 +14,7 @@ export default class PageRpcTransports extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20}></loom-icon>
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
             <h2>RpcTransport</h2>
           </div>
           <p>
@@ -32,7 +32,7 @@ export default class PageRpcTransports extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="broadcast" size={20}></loom-icon>
+            <loom-icon name="broadcast" size={20} color="var(--emerald)"></loom-icon>
             <h2>HttpTransport</h2>
           </div>
           <p>
@@ -63,7 +63,7 @@ app.use(RpcTransport, new HttpTransport("/api/rpc", {
 
         <section>
           <div class="group-header">
-            <loom-icon name="signpost" size={20}></loom-icon>
+            <loom-icon name="signpost" size={20} color="var(--accent)"></loom-icon>
             <h2>Wire Protocol</h2>
           </div>
           <p>
@@ -81,7 +81,7 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="alert-triangle" size={20}></loom-icon>
+            <loom-icon name="alert-triangle" size={20} color="var(--rose)"></loom-icon>
             <h2>RpcError</h2>
           </div>
           <p>
@@ -101,7 +101,7 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20}></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
             <h2>Custom Transports</h2>
           </div>
           <p>
