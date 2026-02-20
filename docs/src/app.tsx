@@ -6,7 +6,7 @@ import { LoomElement, component, reactive, on, css, mount, query } from "@toyz/l
 import { LoomLink, RouteChanged } from "@toyz/loom/router";
 import { docStyles } from "./styles/doc-page";
 
-interface NavItem { label: string; to: string; icon: string; divider?: string }
+interface NavItem { label: string; to: string; icon: string; divider?: string; dividerVersion?: string }
 interface NavSection { title: string; items: NavItem[] }
 
 const sections: NavSection[] = [
@@ -71,6 +71,18 @@ const sections: NavSection[] = [
       { label: "Overview",     to: "/decorators/overview",    icon: "hash" },
       { label: "Events",       to: "/decorators/events",      icon: "broadcast" },
       { label: "Transform",    to: "/decorators/transform",   icon: "refresh" },
+    ],
+  },
+  {
+    title: "Packages",
+    items: [
+      { label: "Overview",    to: "/packages/rpc-overview",    icon: "package",     divider: "RPC", dividerVersion: `v${__LOOM_RPC_VERSION__}` },
+      { label: "Queries",     to: "/packages/rpc-queries",     icon: "download" },
+      { label: "Mutations",   to: "/packages/rpc-mutations",   icon: "edit" },
+      { label: "Transports",  to: "/packages/rpc-transports",  icon: "layers" },
+      { label: "Testing",     to: "/packages/rpc-testing",     icon: "check" },
+      { label: "Demo",        to: "/packages/rpc-demo",        icon: "zap" },
+      { label: "Overview",    to: "/packages/create-loom",     icon: "package",     divider: "Create Loom", dividerVersion: `v${__CREATE_LOOM_VERSION__}` },
     ],
   },
   {
@@ -381,6 +393,20 @@ const styles = css`
     opacity: 0.6;
     padding: 6px 18px 2px;
     margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .divider-version {
+    font-size: 0.5rem;
+    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    color: var(--text-muted, #5e5e74);
+    border: 1px solid var(--border-subtle, #1e1e2a);
+    padding: 1px 5px;
+    border-radius: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 1;
   }
 
   /* Individual nav link */
@@ -605,7 +631,7 @@ export class DocsApp extends LoomElement {
                 </div>
                 <div class="section-links">
                   {s.items.map(item => ([
-                    item.divider ? <div class="nav-divider">{item.divider}</div> : null,
+                    item.divider ? <div class="nav-divider">{item.divider}{item.dividerVersion ? <span class="divider-version">{item.dividerVersion}</span> : null}</div> : null,
                     <div class={`nav-link ${this.isActive(item.to) ? 'active' : ''}`}>
                       <loom-link to={item.to}>
                         <loom-icon name={item.icon} size="18"></loom-icon>

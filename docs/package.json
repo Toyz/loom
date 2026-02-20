@@ -11,7 +11,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@toyz/loom": "file:.."
+    "@toyz/loom": "file:..",
+    "@toyz/loom-rpc": "file:../loom-rpc"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

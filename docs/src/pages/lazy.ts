@@ -13,6 +13,7 @@ import {
   RouterGroup,
   DecoratorsGroup,
   DIGroup,
+  PackagesGroup,
   ExamplesGroup,
 } from "../groups";
 
@@ -250,3 +251,40 @@ class LazyExampleCanvasGame extends LoomElement {}
 @component("page-example-image-gallery")
 @lazy(() => import("./examples/image-gallery"))
 class LazyExampleImageGallery extends LoomElement {}
+
+// ── Packages ──
+
+@route("/rpc-overview", { group: PackagesGroup })
+@component("page-packages-rpc-overview")
+@lazy(() => import("./packages/rpc-overview"))
+class LazyPackagesRpcOverview extends LoomElement {}
+
+@route("/rpc-queries", { group: PackagesGroup })
+@component("page-packages-rpc-queries")
+@lazy(() => import("./packages/rpc-queries"))
+class LazyPackagesRpcQueries extends LoomElement {}
+
+@route("/rpc-mutations", { group: PackagesGroup })
+@component("page-packages-rpc-mutations")
+@lazy(() => import("./packages/rpc-mutations"))
+class LazyPackagesRpcMutations extends LoomElement {}
+
+@route("/rpc-transports", { group: PackagesGroup })
+@component("page-packages-rpc-transports")
+@lazy(() => import("./packages/rpc-transports"))
+class LazyPackagesRpcTransports extends LoomElement {}
+
+@route("/rpc-testing", { group: PackagesGroup })
+@component("page-packages-rpc-testing")
+@lazy(() => import("./packages/rpc-testing"))
+class LazyPackagesRpcTesting extends LoomElement {}
+
+@route("/rpc-demo", { group: PackagesGroup })
+@component("page-packages-rpc-demo")
+@lazy(() => import("./examples/rpc"))
+class LazyPackagesRpcDemo extends LoomElement {}
+
+@route("/create-loom", { group: PackagesGroup })
+@component("page-packages-create-loom")
+@lazy(() => import("./packages/create-loom-overview"))
+class LazyPackagesCreateLoom extends LoomElement {}

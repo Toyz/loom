@@ -43,5 +43,8 @@ export class DecoratorsGroup {}
 @group("/di", { guards: ["docs-log"] })
 export class DIGroup {}
 
+@group("/packages", { guards: ["docs-log"] })
+export class PackagesGroup {}
+
 @group("/examples", { guards: ["docs-log"] })
 export class ExamplesGroup {}
