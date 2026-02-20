@@ -11,20 +11,28 @@ export default class PageStoreStorage extends LoomElement {
         <p class="subtitle">Pluggable persistence backends for reactive state.</p>
 
         <section>
-          <h2>StorageAdapter Interface</h2>
-          <p>
-            All persistence in Loom goes through the <span class="ic">StorageAdapter</span> interface.
-            Reactive and CollectionStore accept a storage option, and Loom handles serialization automatically.
-          </p>
-          <code-block lang="ts" code={`interface StorageAdapter {
+          <div class="group-header">
+            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <h2>StorageAdapter Interface</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              All persistence in Loom goes through the <span class="ic">StorageAdapter</span> interface.
+              Reactive and CollectionStore accept a storage option, and Loom handles serialization automatically.
+            </div>
+            <code-block lang="ts" code={`interface StorageAdapter {
   get(key: string): string | null;
   set(key: string, value: string): void;
   remove(key: string): void;
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Built-in Adapters</h2>
+          <div class="group-header">
+            <loom-icon name="package" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Built-in Adapters</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Adapter</th><th>Persists</th><th>Scope</th></tr></thead>
             <tbody>
@@ -49,11 +57,15 @@ const draft = new Reactive("", {
         </section>
 
         <section>
-          <h2>Custom Adapter</h2>
-          <p>
-            Implement <span class="ic">StorageAdapter</span> to persist to any backend — IndexedDB, a remote API, etc:
-          </p>
-          <code-block lang="ts" code={`class IndexedDBAdapter implements StorageAdapter {
+          <div class="group-header">
+            <loom-icon name="code" size={20} color="var(--amber)"></loom-icon>
+            <h2>Custom Adapter</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Implement <span class="ic">StorageAdapter</span> to persist to any backend — IndexedDB, a remote API, etc:
+            </div>
+            <code-block lang="ts" code={`class IndexedDBAdapter implements StorageAdapter {
   private cache = new Map<string, string>();
 
   get(key: string) {
@@ -76,14 +88,19 @@ const store = new Reactive([], {
   key: "app:items",
   storage: new IndexedDBAdapter(),
 });`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Swapping at Runtime</h2>
-          <p>
-            Use <span class="ic">swapStorage()</span> to change backends without losing data:
-          </p>
-          <code-block lang="ts" code={`// Start in memory, upgrade to persistent after auth
+          <div class="group-header">
+            <loom-icon name="refresh" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Swapping at Runtime</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Use <span class="ic">swapStorage()</span> to change backends without losing data:
+            </div>
+            <code-block lang="ts" code={`// Start in memory, upgrade to persistent after auth
 const userData = new Reactive(null);
 
 onLogin(() => {
@@ -92,6 +109,7 @@ onLogin(() => {
     storage: new LocalAdapter(),
   });
 });`}></code-block>
+          </div>
         </section>
       </div>
     );

@@ -2,14 +2,9 @@
  * Router — Route Groups
  * /router/groups
  */
-import { LoomElement, component, mount } from "@toyz/loom";
-import { docStyles } from "../../styles/doc-page";
+import { LoomElement } from "@toyz/loom";
 
 export default class PageRouterGroups extends LoomElement {
-
-  @mount
-  setup() {}
-
   update() {
     return (
       <div>
@@ -19,13 +14,18 @@ export default class PageRouterGroups extends LoomElement {
         </p>
 
         <section>
-          <h2>@group(prefix, opts?)</h2>
-          <p>
-            The <span class="ic">@group</span> class decorator defines a route group.
-            Child routes opt in by referencing the group constructor in their <span class="ic">@route</span> options.
-            The group's prefix is prepended and its guards run before route-level guards:
-          </p>
-          <code-block lang="tsx" code={`import { group, route } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="hash" size={20} color="var(--emerald)"></loom-icon>
+            <h2>@group</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@group(prefix, opts?)</div>
+            <div class="dec-desc">
+              The <span class="ic">@group</span> class decorator defines a route group.
+              Child routes opt in by referencing the group constructor in their <span class="ic">@route</span> options.
+              The group's prefix is prepended and its guards run before route-level guards:
+            </div>
+            <code-block lang="tsx" code={`import { group, route } from "@toyz/loom/router";
 
 @group("/api")
 class ApiGroup {}
@@ -36,13 +36,19 @@ class PageApiUsers extends LoomElement {
   // Matches: /api/users
   update() { return <h1>API Users</h1>; }
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Group Options</h2>
-          <p>
-            The second argument to <span class="ic">@group</span> is an optional options object:
-          </p>
+          <div class="group-header">
+            <loom-icon name="settings" size={20} color="var(--accent)"></loom-icon>
+            <h2>Group Options</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              The second argument to <span class="ic">@group</span> is an optional options object:
+            </div>
+          </div>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -56,12 +62,16 @@ class PageApiUsers extends LoomElement {
         </section>
 
         <section>
-          <h2>Group Guards</h2>
-          <p>
-            Guards defined on a group run <strong>before</strong> any route-level guards.
-            This makes it easy to protect entire sections of your app:
-          </p>
-          <code-block lang="ts" code={`@group("/admin", { guards: ["auth", "admin"] })
+          <div class="group-header">
+            <loom-icon name="shield" size={20} color="var(--amber)"></loom-icon>
+            <h2>Group Guards</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Guards defined on a group run <strong>before</strong> any route-level guards.
+              This makes it easy to protect entire sections of your app:
+            </div>
+            <code-block lang="ts" code={`@group("/admin", { guards: ["auth", "admin"] })
 class AdminGroup {}
 
 // Both "auth" and "admin" guards run before "audit"
@@ -70,15 +80,20 @@ class AdminGroup {}
 class PageAdminLogs extends LoomElement { }
 
 // Guard order: auth → admin → audit`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Nested Groups</h2>
-          <p>
-            Groups can nest by stacking <span class="ic">@group</span> and <span class="ic">@route</span> on the same class.
-            Prefixes and guards chain from root to leaf:
-          </p>
-          <code-block lang="tsx" code={`@group("/app", { guards: ["session"] })
+          <div class="group-header">
+            <loom-icon name="layers" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Nested Groups</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Groups can nest by stacking <span class="ic">@group</span> and <span class="ic">@route</span> on the same class.
+              Prefixes and guards chain from root to leaf:
+            </div>
+            <code-block lang="tsx" code={`@group("/app", { guards: ["session"] })
 class AppGroup {}
 
 // AdminGroup is both a group and a route at /app/admin
@@ -94,15 +109,20 @@ class AdminGroup extends LoomElement {
 @route("/users", { group: AdminGroup })
 @component("page-admin-users")
 class PageAdminUsers extends LoomElement { }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Dynamic Params in Groups</h2>
-          <p>
-            Group prefixes can contain dynamic <span class="ic">:param</span> segments.
-            Parameters cascade to all child routes:
-          </p>
-          <code-block lang="ts" code={`@group("/org/:orgId")
+          <div class="group-header">
+            <loom-icon name="bolt" size={20} color="var(--rose)"></loom-icon>
+            <h2>Dynamic Params in Groups</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Group prefixes can contain dynamic <span class="ic">:param</span> segments.
+              Parameters cascade to all child routes:
+            </div>
+            <code-block lang="ts" code={`@group("/org/:orgId")
 class OrgGroup {}
 
 @group("/team/:teamId")
@@ -114,22 +134,28 @@ class TeamGroup {}
 @route("/member/:memberId", { group: TeamGroup })
 @component("page-member")
 class PageMember extends LoomElement { }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>How It Works</h2>
-          <p>
-            <span class="ic">@group</span> is a class decorator built on <span class="ic">createDecorator</span>.
-            At define-time it stores group metadata (prefix, guards) on the constructor.
-            When <span class="ic">@route</span> sees a <span class="ic">group</span> option, it walks the group chain
-            from leaf to root — collecting all prefixes and guards — then compiles the full
-            pattern into a single regex.
-          </p>
-          <p>
-            Since TypeScript class decorators run bottom-up, <span class="ic">@group</span> automatically
-            patches route entries that were registered by <span class="ic">@route</span> on the same class.
-            This means decorator order doesn't matter for correctness.
-          </p>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--amber)"></loom-icon>
+            <h2>How It Works</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">@group</span> is a class decorator built on <span class="ic">createDecorator</span>.
+              At define-time it stores group metadata (prefix, guards) on the constructor.
+              When <span class="ic">@route</span> sees a <span class="ic">group</span> option, it walks the group chain
+              from leaf to root — collecting all prefixes and guards — then compiles the full
+              pattern into a single regex.
+            </div>
+            <div class="dec-desc" style="margin-top: 0.75rem">
+              Since TypeScript class decorators run bottom-up, <span class="ic">@group</span> automatically
+              patches route entries that were registered by <span class="ic">@route</span> on the same class.
+              This means decorator order doesn't matter for correctness.
+            </div>
+          </div>
         </section>
       </div>
     );

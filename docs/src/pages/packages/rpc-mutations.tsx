@@ -13,7 +13,10 @@ export default class PageRpcMutations extends LoomElement {
         <p class="subtitle">Manual, type-safe server writes with loading and error tracking.</p>
 
         <section>
-          <h2>Overview</h2>
+          <div class="group-header">
+            <loom-icon name="book" size={20}></loom-icon>
+            <h2>Overview</h2>
+          </div>
           <p>
             Unlike <span class="ic">@rpc</span> queries (which auto-fetch), mutations are triggered
             manually via <span class="ic">.call()</span>. Use <span class="ic">@mutate</span> for
@@ -22,14 +25,17 @@ export default class PageRpcMutations extends LoomElement {
         </section>
 
         <section>
-          <h2>Basic Usage</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Basic Usage</h2>
+          </div>
           <code-block lang="ts" code={`import { mutate } from "@toyz/loom-rpc";
 import type { RpcMutator } from "@toyz/loom-rpc";
 
 @component("edit-profile")
 class EditProfile extends LoomElement {
   @mutate(UserRouter, "updateProfile")
-  accessor save!: RpcMutator\u003c[ProfileUpdate], User\u003e;
+  accessor save!: RpcMutator\<[ProfileUpdate], User\>;
 
   async handleSubmit(data: ProfileUpdate) {
     try {
@@ -42,21 +48,24 @@ class EditProfile extends LoomElement {
 
   update() {
     return (
-      \u003cform onSubmit={() => this.handleSubmit({ name: "New Name" })}\u003e
-        \u003cbutton disabled={this.save.loading}\u003e
+      \<form onSubmit={() => this.handleSubmit({ name: "New Name" })}\>
+        \<button disabled={this.save.loading}\>
           {this.save.loading ? "Saving..." : "Save"}
-        \u003c/button\u003e
-        {this.save.error \u0026\u0026 (
-          \u003cdiv class="error"\u003e{this.save.error.message}\u003c/div\u003e
+        \</button\>
+        {this.save.error \&\& (
+          \<div class="error"\>{this.save.error.message}\</div\>
         )}
-      \u003c/form\u003e
+      \</form\>
     );
   }
 }`}></code-block>
         </section>
 
         <section>
-          <h2>RpcMutator&lt;Args, Return&gt;</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>RpcMutator&lt;Args, Return&gt;</h2>
+          </div>
           <p>
             The accessor type for <span class="ic">@mutate</span>. Tracks in-flight state
             and stores the result of the last call.
@@ -74,7 +83,10 @@ class EditProfile extends LoomElement {
         </section>
 
         <section>
-          <h2>Refetching After Mutation</h2>
+          <div class="group-header">
+            <loom-icon name="refresh" size={20}></loom-icon>
+            <h2>Refetching After Mutation</h2>
+          </div>
           <p>
             After a successful mutation, you'll often want to refresh related queries.
             Call <span class="ic">.refetch()</span> or <span class="ic">.invalidate()</span> on
@@ -93,7 +105,10 @@ class EditProfile extends LoomElement {
         </section>
 
         <section>
-          <h2>Type Inference</h2>
+          <div class="group-header">
+            <loom-icon name="shield" size={20}></loom-icon>
+            <h2>Type Inference</h2>
+          </div>
           <p>
             The <span class="ic">Args</span> and <span class="ic">Return</span> types are inferred
             from the contract class. You only need to specify the <span class="ic">RpcMutator</span>{" "}
@@ -107,7 +122,7 @@ class EditProfile extends LoomElement {
 
 // Args = [string, "admin" | "member"], Return = User
 @mutate(UserRouter, "updateRole")
-accessor toggleRole!: RpcMutator\u003c[string, "admin" | "member"], User\u003e;
+accessor toggleRole!: RpcMutator\<[string, "admin" | "member"], User\>;
 
 // ✓ Compiles
 this.toggleRole.call("1", "admin");

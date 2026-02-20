@@ -18,7 +18,10 @@ export default class ExampleApi extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <p>
             This component fetches <span class="ic">/api/team.json</span> using
             the <span class="ic">@api</span> decorator. Use the buttons to
@@ -28,7 +31,10 @@ export default class ExampleApi extends LoomElement {
         </section>
 
         <section>
-          <h2>What This Shows</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>What This Shows</h2>
+          </div>
           <ul>
             <li><span class="ic">@api</span> — Accessor decorator that manages the full fetch lifecycle</li>
             <li><span class="ic">pipe</span> — Post-fetch interceptor pipeline for response transformation</li>
@@ -41,7 +47,10 @@ export default class ExampleApi extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/api-demo.tsx"></source-block>
         </section>
       </div>

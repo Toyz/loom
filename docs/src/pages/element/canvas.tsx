@@ -17,12 +17,18 @@ export default class PageCanvas extends LoomElement {
         </p>
 
         <section>
-          <h2>Quick Start</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Quick Start</h2>
+          </div>
           <code-block lang="ts" code={QUICK_START}></code-block>
         </section>
 
         <section>
-          <h2>Props</h2>
+          <div class="group-header">
+            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <h2>Props</h2>
+          </div>
           <table class="api-table">
             <thead>
               <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
@@ -57,7 +63,10 @@ export default class PageCanvas extends LoomElement {
         </section>
 
         <section>
-          <h2>API</h2>
+          <div class="group-header">
+            <loom-icon name="settings" size={20} color="var(--cyan)"></loom-icon>
+            <h2>API</h2>
+          </div>
           <table class="api-table">
             <thead>
               <tr><th>Member</th><th>Type</th><th>Description</th></tr>
@@ -83,7 +92,10 @@ export default class PageCanvas extends LoomElement {
         </section>
 
         <section>
-          <h2>How It Works</h2>
+          <div class="group-header">
+            <loom-icon name="layers" size={20} color="var(--amber)"></loom-icon>
+            <h2>How It Works</h2>
+          </div>
           <ul>
             <li>The inner <span class="ic">&lt;canvas&gt;</span> is created with <span class="ic">loom-keep</span> — morphing never touches it</li>
             <li><span class="ic">@animationFrame</span> drives the draw loop via Loom's centralized <span class="ic">RenderLoop</span></li>
@@ -93,18 +105,28 @@ export default class PageCanvas extends LoomElement {
         </section>
 
         <section>
-          <h2>Fixed Size</h2>
-          <p>For pixel-perfect rendering (e.g. games), disable auto-resize and set explicit dimensions:</p>
-          <code-block lang="ts" code={FIXED_SIZE}></code-block>
+          <div class="group-header">
+            <loom-icon name="box" size={20} color="var(--accent)"></loom-icon>
+            <h2>Fixed Size</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">For pixel-perfect rendering (e.g. games), disable auto-resize and set explicit dimensions:</div>
+            <code-block lang="ts" code={FIXED_SIZE}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Imperative Access</h2>
-          <p>
-            You can also grab a reference via <span class="ic">@query</span> and draw
-            directly outside the render loop:
-          </p>
-          <code-block lang="ts" code={IMPERATIVE}></code-block>
+          <div class="group-header">
+            <loom-icon name="code" size={20} color="var(--rose)"></loom-icon>
+            <h2>Imperative Access</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              You can also grab a reference via <span class="ic">@query</span> and draw
+              directly outside the render loop:
+            </div>
+            <code-block lang="ts" code={IMPERATIVE}></code-block>
+          </div>
         </section>
       </div>
     );

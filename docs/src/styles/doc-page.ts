@@ -102,7 +102,8 @@ export const docStyles = css`
   .api-table tbody tr:last-child td {
     border-bottom: none;
   }
-  .api-table td code {
+  .api-table td code,
+  .api-table td .ic {
     color: var(--accent, #818cf8);
     font-family: var(--font-mono, monospace);
     background: var(--bg-raised, #1a1a24);
@@ -110,6 +111,62 @@ export const docStyles = css`
     padding: 1px 5px;
     border-radius: 4px;
     font-size: 0.85em;
+  }
+
+  /* ── Decorator / API entry helpers ── */
+
+  .feature-entry {
+    margin-bottom: var(--space-6, 1.5rem);
+  }
+  .feature-entry:last-child {
+    margin-bottom: 0;
+  }
+
+  .dec-sig {
+    font-family: var(--font-mono, monospace);
+    font-size: var(--text-base, 0.9375rem);
+    color: var(--accent, #818cf8);
+    margin-bottom: var(--space-1, 0.25rem);
+    font-weight: 600;
+  }
+
+  .dec-desc {
+    color: var(--text-secondary, #9898ad);
+    font-size: var(--text-sm, 0.8125rem);
+    margin-bottom: var(--space-3, 0.75rem);
+    line-height: 1.6;
+  }
+
+  .group-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+  }
+
+  /* ── Callouts ── */
+
+  .note {
+    background: var(--bg-raised, #1a1a24);
+    border-left: 3px solid var(--accent, #818cf8);
+    border-radius: var(--radius-sm, 6px);
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    margin-bottom: var(--space-4, 1rem);
+    font-size: var(--text-sm, 0.8125rem);
+    color: var(--text-secondary, #9898ad);
+    line-height: 1.6;
+  }
+  .note p { margin-bottom: 0; }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent-glow, rgba(129, 140, 248, .12));
+    color: var(--accent, #818cf8);
+    font-size: var(--text-xs, 0.75rem);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
   }
 
   /* ── Legacy pre/code blocks (for pages not yet migrated to <code-block>) ── */

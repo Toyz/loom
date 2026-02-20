@@ -22,7 +22,10 @@ export default class ExampleTiming extends LoomElement {
         </section>
 
         <section>
-          <h2>What This Shows</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>What This Shows</h2>
+          </div>
           <ul>
             <li><span class="ic">@interval</span> — Repeating timer with auto-cleanup on disconnect</li>
             <li><span class="ic">@timeout</span> — One-shot timer that runs once then cleans up</li>
@@ -34,7 +37,10 @@ export default class ExampleTiming extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/timing-showcase.tsx"></source-block>
         </section>
       </div>

@@ -12,41 +12,57 @@ export default class PageFetch extends LoomElement {
 
         {/* ── Basic Usage ── */}
         <section>
-          <h2>Basic Usage</h2>
-          <p>
-            <span class="ic">@api</span> is an auto-accessor decorator that manages the full lifecycle
-            of an async fetch — loading, error, data, and stale states — so you
-            never write boilerplate for spinners or error handling again.
-          </p>
-          <code-block lang="ts" code={BASIC}></code-block>
+          <div class="group-header">
+            <loom-icon name="download" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Basic Usage</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@api&lt;T&gt;(fetchFn)</div>
+            <div class="dec-desc">
+              <span class="ic">@api</span> is an auto-accessor decorator that manages the full lifecycle
+              of an async fetch — loading, error, data, and stale states — so you
+              never write boilerplate for spinners or error handling again.
+            </div>
+            <code-block lang="ts" code={BASIC}></code-block>
+          </div>
         </section>
 
         {/* ── ApiState<T> ── */}
         <section>
-          <h2>ApiState&lt;T&gt;</h2>
-          <p>The object returned by the accessor. All properties are reactive — accessing them triggers re-renders.</p>
+          <div class="group-header">
+            <loom-icon name="bolt" size={20} color="var(--amber)"></loom-icon>
+            <h2>ApiState&lt;T&gt;</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">The object returned by the accessor. All properties are reactive — accessing them triggers re-renders.</div>
+          </div>
           <table class="api-table">
             <thead><tr><th>Property / Method</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><code>.ok</code></td><td>True if the last fetch succeeded</td></tr>
-              <tr><td><code>.data</code></td><td>Resolved data (<code>T | undefined</code>)</td></tr>
-              <tr><td><code>.error</code></td><td>Error from the last fetch attempt</td></tr>
-              <tr><td><code>.loading</code></td><td><code>true</code> during initial fetch (not refetch)</td></tr>
-              <tr><td><code>.stale</code></td><td><code>true</code> after <code>staleTime</code> has elapsed</td></tr>
-              <tr><td><code>.refetch()</code></td><td>Manually re-run the fetch</td></tr>
-              <tr><td><code>.invalidate()</code></td><td>Mark stale + trigger refetch</td></tr>
-              <tr><td><code>.match({'{'}ok, err, loading?{'}'})</code></td><td>Tri-state pattern match — <code>loading</code> is optional</td></tr>
-              <tr><td><code>.unwrap()</code></td><td>Return data or throw the error</td></tr>
-              <tr><td><code>.unwrap_or(fallback)</code></td><td>Return data or fallback value</td></tr>
+              <tr><td><span class="ic">.ok</span></td><td>True if the last fetch succeeded</td></tr>
+              <tr><td><span class="ic">.data</span></td><td>Resolved data (<code>T | undefined</code>)</td></tr>
+              <tr><td><span class="ic">.error</span></td><td>Error from the last fetch attempt</td></tr>
+              <tr><td><span class="ic">.loading</span></td><td><code>true</code> during initial fetch (not refetch)</td></tr>
+              <tr><td><span class="ic">.stale</span></td><td><code>true</code> after <code>staleTime</code> has elapsed</td></tr>
+              <tr><td><span class="ic">.refetch()</span></td><td>Manually re-run the fetch</td></tr>
+              <tr><td><span class="ic">.invalidate()</span></td><td>Mark stale + trigger refetch</td></tr>
+              <tr><td><span class="ic">.match({'{'}ok, err, loading?{'}'})</span></td><td>Tri-state pattern match — <code>loading</code> is optional</td></tr>
+              <tr><td><span class="ic">.unwrap()</span></td><td>Return data or throw the error</td></tr>
+              <tr><td><span class="ic">.unwrap_or(fallback)</span></td><td>Return data or fallback value</td></tr>
             </tbody>
           </table>
         </section>
 
         {/* ── Options ── */}
         <section>
-          <h2>Options</h2>
-          <p>Use an options object for dynamic keys, interceptors, retries, or stale time.</p>
-          <code-block lang="ts" code={OPTIONS_EXAMPLE}></code-block>
+          <div class="group-header">
+            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <h2>Options</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">Use an options object for dynamic keys, interceptors, retries, or stale time.</div>
+            <code-block lang="ts" code={OPTIONS_EXAMPLE}></code-block>
+          </div>
 
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
@@ -63,37 +79,50 @@ export default class PageFetch extends LoomElement {
 
         {/* ── Interceptors ── */}
         <section>
-          <h2>Interceptors</h2>
-          <p>
-            Define interceptors as class methods with <span class="ic">@intercept</span>.
-            Reference them by method name in <span class="ic">use</span> (pre-fetch)
-            or <span class="ic">pipe</span> (post-fetch).
-          </p>
-          <code-block lang="ts" code={INTERCEPTOR_EXAMPLE}></code-block>
+          <div class="group-header">
+            <loom-icon name="layers" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Interceptors</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@intercept()</div>
+            <div class="dec-desc">
+              Define interceptors as class methods with <span class="ic">@intercept</span>.
+              Reference them by method name in <span class="ic">use</span> (pre-fetch)
+              or <span class="ic">pipe</span> (post-fetch).
+            </div>
+            <code-block lang="ts" code={INTERCEPTOR_EXAMPLE}></code-block>
+          </div>
 
-          <h3>ApiCtx</h3>
-          <p>The mutable context passed to interceptors.</p>
+          <div class="feature-entry">
+            <h3>ApiCtx</h3>
+            <div class="dec-desc">The mutable context passed to interceptors.</div>
+          </div>
           <table class="api-table">
             <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
-              <tr><td><code>ctx.url</code></td><td><code>string</code></td><td>Request URL — prepend base URL, add paths</td></tr>
-              <tr><td><code>ctx.headers</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Request headers — auth, content type</td></tr>
-              <tr><td><code>ctx.params</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Query params — merged as <code>?key=val</code></td></tr>
-              <tr><td><code>ctx.init</code></td><td><code>RequestInit</code></td><td>Raw overrides — method, body, credentials</td></tr>
-              <tr><td><code>ctx.signal</code></td><td><code>AbortSignal</code></td><td>Auto-managed abort signal (read-only)</td></tr>
-              <tr><td><code>ctx.response</code></td><td><code>Response</code></td><td>Available only in <code>pipe</code> (post-fetch) interceptors</td></tr>
+              <tr><td><span class="ic">ctx.url</span></td><td><code>string</code></td><td>Request URL — prepend base URL, add paths</td></tr>
+              <tr><td><span class="ic">ctx.headers</span></td><td><code>Record&lt;string, string&gt;</code></td><td>Request headers — auth, content type</td></tr>
+              <tr><td><span class="ic">ctx.params</span></td><td><code>Record&lt;string, string&gt;</code></td><td>Query params — merged as <code>?key=val</code></td></tr>
+              <tr><td><span class="ic">ctx.init</span></td><td><code>RequestInit</code></td><td>Raw overrides — method, body, credentials</td></tr>
+              <tr><td><span class="ic">ctx.signal</span></td><td><code>AbortSignal</code></td><td>Auto-managed abort signal (read-only)</td></tr>
+              <tr><td><span class="ic">ctx.response</span></td><td><code>Response</code></td><td>Available only in <code>pipe</code> (post-fetch) interceptors</td></tr>
             </tbody>
           </table>
         </section>
 
         {/* ── Error Handling ── */}
         <section>
-          <h2>Error Handling — @catch_</h2>
-          <p>
-            <span class="ic">@catch_</span> unifies error handling for both render errors and
-            async <span class="ic">@api</span> fetch failures. It comes in three forms:
-          </p>
-          <code-block lang="ts" code={CATCH_EXAMPLE}></code-block>
+          <div class="group-header">
+            <loom-icon name="shield" size={20} color="var(--rose)"></loom-icon>
+            <h2>Error Handling — @catch_</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">@catch_</span> unifies error handling for both render errors and
+              async <span class="ic">@api</span> fetch failures. It comes in three forms:
+            </div>
+            <code-block lang="ts" code={CATCH_EXAMPLE}></code-block>
+          </div>
 
           <table class="api-table">
             <thead><tr><th>Form</th><th>Scope</th></tr></thead>
@@ -103,16 +132,19 @@ export default class PageFetch extends LoomElement {
               <tr><td><code>@catch_("team")</code></td><td>Method decorator — scoped to a specific <code>@api</code> accessor by name</td></tr>
             </tbody>
           </table>
-          <p>
+          <div class="note">
             Named handlers take priority: if <span class="ic">@catch_("team")</span> exists and
             the <span class="ic">team</span> accessor fails, only the named handler fires.
             Unmatched errors fall through to the general <span class="ic">@catch_</span>.
-          </p>
+          </div>
         </section>
 
         {/* ── Key Behaviors ── */}
         <section>
-          <h2>Key Behaviors</h2>
+          <div class="group-header">
+            <loom-icon name="zap" size={20} color="var(--amber)"></loom-icon>
+            <h2>Key Behaviors</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Behavior</th><th>Description</th></tr></thead>
             <tbody>

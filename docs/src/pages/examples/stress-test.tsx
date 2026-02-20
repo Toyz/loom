@@ -18,7 +18,10 @@ export default class ExampleStressTest extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <p>
             Click any cell to make it the <strong>hot cell</strong>. Only the
             hot cell's value ticks at 60fps via <span class="ic">@interval</span>. Watch
@@ -28,7 +31,10 @@ export default class ExampleStressTest extends LoomElement {
         </section>
 
         <section>
-          <h2>Loom Decorators Used</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>Loom Decorators Used</h2>
+          </div>
           <ul>
             <li><span class="ic">@component("stress-test")</span> — registers the custom element</li>
             <li><span class="ic">@styles(sheet)</span> — scoped CSS via adopted stylesheet</li>
@@ -41,7 +47,10 @@ export default class ExampleStressTest extends LoomElement {
         </section>
 
         <section>
-          <h2>Traced Template Projection</h2>
+          <div class="group-header">
+            <loom-icon name="zap" size={20}></loom-icon>
+            <h2>Traced Template Projection</h2>
+          </div>
           <ol>
             <li><span class="ic">startTrace()</span> wraps <span class="ic">update()</span> and records every <span class="ic">Reactive.value</span> read</li>
             <li>The dependency set is stored as <span class="ic">__traceDeps</span></li>
@@ -51,7 +60,10 @@ export default class ExampleStressTest extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/stress-test.tsx"></source-block>
         </section>
       </div>

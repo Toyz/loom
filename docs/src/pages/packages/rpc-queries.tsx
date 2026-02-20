@@ -13,7 +13,10 @@ export default class PageRpcQueries extends LoomElement {
         <p class="subtitle">Auto-fetching, reactive queries with SWR caching and pattern matching.</p>
 
         <section>
-          <h2>Basic Usage</h2>
+          <div class="group-header">
+            <loom-icon name="book" size={20}></loom-icon>
+            <h2>Basic Usage</h2>
+          </div>
           <p>
             <span class="ic">@rpc</span> turns an auto-accessor into a reactive query.
             It fetches on connect and re-renders automatically when data arrives.
@@ -24,20 +27,23 @@ import { UserRouter } from "../contracts/user";
 @component("user-list")
 class UserList extends LoomElement {
   @rpc(UserRouter, "listUsers")
-  accessor users!: ApiState\u003cUser[]\u003e;
+  accessor users!: ApiState\<User[]\>;
 
   update() {
     return this.users.match({
-      loading: () => \u003cdiv\u003eLoading...\u003c/div\u003e,
-      ok: (users) => \u003cul\u003e{users.map(u => \u003cli\u003e{u.name}\u003c/li\u003e)}\u003c/ul\u003e,
-      err: (e) => \u003cdiv\u003eError: {e.message}\u003c/div\u003e,
+      loading: () => \<div\>Loading...\</div\>,
+      ok: (users) => \<ul\>{users.map(u => \<li\>{u.name}\</li\>)}\</ul\>,
+      err: (e) => \<div\>Error: {e.message}\</div\>,
     });
   }
 }`}></code-block>
         </section>
 
         <section>
-          <h2>Reactive Arguments</h2>
+          <div class="group-header">
+            <loom-icon name="bolt" size={20}></loom-icon>
+            <h2>Reactive Arguments</h2>
+          </div>
           <p>
             Pass a <span class="ic">fn</span> to extract procedure arguments from element state.
             When those reactive values change, the query automatically re-fetches.
@@ -45,7 +51,7 @@ class UserList extends LoomElement {
           <code-block lang="ts" code={`@rpc(UserRouter, "getUser", {
   fn: (el): [string] => [el.userId],
 })
-accessor user!: ApiState\u003cUser\u003e;`}></code-block>
+accessor user!: ApiState\<User\>;`}></code-block>
           <p>
             The return type of <span class="ic">fn</span> must match the parameter types of the
             contract method. TypeScript enforces this at compile time.
@@ -53,7 +59,10 @@ accessor user!: ApiState\u003cUser\u003e;`}></code-block>
         </section>
 
         <section>
-          <h2>Options</h2>
+          <div class="group-header">
+            <loom-icon name="settings" size={20}></loom-icon>
+            <h2>Options</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
@@ -66,7 +75,10 @@ accessor user!: ApiState\u003cUser\u003e;`}></code-block>
         </section>
 
         <section>
-          <h2>SWR Caching</h2>
+          <div class="group-header">
+            <loom-icon name="refresh" size={20}></loom-icon>
+            <h2>SWR Caching</h2>
+          </div>
           <p>
             Set <span class="ic">staleTime</span> to enable stale-while-revalidate caching.
             After <span class="ic">staleTime</span> milliseconds, the next read marks data
@@ -77,11 +89,14 @@ accessor user!: ApiState\u003cUser\u003e;`}></code-block>
   staleTime: 60_000,  // cache for 1 minute
   retry: 2,           // retry twice on failure
 })
-accessor users!: ApiState\u003cUser[]\u003e;`}></code-block>
+accessor users!: ApiState\<User[]\>;`}></code-block>
         </section>
 
         <section>
-          <h2>ApiState&lt;T&gt;</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>ApiState&lt;T&gt;</h2>
+          </div>
           <p>
             Every <span class="ic">@rpc</span> accessor is an <span class="ic">ApiState&lt;T&gt;</span>{" "}
             — a reactive state container with pattern matching and Result combinators.
@@ -105,7 +120,10 @@ accessor users!: ApiState\u003cUser[]\u003e;`}></code-block>
         </section>
 
         <section>
-          <h2>Pattern Matching</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Pattern Matching</h2>
+          </div>
           <p>
             <span class="ic">.match()</span> handles all three states — loading, success, and error.
             The <span class="ic">loading</span> branch is optional; if omitted, loading falls through to <span class="ic">err</span>.
@@ -114,9 +132,9 @@ accessor users!: ApiState\u003cUser[]\u003e;`}></code-block>
   return this.users.match({
     loading: () => this.renderSkeletons(4),
     ok: (users) => users.map(u => (
-      \u003cdiv class="user-card"\u003e{u.name}\u003c/div\u003e
+      \<div class="user-card"\>{u.name}\</div\>
     )),
-    err: (e) => \u003cdiv class="error"\u003e{e.message}\u003c/div\u003e,
+    err: (e) => \<div class="error"\>{e.message}\</div\>,
   });
 }`}></code-block>
         </section>

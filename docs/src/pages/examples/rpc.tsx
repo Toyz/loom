@@ -18,7 +18,10 @@ export default class ExampleRpc extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <p>
             This component uses <span class="ic">@toyz/loom-rpc</span> with a{" "}
             <span class="ic">MockTransport</span> that simulates network latency.
@@ -29,7 +32,10 @@ export default class ExampleRpc extends LoomElement {
         </section>
 
         <section>
-          <h2>What This Shows</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>What This Shows</h2>
+          </div>
           <ul>
             <li><span class="ic">@rpc(Router, method)</span> — Auto-fetching query decorator with <span class="ic">ApiState</span></li>
             <li><span class="ic">@rpc + fn</span> — Reactive arg extraction that re-fetches when element state changes</li>
@@ -41,12 +47,18 @@ export default class ExampleRpc extends LoomElement {
         </section>
 
         <section>
-          <h2>Contract</h2>
+          <div class="group-header">
+            <loom-icon name="clipboard" size={20}></loom-icon>
+            <h2>Contract</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/rpc-demo.tsx" start={22} end={34}></source-block>
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/rpc-demo.tsx"></source-block>
         </section>
       </div>

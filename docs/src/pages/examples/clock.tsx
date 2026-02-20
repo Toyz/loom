@@ -18,12 +18,18 @@ export default class ExampleClock extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <live-clock></live-clock>
         </section>
 
         <section>
-          <h2>What This Shows</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>What This Shows</h2>
+          </div>
           <ul>
             <li><span class="ic">@reactive</span> — <code>time</code> triggers re-render every tick</li>
             <li><span class="ic">@interval(1000)</span> — Auto-cleaned repeating timer</li>
@@ -33,7 +39,10 @@ export default class ExampleClock extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/live-clock.tsx"></source-block>
         </section>
       </div>

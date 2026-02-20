@@ -13,48 +13,71 @@ export default class PageElementLifecycle extends LoomElement {
         <p class="subtitle">Hooks for setup, teardown, error handling, and async loading.</p>
 
         <section>
-          <h2>@mount</h2>
-          <p>
-            Runs when the element connects to the DOM. Multiple <span class="ic">@mount</span> methods allowed per class.
-          </p>
-          <code-block lang="ts" code={`@mount
+          <div class="group-header">
+            <loom-icon name="download" size={20} color="var(--emerald)"></loom-icon>
+            <h2>@mount</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@mount</div>
+            <div class="dec-desc">
+              Runs when the element connects to the DOM. Multiple <span class="ic">@mount</span> methods allowed per class.
+            </div>
+            <code-block lang="ts" code={`@mount
 setup() {
   this.shadow.adoptedStyleSheets = [styles];
   this.ctx = this.canvas.getContext("2d");
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>@unmount</h2>
-          <p>
-            Runs when the element disconnects. Use for manual cleanup — cancelling timers, closing connections.
-          </p>
-          <code-block lang="ts" code={`@unmount
+          <div class="group-header">
+            <loom-icon name="upload" size={20} color="var(--rose)"></loom-icon>
+            <h2>@unmount</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@unmount</div>
+            <div class="dec-desc">
+              Runs when the element disconnects. Use for manual cleanup — cancelling timers, closing connections.
+            </div>
+            <code-block lang="ts" code={`@unmount
 teardown() {
   cancelAnimationFrame(this.rafId);
   localStorage.setItem("state", JSON.stringify(this.state));
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>@catch_</h2>
-          <p>
-            Error boundary. Class decorator that wraps <span class="ic">update()</span> and
-            <span class="ic">connectedCallback()</span> with try/catch.
-          </p>
-          <code-block lang="ts" code={`@component("my-widget")
+          <div class="group-header">
+            <loom-icon name="shield" size={20} color="var(--amber)"></loom-icon>
+            <h2>@catch_</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@catch_(handler)</div>
+            <div class="dec-desc">
+              Error boundary. Class decorator that wraps <span class="ic">update()</span> and
+              <span class="ic">connectedCallback()</span> with try/catch.
+            </div>
+            <code-block lang="ts" code={`@component("my-widget")
 @catch_((err, el) => {
   el.shadow.replaceChildren(<div>{err.message}</div>);
 })
 class MyWidget extends LoomElement { ... }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>@suspend</h2>
-          <p>
-            Async suspense. Wraps async methods to set <span class="ic">loading</span>/<span class="ic">error</span> state automatically.
-          </p>
-          <code-block lang="ts" code={`@reactive accessor loading = false;
+          <div class="group-header">
+            <loom-icon name="clock" size={20} color="var(--accent)"></loom-icon>
+            <h2>@suspend</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@suspend()</div>
+            <div class="dec-desc">
+              Async suspense. Wraps async methods to set <span class="ic">loading</span>/<span class="ic">error</span> state automatically.
+            </div>
+            <code-block lang="ts" code={`@reactive accessor loading = false;
 @reactive accessor error: Error | null = null;
 
 @suspend()
@@ -62,14 +85,17 @@ async fetchUser() {
   const res = await fetch(\`/api/users/\${this.userId}\`);
   this.user = await res.json();
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Combined Example</h2>
-          <p>
-            A component with error boundary, async loading, and cleanup:
-          </p>
-          <code-block lang="ts" code={`@component("user-card")
+          <div class="group-header">
+            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Combined Example</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">A component with error boundary, async loading, and cleanup:</div>
+            <code-block lang="ts" code={`@component("user-card")
 @catch_((err, el) => {
   el.shadow.replaceChildren(
     <div class="error">
@@ -111,15 +137,20 @@ class UserCard extends LoomElement {
     );
   }
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>firstUpdated()</h2>
-          <p>
-            Override <span class="ic">firstUpdated()</span> for one-time setup after the first render completes.
-            The shadow DOM is fully populated at this point.
-          </p>
-          <code-block lang="ts" code={`@component("my-el")
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <h2>firstUpdated()</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Override <span class="ic">firstUpdated()</span> for one-time setup after the first render completes.
+              The shadow DOM is fully populated at this point.
+            </div>
+            <code-block lang="ts" code={`@component("my-el")
 class MyEl extends LoomElement {
   @mount
   setup() {
@@ -131,10 +162,14 @@ class MyEl extends LoomElement {
     this.shadow.querySelector("input")?.focus();
   }
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Full Lifecycle Order</h2>
+          <div class="group-header">
+            <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
+            <h2>Full Lifecycle Order</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Phase</th><th>Hook</th><th>Timing</th></tr></thead>
             <tbody>

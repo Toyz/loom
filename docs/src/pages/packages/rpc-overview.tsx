@@ -13,7 +13,10 @@ export default class PageRpcOverview extends LoomElement {
         <p class="subtitle">Type-safe, decorator-driven RPC — server-agnostic, transport-swappable.</p>
 
         <section>
-          <h2>Install</h2>
+          <div class="group-header">
+            <loom-icon name="download" size={20}></loom-icon>
+            <h2>Install</h2>
+          </div>
           <code-block lang="bash" code={`npm install @toyz/loom-rpc`}></code-block>
           <p>
             <span class="ic">@toyz/loom</span> is the only dependency.
@@ -21,7 +24,10 @@ export default class PageRpcOverview extends LoomElement {
         </section>
 
         <section>
-          <h2>How It Works</h2>
+          <div class="group-header">
+            <loom-icon name="settings" size={20}></loom-icon>
+            <h2>How It Works</h2>
+          </div>
           <p>
             LoomRPC adds two decorators — <span class="ic">@rpc</span> for queries and{" "}
             <span class="ic">@mutate</span> for mutations. Both are type-safe, auto-accessor decorators
@@ -36,8 +42,11 @@ export default class PageRpcOverview extends LoomElement {
         </section>
 
         <section>
-          <h2>1. Define a Contract</h2>
-          <code-block lang="ts" code={`// contracts/user.ts — shared between client \u0026 server
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>1. Define a Contract</h2>
+          </div>
+          <code-block lang="ts" code={`// contracts/user.ts — shared between client & server
 export class UserRouter {
   getUser(id: string): User { return null!; }
   listUsers(page: number, limit: number): User[] { return null!; }
@@ -51,7 +60,10 @@ export class UserRouter {
         </section>
 
         <section>
-          <h2>2. Register a Transport</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>2. Register a Transport</h2>
+          </div>
           <code-block lang="ts" code={`// main.tsx
 import { app } from "@toyz/loom";
 import { RpcTransport, HttpTransport } from "@toyz/loom-rpc";
@@ -68,7 +80,10 @@ app.start();`}></code-block>
         </section>
 
         <section>
-          <h2>3. Use in Components</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>3. Use in Components</h2>
+          </div>
           <code-block lang="tsx" code={`import { rpc, mutate } from "@toyz/loom-rpc";
 import { UserRouter } from "../contracts/user";
 
@@ -80,23 +95,26 @@ class UserProfile extends LoomElement {
     fn: el => [el.userId],     // args from reactive state
     staleTime: 60_000,         // SWR: cache 1 minute
   })
-  accessor user!: ApiState\u003cUser\u003e;
+  accessor user!: ApiState\<User\>;
 
   @mutate(UserRouter, "updateProfile")
-  accessor save!: RpcMutator\u003c[ProfileUpdate], User\u003e;
+  accessor save!: RpcMutator\<[ProfileUpdate], User\>;
 
   update() {
     return this.user.match({
-      loading: () => \u003cdiv\u003eLoading...\u003c/div\u003e,
-      ok:      (u) => \u003ch1\u003e{u.name}\u003c/h1\u003e,
-      err:     (e) => \u003cdiv\u003eError: {e.message}\u003c/div\u003e,
+      loading: () => \<div\>Loading...\</div\>,
+      ok:      (u) => \<h1\>{u.name}\</h1\>,
+      err:     (e) => \<div\>Error: {e.message}\</div\>,
     });
   }
 }`}></code-block>
         </section>
 
         <section>
-          <h2>Type Safety</h2>
+          <div class="group-header">
+            <loom-icon name="shield" size={20}></loom-icon>
+            <h2>Type Safety</h2>
+          </div>
           <p>Everything is inferred from the contract class:</p>
           <ul>
             <li>Method names are autocompleted and type-checked</li>
@@ -105,9 +123,9 @@ class UserProfile extends LoomElement {
             <li>Pass the wrong types? Compile error.</li>
           </ul>
           <code-block lang="ts" code={`@rpc(UserRouter, "getUser", { fn: el => [el.userId] })
-//                 \u2191 autocompleted        \u2191 must be [string]
-accessor user!: ApiState\u003cUser\u003e;
-//                       \u2191 inferred from UserRouter.getUser return type`}></code-block>
+//                 ↑ autocompleted        ↑ must be [string]
+accessor user!: ApiState\<User\>;
+//                       ↑ inferred from UserRouter.getUser return type`}></code-block>
         </section>
       </div>
     );

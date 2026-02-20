@@ -2,43 +2,9 @@
  * Router — Overview
  * /router/overview
  */
-import { LoomElement, mount, css } from "@toyz/loom";
-import { docStyles } from "../../styles/doc-page";
-
-const styles = css`
-  .mode-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: var(--space-4, 1rem) 0;
-    font-size: var(--text-sm, 0.8125rem);
-  }
-  .mode-table th,
-  .mode-table td {
-    text-align: left;
-    padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
-    border-bottom: 1px solid var(--border-subtle, #1e1e2a);
-  }
-  .mode-table th {
-    color: var(--text-muted, #5e5e74);
-    font-weight: 600;
-    font-size: var(--text-xs, 0.75rem);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .mode-table td:first-child {
-    font-family: var(--font-mono, monospace);
-    color: var(--accent, #818cf8);
-    font-weight: 500;
-  }
-`;
+import { LoomElement } from "@toyz/loom";
 
 export default class PageRouterOverview extends LoomElement {
-
-  @mount
-  setup() {
-    this.shadow.adoptedStyleSheets = [...this.shadow.adoptedStyleSheets, styles];
-  }
-
   update() {
     return (
       <div>
@@ -49,23 +15,31 @@ export default class PageRouterOverview extends LoomElement {
         </p>
 
         <section>
-          <h2>Setup</h2>
-          <p>
-            Create a <span class="ic">LoomRouter</span> with either <span class="ic">hash</span> or <span class="ic">history</span> mode
-            and register it with the app:
-          </p>
-          <code-block lang="ts" code={`import { app } from "@toyz/loom";
+          <div class="group-header">
+            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Setup</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Create a <span class="ic">LoomRouter</span> with either <span class="ic">hash</span> or <span class="ic">history</span> mode
+              and register it with the app:
+            </div>
+            <code-block lang="ts" code={`import { app } from "@toyz/loom";
 import { LoomRouter } from "@toyz/loom/router";
 
 const router = new LoomRouter({ mode: "hash" });
 app.use(router);
 app.start();
 router.start();`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Modes</h2>
-          <table class="mode-table">
+          <div class="group-header">
+            <loom-icon name="compass" size={20} color="var(--amber)"></loom-icon>
+            <h2>Modes</h2>
+          </div>
+          <table class="api-table">
             <thead>
               <tr><th>Mode</th><th>URL Shape</th><th>Requires Server</th></tr>
             </thead>
@@ -74,20 +48,26 @@ router.start();`}></code-block>
               <tr><td>history</td><td>example.com/users/123</td><td>Yes (SPA fallback)</td></tr>
             </tbody>
           </table>
-          <p>
-            <span class="ic">hash</span> mode is zero-config and works on static hosts.
-            <span class="ic">history</span> mode gives clean URLs but requires your server to serve
-            <span class="ic">index.html</span> for all routes.
-          </p>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">hash</span> mode is zero-config and works on static hosts.
+              <span class="ic">history</span> mode gives clean URLs but requires your server to serve
+              <span class="ic">index.html</span> for all routes.
+            </div>
+          </div>
         </section>
 
         <section>
-          <h2>Outlet</h2>
-          <p>
-            <span class="ic">&lt;loom-outlet&gt;</span> renders the matched route's component.
-            Place it where routed content should appear:
-          </p>
-          <code-block lang="tsx" code={`@component("my-app")
+          <div class="group-header">
+            <loom-icon name="box" size={20} color="var(--accent)"></loom-icon>
+            <h2>Outlet</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">&lt;loom-outlet&gt;</span> renders the matched route's component.
+              Place it where routed content should appear:
+            </div>
+            <code-block lang="tsx" code={`@component("my-app")
 class App extends LoomElement {
   update() {
     return (
@@ -98,17 +78,22 @@ class App extends LoomElement {
     );
   }
 }`}></code-block>
-          <p>
+          </div>
+          <div class="note">
             <span class="ic">inherit-styles</span> passes the parent's adopted stylesheets to
             the routed component. Set <span class="ic">scrollToTop="false"</span> to opt out of
             automatic scroll reset on navigation.
-          </p>
+          </div>
         </section>
 
         <section>
-          <h2>RouteChanged Event</h2>
-          <p>Listen for navigation changes anywhere via the event bus:</p>
-          <code-block lang="tsx" code={`import { on } from "@toyz/loom";
+          <div class="group-header">
+            <loom-icon name="bolt" size={20} color="var(--cyan)"></loom-icon>
+            <h2>RouteChanged Event</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">Listen for navigation changes anywhere via the event bus:</div>
+            <code-block lang="tsx" code={`import { on } from "@toyz/loom";
 import { RouteChanged } from "@toyz/loom/router";
 
 @on(RouteChanged)
@@ -116,6 +101,7 @@ onRoute(e: RouteChanged) {
   console.log(\`Navigated to \${e.path}\`);
   // e.path, e.params, e.query available
 }`}></code-block>
+          </div>
         </section>
       </div>
     );

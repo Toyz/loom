@@ -18,7 +18,10 @@ export default class ExampleTodo extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <p class="hint" style="margin-bottom:0.75rem;color:var(--text-muted);font-size:0.85rem;">
             Try adding todos, then refresh — they persist via localStorage.
           </p>
@@ -26,7 +29,10 @@ export default class ExampleTodo extends LoomElement {
         </section>
 
         <section>
-          <h2>What This Shows</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>What This Shows</h2>
+          </div>
           <ul>
             <li><span class="ic">@store</span> — Deep-proxy reactive state with automatic persistence</li>
             <li><span class="ic">LocalAdapter</span> — Todos survive page refreshes via localStorage</li>
@@ -38,7 +44,10 @@ export default class ExampleTodo extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/todo-list.tsx"></source-block>
         </section>
       </div>

@@ -34,7 +34,10 @@ export default class PageExampleImageGallery extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <p class="hint" style="margin-bottom:0.5rem;color:var(--text-muted);font-size:0.85rem;">
             Navigate away and come back — cached images load instantly.
           </p>
@@ -81,7 +84,10 @@ export default class PageExampleImageGallery extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/image-gallery.tsx"></source-block>
         </section>
       </div>

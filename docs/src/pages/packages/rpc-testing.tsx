@@ -13,7 +13,10 @@ export default class PageRpcTesting extends LoomElement {
         <p class="subtitle">MockTransport — drop-in test transport with mocks, delays, and assertions.</p>
 
         <section>
-          <h2>Setup</h2>
+          <div class="group-header">
+            <loom-icon name="settings" size={20}></loom-icon>
+            <h2>Setup</h2>
+          </div>
           <p>
             Import <span class="ic">MockTransport</span> from the testing subpath export.
             Register it as the transport and you're ready to test — no server, no network.
@@ -26,7 +29,10 @@ app.use(RpcTransport, transport);`}></code-block>
         </section>
 
         <section>
-          <h2>Static Mocks</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Static Mocks</h2>
+          </div>
           <p>
             Return a fixed value for any router/method combination:
           </p>
@@ -38,7 +44,10 @@ app.use(RpcTransport, transport);`}></code-block>
         </section>
 
         <section>
-          <h2>Dynamic Mocks</h2>
+          <div class="group-header">
+            <loom-icon name="bolt" size={20}></loom-icon>
+            <h2>Dynamic Mocks</h2>
+          </div>
           <p>
             Pass a function to compute the response based on the call arguments:
           </p>
@@ -55,7 +64,10 @@ transport.mock("UserRouter", "listUsers", () => [
         </section>
 
         <section>
-          <h2>Error Mocks</h2>
+          <div class="group-header">
+            <loom-icon name="alert-triangle" size={20}></loom-icon>
+            <h2>Error Mocks</h2>
+          </div>
           <p>
             Simulate server errors to test error handling paths:
           </p>
@@ -67,7 +79,10 @@ transport.mock("UserRouter", "listUsers", () => [
         </section>
 
         <section>
-          <h2>Delay Simulation</h2>
+          <div class="group-header">
+            <loom-icon name="clock" size={20}></loom-icon>
+            <h2>Delay Simulation</h2>
+          </div>
           <p>
             Add artificial latency to test loading states and skeleton UI:
           </p>
@@ -79,7 +94,10 @@ transport.delay("UserRouter", "listUsers", 200);`}></code-block>
         </section>
 
         <section>
-          <h2>Assertions</h2>
+          <div class="group-header">
+            <loom-icon name="check-circle" size={20}></loom-icon>
+            <h2>Assertions</h2>
+          </div>
           <p>
             Verify that specific calls were (or were not) made:
           </p>
@@ -95,7 +113,10 @@ console.log(transport.history);
         </section>
 
         <section>
-          <h2>API Reference</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>API Reference</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
             <tbody>
@@ -111,7 +132,10 @@ console.log(transport.history);
         </section>
 
         <section>
-          <h2>Full Test Example</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Full Test Example</h2>
+          </div>
           <code-block lang="ts" code={`import { describe, it, expect } from "vitest";
 import { MockTransport } from "@toyz/loom-rpc/testing";
 

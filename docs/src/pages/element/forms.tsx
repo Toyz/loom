@@ -13,18 +13,28 @@ export default class PageElementForms extends LoomElement {
         <p class="subtitle">Typed form state with transforms, validation, and explicit binding via <span class="ic">@form</span>.</p>
 
         <section>
-          <h2>Overview</h2>
-          <p>
-            The <span class="ic">@form</span> decorator creates a typed <span class="ic">FormState&lt;T&gt;</span> object
-            with validation, transforms, and dirty tracking. Unlike traditional form libraries that query DOM elements,
-            Loom's <span class="ic">@form</span> is <strong>DOM-independent</strong> — you explicitly bind fields
-            in your template using <code>.bind(field)</code>.
-          </p>
+          <div class="group-header">
+            <loom-icon name="box" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Overview</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              The <span class="ic">@form</span> decorator creates a typed <span class="ic">FormState&lt;T&gt;</span> object
+              with validation, transforms, and dirty tracking. Unlike traditional form libraries that query DOM elements,
+              Loom's <span class="ic">@form</span> is <strong>DOM-independent</strong> — you explicitly bind fields
+              in your template using <code>.bind(field)</code>.
+            </div>
+          </div>
         </section>
 
         <section>
-          <h2>Basic Usage</h2>
-          <code-block lang="tsx" code={`import { LoomElement, component, form } from "@toyz/loom";
+          <div class="group-header">
+            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <h2>Basic Usage</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@form&lt;T&gt;(schema)</div>
+            <code-block lang="tsx" code={`import { LoomElement, component, form } from "@toyz/loom";
 import type { FormState } from "@toyz/loom";
 
 interface LoginForm {
@@ -65,10 +75,14 @@ class LoginPage extends LoomElement {
     }
   }
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>FormState&lt;T&gt; API</h2>
+          <div class="group-header">
+            <loom-icon name="book" size={20} color="var(--cyan)"></loom-icon>
+            <h2>FormState&lt;T&gt; API</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Property / Method</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -84,8 +98,13 @@ class LoginPage extends LoomElement {
         </section>
 
         <section>
-          <h2>Field Schema</h2>
-          <p>Each field in the schema can define:</p>
+          <div class="group-header">
+            <loom-icon name="settings" size={20} color="var(--amber)"></loom-icon>
+            <h2>Field Schema</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">Each field in the schema can define:</div>
+          </div>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -96,12 +115,16 @@ class LoginPage extends LoomElement {
         </section>
 
         <section>
-          <h2>Explicit Binding</h2>
-          <p>
-            Instead of magic DOM queries, you explicitly wire each input using <code>.bind(field)</code> and
-            <code>.data.field</code> for controlled inputs:
-          </p>
-          <code-block lang="tsx" code={`// Each input is explicitly bound in the template:
+          <div class="group-header">
+            <loom-icon name="link" size={20} color="var(--rose)"></loom-icon>
+            <h2>Explicit Binding</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Instead of magic DOM queries, you explicitly wire each input using <code>.bind(field)</code> and
+              <code>.data.field</code> for controlled inputs:
+            </div>
+            <code-block lang="tsx" code={`// Each input is explicitly bound in the template:
 <input value={f.data.email} onInput={f.bind("email")} />
 
 // Reset programmatically:
@@ -111,10 +134,14 @@ this.login.reset();
 if (this.login.validate()) {
   console.log("All good!", this.login.data);
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Decorator Signature</h2>
+          <div class="group-header">
+            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <h2>Decorator Signature</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>

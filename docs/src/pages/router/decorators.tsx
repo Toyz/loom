@@ -13,12 +13,17 @@ export default class PageRouterDecorators extends LoomElement {
         <p class="subtitle">Router-specific decorators for route registration, guards, and groups.</p>
 
         <section>
-          <h2>@route</h2>
-          <p>
-            Registers a class as a route handler. Supports path parameters,
-            named routes, guards, and group membership.
-          </p>
-          <code-block lang="ts" code={`import { route } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="hash" size={20} color="var(--amber)"></loom-icon>
+            <h2>@route</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@route(path, opts?)</div>
+            <div class="dec-desc">
+              Registers a class as a route handler. Supports path parameters,
+              named routes, guards, and group membership.
+            </div>
+            <code-block lang="ts" code={`import { route } from "@toyz/loom/router";
 
 @route("/docs/:slug")
 @component("page-docs")
@@ -31,6 +36,7 @@ class PageAdmin extends LoomElement { ... }
 @route("/settings", { group: UserLayout, name: "user-settings" })
 @component("user-settings")
 class UserSettings extends LoomElement { ... }`}></code-block>
+          </div>
 
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
@@ -43,13 +49,18 @@ class UserSettings extends LoomElement { ... }`}></code-block>
         </section>
 
         <section>
-          <h2>@guard</h2>
-          <p>
-            Marks a method as a named route guard.
-            Return <code>true</code> to allow, <code>false</code> to block,
-            or a <code>string</code> to redirect. Async guards are awaited.
-          </p>
-          <code-block lang="ts" code={`import { guard } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="shield" size={20} color="var(--emerald)"></loom-icon>
+            <h2>@guard</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@guard(name?)</div>
+            <div class="dec-desc">
+              Marks a method as a named route guard.
+              Return <code>true</code> to allow, <code>false</code> to block,
+              or a <code>string</code> to redirect. Async guards are awaited.
+            </div>
+            <code-block lang="ts" code={`import { guard } from "@toyz/loom/router";
 
 @guard("auth")
 checkAuth(@inject(AuthService) auth: AuthService) {
@@ -61,16 +72,22 @@ checkAuth(@inject(AuthService) auth: AuthService) {
 checkRole(@inject(UserStore) users: UserStore) {
   return users.current?.role === "admin" ? true : "/forbidden";
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>@group</h2>
-          <p>
-            Marks a class as a route group. Groups provide a path prefix and
-            optional guards that are inherited by all child routes. Groups can
-            also be routes themselves (layout pages).
-          </p>
-          <code-block lang="ts" code={`import { group, route } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
+            <h2>@group</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@group(prefix, opts?)</div>
+            <div class="dec-desc">
+              Marks a class as a route group. Groups provide a path prefix and
+              optional guards that are inherited by all child routes. Groups can
+              also be routes themselves (layout pages).
+            </div>
+            <code-block lang="ts" code={`import { group, route } from "@toyz/loom/router";
 
 @group("/user/:profile", { guards: ["auth"] })
 @route("/")
@@ -85,16 +102,21 @@ class UserLayout extends LoomElement {
 @component("user-settings")
 class UserSettings extends LoomElement { }
 // → resolves to /user/:profile/settings, inherits "auth" guard`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Route Param Injection</h2>
-          <p>
-            Use <span class="ic">@prop</span> with route options to inject path and query
-            parameters directly into reactive properties. Imported from
-            <span class="ic">@toyz/loom/router</span>.
-          </p>
-          <code-block lang="ts" code={`import { params, routeQuery } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="bolt" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Route Param Injection</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Use <span class="ic">@prop</span> with route options to inject path and query
+              parameters directly into reactive properties. Imported from
+              <span class="ic">@toyz/loom/router</span>.
+            </div>
+            <code-block lang="ts" code={`import { params, routeQuery } from "@toyz/loom/router";
 
 // Single path parameter
 @prop({ param: "id" }) userId!: string;
@@ -107,10 +129,14 @@ class UserSettings extends LoomElement { }
 
 // All query params decomposed
 @prop({ query: routeQuery }) query!: { page: string; sort: string };`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>API Reference</h2>
+          <div class="group-header">
+            <loom-icon name="book" size={20} color="var(--rose)"></loom-icon>
+            <h2>API Reference</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>

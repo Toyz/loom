@@ -2,14 +2,9 @@
  * Router — Routes & Params
  * /router/routes
  */
-import { LoomElement, component, mount } from "@toyz/loom";
-import { docStyles } from "../../styles/doc-page";
+import { LoomElement } from "@toyz/loom";
 
 export default class PageRouterRoutes extends LoomElement {
-
-  @mount
-  setup() {}
-
   update() {
     return (
       <div>
@@ -19,12 +14,17 @@ export default class PageRouterRoutes extends LoomElement {
         </p>
 
         <section>
-          <h2>@route(pattern, opts?)</h2>
-          <p>
-            Use <span class="ic">@route</span> on a <span class="ic">LoomElement</span> class to register it as a routed page.
-            Dynamic segments use <span class="ic">:param</span> syntax. Use <span class="ic">*</span> for a catch-all:
-          </p>
-          <code-block lang="tsx" code={`import { route } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="hash" size={20} color="var(--amber)"></loom-icon>
+            <h2>@route</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@route(pattern, opts?)</div>
+            <div class="dec-desc">
+              Use <span class="ic">@route</span> on a <span class="ic">LoomElement</span> class to register it as a routed page.
+              Dynamic segments use <span class="ic">:param</span> syntax. Use <span class="ic">*</span> for a catch-all:
+            </div>
+            <code-block lang="tsx" code={`import { route } from "@toyz/loom/router";
 
 @route("/users")
 @component("page-users")
@@ -40,15 +40,20 @@ class PageUserDetail extends LoomElement { }
 @route("*")
 @component("page-not-found")
 class PageNotFound extends LoomElement { }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Pattern Matching</h2>
-          <p>
-            Routes are matched in registration order. Wildcards (<span class="ic">*</span>) are always checked last.
-            The first match wins — order your routes from most to least specific:
-          </p>
-          <code-block lang="ts" code={`// Matched first (more specific)
+          <div class="group-header">
+            <loom-icon name="layers" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Pattern Matching</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Routes are matched in registration order. Wildcards (<span class="ic">*</span>) are always checked last.
+              The first match wins — order your routes from most to least specific:
+            </div>
+            <code-block lang="ts" code={`// Matched first (more specific)
 @route("/users/:id/posts/:slug")
 
 // Matched second
@@ -56,15 +61,20 @@ class PageNotFound extends LoomElement { }`}></code-block>
 
 // Matched last (catch-all)
 @route("*")`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Typed Route Data</h2>
-          <p>
-            Use <span class="ic">@prop</span> with route options to inject URL params and query strings
-            as typed properties. Combine with <span class="ic">@transform</span> for automatic type conversion:
-          </p>
-          <code-block lang="tsx" code={`import { params, routeQuery, transform, typed } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="bolt" size={20} color="var(--accent)"></loom-icon>
+            <h2>Typed Route Data</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Use <span class="ic">@prop</span> with route options to inject URL params and query strings
+              as typed properties. Combine with <span class="ic">@transform</span> for automatic type conversion:
+            </div>
+            <code-block lang="tsx" code={`import { params, routeQuery, transform, typed } from "@toyz/loom/router";
 
 interface UserParams { id: number; slug: string }
 
@@ -94,13 +104,19 @@ class PageUserDetail extends LoomElement {
     return <h1>User {this.userId}</h1>;
   }
 }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Route Options</h2>
-          <p>
-            The second argument to <span class="ic">@route</span> is an optional options object:
-          </p>
+          <div class="group-header">
+            <loom-icon name="settings" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Route Options</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              The second argument to <span class="ic">@route</span> is an optional options object:
+            </div>
+          </div>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -131,13 +147,17 @@ class PageUserDetail extends LoomElement { }`}></code-block>
         </section>
 
         <section>
-          <h2>Named Routes</h2>
-          <p>
-            Give a route a <span class="ic">name</span> to navigate by name instead of raw path.
-            Use <span class="ic">buildPath()</span> to generate URLs, or pass a name target
-            to <span class="ic">router.go()</span> and <span class="ic">&lt;loom-link&gt;</span>:
-          </p>
-          <code-block lang="tsx" code={`import { buildPath } from "@toyz/loom/router";
+          <div class="group-header">
+            <loom-icon name="link" size={20} color="var(--rose)"></loom-icon>
+            <h2>Named Routes</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Give a route a <span class="ic">name</span> to navigate by name instead of raw path.
+              Use <span class="ic">buildPath()</span> to generate URLs, or pass a name target
+              to <span class="ic">router.go()</span> and <span class="ic">&lt;loom-link&gt;</span>:
+            </div>
+            <code-block lang="tsx" code={`import { buildPath } from "@toyz/loom/router";
 
 // Define
 @route("/user/:id/post/:slug", { name: "user-post" })
@@ -155,15 +175,21 @@ router.go({ name: "user-post", params: { id: "42", slug: "hello" } });
 <loom-link name="user-post" params={{ id: "42", slug: "hello" }}>
   View Post
 </loom-link>`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>How It Works</h2>
-          <p>
-            <span class="ic">@route</span> is a class decorator built on <span class="ic">createDecorator</span>.
-            At define-time it compiles the pattern into a regex and registers the route entry.
-            The tag is lazily resolved from <span class="ic">@component</span> — so decorator order doesn't matter.
-          </p>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--amber)"></loom-icon>
+            <h2>How It Works</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">@route</span> is a class decorator built on <span class="ic">createDecorator</span>.
+              At define-time it compiles the pattern into a regex and registers the route entry.
+              The tag is lazily resolved from <span class="ic">@component</span> — so decorator order doesn't matter.
+            </div>
+          </div>
         </section>
       </div>
     );

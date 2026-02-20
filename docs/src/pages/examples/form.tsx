@@ -17,7 +17,10 @@ export default class ExampleForm extends LoomElement {
         </p>
 
         <section>
-          <h2>Live Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Live Demo</h2>
+          </div>
           <p>
             Type in the fields below — validation runs in real-time, and the
             status bar at the bottom shows <span class="ic">.valid</span> and{" "}
@@ -27,12 +30,18 @@ export default class ExampleForm extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/contact-form.tsx"></source-block>
         </section>
 
         <section>
-          <h2>Key Concepts</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>Key Concepts</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Feature</th><th>How It's Used</th></tr></thead>
             <tbody>

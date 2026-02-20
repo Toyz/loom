@@ -17,12 +17,18 @@ export default class ExampleThemeSwitcher extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <theme-toggle></theme-toggle>
         </section>
 
         <section>
-          <h2>What This Shows</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>What This Shows</h2>
+          </div>
           <ul>
             <li><span class="ic">@reactive</span> — Triggers re-render when theme changes</li>
             <li><span class="ic">@styles(sheet)</span> — Auto-adopted scoped CSS via class decorator</li>
@@ -33,7 +39,10 @@ export default class ExampleThemeSwitcher extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/theme-toggle.tsx"></source-block>
         </section>
       </div>

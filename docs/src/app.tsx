@@ -5,6 +5,7 @@
 import { LoomElement, component, reactive, on, css, mount, query } from "@toyz/loom";
 import { LoomLink, RouteChanged } from "@toyz/loom/router";
 import { docStyles } from "./styles/doc-page";
+import { scrollbar } from "./shared/scrollbar";
 import "./components/doc-search";
 
 interface NavItem { label: string; to: string; icon: string; divider?: string; dividerVersion?: string }
@@ -601,9 +602,10 @@ export class DocsApp extends LoomElement {
   }
 
   toggleSection(title: string) {
-    if (this.openSections.has(title)) this.openSections.delete(title);
-    else this.openSections.add(title);
-    this.scheduleUpdate();
+    const next = new Set(this.openSections);
+    if (next.has(title)) next.delete(title);
+    else next.add(title);
+    this.openSections = next;
   }
 
   isActive(to: string): boolean {
@@ -696,7 +698,7 @@ export class DocsApp extends LoomElement {
 
         <main>
           <div class="page">
-            <loom-outlet styles={[docStyles]}></loom-outlet>
+            <loom-outlet styles={[docStyles, scrollbar]}></loom-outlet>
           </div>
         </main>
         <doc-search></doc-search>

@@ -13,22 +13,28 @@ export default class PageRpcTransports extends LoomElement {
         <p class="subtitle">Pluggable transport layer — swap HTTP, WebSocket, or mock with one DI line.</p>
 
         <section>
-          <h2>RpcTransport</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>RpcTransport</h2>
+          </div>
           <p>
             The abstract base class that all transports implement. Registered via Loom's DI container
             with <span class="ic">app.use(RpcTransport, impl)</span>.
           </p>
           <code-block lang="ts" code={`abstract class RpcTransport {
-  abstract call\u003cT\u003e(
+  abstract call\<T\>(
     router: string,
     method: string,
     args: any[],
-  ): Promise\u003cT\u003e;
+  ): Promise\<T\>;
 }`}></code-block>
         </section>
 
         <section>
-          <h2>HttpTransport</h2>
+          <div class="group-header">
+            <loom-icon name="broadcast" size={20}></loom-icon>
+            <h2>HttpTransport</h2>
+          </div>
           <p>
             The built-in transport — <span class="ic">POST</span> JSON to{" "}
             <span class="ic">/rpc/&#123;Router&#125;/&#123;Method&#125;</span>.
@@ -43,7 +49,7 @@ app.use(RpcTransport, new HttpTransport("https://api.example.com/rpc"));
 
 // Custom base URL + default headers
 app.use(RpcTransport, new HttpTransport("/api/rpc", {
-  "Authorization": "Bearer \u003ctoken\u003e",
+  "Authorization": "Bearer <token>",
 }));`}></code-block>
 
           <table class="api-table">
@@ -56,7 +62,10 @@ app.use(RpcTransport, new HttpTransport("/api/rpc", {
         </section>
 
         <section>
-          <h2>Wire Protocol</h2>
+          <div class="group-header">
+            <loom-icon name="signpost" size={20}></loom-icon>
+            <h2>Wire Protocol</h2>
+          </div>
           <p>
             <span class="ic">HttpTransport</span> sends a JSON body with an <span class="ic">args</span>{" "}
             array. Any backend that follows this convention works — Go, Rust, Python, Express, Hono,
@@ -66,12 +75,15 @@ app.use(RpcTransport, new HttpTransport("/api/rpc", {
 Content-Type: application/json
 
 Request:  { "args": [arg1, arg2, ...] }
-Response: { "data": \u003creturn value\u003e }
+Response: { "data": \<return value\> }
 Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
         </section>
 
         <section>
-          <h2>RpcError</h2>
+          <div class="group-header">
+            <loom-icon name="alert-triangle" size={20}></loom-icon>
+            <h2>RpcError</h2>
+          </div>
           <p>
             Structured error thrown by transports with additional context about the failed call.
           </p>
@@ -88,17 +100,20 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
         </section>
 
         <section>
-          <h2>Custom Transports</h2>
+          <div class="group-header">
+            <loom-icon name="settings" size={20}></loom-icon>
+            <h2>Custom Transports</h2>
+          </div>
           <p>
             Extend <span class="ic">RpcTransport</span> to implement WebSocket, gRPC-Web, or any
             protocol. One DI swap and every <span class="ic">@rpc</span> and{" "}
             <span class="ic">@mutate</span> in the app uses the new transport.
           </p>
           <code-block lang="ts" code={`class WsTransport extends RpcTransport {
-  private pending = new Map\u003cstring, {
+  private pending = new Map\<string, {
     resolve: (v: any) => void;
     reject: (e: Error) => void;
-  }>();
+  }\>();
 
   constructor(private ws: WebSocket) {
     super();
@@ -111,7 +126,7 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
     });
   }
 
-  async call\u003cT\u003e(router: string, method: string, args: any[]): Promise\u003cT\u003e {
+  async call\<T\>(router: string, method: string, args: any[]): Promise\<T\> {
     const id = crypto.randomUUID();
     return new Promise((resolve, reject) => {
       this.pending.set(id, { resolve, reject });

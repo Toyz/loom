@@ -12,18 +12,30 @@ export default class PageStoreOverview extends LoomElement {
         <h1>State Management</h1>
         <p class="subtitle">Reactive primitives, component stores, and persistent storage — everything you need to manage state in Loom.</p>
 
-        <section>
-          <h2>Philosophy</h2>
-          <p>
-            Loom provides layered state management. Start simple with <span class="ic">@reactive</span> fields,
-            scale up to <span class="ic">@store</span> for component-scoped deep reactivity,
-            or use <span class="ic">Reactive&lt;T&gt;</span> and <span class="ic">CollectionStore&lt;T&gt;</span> for
-            shared, service-level state. Every layer supports optional persistence.
-          </p>
-        </section>
+        {/* ═══════════ Philosophy ═══════════ */}
 
         <section>
-          <h2>At a Glance</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Philosophy</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Loom provides layered state management. Start simple with <span class="ic">@reactive</span> fields,
+              scale up to <span class="ic">@store</span> for component-scoped deep reactivity,
+              or use <span class="ic">Reactive&lt;T&gt;</span> and <span class="ic">CollectionStore&lt;T&gt;</span> for
+              shared, service-level state. Every layer supports optional persistence.
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════ At a Glance ═══════════ */}
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="bolt" size={20} color="var(--amber)"></loom-icon>
+            <h2>At a Glance</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Primitive</th><th>Scope</th><th>Use Case</th></tr></thead>
             <tbody>
@@ -36,9 +48,15 @@ export default class PageStoreOverview extends LoomElement {
           </table>
         </section>
 
+        {/* ═══════════ Quick Example ═══════════ */}
+
         <section>
-          <h2>Quick Example</h2>
-          <code-block lang="ts" code={`import { LoomElement, component, reactive, store } from "@toyz/loom";
+          <div class="group-header">
+            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <h2>Quick Example</h2>
+          </div>
+          <div class="feature-entry">
+            <code-block lang="ts" code={`import { LoomElement, component, reactive, store } from "@toyz/loom";
 
 // Simple: single reactive field
 @component("click-counter")
@@ -67,10 +85,16 @@ class TodoApp extends LoomElement {
     </ul>;
   }
 }`}></code-block>
+          </div>
         </section>
 
+        {/* ═══════════ Choosing ═══════════ */}
+
         <section>
-          <h2>Choosing the Right Tool</h2>
+          <div class="group-header">
+            <loom-icon name="compass" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Choosing the Right Tool</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Need</th><th>Solution</th><th>Page</th></tr></thead>
             <tbody>

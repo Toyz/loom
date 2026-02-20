@@ -16,16 +16,20 @@ export default class PageResult extends LoomElement {
         </p>
 
         <section>
-          <h2>Why Result?</h2>
-          <p>
-            JavaScript's <span class="ic">try/catch</span> is invisible in the
-            type system — a function that throws looks identical to one that
-            doesn't. <span class="ic">LoomResult</span> makes errors{" "}
-            <strong>visible, typed, and composable</strong>.
-          </p>
-          <code-block
-            lang="ts"
-            code={`// ❌ try/catch — error handling is invisible
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Why Result?</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              JavaScript's <span class="ic">try/catch</span> is invisible in the
+              type system — a function that throws looks identical to one that
+              doesn't. <span class="ic">LoomResult</span> makes errors{" "}
+              <strong>visible, typed, and composable</strong>.
+            </div>
+            <code-block
+              lang="ts"
+              code={`// ❌ try/catch — error handling is invisible
 try {
   const data = await fetchTeam();
   render(data);
@@ -40,11 +44,15 @@ result.match({
   ok:  (team) => render(team),
   err: (e)    => showError(e.message),
 });`}
-          ></code-block>
+            ></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Creating Results</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <h2>Creating Results</h2>
+          </div>
           <code-block
             lang="ts"
             code={`import { LoomResult } from "@toyz/loom";
@@ -69,15 +77,19 @@ const result = await LoomResult.fromPromise(
         </section>
 
         <section>
-          <h2>Narrowing</h2>
-          <p>
-            The <span class="ic">.ok</span> boolean is a discriminant —
-            TypeScript narrows <span class="ic">.data</span> and{" "}
-            <span class="ic">.error</span> automatically:
-          </p>
-          <code-block
-            lang="ts"
-            code={`const r = LoomResult.ok("hello");
+          <div class="group-header">
+            <loom-icon name="shield" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Narrowing</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              The <span class="ic">.ok</span> boolean is a discriminant —
+              TypeScript narrows <span class="ic">.data</span> and{" "}
+              <span class="ic">.error</span> automatically:
+            </div>
+            <code-block
+              lang="ts"
+              code={`const r = LoomResult.ok("hello");
 
 if (r.ok) {
   r.data;   // ✅ string
@@ -86,75 +98,91 @@ if (r.ok) {
   r.error;  // ✅ Error
   r.data;   // ✅ undefined
 }`}
-          ></code-block>
+            ></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Combinators</h2>
+          <div class="group-header">
+            <loom-icon name="zap" size={20} color="var(--amber)"></loom-icon>
+            <h2>Combinators</h2>
+          </div>
 
-          <h3>unwrap() / unwrap_or()</h3>
-          <p>
-            Extract the value — <span class="ic">unwrap()</span> throws on Err,{" "}
-            <span class="ic">unwrap_or()</span> returns a fallback.
-          </p>
-          <code-block
-            lang="ts"
-            code={`result.unwrap();        // T — throws the error if Err
+          <div class="feature-entry">
+            <div class="dec-sig">unwrap() / unwrap_or()</div>
+            <div class="dec-desc">
+              Extract the value — <span class="ic">unwrap()</span> throws on Err,{" "}
+              <span class="ic">unwrap_or()</span> returns a fallback.
+            </div>
+            <code-block
+              lang="ts"
+              code={`result.unwrap();        // T — throws the error if Err
 result.unwrap_or([]);   // T — returns [] if Err`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <h3>map() / map_err()</h3>
-          <p>
-            Transform the Ok or Err value. The other variant passes through
-            unchanged.
-          </p>
-          <code-block
-            lang="ts"
-            code={`// Transform the success value
+          <div class="feature-entry">
+            <div class="dec-sig">map() / map_err()</div>
+            <div class="dec-desc">
+              Transform the Ok or Err value. The other variant passes through
+              unchanged.
+            </div>
+            <code-block
+              lang="ts"
+              code={`// Transform the success value
 const names = result.map(team => team.map(m => m.name));
 
 // Transform the error
 const friendly = result.map_err(e => \`Failed: \${e.message}\`);`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <h3>and_then()</h3>
-          <p>Chain fallible operations — the function only runs on Ok.</p>
-          <code-block
-            lang="ts"
-            code={`const user = await LoomResult.fromPromise(fetchUser())
+          <div class="feature-entry">
+            <div class="dec-sig">and_then()</div>
+            <div class="dec-desc">Chain fallible operations — the function only runs on Ok.</div>
+            <code-block
+              lang="ts"
+              code={`const user = await LoomResult.fromPromise(fetchUser())
   .then(r => r.and_then(u =>
     u.verified
       ? LoomResult.ok(u)
       : LoomResult.err(new Error("Not verified"))
   ));`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <h3>match()</h3>
-          <p>
-            Exhaustive pattern match — handles both branches, returns a value.
-            This is the recommended way to consume a Result.
-          </p>
-          <code-block
-            lang="ts"
-            code={`const greeting = result.match({
+          <div class="feature-entry">
+            <div class="dec-sig">match()</div>
+            <div class="dec-desc">
+              Exhaustive pattern match — handles both branches, returns a value.
+              This is the recommended way to consume a Result.
+            </div>
+            <code-block
+              lang="ts"
+              code={`const greeting = result.match({
   ok:  (user) => \`Hello, \${user.name}!\`,
   err: (e)    => \`Error: \${e.message}\`,
 });`}
-          ></code-block>
+            ></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Composable Match</h2>
-          <p>
-            The match object isn't fixed — <strong>each layer adds
-            optional branches</strong>. The base <span class="ic">{"{ ok, err }"}</span>{" "}
-            is always required (guarantees exhaustiveness), and
-            specializations extend it with opt-in states.
-          </p>
+          <div class="group-header">
+            <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
+            <h2>Composable Match</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              The match object isn't fixed — <strong>each layer adds
+              optional branches</strong>. The base <span class="ic">{"{ ok, err }"}</span>{" "}
+              is always required (guarantees exhaustiveness), and
+              specializations extend it with opt-in states.
+            </div>
 
-          <code-block
-            lang="ts"
-            code={`// ── Layer 1: LoomResult ──────────────────
+            <code-block
+              lang="ts"
+              code={`// ── Layer 1: LoomResult ──────────────────
 // Base contract: ok and err are always required
 result.match({
   ok:  (data) => render(data),
@@ -171,18 +199,19 @@ this.team.match({
 
 // Omit loading? Falls through to err during initial fetch.
 // The branch is additive, never breaking.`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <h3>How It Works</h3>
-          <p>
-            Each implementation checks for its optional branches first,
-            then falls through to the base <span class="ic">ok</span> / <span class="ic">err</span>{" "}
-            contract. It's a priority chain:
-          </p>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Each implementation checks for its optional branches first,
+              then falls through to the base <span class="ic">ok</span> / <span class="ic">err</span>{" "}
+              contract. It's a priority chain:
+            </div>
 
-          <code-block
-            lang="ts"
-            code={`// Inside ApiState.match():
+            <code-block
+              lang="ts"
+              code={`// Inside ApiState.match():
 match(cases) {
   if (loading && !data && !error && cases.loading)
     return cases.loading();           // opt-in branch
@@ -190,33 +219,40 @@ match(cases) {
     ? cases.ok(data)                  // base contract
     : cases.err(error);               // base contract
 }`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <p>
+          <div class="note">
             This pattern means <strong>simple uses stay simple</strong> — you
             can always call <span class="ic">.match({"{ ok, err }"})</span> on any
             Result-like type. But when you need richer handling, the
             branches are right there, fully typed. <strong>Opt-in
             granularity, not mandatory complexity.</strong>
-          </p>
+          </div>
         </section>
 
         <section>
-          <h2>Framework Integration</h2>
-          <p>
-            LoomResult isn't just a utility — it's woven into the framework
-            everywhere errors can occur.
-          </p>
+          <div class="group-header">
+            <loom-icon name="compass" size={20} color="var(--rose)"></loom-icon>
+            <h2>Framework Integration</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              LoomResult isn't just a utility — it's woven into the framework
+              everywhere errors can occur.
+            </div>
+          </div>
 
-          <h3>@api — Tri-State Match</h3>
-          <p>
-            Every <span class="ic">ApiState&lt;T&gt;</span> extends
-            the match object with an optional <span class="ic">loading</span> branch.
-            One call handles the entire fetch lifecycle:
-          </p>
-          <code-block
-            lang="ts"
-            code={`@api<Team[]>({ fn: () => fetch("/api/team"), pipe: ["json"] })
+          <div class="feature-entry">
+            <div class="dec-sig">@api — Tri-State Match</div>
+            <div class="dec-desc">
+              Every <span class="ic">ApiState&lt;T&gt;</span> extends
+              the match object with an optional <span class="ic">loading</span> branch.
+              One call handles the entire fetch lifecycle:
+            </div>
+            <code-block
+              lang="ts"
+              code={`@api<Team[]>({ fn: () => fetch("/api/team"), pipe: ["json"] })
 accessor team!: ApiState<Team[]>;
 
 update() {
@@ -226,17 +262,19 @@ update() {
     err: (e)    => <error-card message={e.message} />,
   });
 }`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <h3>@form — Validate as Result</h3>
-          <p>
-            <span class="ic">validate()</span> returns{" "}
-            <span class="ic">LoomResult&lt;T, errors&gt;</span> — no more
-            boolean checks:
-          </p>
-          <code-block
-            lang="ts"
-            code={`@form<LoginForm>({
+          <div class="feature-entry">
+            <div class="dec-sig">@form — Validate as Result</div>
+            <div class="dec-desc">
+              <span class="ic">validate()</span> returns{" "}
+              <span class="ic">LoomResult&lt;T, errors&gt;</span> — no more
+              boolean checks:
+            </div>
+            <code-block
+              lang="ts"
+              code={`@form<LoginForm>({
   email:    { validate: v => v.includes("@") || "Invalid email" },
   password: { validate: v => v.length >= 8 || "Min 8 chars" },
 })
@@ -248,16 +286,18 @@ onSubmit() {
     err: (errors) => console.log("Fix:", errors),
   });
 }`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <h3>DI — Safe Lookups</h3>
-          <p>
-            <span class="ic">app.maybe()</span> returns a Result instead of{" "}
-            <span class="ic">undefined</span>:
-          </p>
-          <code-block
-            lang="ts"
-            code={`// Before: manual undefined check
+          <div class="feature-entry">
+            <div class="dec-sig">DI — Safe Lookups</div>
+            <div class="dec-desc">
+              <span class="ic">app.maybe()</span> returns a Result instead of{" "}
+              <span class="ic">undefined</span>:
+            </div>
+            <code-block
+              lang="ts"
+              code={`// Before: manual undefined check
 const svc = app.maybe(MyService);
 if (!svc) throw new Error("missing");
 
@@ -266,26 +306,32 @@ app.maybe(MyService).match({
   ok:  (svc) => svc.doWork(),
   err: (e)   => console.warn(e.message),
 });`}
-          ></code-block>
+            ></code-block>
+          </div>
 
-          <h3>@guard — Result-Based Guards</h3>
-          <p>
-            Route guards can return{" "}
-            <span class="ic">LoomResult&lt;void, string&gt;</span> where the
-            error string is the redirect path:
-          </p>
-          <code-block
-            lang="ts"
-            code={`@guard("auth")
+          <div class="feature-entry">
+            <div class="dec-sig">@guard — Result-Based Guards</div>
+            <div class="dec-desc">
+              Route guards can return{" "}
+              <span class="ic">LoomResult&lt;void, string&gt;</span> where the
+              error string is the redirect path:
+            </div>
+            <code-block
+              lang="ts"
+              code={`@guard("auth")
 checkAuth(@inject(TokenStore) t: TokenStore) {
   if (!t.jwt) return LoomResult.err("/login");
   return LoomResult.OK;  // allow navigation
 }`}
-          ></code-block>
+            ></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>API Reference</h2>
+          <div class="group-header">
+            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <h2>API Reference</h2>
+          </div>
           <table class="api-table">
             <thead>
               <tr>

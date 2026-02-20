@@ -13,24 +13,34 @@ export default class PageElementLazy extends LoomElement {
         <p class="subtitle">Defer component module loading until first mount with <span class="ic">@lazy</span>.</p>
 
         <section>
-          <h2>Overview</h2>
-          <p>
-            The <span class="ic">@lazy</span> decorator enables code-splitting for any Loom component.
-            Instead of bundling all component code upfront, <span class="ic">@lazy</span> defers
-            loading the real implementation until the element is first connected to the DOM.
-            This is useful for heavy components, route pages, or any element that
-            doesn't need to be available immediately.
-          </p>
+          <div class="group-header">
+            <loom-icon name="box" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Overview</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              The <span class="ic">@lazy</span> decorator enables code-splitting for any Loom component.
+              Instead of bundling all component code upfront, <span class="ic">@lazy</span> defers
+              loading the real implementation until the element is first connected to the DOM.
+              This is useful for heavy components, route pages, or any element that
+              doesn't need to be available immediately.
+            </div>
+          </div>
         </section>
 
         <section>
-          <h2>Basic Usage</h2>
-          <p>
-            Apply <span class="ic">@lazy</span> to any component class. The decorator takes a
-            loader function that returns a dynamic <code>import()</code>. The imported module
-            should have a <code>default</code> export with the real component class.
-          </p>
-          <code-block lang="ts" code={`import { LoomElement, component, lazy } from "@toyz/loom";
+          <div class="group-header">
+            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <h2>Basic Usage</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@lazy(loader, opts?)</div>
+            <div class="dec-desc">
+              Apply <span class="ic">@lazy</span> to any component class. The decorator takes a
+              loader function that returns a dynamic <code>import()</code>. The imported module
+              should have a <code>default</code> export with the real component class.
+            </div>
+            <code-block lang="ts" code={`import { LoomElement, component, lazy } from "@toyz/loom";
 
 // Stub — registered immediately, implementation loaded on first mount
 @component("heavy-chart")
@@ -41,16 +51,21 @@ class HeavyChart extends LoomElement {}
 // export default class HeavyChart extends LoomElement {
 //   update() { return <canvas>...</canvas>; }
 // }`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>With Routes</h2>
-          <p>
-            <span class="ic">@lazy</span> pairs naturally with <span class="ic">@route</span> for
-            code-split pages. The stub registers the route immediately, but the page
-            module only loads when a user navigates to it.
-          </p>
-          <code-block lang="ts" code={`import { LoomElement, component, lazy } from "@toyz/loom";
+          <div class="group-header">
+            <loom-icon name="compass" size={20} color="var(--cyan)"></loom-icon>
+            <h2>With Routes</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">@lazy</span> pairs naturally with <span class="ic">@route</span> for
+              code-split pages. The stub registers the route immediately, but the page
+              module only loads when a user navigates to it.
+            </div>
+            <code-block lang="ts" code={`import { LoomElement, component, lazy } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
 
 @route("/settings")
@@ -62,40 +77,54 @@ class PageSettings extends LoomElement {}
 @component("page-admin")
 @lazy(() => import("./pages/admin"))
 class PageAdmin extends LoomElement {}`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>Loading Indicator</h2>
-          <p>
-            Pass a <span class="ic">loading</span> option with the tag name of a component to
-            display while the chunk is fetching:
-          </p>
-          <code-block lang="ts" code={`@component("dashboard-page")
+          <div class="group-header">
+            <loom-icon name="clock" size={20} color="var(--amber)"></loom-icon>
+            <h2>Loading Indicator</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Pass a <span class="ic">loading</span> option with the tag name of a component to
+              display while the chunk is fetching:
+            </div>
+            <code-block lang="ts" code={`@component("dashboard-page")
 @lazy(() => import("./pages/dashboard"), {
   loading: "app-spinner"
 })
 class DashboardPage extends LoomElement {}`}></code-block>
+          </div>
         </section>
 
         <section>
-          <h2>How It Works</h2>
-          <p>
-            When a <span class="ic">@lazy</span>-decorated element is connected to the DOM for
-            the first time:
-          </p>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--accent)"></loom-icon>
+            <h2>How It Works</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              When a <span class="ic">@lazy</span>-decorated element is connected to the DOM for
+              the first time:
+            </div>
+          </div>
           <ol>
             <li>The loading indicator is shown (if configured)</li>
             <li>The loader function is called, triggering a dynamic import</li>
             <li>The real class's prototype methods and static properties are patched onto the stub</li>
             <li>The loading indicator is cleared and the real <span class="ic">connectedCallback</span> runs</li>
           </ol>
-          <p>
+          <div class="note">
             Subsequent mounts skip the loading step entirely — the module is only loaded once.
-          </p>
+          </div>
         </section>
 
         <section>
-          <h2>API Reference</h2>
+          <div class="group-header">
+            <loom-icon name="book" size={20} color="var(--emerald)"></loom-icon>
+            <h2>API Reference</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>

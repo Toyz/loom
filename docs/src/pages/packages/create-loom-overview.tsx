@@ -13,7 +13,10 @@ export default class PageCreateLoomOverview extends LoomElement {
         <p class="subtitle">Scaffold a new Loom + TypeScript + Vite project in seconds.</p>
 
         <section>
-          <h2>Usage</h2>
+          <div class="group-header">
+            <loom-icon name="terminal" size={20}></loom-icon>
+            <h2>Usage</h2>
+          </div>
           <code-block lang="bash" code={`npm create @toyz/loom my-app
 cd my-app
 npm install
@@ -24,7 +27,10 @@ npm run dev`}></code-block>
         </section>
 
         <section>
-          <h2>Current Directory</h2>
+          <div class="group-header">
+            <loom-icon name="signpost" size={20}></loom-icon>
+            <h2>Current Directory</h2>
+          </div>
           <p>
             To scaffold into the current directory instead of creating a new folder:
           </p>
@@ -32,7 +38,10 @@ npm run dev`}></code-block>
         </section>
 
         <section>
-          <h2>What You Get</h2>
+          <div class="group-header">
+            <loom-icon name="archive" size={20}></loom-icon>
+            <h2>What You Get</h2>
+          </div>
           <code-block lang="text" code={`my-app/
 ├── index.html            5 lines
 ├── package.json          1 dep, 2 devDeps
@@ -45,7 +54,10 @@ npm run dev`}></code-block>
         </section>
 
         <section>
-          <h2>Dependencies</h2>
+          <div class="group-header">
+            <loom-icon name="package" size={20}></loom-icon>
+            <h2>Dependencies</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Type</th><th>Package</th><th>Why</th></tr></thead>
             <tbody>
@@ -58,7 +70,10 @@ npm run dev`}></code-block>
         </section>
 
         <section>
-          <h2>Starter Component</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Starter Component</h2>
+          </div>
           <p>
             The generated <span class="ic">app.tsx</span> gives you a minimal Loom component
             with reactive state, scoped CSS, and JSX:
@@ -79,19 +94,22 @@ export class App extends LoomElement {
 
   update() {
     return (
-      \u003cdiv\u003e
-        \u003ch1\u003eLoom\u003c/h1\u003e
-        \u003cbutton onClick={() => this.count++}\u003e
-          Clicks: \u003cspan\u003e{this.count}\u003c/span\u003e
-        \u003c/button\u003e
-      \u003c/div\u003e
+      \<div\>
+        \<h1\>Loom\</h1\>
+        \<button onClick={() => this.count++}\>
+          Clicks: \<span\>{this.count}\</span\>
+        \</button\>
+      \</div\>
     );
   }
 }`}></code-block>
         </section>
 
         <section>
-          <h2>TSConfig</h2>
+          <div class="group-header">
+            <loom-icon name="settings" size={20}></loom-icon>
+            <h2>TSConfig</h2>
+          </div>
           <p>
             The generated <span class="ic">tsconfig.json</span> is pre-configured for Loom's
             JSX runtime and TC39 decorators:

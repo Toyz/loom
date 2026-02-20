@@ -19,7 +19,10 @@ export default class ExampleCanvasGame extends LoomElement {
         </p>
 
         <section>
-          <h2>Demo</h2>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20}></loom-icon>
+            <h2>Demo</h2>
+          </div>
           <p class="hint" style="margin-bottom:0.75rem;color:var(--text-muted);font-size:0.85rem;">
             Move your mouse over the canvas to control the paddle. Click to start.
           </p>
@@ -27,7 +30,10 @@ export default class ExampleCanvasGame extends LoomElement {
         </section>
 
         <section>
-          <h2>What This Shows</h2>
+          <div class="group-header">
+            <loom-icon name="list" size={20}></loom-icon>
+            <h2>What This Shows</h2>
+          </div>
           <ul>
             <li><span class="ic">&lt;loom-canvas&gt;</span> — Auto-resizing canvas with DPR-aware rendering</li>
             <li><span class="ic">draw</span> — Per-frame draw callback with delta-time for smooth animation</li>
@@ -38,7 +44,10 @@ export default class ExampleCanvasGame extends LoomElement {
         </section>
 
         <section>
-          <h2>Source</h2>
+          <div class="group-header">
+            <loom-icon name="code" size={20}></loom-icon>
+            <h2>Source</h2>
+          </div>
           <source-block file="docs/src/pages/examples/components/canvas-game-demo.tsx"></source-block>
         </section>
       </div>

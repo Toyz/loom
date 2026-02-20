@@ -8,46 +8,10 @@
  *   - Lifecycle/Timing/DOM: under /element/*
  *   - DI: /di/overview
  */
-import { LoomElement, css, mount } from "@toyz/loom";
+import { LoomElement } from "@toyz/loom";
 import { DECORATOR_LIST, DECORATOR_COUNT } from "../../data/decorators";
 
-/* ── Page-specific styles ── */
-
-const styles = css`
-  .decorator-entry {
-    margin-bottom: var(--space-6, 1.5rem);
-  }
-  .decorator-entry:last-child {
-    margin-bottom: 0;
-  }
-
-  .dec-sig {
-    font-family: var(--font-mono, monospace);
-    font-size: var(--text-base, 0.9375rem);
-    color: var(--accent, #818cf8);
-    margin-bottom: var(--space-1, 0.25rem);
-    font-weight: 600;
-  }
-  .dec-desc {
-    color: var(--text-secondary, #9898ad);
-    font-size: var(--text-sm, 0.8125rem);
-    margin-bottom: var(--space-3, 0.75rem);
-    line-height: 1.6;
-  }
-
-  .group-header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3, 0.75rem);
-  }
-`;
-
 export default class PageDecoratorsOverview extends LoomElement {
-
-  @mount
-  setup() {
-    this.shadow.adoptedStyleSheets = [...this.shadow.adoptedStyleSheets, styles];
-  }
 
   update() {
     return (
@@ -65,7 +29,7 @@ export default class PageDecoratorsOverview extends LoomElement {
             <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
             <h2>createDecorator</h2>
           </div>
-          <div class="decorator-entry">
+          <div class="feature-entry">
             <div class="dec-sig">createDecorator&lt;Args, T&gt;(setup, options?)</div>
             <div class="dec-desc">
               The universal factory every Loom decorator is built on.
@@ -108,7 +72,7 @@ const tag = createDecorator<[string]>((ctor, name) => {
             <h2>State</h2>
           </div>
 
-          <div class="decorator-entry" id="reactive">
+          <div class="feature-entry" id="reactive">
             <div class="dec-sig">@reactive</div>
             <div class="dec-desc">
               Internal reactive state backed by <span class="ic">Reactive&lt;T&gt;</span>.
@@ -119,7 +83,7 @@ const tag = createDecorator<[string]>((ctor, name) => {
 @reactive accessor items: string[] = [];`}></code-block>
           </div>
 
-          <div class="decorator-entry" id="prop">
+          <div class="feature-entry" id="prop">
             <div class="dec-sig">@prop</div>
             <div class="dec-desc">
               External property. Auto-parses HTML attributes (number, boolean, string)
@@ -130,7 +94,7 @@ const tag = createDecorator<[string]>((ctor, name) => {
 @prop accessor disabled = false;  // parsed as boolean`}></code-block>
           </div>
 
-          <div class="decorator-entry" id="computed">
+          <div class="feature-entry" id="computed">
             <div class="dec-sig">@computed</div>
             <div class="dec-desc">
               Cached derived value on a getter. Re-computed only when <span class="ic">@reactive</span> dependencies trigger a re-render.
@@ -141,7 +105,7 @@ get displayName() {
 }`}></code-block>
           </div>
 
-          <div class="decorator-entry" id="watch">
+          <div class="feature-entry" id="watch">
             <div class="dec-sig">@watch(field: string)</div>
             <div class="dec-sig">@watch(store: Reactive)</div>
             <div class="dec-sig">@watch(Service, "prop"?)</div>
@@ -167,7 +131,7 @@ onTodos(items: Todo[], prev: Todo[]) { }
 onTheme(val: string, prev: string) { }`}></code-block>
           </div>
 
-          <div class="decorator-entry" id="readonly">
+          <div class="feature-entry" id="readonly">
             <div class="dec-sig">@readonly</div>
             <div class="dec-desc">
               Composable immutability. Freezes the value after the first set — subsequent
