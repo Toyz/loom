@@ -65,6 +65,23 @@ get displayName() {
         </section>
 
         <section>
+          <h2>@readonly</h2>
+          <p>
+            Composable immutability. Freezes the value after the first set — subsequent
+            assignments throw at runtime. Objects and arrays are <span class="ic">Object.freeze()</span>'d
+            in the getter. Place <span class="ic">@readonly</span> first (outermost) when stacking.
+          </p>
+          <code-block lang="ts" code={`// Set once, locked forever
+@readonly @reactive accessor id = crypto.randomUUID();
+
+// Props from parent update, but child can't mutate
+@readonly @prop accessor users!: User[];
+
+// Standalone — frozen after init
+@readonly accessor config = { theme: "dark" };`}></code-block>
+        </section>
+
+        <section>
           <h2>Lifecycle</h2>
 
           <h3>@mount</h3>
@@ -293,6 +310,7 @@ class AutoCounter extends LoomElement {
               <tr><td><code>@reactive</code></td><td>Field</td><td>Reactive state, triggers <code>update()</code></td></tr>
               <tr><td><code>@prop</code></td><td>Field</td><td>External attribute/property, auto-parsed</td></tr>
               <tr><td><code>@computed</code></td><td>Getter</td><td>Cached derived value</td></tr>
+              <tr><td><code>@readonly</code></td><td>Accessor</td><td>Runtime immutability — freezes objects, throws on reassign</td></tr>
               <tr><td><code>@mount</code></td><td>Method</td><td>Run on connect</td></tr>
               <tr><td><code>@unmount</code></td><td>Method</td><td>Run on disconnect</td></tr>
               <tr><td><code>@catch_</code></td><td>Method</td><td>Error boundary handler</td></tr>

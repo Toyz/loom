@@ -107,7 +107,7 @@ class LazyElementImage extends LoomElement {}
 @route("/decorators", { group: ElementGroup })
 @component("page-element-decorators")
 @lazy(() => import("./element/decorators"))
-@searchable({ title: "Decorators", section: "Element", icon: "hash", to: "/element/decorators", keywords: ["decorator", "prop", "reactive", "query", "watch", "observe"], summary: "Element-specific decorators for registration, state, lifecycle, and DOM queries." })
+@searchable({ title: "Decorators", section: "Element", icon: "hash", to: "/element/decorators", keywords: ["decorator", "prop", "reactive", "query", "watch", "observe", "readonly"], summary: "Element-specific decorators for registration, state, lifecycle, and DOM queries." })
 class LazyElementDecorators extends LoomElement {}
 
 @route("/lazy", { group: ElementGroup })
@@ -223,7 +223,7 @@ class LazyRouterDecorators extends LoomElement {}
 @route("/overview", { group: DecoratorsGroup })
 @component("page-decorators-overview")
 @lazy(() => import("./decorators/overview"))
-@searchable({ title: "Overview", section: "Decorators", icon: "hash", to: "/decorators/overview", keywords: ["decorators", "TC39", "stage 3", "overview", "createDecorator"], summary: "Full catalog of Loom's 30+ TC39 decorators." })
+@searchable({ title: "Overview", section: "Decorators", icon: "hash", to: "/decorators/overview", keywords: ["decorators", "TC39", "stage 3", "overview", "createDecorator", "readonly", "immutable", "freeze"], summary: "Full catalog of Loom's 30+ TC39 decorators." })
 class LazyDecoratorsOverview extends LoomElement {}
 
 @route("/events", { group: DecoratorsGroup })
