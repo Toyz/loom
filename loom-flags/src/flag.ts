@@ -43,8 +43,8 @@ export function flag(name: string, context?: ContextArg) {
     switch (decoratorContext.kind) {
       case "class": {
         const ctor = value as any;
-        ctor[FLAG_META] ??= [];
-        ctor[FLAG_META].push({ flag: name, kind: "class" });
+        ctor[FLAG_META.key] ??= [];
+        ctor[FLAG_META.key].push({ flag: name, kind: "class" });
         const originalConnected = ctor.prototype.connectedCallback;
 
         ctor.prototype.connectedCallback = function (this: any) {
@@ -78,8 +78,8 @@ export function flag(name: string, context?: ContextArg) {
 
         decoratorContext.addInitializer(function (this: any) {
           const ctor = this.constructor;
-          ctor[FLAG_META] ??= [];
-          ctor[FLAG_META].push({ flag: name, kind: "method", method: key });
+          ctor[FLAG_META.key] ??= [];
+          ctor[FLAG_META.key].push({ flag: name, kind: "method", method: key });
           const original = method;
           const self = this;
           (this as any)[key] = function (...args: any[]) {

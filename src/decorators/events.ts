@@ -39,16 +39,16 @@ export function on(typeOrTarget: Constructor<LoomEvent> | EventTarget | ((el: an
 
     context.addInitializer(function (this: any) {
       // Store metadata for service wiring by app.start()
-      if (!this[ON_HANDLERS]) this[ON_HANDLERS] = [];
+      if (!this[ON_HANDLERS.key]) this[ON_HANDLERS.key] = [];
       if (event !== undefined) {
-        this[ON_HANDLERS].push({ key, domTarget: typeOrTarget, event });
+        this[ON_HANDLERS.key].push({ key, domTarget: typeOrTarget, event });
       } else {
-        this[ON_HANDLERS].push({ key, type: typeOrTarget });
+        this[ON_HANDLERS.key].push({ key, type: typeOrTarget });
       }
 
       // Wire lifecycle via CONNECT_HOOKS
-      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-      this[CONNECT_HOOKS].push((el: any) => {
+      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+      this[CONNECT_HOOKS.key].push((el: any) => {
         if (event !== undefined) {
           // Resolve target: arrow/function resolver has no .prototype, class constructors do
           const target = typeof typeOrTarget === "function" && !(typeOrTarget as any).prototype
@@ -103,8 +103,8 @@ export function emit<T extends LoomEvent>(
   ) {
     const field = String(context.name);
     context.addInitializer(function (this: any) {
-      if (!this[EMITTERS]) this[EMITTERS] = [];
-      this[EMITTERS].push({ field, factory });
+      if (!this[EMITTERS.key]) this[EMITTERS.key] = [];
+      this[EMITTERS.key].push({ field, factory });
     });
   }
 

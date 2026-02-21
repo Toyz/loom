@@ -45,15 +45,15 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
     if (typeof target === "string") {
       // Form 1: local @reactive field — store metadata for @reactive to wire
       context.addInitializer(function (this: any) {
-        if (!this[WATCHERS]) this[WATCHERS] = [];
-        this[WATCHERS].push({ field: target, key });
+        if (!this[WATCHERS.key]) this[WATCHERS.key] = [];
+        this[WATCHERS.key].push({ field: target, key });
       });
     } else if (typeof target === "function") {
       // Form 3: DI-resolved service constructor
       const service = target as new (...args: unknown[]) => unknown;
       context.addInitializer(function (this: any) {
-        if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-        this[CONNECT_HOOKS].push((el: any) => {
+        if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+        this[CONNECT_HOOKS.key].push((el: any) => {
           const svc = app.get(service);
           const reactive = prop ? (svc as Record<string, unknown>)[prop] : svc;
           if (typeof (reactive as { subscribe?: Function })?.subscribe !== "function") {
@@ -71,8 +71,8 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
     } else if (typeof target === "object" && typeof target.subscribe === "function") {
       // Form 2: direct Reactive instance — subscribe on connect via CONNECT_HOOKS
       context.addInitializer(function (this: any) {
-        if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-        this[CONNECT_HOOKS].push((el: any) => {
+        if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+        this[CONNECT_HOOKS.key].push((el: any) => {
           const unsub = target.subscribe((v: unknown, prev: unknown) => {
             method.call(el, v, prev);
             el.scheduleUpdate?.();

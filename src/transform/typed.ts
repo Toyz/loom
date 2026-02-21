@@ -53,7 +53,7 @@ export function typedTransformer<T>(schema: TransformSchema<T>) {
   const fn = typed<T>(schema);
   return (proto: any, key: string) => {
     const ctor = proto.constructor;
-    if (!ctor[TRANSFORMS]) ctor[TRANSFORMS] = new Map<string, Function>();
-    ctor[TRANSFORMS].set(key, fn);
+    if (!ctor[TRANSFORMS.key]) ctor[TRANSFORMS.key] = new Map<string, Function>();
+    ctor[TRANSFORMS.key].set(key, fn);
   };
 }

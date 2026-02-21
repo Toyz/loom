@@ -88,13 +88,13 @@ export abstract class LoomElement extends HTMLElement {
 
   connectedCallback(): void {
     // Run decorator-registered connect hooks (from @mount, @interval, @watch, etc.)
-    for (const hook of ((this as any)[CONNECT_HOOKS] ?? [])) {
+    for (const hook of ((this as any)[CONNECT_HOOKS.key] ?? [])) {
       const cleanup = hook(this);
       if (typeof cleanup === "function") this.cleanups.push(cleanup);
     }
 
     // Trigger initial render for reactive components
-    const hasReactives = ((this as any)[REACTIVES]?.length ?? 0) > 0;
+    const hasReactives = ((this as any)[REACTIVES.key]?.length ?? 0) > 0;
     const overridesUpdate = this.update !== LoomElement.prototype.update;
     if (hasReactives || overridesUpdate) this.scheduleUpdate();
   }
@@ -146,7 +146,7 @@ export abstract class LoomElement extends HTMLElement {
       // Tier 2 — FAST PATCH: all dirty deps have bindings
       if (this.__traceDeps && canFastPatch(this.__traceDeps)) {
         // Dirty @computed caches (they may depend on a fast-patched reactive)
-        for (const dirtyKey of (this as any)[COMPUTED_DIRTY] ?? []) {
+        for (const dirtyKey of (this as any)[COMPUTED_DIRTY.key] ?? []) {
           (this as any)[dirtyKey] = true;
         }
         applyBindings(this.__traceDeps);
@@ -156,7 +156,7 @@ export abstract class LoomElement extends HTMLElement {
 
       // Tier 3 — FULL MORPH: structural change or first render
       // Dirty all @computed caches
-      for (const dirtyKey of (this as any)[COMPUTED_DIRTY] ?? []) {
+      for (const dirtyKey of (this as any)[COMPUTED_DIRTY.key] ?? []) {
         (this as any)[dirtyKey] = true;
       }
 
@@ -177,7 +177,7 @@ export abstract class LoomElement extends HTMLElement {
         this.firstUpdated();
         // Run decorator-registered first-updated hooks (from @form, etc.)
         // These fire after the first morph(), so shadow DOM content exists.
-        for (const hook of ((this as any)[FIRST_UPDATED_HOOKS] ?? [])) {
+        for (const hook of ((this as any)[FIRST_UPDATED_HOOKS.key] ?? [])) {
           const cleanup = hook(this);
           if (typeof cleanup === "function") this.cleanups.push(cleanup);
         }

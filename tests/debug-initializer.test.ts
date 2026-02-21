@@ -39,8 +39,8 @@ describe("addInitializer sanity checks", () => {
 
     function myDec(method: Function, context: ClassMethodDecoratorContext) {
       context.addInitializer(function (this: any) {
-        if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-        this[CONNECT_HOOKS].push((el: any) => connectFn());
+        if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+        this[CONNECT_HOOKS.key].push((el: any) => connectFn());
       });
     }
 

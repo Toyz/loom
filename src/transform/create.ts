@@ -23,7 +23,7 @@ export function createTransform<In = any, Out = any>(
 ): (target: any, key: string) => void {
   return (proto: any, key: string) => {
     const ctor = proto.constructor;
-    if (!ctor[TRANSFORMS]) ctor[TRANSFORMS] = new Map<string, Function>();
-    ctor[TRANSFORMS].set(key, fn);
+    if (!ctor[TRANSFORMS.key]) ctor[TRANSFORMS.key] = new Map<string, Function>();
+    ctor[TRANSFORMS.key].set(key, fn);
   };
 }

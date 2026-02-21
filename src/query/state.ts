@@ -136,8 +136,8 @@ export function createApiState<T>(
 
           // Invoke @catch_ handler if present on host
           // Named handler (@catch_("name")) takes priority over catch-all
-          const namedMap = (host as any)?.[CATCH_HANDLERS];
-          const catchFn = (apiName && namedMap?.get(apiName)) || (host as any)?.[CATCH_HANDLER];
+          const namedMap = (host as any)?.[CATCH_HANDLERS.key];
+          const catchFn = (apiName && namedMap?.get(apiName)) || (host as any)?.[CATCH_HANDLER.key];
           if (typeof catchFn === "function") {
             try { catchFn(error, host); } catch (_) { /* handler threw — swallow */ }
           }
@@ -174,7 +174,7 @@ export function createApiState<T>(
   function resolveInjectParams(method: Function, methodKey: string): any[] {
     const proto = method;
     const injectMeta: Array<{ method: string; index: number; key: any }> =
-      (proto as any)[INJECT_PARAMS] ?? [];
+      (proto as any)[INJECT_PARAMS.key] ?? [];
     const methodParams = injectMeta
       .filter((m) => m.method === methodKey)
       .sort((a, b) => a.index - b.index);

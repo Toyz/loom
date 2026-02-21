@@ -93,8 +93,8 @@ class LoomOutlet extends LoomElement {
    */
   private _injectRouteData(el: HTMLElement, params: Record<string, string>): void {
     const ctor = el.constructor as any;
-    const routeBindings = ctor[ROUTE_PROPS] ?? [];
-    const transforms = ctor[TRANSFORMS] as Map<string, Function> | undefined;
+    const routeBindings = ctor[ROUTE_PROPS.key] ?? [];
+    const transforms = ctor[TRANSFORMS.key] as Map<string, Function> | undefined;
     const queryMap = this._parseQuery();
     const boundParamKeys = new Set<string>();
 

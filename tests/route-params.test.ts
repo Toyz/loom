@@ -26,8 +26,8 @@ function injectRouteData(
   queryString = "",
 ) {
   const ctor = el.constructor;
-  const routeBindings: any[] = ctor[ROUTE_PROPS] ?? [];
-  const transforms = ctor[TRANSFORMS] as Map<string, Function> | undefined;
+  const routeBindings: any[] = ctor[ROUTE_PROPS.key] ?? [];
+  const transforms = ctor[TRANSFORMS.key] as Map<string, Function> | undefined;
   const queryMap = new URLSearchParams(queryString);
   const boundParamKeys = new Set<string>();
 
@@ -73,7 +73,7 @@ describe("@prop route metadata registration", () => {
     }
     new Page(); // trigger addInitializer
 
-    const bindings = (Page as any)[ROUTE_PROPS] as any[];
+    const bindings = (Page as any)[ROUTE_PROPS.key] as any[];
     expect(bindings).toBeDefined();
     expect(bindings).toHaveLength(1);
     expect(bindings[0]).toEqual({ propKey: "userId", param: "id" });
@@ -85,7 +85,7 @@ describe("@prop route metadata registration", () => {
     }
     new Page();
 
-    const bindings = (Page as any)[ROUTE_PROPS] as any[];
+    const bindings = (Page as any)[ROUTE_PROPS.key] as any[];
     expect(bindings).toBeDefined();
     expect(bindings).toHaveLength(1);
     expect(bindings[0].propKey).toBe("allParams");
@@ -98,7 +98,7 @@ describe("@prop route metadata registration", () => {
     }
     new Page();
 
-    const bindings = (Page as any)[ROUTE_PROPS] as any[];
+    const bindings = (Page as any)[ROUTE_PROPS.key] as any[];
     expect(bindings).toBeDefined();
     expect(bindings).toHaveLength(1);
     expect(bindings[0]).toEqual({ propKey: "tab", query: "tab" });
@@ -110,7 +110,7 @@ describe("@prop route metadata registration", () => {
     }
     new Page();
 
-    const bindings = (Page as any)[ROUTE_PROPS] as any[];
+    const bindings = (Page as any)[ROUTE_PROPS.key] as any[];
     expect(bindings).toBeDefined();
     expect(bindings).toHaveLength(1);
     expect(bindings[0].propKey).toBe("queryParams");
@@ -125,7 +125,7 @@ describe("@prop route metadata registration", () => {
     }
     new Page();
 
-    const bindings = (Page as any)[ROUTE_PROPS] as any[];
+    const bindings = (Page as any)[ROUTE_PROPS.key] as any[];
     expect(bindings).toHaveLength(3);
 
     const propKeys = bindings.map((b: any) => b.propKey);

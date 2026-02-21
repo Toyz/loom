@@ -25,8 +25,8 @@ export function transform<This extends object, V>(fn: (value: unknown) => V) {
     const key = String(context.name);
     context.addInitializer(function (this: any) {
       const ctor = this.constructor;
-      if (!ctor[TRANSFORMS]) ctor[TRANSFORMS] = new Map<string, Function>();
-      ctor[TRANSFORMS].set(key, fn);
+      if (!ctor[TRANSFORMS.key]) ctor[TRANSFORMS.key] = new Map<string, Function>();
+      ctor[TRANSFORMS.key].set(key, fn);
     });
   };
 }

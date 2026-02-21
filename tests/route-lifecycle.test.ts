@@ -18,7 +18,7 @@ describe("@onRouteEnter", () => {
     }
     new Page(); // trigger addInitializer
 
-    const handlers = Page.prototype[ROUTE_ENTER as any] as string[];
+    const handlers = Page.prototype[ROUTE_ENTER.key as any] as string[];
     expect(handlers).toBeDefined();
     expect(handlers).toContain("handleEnter");
   });
@@ -33,7 +33,7 @@ describe("@onRouteEnter", () => {
     }
     new Page(); // trigger addInitializer
 
-    const handlers = Page.prototype[ROUTE_ENTER as any] as string[];
+    const handlers = Page.prototype[ROUTE_ENTER.key as any] as string[];
     expect(handlers).toHaveLength(2);
     expect(handlers).toContain("loadData");
     expect(handlers).toContain("trackAnalytics");
@@ -48,7 +48,7 @@ describe("@onRouteLeave", () => {
     }
     new Page(); // trigger addInitializer
 
-    const handlers = Page.prototype[ROUTE_LEAVE as any] as string[];
+    const handlers = Page.prototype[ROUTE_LEAVE.key as any] as string[];
     expect(handlers).toBeDefined();
     expect(handlers).toContain("cleanup");
   });
@@ -63,7 +63,7 @@ describe("@onRouteLeave", () => {
     }
     new Page(); // trigger addInitializer
 
-    const handlers = Page.prototype[ROUTE_LEAVE as any] as string[];
+    const handlers = Page.prototype[ROUTE_LEAVE.key as any] as string[];
     expect(handlers).toHaveLength(2);
     expect(handlers).toContain("saveState");
     expect(handlers).toContain("clearTimers");
@@ -81,8 +81,8 @@ describe("combined usage", () => {
     }
     new Page(); // trigger addInitializer
 
-    const enterHandlers = Page.prototype[ROUTE_ENTER as any] as string[];
-    const leaveHandlers = Page.prototype[ROUTE_LEAVE as any] as string[];
+    const enterHandlers = Page.prototype[ROUTE_ENTER.key as any] as string[];
+    const leaveHandlers = Page.prototype[ROUTE_LEAVE.key as any] as string[];
 
     expect(enterHandlers).toContain("entered");
     expect(leaveHandlers).toContain("left");

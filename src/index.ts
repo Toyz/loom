@@ -44,7 +44,8 @@ export type {
 } from "./store";
 
 // DI: service container decorators
-export { service, SERVICE_NAME, resolveServiceName, inject, factory } from "./di";
+export { service, resolveServiceName, inject, factory } from "./di";
+export { SERVICE_NAME } from "./decorators/symbols";
 /** @deprecated Use `@watch(Service)` or `@watch(Service, "prop")` instead. Will be removed in v1.0. */
 export { watch as watchService } from "./di";
 
@@ -68,7 +69,7 @@ export {
 export type { TransformSchema } from "./transform";
 
 // Decorators: event decorators + factory
-export { on, emit, createDecorator, createSymbol, SYMBOL_REGISTRY } from "./decorators";
+export { on, emit, createDecorator, createSymbol, LoomSymbol, SYMBOL_REGISTRY } from "./decorators";
 
 // Router
 export {

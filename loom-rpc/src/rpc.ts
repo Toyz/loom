@@ -64,8 +64,8 @@ export function rpc<
 
     context.addInitializer(function (this: any) {
       const ctor = this.constructor;
-      ctor[RPC_QUERIES] ??= [];
-      ctor[RPC_QUERIES].push({ accessor: accessorName, router: routerName, method: String(method) });
+      ctor[RPC_QUERIES.key] ??= [];
+      ctor[RPC_QUERIES.key].push({ accessor: accessorName, router: routerName, method: String(method) });
     });
 
     return {

@@ -12,10 +12,7 @@
 
 import { app } from "../app";
 import { createDecorator } from "../decorators/create";
-import { createSymbol } from "../decorators/symbols";
-
-/** Symbol stamped on classes decorated with @service("name") */
-export const SERVICE_NAME = createSymbol("service:name");
+import { SERVICE_NAME } from "../decorators/symbols";
 
 /**
  * Auto-instantiated singleton. Registered on app.start().
@@ -30,7 +27,7 @@ export const SERVICE_NAME = createSymbol("service:name");
  * ```
  */
 export const service = createDecorator<[name?: string]>((ctor, name?) => {
-  if (name) (ctor as any)[SERVICE_NAME] = name;
+  if (name) (ctor as any)[SERVICE_NAME.key] = name;
   app.registerService(ctor);
 }, { class: true });
 
@@ -39,7 +36,7 @@ export const service = createDecorator<[name?: string]>((ctor, name?) => {
  * Returns the @service("name") value if present, otherwise class.name.
  */
 export function resolveServiceName(cls: new (...args: any[]) => any): string {
-  return (cls as any)[SERVICE_NAME] ?? cls.name;
+  return (cls as any)[SERVICE_NAME.key] ?? cls.name;
 }
 
 /**

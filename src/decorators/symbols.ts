@@ -3,12 +3,50 @@
 // All symbols are created via createSymbol() and auto-registered
 // in SYMBOL_REGISTRY for introspection by inspect().
 
-const SYMBOL_REGISTRY = new Map<string, symbol>();
+/**
+ * LoomSymbol<T> — A typed wrapper around a raw `symbol`.
+ *
+ * Provides type-safe `from()`, `set()`, `has()` methods for metadata access.
+ * The underlying `symbol` is available via `.key` for direct property access.
+ */
+export class LoomSymbol<T = unknown> {
+  readonly key: symbol;
+  readonly name: string;
 
-export function createSymbol(name: string): symbol {
+  constructor(name: string) {
+    this.name = name;
+    this.key = Symbol(`loom:${name}`);
+  }
+
+  /** Read metadata from target — typed */
+  from(target: any): T | undefined {
+    return target[this.key];
+  }
+
+  /** Write metadata to target — typed */
+  set(target: any, value: T): void {
+    target[this.key] = value;
+  }
+
+  /** Check if target has this metadata */
+  has(target: any): boolean {
+    return this.key in target;
+  }
+
+  /** Symbol description */
+  get description(): string | undefined {
+    return this.key.description;
+  }
+
+  toString(): string { return this.key.toString(); }
+}
+
+const SYMBOL_REGISTRY = new Map<string, LoomSymbol>();
+
+export function createSymbol<T = unknown>(name: string): LoomSymbol<T> {
   const existing = SYMBOL_REGISTRY.get(name);
-  if (existing) return existing;
-  const sym = Symbol(`loom:${name}`);
+  if (existing) return existing as LoomSymbol<T>;
+  const sym = new LoomSymbol<T>(name);
   SYMBOL_REGISTRY.set(name, sym);
   return sym;
 }
@@ -32,3 +70,4 @@ export const ROUTE_ENTER         = createSymbol("route:enter");
 export const ROUTE_LEAVE         = createSymbol("route:leave");
 export const CONNECT_HOOKS       = createSymbol("connect:hooks");
 export const FIRST_UPDATED_HOOKS = createSymbol("first-updated:hooks");
+export const SERVICE_NAME        = createSymbol<string>("service:name");

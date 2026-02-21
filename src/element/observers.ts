@@ -50,9 +50,9 @@ export function observer(
 ) {
   return (method: Function, context: ClassMethodDecoratorContext) => {
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
+      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-      this[CONNECT_HOOKS].push((el: HTMLElement) => {
+      this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
         const callback = (entries: any[]) => {
           for (const entry of entries) {
             method.call(el, entry);

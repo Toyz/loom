@@ -86,8 +86,8 @@ export function createDecorator<Args extends unknown[] = []>(
       if (typeof connectFn === "function") {
         // Has lifecycle — register as connect hook
         context.addInitializer(function (this: any) {
-          if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-          this[CONNECT_HOOKS].push(connectFn);
+          if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+          this[CONNECT_HOOKS.key].push(connectFn);
         });
       }
     };

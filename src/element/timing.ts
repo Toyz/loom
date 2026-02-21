@@ -65,8 +65,8 @@ export function debounce(ms: number) {
 
     // Lifecycle: cancel pending timer on disconnect
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-      this[CONNECT_HOOKS].push((el: any) => {
+      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+      this[CONNECT_HOOKS.key].push((el: any) => {
         return () => clearTimeout(el[timerKey]);
       });
     });
@@ -108,8 +108,8 @@ export function throttle(ms: number) {
 
     // Lifecycle: cancel pending timer on disconnect
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-      this[CONNECT_HOOKS].push((el: any) => {
+      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+      this[CONNECT_HOOKS.key].push((el: any) => {
         return () => clearTimeout(el[timerKey]);
       });
     });

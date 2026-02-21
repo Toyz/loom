@@ -25,12 +25,12 @@ export const component = createDecorator<[tag: string, opts?: { shadow?: boolean
   if (opts?.shadow === false) (ctor as any).__loom_noshadow = true;
   // Flush pendingProps from @prop decorators (member decorators run before class decorators)
   const propMap: Map<string, string> =
-    (ctor as any)[PROPS] ?? new Map();
+    (ctor as any)[PROPS.key] ?? new Map();
   for (const { key } of pendingProps) {
     propMap.set(key.toLowerCase(), key);
   }
   pendingProps.length = 0; // clear staging area
-  (ctor as any)[PROPS] = propMap;
+  (ctor as any)[PROPS.key] = propMap;
 
   // Wire observedAttributes from @prop fields
   Object.defineProperty(ctor, "observedAttributes", {
@@ -46,7 +46,7 @@ export const component = createDecorator<[tag: string, opts?: { shadow?: boolean
   ) {
     const field = propMap.get(name);
     if (field && val !== null) {
-      const transforms: Map<string, Function> | undefined = (ctor as any)[TRANSFORMS];
+      const transforms: Map<string, Function> | undefined = (ctor as any)[TRANSFORMS.key];
       const transform = transforms?.get(field);
       if (transform) {
         (this as any)[field] = transform(val);

@@ -120,8 +120,8 @@ export class LoomRouter {
       const oldEl = this._outlet.shadowRoot?.querySelector(this._previousTag)
         ?? this._outlet.querySelector(this._previousTag);
       if (oldEl) {
-        const handlers: string[] = (oldEl as any)[ROUTE_LEAVE]
-          ?? Object.getPrototypeOf(oldEl)?.[ROUTE_LEAVE] ?? [];
+        const handlers: string[] = (oldEl as any)[ROUTE_LEAVE.key]
+          ?? Object.getPrototypeOf(oldEl)?.[ROUTE_LEAVE.key] ?? [];
         for (const key of handlers) {
           (oldEl as any)[key]?.();
         }
@@ -142,8 +142,8 @@ export class LoomRouter {
         const newEl = this._outlet?.shadowRoot?.querySelector(newTag)
           ?? this._outlet?.querySelector(newTag);
         if (newEl) {
-          const handlers: string[] = (newEl as any)[ROUTE_ENTER]
-            ?? Object.getPrototypeOf(newEl)?.[ROUTE_ENTER] ?? [];
+          const handlers: string[] = (newEl as any)[ROUTE_ENTER.key]
+            ?? Object.getPrototypeOf(newEl)?.[ROUTE_ENTER.key] ?? [];
           for (const key of handlers) {
             (newEl as any)[key]?.(this._current.params);
           }
@@ -215,7 +215,7 @@ export class LoomRouter {
    */
   private _resolveInjectParams(proto: any, method: string): any[] {
     const injectMeta: Array<{ method: string; index: number; key: any }> =
-      proto[INJECT_PARAMS] ?? [];
+      proto[INJECT_PARAMS.key] ?? [];
     const methodParams = injectMeta
       .filter((m) => m.method === method)
       .sort((a, b) => a.index - b.index);

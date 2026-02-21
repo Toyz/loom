@@ -27,8 +27,8 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
     const storageKey = Symbol(`slot:${String(context.name)}`);
 
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-      this[CONNECT_HOOKS].push((el: any) => {
+      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+      this[CONNECT_HOOKS.key].push((el: any) => {
         // Defer to allow update() to render the slot elements first
         queueMicrotask(() => {
           const selector = name ? `slot[name="${name}"]` : "slot:not([name])";

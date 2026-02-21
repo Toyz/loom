@@ -58,8 +58,8 @@ export function mutate<
 
     context.addInitializer(function (this: any) {
       const ctor = this.constructor;
-      ctor[RPC_MUTATIONS] ??= [];
-      ctor[RPC_MUTATIONS].push({ accessor: accessorName, router: routerName, method: String(method) });
+      ctor[RPC_MUTATIONS.key] ??= [];
+      ctor[RPC_MUTATIONS.key].push({ accessor: accessorName, router: routerName, method: String(method) });
     });
 
     return {

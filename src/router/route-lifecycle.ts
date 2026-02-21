@@ -27,8 +27,8 @@ export function onRouteEnter(method: Function, context: ClassMethodDecoratorCont
   const key = String(context.name);
   context.addInitializer(function (this: any) {
     const proto = Object.getPrototypeOf(this);
-    if (!proto[ROUTE_ENTER]) proto[ROUTE_ENTER] = [];
-    if (!proto[ROUTE_ENTER].includes(key)) proto[ROUTE_ENTER].push(key);
+    if (!proto[ROUTE_ENTER.key]) proto[ROUTE_ENTER.key] = [];
+    if (!proto[ROUTE_ENTER.key].includes(key)) proto[ROUTE_ENTER.key].push(key);
   });
 }
 
@@ -39,7 +39,7 @@ export function onRouteLeave(method: Function, context: ClassMethodDecoratorCont
   const key = String(context.name);
   context.addInitializer(function (this: any) {
     const proto = Object.getPrototypeOf(this);
-    if (!proto[ROUTE_LEAVE]) proto[ROUTE_LEAVE] = [];
-    if (!proto[ROUTE_LEAVE].includes(key)) proto[ROUTE_LEAVE].push(key);
+    if (!proto[ROUTE_LEAVE.key]) proto[ROUTE_LEAVE.key] = [];
+    if (!proto[ROUTE_LEAVE.key].includes(key)) proto[ROUTE_LEAVE.key].push(key);
   });
 }

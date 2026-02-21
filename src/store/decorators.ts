@@ -44,9 +44,9 @@ export function reactive<This extends object, V>(
 
   // Store field name for LoomElement introspection
   context.addInitializer(function (this: any) {
-    if (!this.constructor[REACTIVES]) this.constructor[REACTIVES] = [];
-    if (!this.constructor[REACTIVES].includes(key)) {
-      this.constructor[REACTIVES].push(key);
+    if (!this.constructor[REACTIVES.key]) this.constructor[REACTIVES.key] = [];
+    if (!this.constructor[REACTIVES.key].includes(key)) {
+      this.constructor[REACTIVES.key].push(key);
     }
   });
 
@@ -62,14 +62,14 @@ export function reactive<This extends object, V>(
 
         // Wire @watch handlers (WATCHERS is populated because method
         // addInitializer runs BEFORE accessor field init in TC39)
-        for (const w of (this[WATCHERS] ?? []).filter(
+        for (const w of (this[WATCHERS.key] ?? []).filter(
           (w: { field: string }) => w.field === key,
         )) {
           r.subscribe((v: V, prev: V) => this[w.key](v, prev));
         }
 
         // Wire @emit handlers
-        for (const e of (this[EMITTERS] ?? []).filter(
+        for (const e of (this[EMITTERS.key] ?? []).filter(
           (e: { field: string }) => e.field === key,
         )) {
           r.subscribe((v: V) => bus.emit(e.factory(v)));
@@ -160,13 +160,13 @@ export function prop<This extends object, V>(
     // Store route binding metadata
     ctx.addInitializer(function (this: any) {
       const ctor = this.constructor;
-      if (!ctor[ROUTE_PROPS]) ctor[ROUTE_PROPS] = [];
+      if (!ctor[ROUTE_PROPS.key]) ctor[ROUTE_PROPS.key] = [];
 
       const binding: RouteBinding = { propKey };
       if (opts.params) binding.params = opts.params;
       if (opts.param) binding.param = opts.param;
       if (opts.query) binding.query = opts.query;
-      ctor[ROUTE_PROPS].push(binding);
+      ctor[ROUTE_PROPS.key].push(binding);
     });
 
     return result;
@@ -191,11 +191,11 @@ export function computed<This extends object, V>(
 
   // Track dirty key for scheduleUpdate invalidation
   context.addInitializer(function (this: any) {
-    if (!this.constructor.prototype[COMPUTED_DIRTY]) {
-      this.constructor.prototype[COMPUTED_DIRTY] = [];
+    if (!this.constructor.prototype[COMPUTED_DIRTY.key]) {
+      this.constructor.prototype[COMPUTED_DIRTY.key] = [];
     }
-    if (!this.constructor.prototype[COMPUTED_DIRTY].includes(dirtyKey)) {
-      this.constructor.prototype[COMPUTED_DIRTY].push(dirtyKey);
+    if (!this.constructor.prototype[COMPUTED_DIRTY.key].includes(dirtyKey)) {
+      this.constructor.prototype[COMPUTED_DIRTY.key].push(dirtyKey);
     }
   });
 

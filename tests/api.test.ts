@@ -380,7 +380,7 @@ describe("@api", () => {
       const catchSpy = vi.fn();
 
       // Simulate a host element with @catch_ handler on prototype
-      const host = { [CATCH_HANDLER]: catchSpy } as any;
+      const host = { [CATCH_HANDLER.key]: catchSpy } as any;
       const state = createApiState(
         { fn: async () => { throw new Error("api fail"); } },
         () => {},
@@ -398,7 +398,7 @@ describe("@api", () => {
     it("does not blow up if CATCH_HANDLER throws", async () => {
       const { CATCH_HANDLER } = await import("../src/decorators/symbols");
       const host = {
-        [CATCH_HANDLER]: () => { throw new Error("handler broke"); },
+        [CATCH_HANDLER.key]: () => { throw new Error("handler broke"); },
       } as any;
 
       const state = createApiState(
@@ -416,7 +416,7 @@ describe("@api", () => {
       const { CATCH_HANDLERS } = await import("../src/decorators/symbols");
       const namedSpy = vi.fn();
       const namedMap = new Map([["team", namedSpy]]);
-      const host = { [CATCH_HANDLERS]: namedMap } as any;
+      const host = { [CATCH_HANDLERS.key]: namedMap } as any;
 
       const state = createApiState(
         { fn: async () => { throw new Error("team fail"); } },
@@ -439,8 +439,8 @@ describe("@api", () => {
       const catchAllSpy = vi.fn();
       const namedMap = new Map([["team", namedSpy]]);
       const host = {
-        [CATCH_HANDLERS]: namedMap,
-        [CATCH_HANDLER]: catchAllSpy,
+        [CATCH_HANDLERS.key]: namedMap,
+        [CATCH_HANDLER.key]: catchAllSpy,
       } as any;
 
       createApiState(
@@ -460,8 +460,8 @@ describe("@api", () => {
       const catchAllSpy = vi.fn();
       const namedMap = new Map([["other", vi.fn()]]);
       const host = {
-        [CATCH_HANDLERS]: namedMap,
-        [CATCH_HANDLER]: catchAllSpy,
+        [CATCH_HANDLERS.key]: namedMap,
+        [CATCH_HANDLER.key]: catchAllSpy,
       } as any;
 
       createApiState(

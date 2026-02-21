@@ -31,7 +31,7 @@ export function inspect(el: Element): void {
   // Collect all registered metadata
   const meta: Record<string, any> = {};
   for (const [name, sym] of SYMBOL_REGISTRY) {
-    const val = ctor[sym];
+    const val = ctor[sym.key];
     if (val !== undefined) {
       // Convert Maps to plain objects for readability
       meta[name] = val instanceof Map ? Object.fromEntries(val) : val;

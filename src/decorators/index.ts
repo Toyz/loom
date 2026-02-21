@@ -7,6 +7,7 @@
 
 // Symbols (consumed by LoomElement and App)
 export {
+  LoomSymbol,
   REACTIVES,
   PROPS,
   WATCHERS,
@@ -17,6 +18,7 @@ export {
   ON_HANDLERS,
   ROUTE_PROPS,
   TRANSFORMS,
+  SERVICE_NAME,
   createSymbol,
   SYMBOL_REGISTRY,
 } from "./symbols";

@@ -121,7 +121,7 @@ class LoomApp {
   /** Resolve @inject parameter metadata for a constructor or method. */
   private resolveParams(proto: any, method: string): any[] {
     const meta: { method: string; index: number; key: any }[] =
-      proto?.[INJECT_PARAMS] ?? [];
+      proto?.[INJECT_PARAMS.key] ?? [];
     const params = meta
       .filter((m) => m.method === method)
       .sort((a, b) => a.index - b.index);
@@ -148,7 +148,7 @@ class LoomApp {
       }
       // Wire @on event handlers (bus events + DOM events)
       const instance = this.providers.get(Svc);
-      for (const handler of instance[ON_HANDLERS] ?? []) {
+      for (const handler of instance[ON_HANDLERS.key] ?? []) {
         if (handler.domTarget) {
           // DOM EventTarget: @on(window, "resize")
           handler.domTarget.addEventListener(handler.event, (e: Event) => instance[handler.key](e));

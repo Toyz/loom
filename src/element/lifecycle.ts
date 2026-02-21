@@ -49,7 +49,7 @@ export function catch_(
     const method = handlerOrMethodOrName as Function;
     context.addInitializer(function (this: any) {
       const handler: CatchFn = (err, el) => method.call(el, err, el);
-      this[CATCH_HANDLER] = handler;
+      this[CATCH_HANDLER.key] = handler;
 
       const origUpdate = this.update?.bind(this);
       if (origUpdate) {
@@ -67,9 +67,9 @@ export function catch_(
     const name = handlerOrMethodOrName;
     return (method: Function, ctx: ClassMethodDecoratorContext) => {
       ctx.addInitializer(function (this: any) {
-        if (!this[CATCH_HANDLERS]) this[CATCH_HANDLERS] = new Map();
+        if (!this[CATCH_HANDLERS.key]) this[CATCH_HANDLERS.key] = new Map();
         const handler: CatchFn = (err, el) => method.call(el, err, el);
-        this[CATCH_HANDLERS].set(name, handler);
+        this[CATCH_HANDLERS.key].set(name, handler);
       });
     };
   }
@@ -77,7 +77,7 @@ export function catch_(
   // ── @catch_((err, el) => { ... }) (class decorator — catch-all) ──
   const handler = handlerOrMethodOrName as CatchFn;
   return (value: Function, _context: ClassDecoratorContext) => {
-    (value.prototype as any)[CATCH_HANDLER] = handler;
+    (value.prototype as any)[CATCH_HANDLER.key] = handler;
 
     const origUpdate = value.prototype.update;
     value.prototype.update = function () {
@@ -135,8 +135,8 @@ export function suspend() {
  */
 export function mount(method: Function, context: ClassMethodDecoratorContext) {
   context.addInitializer(function (this: any) {
-    if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
-    this[CONNECT_HOOKS].push((el: any) => {
+    if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+    this[CONNECT_HOOKS.key].push((el: any) => {
       method.call(el);
     });
   });
@@ -152,9 +152,9 @@ export function mount(method: Function, context: ClassMethodDecoratorContext) {
  */
 export function unmount(method: Function, context: ClassMethodDecoratorContext) {
   context.addInitializer(function (this: any) {
-    if (!this[CONNECT_HOOKS]) this[CONNECT_HOOKS] = [];
+    if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
     // Return a cleanup function that calls the unmount method
-    this[CONNECT_HOOKS].push((el: any) => {
+    this[CONNECT_HOOKS.key].push((el: any) => {
       return () => method.call(el);
     });
   });

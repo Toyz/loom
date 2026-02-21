@@ -8,7 +8,7 @@
  *   - installGlobalHook() attaches to window
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createSymbol, SYMBOL_REGISTRY } from "../src/decorators/symbols";
+import { createSymbol, LoomSymbol, SYMBOL_REGISTRY } from "../src/decorators/symbols";
 import { inspect, installGlobalHook } from "../src/debug/inspect";
 import { reactive } from "../src/store/decorators";
 import { REACTIVES, PROPS, ROUTE_PROPS } from "../src/decorators/symbols";
@@ -16,7 +16,7 @@ import { REACTIVES, PROPS, ROUTE_PROPS } from "../src/decorators/symbols";
 describe("createSymbol", () => {
   it("creates a symbol with loom: prefix", () => {
     const sym = createSymbol("test:example");
-    expect(typeof sym).toBe("symbol");
+    expect(sym).toBeInstanceOf(LoomSymbol);
     expect(sym.toString()).toContain("loom:test:example");
   });
 
@@ -45,7 +45,7 @@ describe("SYMBOL_REGISTRY", () => {
 
     for (const name of coreNames) {
       expect(SYMBOL_REGISTRY.has(name), `Missing: ${name}`).toBe(true);
-      expect(typeof SYMBOL_REGISTRY.get(name)).toBe("symbol");
+      expect(SYMBOL_REGISTRY.get(name)).toBeInstanceOf(LoomSymbol);
     }
   });
 
@@ -72,7 +72,7 @@ describe("inspect()", () => {
 
   it("reads REACTIVES metadata from a class", () => {
     class MyWidget {
-      static [REACTIVES] = ["count", "name"];
+      static [REACTIVES.key] = ["count", "name"];
     }
 
     const consoleSpy = vi.spyOn(console, "groupCollapsed").mockImplementation(() => {});
