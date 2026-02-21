@@ -5,7 +5,7 @@
  */
 
 // DI decorators
-export { service, inject, factory } from "./decorators";
+export { service, SERVICE_NAME, resolveServiceName, inject, factory } from "./decorators";
 
 // DI-aware watch
 export { watch } from "./watch";

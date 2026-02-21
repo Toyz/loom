@@ -6,6 +6,8 @@
 const SYMBOL_REGISTRY = new Map<string, symbol>();
 
 export function createSymbol(name: string): symbol {
+  const existing = SYMBOL_REGISTRY.get(name);
+  if (existing) return existing;
   const sym = Symbol(`loom:${name}`);
   SYMBOL_REGISTRY.set(name, sym);
   return sym;
