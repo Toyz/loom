@@ -256,6 +256,12 @@ class LazyDecoratorsEvents extends LoomElement { }
 @searchable({ title: "Transform", section: "Decorators", icon: "refresh", to: "/decorators/transform", keywords: ["transform", "@transform", "pipe", "accessor", "computed"], summary: "Value transformation decorators for parsing and conversion." })
 class LazyDecoratorTransform extends LoomElement { }
 
+@route("/symbols", { group: DecoratorsGroup })
+@component("page-decorator-symbols")
+@lazy(() => import("./decorators/symbols"))
+@searchable({ title: "Typed Symbols", section: "Decorators", icon: "key", to: "/decorators/symbols", keywords: ["LoomSymbol", "createSymbol", "symbol", "metadata", "typed", "registry", "SYMBOL_REGISTRY"], summary: "Type-safe symbol metadata with LoomSymbol<T>." })
+class LazyDecoratorSymbols extends LoomElement { }
+
 // ── Examples ──
 
 @route("/clock", { group: ExamplesGroup })

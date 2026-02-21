@@ -76,6 +76,7 @@ const sections: NavSection[] = [
       { label: "Overview",     to: "/decorators/overview",    icon: "hash" },
       { label: "Events",       to: "/decorators/events",      icon: "broadcast" },
       { label: "Transform",    to: "/decorators/transform",   icon: "refresh" },
+      { label: "Typed Symbols", to: "/decorators/symbols",     icon: "key" },
     ],
   },
   {
@@ -608,6 +609,11 @@ export class DocsApp extends LoomElement {
       }
     }
     this.scheduleUpdate();
+    // After morph applies .active class, scroll it into view
+    queueMicrotask(() => {
+      this.shadow.querySelector('.nav-link.active')
+        ?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
   }
 
   toggleSection(title: string) {
