@@ -1,6 +1,6 @@
 {
   "name": "@toyz/loom-flags",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Feature flags for Loom — decorator-driven with real-time reactive updates",
   "license": "MIT",
