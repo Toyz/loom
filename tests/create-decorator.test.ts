@@ -123,9 +123,8 @@ describe("createDecorator", () => {
   });
 
   it("works with typed element generic", () => {
-    interface MyApi { fetchData(): void }
     const connectFn = vi.fn();
-    const myDec = createDecorator<[], MyApi>((_method, _key) => {
+    const myDec = createDecorator((_method: Function, _key: string) => {
       return connectFn;
     });
     const tag = nextTag();

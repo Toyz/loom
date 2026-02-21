@@ -343,3 +343,23 @@ class LazyPackagesRpcDemo extends LoomElement {}
 @lazy(() => import("./packages/create-loom-overview"))
 @searchable({ title: "Create Loom", section: "Packages", icon: "package", to: "/packages/create-loom", keywords: ["create", "scaffold", "init", "npx", "starter", "template", "vite"], summary: "Scaffold a new Loom + TypeScript + Vite project in seconds." })
 class LazyPackagesCreateLoom extends LoomElement {}
+
+// ── Analytics ──
+
+@route("/analytics-overview", { group: PackagesGroup })
+@component("page-packages-analytics-overview")
+@lazy(() => import("./packages/analytics-overview"))
+@searchable({ title: "Analytics Overview", section: "Packages", icon: "package", to: "/packages/analytics-overview", keywords: ["analytics", "loom-analytics", "track", "transport", "overview"], summary: "Zero-dependency, transport-swappable analytics for Loom." })
+class LazyPackagesAnalyticsOverview extends LoomElement {}
+
+@route("/analytics-testing", { group: PackagesGroup })
+@component("page-packages-analytics-testing")
+@lazy(() => import("./packages/analytics-testing"))
+@searchable({ title: "Analytics Testing", section: "Packages", icon: "check", to: "/packages/analytics-testing", keywords: ["analytics", "test", "mock", "MockAnalytics", "assert"], summary: "MockAnalytics — drop-in test transport with assertions." })
+class LazyPackagesAnalyticsTesting extends LoomElement {}
+
+@route("/analytics-demo", { group: PackagesGroup })
+@component("page-packages-analytics-demo")
+@lazy(() => import("./examples/analytics"))
+@searchable({ title: "Analytics Demo", section: "Packages", icon: "zap", to: "/packages/analytics-demo", keywords: ["analytics", "demo", "live", "example", "interactive"], summary: "Interactive live demo of @track decorator with MockAnalytics." })
+class LazyPackagesAnalyticsDemo extends LoomElement {}

@@ -1,0 +1,52 @@
+{
+  "name": "@toyz/loom-analytics",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Zero-dependency, transport-swappable analytics for Loom — decorator-driven event tracking",
+  "license": "MIT",
+  "author": "toyz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Toyz/loom.git",
+    "directory": "loom-analytics"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "import": "./dist/testing.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "dependencies": {
+    "@toyz/loom": "^0.12.0"
+  },
+  "devDependencies": {
+    "happy-dom": "^17.4.4",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "keywords": [
+    "loom",
+    "analytics",
+    "decorators",
+    "tracking",
+    "web-components"
+  ]
+}

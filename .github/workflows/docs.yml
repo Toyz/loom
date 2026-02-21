@@ -30,6 +30,7 @@ jobs:
           npm ci
           npm run build
           cd loom-rpc && npm ci && npm run build
+          cd loom-analytics && npm ci && npm run build
 
       # Build the docs site
       - name: Build Docs

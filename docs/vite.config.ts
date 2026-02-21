@@ -4,6 +4,7 @@ import { resolve } from "path";
 
 const pkg = JSON.parse(readFileSync("../package.json", "utf-8"));
 const loomRpcPkg = JSON.parse(readFileSync("../loom-rpc/package.json", "utf-8"));
+const loomAnalyticsPkg = JSON.parse(readFileSync("../loom-analytics/package.json", "utf-8"));
 
 export default defineConfig({
   base: process.env.CI ? "/loom/" : "/",
@@ -19,6 +20,7 @@ export default defineConfig({
   define: {
     __LOOM_VERSION__: JSON.stringify(pkg.version),
     __LOOM_RPC_VERSION__: JSON.stringify(loomRpcPkg.version),
+    __LOOM_ANALYTICS_VERSION__: JSON.stringify(loomAnalyticsPkg.version),
     __CREATE_LOOM_VERSION__: JSON.stringify(
       JSON.parse(readFileSync("../create-loom/package.json", "utf-8")).version,
     ),
@@ -31,6 +33,9 @@ export default defineConfig({
       // loom-rpc aliases
       "@toyz/loom-rpc/testing": resolve(__dirname, "../loom-rpc/src/testing.ts"),
       "@toyz/loom-rpc": resolve(__dirname, "../loom-rpc/src/index.ts"),
+      // loom-analytics aliases
+      "@toyz/loom-analytics/testing": resolve(__dirname, "../loom-analytics/src/testing.ts"),
+      "@toyz/loom-analytics": resolve(__dirname, "../loom-analytics/src/index.ts"),
     },
   },
   esbuild: {

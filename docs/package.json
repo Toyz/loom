@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@toyz/loom": "file:..",
-    "@toyz/loom-rpc": "file:../loom-rpc"
+    "@toyz/loom-rpc": "file:../loom-rpc",
+    "@toyz/loom-analytics": "file:../loom-analytics"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
