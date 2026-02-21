@@ -152,7 +152,7 @@ describe("morph()", () => {
   it("patches event listeners via __loomEvents", () => {
     const shadow = createHost();
     const div = document.createElement("div");
-    const handler1 = () => {};
+    const handler1 = () => { };
     div.addEventListener("click", handler1);
     const events1 = new Map([["click", handler1]]);
     (div as any).__loomEvents = events1;
@@ -160,7 +160,7 @@ describe("morph()", () => {
 
     // Morph with a new handler
     const div2 = document.createElement("div");
-    const handler2 = () => {};
+    const handler2 = () => { };
     div2.addEventListener("click", handler2);
     const events2 = new Map([["click", handler2]]);
     (div2 as any).__loomEvents = events2;
@@ -175,7 +175,7 @@ describe("morph()", () => {
   it("removes event listeners not in new tree", () => {
     const shadow = createHost();
     const div = document.createElement("div");
-    const handler = () => {};
+    const handler = () => { };
     div.addEventListener("click", handler);
     (div as any).__loomEvents = new Map([["click", handler]]);
     shadow.appendChild(div);
@@ -254,5 +254,31 @@ describe("morph()", () => {
       (n) => n instanceof Element && n.tagName === "SPAN",
     );
     expect(hasSpan).toBe(true);
+  });
+
+  it("handles massive flat lists (4200 unkeyed elements)", () => {
+    const shadow = createHost();
+    const ul = document.createElement("ul");
+    for (let i = 0; i < 4200; i++) {
+      const li = document.createElement("li");
+      li.textContent = `item-${i}`;
+      ul.appendChild(li);
+    }
+    shadow.appendChild(ul);
+
+    // Morph to a new list with 4200 different items
+    const ul2 = document.createElement("ul");
+    for (let i = 0; i < 4200; i++) {
+      const li = document.createElement("li");
+      li.textContent = `new-${i}`;
+      ul2.appendChild(li);
+    }
+
+    morph(shadow, ul2);
+
+    const morphedUl = shadow.firstChild as Element;
+    expect(morphedUl.childNodes).toHaveLength(4200);
+    expect((morphedUl.firstChild as Element).textContent).toBe("new-0");
+    expect((morphedUl.lastChild as Element).textContent).toBe("new-4199");
   });
 });

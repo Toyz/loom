@@ -5,7 +5,7 @@
  * Configure via tsconfig: "jsxImportSource": "loom"
  */
 
-import { LOOM_EVENTS, LOOM_PROPS, type LoomEventMap, type LoomPropMap } from "./morph";
+import { LOOM_EVENTS, LOOM_PROPS, loomEventProxy, type LoomEventMap, type LoomPropMap } from "./morph";
 import { startSubTrace, endSubTrace, addBinding } from "./trace";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -34,10 +34,12 @@ export function jsx(
     if (key === "children") continue;
     if (key.startsWith("on") && typeof val === "function") {
       const eventType = key.slice(2).toLowerCase();
-      el.addEventListener(eventType, val);
       // Track for morph diffing
       let events: LoomEventMap = (el as any)[LOOM_EVENTS];
       if (!events) { events = new Map(); (el as any)[LOOM_EVENTS] = events; }
+      if (!events.has(eventType)) {
+        el.addEventListener(eventType, loomEventProxy);
+      }
       events.set(eventType, val);
     } else if (key === "ref" && typeof val === "function") {
       val(el);

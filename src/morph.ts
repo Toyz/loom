@@ -38,42 +38,49 @@ export function morph(root: ShadowRoot | HTMLElement, newTree: Node | Node[]): v
 // ── Core algorithm ──
 
 function morphChildren(parent: Node, newChildren: Node[]): void {
-  const oldChildren = Array.from(parent.childNodes);
+  // Build keyed index & optionally collect keep elements
+  let oldKeyed: Map<string, Element> | null = null;
+  let hasKeep = false;
 
-  // Build keyed index from old children
-  const oldKeyed = new Map<string, Element>();
-  for (const old of oldChildren) {
-    const key = getKey(old);
-    if (key) oldKeyed.set(key, old as Element);
+  let current = parent.firstChild;
+  while (current) {
+    const key = getKey(current);
+    if (key) {
+      if (!oldKeyed) oldKeyed = new Map();
+      oldKeyed.set(key, current as Element);
+    }
+    if (isKeep(current)) hasKeep = true;
+    current = current.nextSibling;
   }
 
-  // Track which old nodes we've consumed
-  const consumed = new Set<Node>();
-  let oldIdx = 0;
+  let oldChild = parent.firstChild;
 
   for (let i = 0; i < newChildren.length; i++) {
     const newChild = newChildren[i];
     const newKey = getKey(newChild);
 
-    // Keyed match — pull from map regardless of position
-    if (newKey && oldKeyed.has(newKey)) {
-      const oldChild = oldKeyed.get(newKey)!;
-      consumed.add(oldChild);
-      morphNode(oldChild, newChild as Element);
-      // Move into position if needed
-      const ref = parent.childNodes[i] ?? null;
-      if (oldChild !== ref) {
-        parent.insertBefore(oldChild, ref);
+    // Keyed match
+    if (newKey && oldKeyed && oldKeyed.has(newKey)) {
+      const match = oldKeyed.get(newKey)!;
+      oldKeyed.delete(newKey);
+
+      if (oldChild === match) {
+        morphNode(match, newChild as Element);
+        oldChild = oldChild.nextSibling;
+      } else {
+        morphNode(match, newChild as Element);
+        parent.insertBefore(match, oldChild);
       }
       continue;
     }
 
-    // Unkeyed — try to match by position (skip consumed)
-    while (oldIdx < oldChildren.length && consumed.has(oldChildren[oldIdx])) {
-      oldIdx++;
+    // Skip unconsumed keyed nodes or kept nodes
+    while (oldChild && (
+      (oldKeyed && getKey(oldChild) && oldKeyed.has(getKey(oldChild)!)) ||
+      (hasKeep && isKeep(oldChild))
+    )) {
+      oldChild = oldChild.nextSibling;
     }
-
-    const oldChild = oldChildren[oldIdx];
 
     if (!oldChild) {
       // No more old children — append
@@ -81,28 +88,31 @@ function morphChildren(parent: Node, newChildren: Node[]): void {
       continue;
     }
 
-    // Skip loom-keep nodes — don't touch them
-    if (isKeep(oldChild)) {
-      consumed.add(oldChild);
-      oldIdx++;
-      i--; // re-process this new child against the next old
-      continue;
-    }
-
     if (canMorph(oldChild, newChild)) {
-      consumed.add(oldChild);
       morphNode(oldChild, newChild);
-      oldIdx++;
+      oldChild = oldChild.nextSibling;
     } else {
       // Can't morph — insert new before old
       parent.insertBefore(newChild, oldChild);
     }
   }
 
-  // Remove unconsumed old children (except loom-keep)
-  for (const old of oldChildren) {
-    if (!consumed.has(old) && !isKeep(old) && old.parentNode === parent) {
-      parent.removeChild(old);
+  // Remove unconsumed old children
+  while (oldChild) {
+    const next = oldChild.nextSibling;
+    const isUnconsumedKeyed = oldKeyed && getKey(oldChild) && oldKeyed.has(getKey(oldChild)!);
+    if (!isKeep(oldChild) && !isUnconsumedKeyed) {
+      parent.removeChild(oldChild);
+    }
+    oldChild = next;
+  }
+
+  // Also remove unconsumed keyed nodes that were skipped
+  if (oldKeyed) {
+    for (const old of oldKeyed.values()) {
+      if (!isKeep(old)) {
+        parent.removeChild(old);
+      }
     }
   }
 }
@@ -184,28 +194,33 @@ function patchAttributes(old: Element, next: Element): void {
   }
 }
 
-// ── Event listener diffing ──
+export function loomEventProxy(this: Element, e: Event): void {
+  const handler = ((this as any)[LOOM_EVENTS] as LoomEventMap)?.get(e.type);
+  if (typeof handler === "function") {
+    handler.call(this, e);
+  } else if (handler && typeof (handler as any).handleEvent === "function") {
+    (handler as any).handleEvent(e);
+  }
+}
 
 function patchEvents(old: Element, next: Element): void {
   const oldEvents: LoomEventMap = (old as any)[LOOM_EVENTS] ?? new Map();
   const newEvents: LoomEventMap = (next as any)[LOOM_EVENTS] ?? new Map();
 
   // Remove old listeners not in new
-  for (const [type, listener] of oldEvents) {
+  for (const type of oldEvents.keys()) {
     if (!newEvents.has(type)) {
-      old.removeEventListener(type, listener);
+      old.removeEventListener(type, loomEventProxy);
       oldEvents.delete(type);
     }
   }
 
   // Add/replace listeners from new
   for (const [type, listener] of newEvents) {
-    const existing = oldEvents.get(type);
-    if (existing !== listener) {
-      if (existing) old.removeEventListener(type, existing);
-      old.addEventListener(type, listener);
-      oldEvents.set(type, listener);
+    if (!oldEvents.has(type)) {
+      old.addEventListener(type, loomEventProxy);
     }
+    oldEvents.set(type, listener);
   }
 
   // Transfer the map to old element
