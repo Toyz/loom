@@ -49,7 +49,11 @@ export default class ExampleAnalytics extends LoomElement {
             <loom-icon name="clipboard" size={20} color="var(--accent)"></loom-icon>
             <h2>Transport Setup</h2>
           </div>
-          <source-block file="docs/src/pages/examples/components/analytics-demo.tsx" start={21} end={23}></source-block>
+          <code-block lang="ts" code={`import { AnalyticsTransport, track } from "@toyz/loom-analytics";
+import { MockAnalytics } from "@toyz/loom-analytics/testing";
+
+const analytics = new MockAnalytics();
+app.use(AnalyticsTransport, analytics);`}></code-block>
         </section>
 
         <section>

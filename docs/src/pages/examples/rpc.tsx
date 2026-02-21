@@ -51,7 +51,19 @@ export default class ExampleRpc extends LoomElement {
             <loom-icon name="clipboard" size={20} color="var(--accent)"></loom-icon>
             <h2>Contract</h2>
           </div>
-          <source-block file="docs/src/pages/examples/components/rpc-demo.tsx" start={22} end={34}></source-block>
+          <code-block lang="ts" code={`interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "member";
+}
+
+@service("UserService")
+class UserRouter {
+  getUser(id: string): User { return null!; }
+  listUsers(): User[] { return null!; }
+  updateRole(id: string, role: "admin" | "member"): User { return null!; }
+}`}></code-block>
         </section>
 
         <section>
