@@ -270,6 +270,7 @@ const demoStyles = css`
 @styles(demoStyles, scrollbar)
 class AnalyticsDemo extends LoomElement {
   @reactive accessor eventCount = 0;
+  @reactive accessor clickCount = 0;
 
   @track("theme.change")
   accessor currentTheme = "dark";
@@ -287,6 +288,12 @@ class AnalyticsDemo extends LoomElement {
   @track("user.search", { source: "searchbar" })
   handleSearch() {
     // Simulated search
+  }
+
+  // Dynamic metadata — fn receives the element instance
+  @track("button.like", (el: any) => ({ clicks: el.clickCount, theme: el.currentTheme }))
+  handleLike() {
+    this.clickCount++;
   }
 
   toggleTheme() {
@@ -347,6 +354,15 @@ class AnalyticsDemo extends LoomElement {
               <div class="action-info">
                 <div class="action-label">Search Users</div>
                 <div class="action-event">@track("user.search")</div>
+              </div>
+              <button class="accent">Fire</button>
+            </div>
+
+            <div class="action-card" onClick={() => { this.handleLike(); this.refresh(); }}>
+              <div class="action-icon" style={{ background: "rgba(251,191,36,0.15)" }}>👍</div>
+              <div class="action-info">
+                <div class="action-label">Like (dynamic meta)</div>
+                <div class="action-event">@track("button.like", el =&gt; (...))</div>
               </div>
               <button class="accent">Fire</button>
             </div>

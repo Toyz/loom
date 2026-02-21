@@ -171,3 +171,57 @@ describe("DI integration", () => {
     expect(resolved).toBeInstanceOf(MockAnalytics);
   });
 });
+
+// ── Dynamic Metadata ──
+
+describe("dynamic metadata (fn)", () => {
+  it("method: receives element instance", () => {
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      accessor userId = "u42";
+
+      @track("action", (el: any) => ({ uid: el.userId }))
+      doAction() {}
+    }
+    customElements.define(tag, El);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    el.doAction();
+
+    analytics.assertTracked("action", { uid: "u42", method: "doAction" });
+  });
+
+  it("accessor: receives element instance", () => {
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      accessor page = "home";
+
+      @track("theme.set", (el: any) => ({ page: el.page }))
+      accessor theme = "dark";
+    }
+    customElements.define(tag, El);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    analytics.reset();
+
+    el.theme = "light";
+    analytics.assertTracked("theme.set", { page: "home", property: "theme", value: "light" });
+  });
+
+  it("class: receives element instance at connect time", () => {
+    const tag = nextTag();
+
+    @track("page.mount", (el: any) => ({ tag: el.tagName.toLowerCase() }))
+    class El extends LoomElement {}
+    customElements.define(tag, El);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+
+    analytics.assertTracked("page.mount", { tag, element: tag });
+  });
+});

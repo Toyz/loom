@@ -103,16 +103,24 @@ class Settings extends LoomElement {
             <h2>Custom Metadata</h2>
           </div>
           <p>
-            Pass a second argument to <span class="ic">@track</span> for custom metadata:
+            Pass a second argument to <span class="ic">@track</span> for custom metadata.
+            Use a <strong>static object</strong> or a <strong>function</strong> that receives the
+            element instance for dynamic values:
           </p>
-          <code-block lang="ts" code={`@track("page.settings", { section: "account" })
+          <code-block lang="ts" code={`// Static metadata
+@track("page.settings", { section: "account" })
 class AccountSettings extends LoomElement {}
 
-@track("button.click", { variant: "primary" })
-handleSubmit() { ... }`}></code-block>
+// Dynamic metadata — fn receives the element instance
+@track("nav.click", el => ({ route: el.currentRoute, userId: el.userId }))
+handleNav() { ... }
+
+@track("theme.set", el => ({ page: el.currentPage }))
+accessor theme = "dark";`}></code-block>
           <p>
-            Metadata is merged with automatic context (element tag, method name, property name, etc.)
-            before being passed to your transport.
+            Dynamic metadata is resolved at fire time, so it always reflects the
+            current component state. It's merged with automatic context (element tag,
+            method name, property name, etc.) before being passed to your transport.
           </p>
         </section>
       </div>
