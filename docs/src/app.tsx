@@ -61,6 +61,7 @@ const sections: NavSection[] = [
     items: [
       { label: "Overview",        to: "/router/overview",         icon: "compass" },
       { label: "Routes",          to: "/router/routes",           icon: "map" },
+      { label: "Route Data",       to: "/router/route-data",       icon: "database" },
       { label: "Groups",          to: "/router/groups",           icon: "layers" },
       { label: "Guards",          to: "/router/guards",           icon: "shield" },
       { label: "Navigation",      to: "/router/navigation",       icon: "arrow-right" },

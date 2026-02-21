@@ -194,6 +194,12 @@ class LazyRouterOverview extends LoomElement { }
 @searchable({ title: "Routes", section: "Router", icon: "map", to: "/router/routes", keywords: ["route", "path", "url", "pattern", "params", "dynamic"], summary: "Define routes with @route, path params, and lazy loading." })
 class LazyRouterRoutes extends LoomElement { }
 
+@route("/route-data", { group: RouterGroup })
+@component("page-router-route-data")
+@lazy(() => import("./router/route-data"))
+@searchable({ title: "Route Data", section: "Router", icon: "database", to: "/router/route-data", keywords: ["param", "params", "query", "url", "inject", "prop", "route data", "query string"], summary: "Inject route params and query strings into components with @prop." })
+class LazyRouterRouteData extends LoomElement { }
+
 @route("/guards", { group: RouterGroup })
 @component("page-router-guards")
 @lazy(() => import("./router/guards"))
