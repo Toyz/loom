@@ -81,6 +81,7 @@
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "bench": "vitest bench",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run clean && npm test && npm run build"
   },

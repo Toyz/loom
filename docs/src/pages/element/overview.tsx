@@ -52,6 +52,7 @@ export class MyWidget extends LoomElement {
               <tr><td><code>css``</code></td><td>tagged template</td><td>Scoped CSS — adopted into the shadow root as a <code>CSSStyleSheet</code></td></tr>
               <tr><td><code>scheduleUpdate()</code></td><td>() =&gt; void</td><td>Manually trigger a re-render on the next animation frame</td></tr>
               <tr><td><code>firstUpdated()</code></td><td>() =&gt; void</td><td>Called once after the first render</td></tr>
+              <tr><td><code>shouldUpdate()</code></td><td>() =&gt; boolean</td><td>Return false to skip a render cycle. Default: true</td></tr>
               <tr><td><code>$(sel)</code></td><td>(sel: string) =&gt; Element</td><td>Shorthand for <code>this.shadow.querySelector(sel)</code></td></tr>
               <tr><td><code>$$(sel)</code></td><td>(sel: string) =&gt; Element[]</td><td>Shorthand for <code>Array.from(this.shadow.querySelectorAll(sel))</code></td></tr>
             </tbody>
