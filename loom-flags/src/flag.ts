@@ -22,9 +22,12 @@
  * ```
  */
 
-import { app, bus } from "@toyz/loom";
+import { app, bus, createSymbol } from "@toyz/loom";
 import { FlagProvider } from "./provider";
 import { FlagChanged } from "./events";
+
+/** Symbol for inspect() introspection */
+export const FLAG_META = createSymbol("flags:gated");
 
 /** Second arg: static context or a function returning context from element */
 type ContextArg = Record<string, any> | ((el: any) => Record<string, any>);
@@ -39,7 +42,9 @@ export function flag(name: string, context?: ContextArg) {
   return (value: any, decoratorContext: DecoratorContext): any => {
     switch (decoratorContext.kind) {
       case "class": {
-        const ctor = value as Function;
+        const ctor = value as any;
+        ctor[FLAG_META] ??= [];
+        ctor[FLAG_META].push({ flag: name, kind: "class" });
         const originalConnected = ctor.prototype.connectedCallback;
 
         ctor.prototype.connectedCallback = function (this: any) {
@@ -72,6 +77,9 @@ export function flag(name: string, context?: ContextArg) {
         const key = String(decoratorContext.name);
 
         decoratorContext.addInitializer(function (this: any) {
+          const ctor = this.constructor;
+          ctor[FLAG_META] ??= [];
+          ctor[FLAG_META].push({ flag: name, kind: "method", method: key });
           const original = method;
           const self = this;
           (this as any)[key] = function (...args: any[]) {

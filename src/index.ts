@@ -68,7 +68,7 @@ export {
 export type { TransformSchema } from "./transform";
 
 // Decorators: event decorators + factory
-export { on, emit, createDecorator } from "./decorators";
+export { on, emit, createDecorator, createSymbol, SYMBOL_REGISTRY } from "./decorators";
 
 // Router
 export {

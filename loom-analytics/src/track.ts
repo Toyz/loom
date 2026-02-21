@@ -22,8 +22,11 @@
  * ```
  */
 
-import { app } from "@toyz/loom";
+import { app, createSymbol } from "@toyz/loom";
 import { AnalyticsTransport } from "./transport";
+
+/** Symbol for inspect() introspection */
+export const TRACK_META = createSymbol("analytics:track");
 
 /** Second arg: static object OR a function that receives the element and returns metadata */
 type MetaArg = Record<string, any> | ((el: any) => Record<string, any>);
@@ -39,7 +42,9 @@ export function track(event: string, meta?: MetaArg) {
   return (value: any, context: DecoratorContext): any => {
     switch (context.kind) {
       case "class": {
-        const ctor = value as Function;
+        const ctor = value as any;
+        ctor[TRACK_META] ??= [];
+        ctor[TRACK_META].push({ event, kind: "class" });
         const originalConnected = ctor.prototype.connectedCallback;
         ctor.prototype.connectedCallback = function (this: any) {
           if (originalConnected) originalConnected.call(this);
@@ -55,6 +60,9 @@ export function track(event: string, meta?: MetaArg) {
         const method = value as Function;
         const key = String(context.name);
         context.addInitializer(function (this: any) {
+          const ctor = this.constructor;
+          ctor[TRACK_META] ??= [];
+          ctor[TRACK_META].push({ event, kind: "method", method: key });
           const original = method;
           const self = this;
           (this as any)[key] = function (...args: any[]) {
@@ -73,6 +81,11 @@ export function track(event: string, meta?: MetaArg) {
       case "accessor": {
         const target = value as ClassAccessorDecoratorTarget<any, any>;
         const key = String(context.name);
+        context.addInitializer(function (this: any) {
+          const ctor = this.constructor;
+          ctor[TRACK_META] ??= [];
+          ctor[TRACK_META].push({ event, kind: "accessor", property: key });
+        });
         return {
           get(this: any) {
             return target.get.call(this);

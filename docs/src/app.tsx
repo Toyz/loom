@@ -17,6 +17,7 @@ const sections: NavSection[] = [
     items: [
       { label: "Getting Started", to: "/guides/getting-started", icon: "book" },
       { label: "Your First App",  to: "/guides/your-first-app",  icon: "sparkles" },
+      { label: "Debugging",       to: "/guides/debugging",       icon: "search" },
     ],
   },
   {

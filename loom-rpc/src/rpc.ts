@@ -16,7 +16,7 @@
  * so the router name survives TypeScript erasure.
  */
 
-import { app } from "@toyz/loom";
+import { app, createSymbol } from "@toyz/loom";
 import type { ApiState } from "@toyz/loom";
 import { Reactive } from "@toyz/loom/store";
 import { LoomResult } from "@toyz/loom";
@@ -24,6 +24,9 @@ import type { RpcMethods, InferReturn, RpcQueryOptions } from "./types";
 import { RpcTransport } from "./transport";
 
 import { resolveServiceName } from "./service";
+
+/** Symbol for inspect() introspection */
+export const RPC_QUERIES = createSymbol("rpc:queries");
 
 /**
  * @rpc(Router, method, opts?) — Query decorator
@@ -57,6 +60,13 @@ export function rpc<
   ): ClassAccessorDecoratorResult<This, ApiState<TReturn>> => {
     const stateKey = Symbol(`rpc:${String(context.name)}`);
     const traceKey = Symbol(`rpc:trace:${String(context.name)}`);
+    const accessorName = String(context.name);
+
+    context.addInitializer(function (this: any) {
+      const ctor = this.constructor;
+      ctor[RPC_QUERIES] ??= [];
+      ctor[RPC_QUERIES].push({ accessor: accessorName, router: routerName, method: String(method) });
+    });
 
     return {
       get(this: any): ApiState<TReturn> {

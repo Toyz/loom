@@ -11,12 +11,15 @@
  * ```
  */
 
-import { app } from "@toyz/loom";
+import { app, createSymbol } from "@toyz/loom";
 import { Reactive } from "@toyz/loom/store";
 import type { RpcMethods, InferArgs, InferReturn, RpcMutator } from "./types";
 import { RpcTransport } from "./transport";
 
 import { resolveServiceName } from "./service";
+
+/** Symbol for inspect() introspection */
+export const RPC_MUTATIONS = createSymbol("rpc:mutations");
 
 /**
  * @mutate(Router, method) — Mutation decorator
@@ -51,6 +54,13 @@ export function mutate<
   ): ClassAccessorDecoratorResult<This, RpcMutator<TArgs extends any[] ? TArgs : [TArgs], TReturn>> => {
     const stateKey = Symbol(`mutate:${String(context.name)}`);
     const traceKey = Symbol(`mutate:trace:${String(context.name)}`);
+    const accessorName = String(context.name);
+
+    context.addInitializer(function (this: any) {
+      const ctor = this.constructor;
+      ctor[RPC_MUTATIONS] ??= [];
+      ctor[RPC_MUTATIONS].push({ accessor: accessorName, router: routerName, method: String(method) });
+    });
 
     return {
       get(this: any): RpcMutator<TArgs extends any[] ? TArgs : [TArgs], TReturn> {

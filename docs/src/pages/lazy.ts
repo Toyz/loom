@@ -34,6 +34,12 @@ class LazyGettingStarted extends LoomElement { }
 @searchable({ title: "Your First App", section: "Guides", icon: "sparkles", to: "/guides/your-first-app", keywords: ["tutorial", "first", "app", "hello world", "beginner"], summary: "Build a persistent todo list in 4 files with Vite + Loom." })
 class LazyFirstApp extends LoomElement { }
 
+@route("/guides/debugging")
+@component("page-debugging")
+@lazy(() => import("./guides/debugging"))
+@searchable({ title: "Debugging", section: "Guides", icon: "search", to: "/guides/debugging", keywords: ["debug", "inspect", "devtools", "symbols", "metadata", "console"], summary: "Zero-install component inspection with inspect() and createSymbol()." })
+class LazyDebugging extends LoomElement { }
+
 // ── Standalone ──
 
 @route("/result")

@@ -17,6 +17,8 @@ export {
   ON_HANDLERS,
   ROUTE_PROPS,
   TRANSFORMS,
+  createSymbol,
+  SYMBOL_REGISTRY,
 } from "./symbols";
 
 // Decorator factory (public API for user-defined decorators)

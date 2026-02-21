@@ -1,6 +1,6 @@
 {
   "name": "@toyz/loom",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "type": "module",
   "description": "Decorator-driven web component framework with reactive state, DOM morphing, DI, and JSX",
   "license": "MIT",
@@ -70,6 +70,10 @@
     "./decorators": {
       "types": "./dist/decorators/index.d.ts",
       "import": "./dist/decorators/index.js"
+    },
+    "./debug": {
+      "types": "./dist/debug/inspect.d.ts",
+      "import": "./dist/debug/inspect.js"
     },
     "./testing": {
       "types": "./dist/testing.d.ts",
