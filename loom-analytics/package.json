@@ -1,6 +1,6 @@
 {
   "name": "@toyz/loom-analytics",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Zero-dependency, transport-swappable analytics for Loom — decorator-driven event tracking",
   "license": "MIT",
