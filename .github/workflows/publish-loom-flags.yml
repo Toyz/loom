@@ -1,0 +1,39 @@
+name: Publish @toyz/loom-flags
+
+on:
+  push:
+    tags:
+      - "loom-flags-v*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+
+      # Build core Loom first (loom-flags depends on it)
+      - name: Build core
+        run: |
+          npm ci
+          npm run build
+
+      # Build & publish loom-flags
+      - name: Build loom-flags
+        working-directory: loom-flags
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish
+        working-directory: loom-flags
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
