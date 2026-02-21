@@ -24,11 +24,13 @@ jobs:
         run: |
           npm ci
           npm run build
+          npm link
 
       - name: Install & Build loom-analytics
         working-directory: loom-analytics
         run: |
           npm ci
+          npm link @toyz/loom
           npm test
           npm run build
 

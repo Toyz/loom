@@ -24,12 +24,14 @@ jobs:
         run: |
           npm ci
           npm run build
+          npm link
 
       # Build & publish loom-flags
       - name: Build loom-flags
         working-directory: loom-flags
         run: |
           npm ci
+          npm link @toyz/loom
           npm run build
 
       - name: Publish
