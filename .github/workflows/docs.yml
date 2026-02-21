@@ -29,11 +29,12 @@ jobs:
         run: |
           npm ci
           npm run build
-          cd loom-rpc && npm ci && npm run build
+          npm link
+          cd loom-rpc && npm ci && npm link @toyz/loom && npm run build
           cd ..
-          cd loom-analytics && npm ci && npm run build
+          cd loom-analytics && npm ci && npm link @toyz/loom && npm run build
           cd ..
-          cd loom-flags && npm ci && npm run build
+          cd loom-flags && npm ci && npm link @toyz/loom && npm run build
 
       # Build the docs site
       - name: Build Docs

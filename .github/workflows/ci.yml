@@ -98,12 +98,17 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install (root — Loom core)
-        run: npm ci
+      - name: Install & Build core (Loom)
+        run: |
+          npm ci
+          npm run build
+          npm link
         working-directory: .
 
       - name: Install (loom-rpc)
-        run: npm ci
+        run: |
+          npm ci
+          npm link @toyz/loom
 
       - name: Single-dependency check
         id: depcheck
