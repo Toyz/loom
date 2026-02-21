@@ -229,7 +229,7 @@ describe("DI integration", () => {
 
 describe("@service decorator", () => {
   it("stamps SERVICE_NAME on the class", () => {
-    expect((OrderRouter as any)[SERVICE_NAME]).toBe("OrderService");
+    expect((OrderRouter as any)[SERVICE_NAME.key]).toBe("OrderService");
   });
 
   it("resolveServiceName returns @service name when present", () => {
