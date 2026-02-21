@@ -1,7 +1,7 @@
 /**
  * Lifecycle — /element/lifecycle
  *
- * @mount, @unmount, @catch_, @suspend, firstUpdated
+ * @mount, @unmount, @catch_, @suspend, firstUpdated, shouldUpdate
  */
 import { LoomElement } from "@toyz/loom";
 
@@ -167,6 +167,45 @@ class MyEl extends LoomElement {
 
         <section>
           <div class="group-header">
+            <loom-icon name="filter" size={20} color="var(--amber)"></loom-icon>
+            <h2>shouldUpdate()</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Override <span class="ic">shouldUpdate()</span> to skip render cycles.
+              Called before each <span class="ic">update()</span> — return <span class="ic">false</span> to
+              prevent the morph. Useful for imperative components like canvas or virtual lists
+              that manage their own DOM after the initial skeleton.
+            </div>
+            <code-block lang="ts" code={`@component("my-canvas-wrapper")
+class CanvasWrapper extends LoomElement {
+  private initialized = false;
+
+  update() {
+    const canvas = document.createElement("canvas");
+    canvas.setAttribute("loom-keep", "");
+    return canvas;
+  }
+
+  firstUpdated() {
+    this.initialized = true;
+    this.startDrawLoop();
+  }
+
+  // After the skeleton is built, skip all future morphs
+  shouldUpdate(): boolean {
+    return !this.initialized;
+  }
+}`}></code-block>
+          </div>
+          <div class="note">
+            Default is <span class="ic">true</span> — all components render normally unless you override this.
+            Built-in elements like <span class="ic">&lt;loom-canvas&gt;</span> and <span class="ic">&lt;loom-virtual&gt;</span> use this to block re-morphing.
+          </div>
+        </section>
+
+        <section>
+          <div class="group-header">
             <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
             <h2>Full Lifecycle Order</h2>
           </div>
@@ -175,10 +214,11 @@ class MyEl extends LoomElement {
             <tbody>
               <tr><td>1</td><td><code>constructor()</code></td><td>Element created</td></tr>
               <tr><td>2</td><td><code>@mount</code></td><td>Connected to DOM</td></tr>
-              <tr><td>3</td><td><code>update()</code></td><td>First render</td></tr>
-              <tr><td>4</td><td><code>firstUpdated()</code></td><td>After first render</td></tr>
-              <tr><td>5</td><td><code>update()</code></td><td>On each @reactive change</td></tr>
-              <tr><td>6</td><td><code>@unmount</code></td><td>Disconnected from DOM</td></tr>
+              <tr><td>3</td><td><code>shouldUpdate()</code></td><td>Before each render — return false to skip</td></tr>
+              <tr><td>4</td><td><code>update()</code></td><td>First render</td></tr>
+              <tr><td>5</td><td><code>firstUpdated()</code></td><td>After first render</td></tr>
+              <tr><td>6</td><td><code>shouldUpdate()</code> + <code>update()</code></td><td>On each @reactive change</td></tr>
+              <tr><td>7</td><td><code>@unmount</code></td><td>Disconnected from DOM</td></tr>
             </tbody>
           </table>
         </section>
