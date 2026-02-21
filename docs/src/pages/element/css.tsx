@@ -104,7 +104,7 @@ class MyCard extends LoomElement {
 }`}></code-block>
           </div>
           <div class="note">
-            ⚡ Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
+            <loom-icon name="bolt" size={14} color="var(--amber)"></loom-icon> Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
             and avoids style adoption on every render call.
           </div>
         </section>

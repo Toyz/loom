@@ -16,7 +16,7 @@ import "./app";
 import "./pages/home";
 import "./pages/not-found";
 
-// All other pages — code-split via @lazy ⚡
+// All other pages — code-split via @lazy
 import "./pages/lazy";
 
 // Boot

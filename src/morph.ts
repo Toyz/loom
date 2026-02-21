@@ -151,6 +151,12 @@ function morphNode(old: Node, next: Node): void {
       return; // Don't recurse into rawHTML children
     }
 
+    // Light DOM custom elements manage their own children — don't recurse.
+    // Just like shadow DOM elements, the parent morph only patches attributes.
+    if ((oldEl as any).constructor?.__loom_noshadow) {
+      return;
+    }
+
     // Recurse children
     morphChildren(oldEl, Array.from(nextEl.childNodes));
   }

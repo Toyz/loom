@@ -21,7 +21,8 @@ import { pendingProps } from "../store/decorators";
  * class MyCounter extends LoomElement { ... }
  * ```
  */
-export const component = createDecorator<[tag: string]>((ctor, tag) => {
+export const component = createDecorator<[tag: string, opts?: { shadow?: boolean }]>((ctor, tag, opts) => {
+  if (opts?.shadow === false) (ctor as any).__loom_noshadow = true;
   // Flush pendingProps from @prop decorators (member decorators run before class decorators)
   const propMap: Map<string, string> =
     (ctor as any)[PROPS] ?? new Map();
@@ -121,10 +122,18 @@ export function styles(...sheets: CSSStyleSheet[]) {
   return (value: Function, _context: ClassDecoratorContext) => {
     const orig = value.prototype.connectedCallback;
     value.prototype.connectedCallback = function () {
-      const existing = this.shadow.adoptedStyleSheets;
-      const newSheets = sheets.filter((s: CSSStyleSheet) => !existing.includes(s));
-      if (newSheets.length > 0) {
-        this.shadow.adoptedStyleSheets = [...existing, ...newSheets];
+      // Light DOM: adopt into the containing root (parent shadow root or document)
+      // Shadow DOM: adopt into own shadow root (as before)
+      const root = (this.constructor as any).__loom_noshadow
+        ? this.getRootNode() as Document | ShadowRoot
+        : this.shadow;
+
+      if ('adoptedStyleSheets' in root) {
+        const existing = root.adoptedStyleSheets;
+        const newSheets = sheets.filter((s: CSSStyleSheet) => !existing.includes(s));
+        if (newSheets.length > 0) {
+          root.adoptedStyleSheets = [...existing, ...newSheets];
+        }
       }
       orig?.call(this);
     };

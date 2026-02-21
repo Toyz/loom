@@ -328,7 +328,7 @@ export class CanvasGameDemo extends LoomElement {
           </div>
           <div>
             <div class="label">Lives</div>
-            <div class="value">{"❤️".repeat(this.lives)}</div>
+            <div class="value">{"♥".repeat(this.lives)}</div>
           </div>
         </div>
 

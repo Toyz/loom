@@ -315,7 +315,7 @@ export class TimingShowcase extends LoomElement {
           <div class="demo">
             <button onClick={() => this.showToast()}>Show Toast</button>
             {this.toastVisible
-              ? <div class="toast">🎉 This toast vanishes in 3s!</div>
+              ? <div class="toast">This toast vanishes in 3s!</div>
               : <span style="font-size:0.8rem;color:var(--text-muted)">No toast visible</span>
             }
           </div>

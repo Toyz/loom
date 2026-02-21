@@ -185,7 +185,7 @@ class ContactForm extends LoomElement {
               onInput={c.bind("name")}
               class={c?.errors.name ? "invalid" : ""}
             />
-            {c?.errors.name && <span class="error-msg">⚠ {c.errors.name}</span>}
+            {c?.errors.name && <span class="error-msg">— {c.errors.name}</span>}
           </div>
 
           <div class="field">
@@ -198,7 +198,7 @@ class ContactForm extends LoomElement {
               onInput={c.bind("email")}
               class={c?.errors.email ? "invalid" : ""}
             />
-            {c?.errors.email && <span class="error-msg">⚠ {c.errors.email}</span>}
+            {c?.errors.email && <span class="error-msg">— {c.errors.email}</span>}
           </div>
 
           <div class="field">
@@ -210,7 +210,7 @@ class ContactForm extends LoomElement {
               onInput={c.bind("message")}
               class={c?.errors.message ? "invalid" : ""}
             />
-            {c?.errors.message && <span class="error-msg">⚠ {c.errors.message}</span>}
+            {c?.errors.message && <span class="error-msg">— {c.errors.message}</span>}
           </div>
 
           <div class="actions">

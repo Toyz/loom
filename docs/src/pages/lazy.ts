@@ -122,6 +122,12 @@ class LazyElementLazy extends LoomElement { }
 @searchable({ title: "Forms", section: "Element", icon: "clipboard", to: "/element/forms", keywords: ["form", "validation", "input", "submit", "field", "binding"], summary: "Typed form state with transforms, validation, and @form binding." })
 class LazyElementForms extends LoomElement { }
 
+@route("/light-dom", { group: ElementGroup })
+@component("page-element-light-dom")
+@lazy(() => import("./element/light-dom"))
+@searchable({ title: "Light DOM", section: "Element", icon: "sun", to: "/element/light-dom", keywords: ["light dom", "shadow", "no shadow", "inherit", "styles", "leaf"], summary: "Skip shadow DOM for leaf components that inherit parent styles." })
+class LazyElementLightDom extends LoomElement { }
+
 // ── Store ──
 
 @route("/overview", { group: StoreGroup })

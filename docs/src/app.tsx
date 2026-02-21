@@ -29,6 +29,7 @@ const sections: NavSection[] = [
       { label: "DOM Queries",     to: "/element/queries",        icon: "search" },
       { label: "JSX & Morphing",  to: "/element/jsx",            icon: "code" },
       { label: "Decorators",      to: "/element/decorators",     icon: "hash" },
+      { label: "Light DOM",       to: "/element/light-dom",      icon: "sun" },
       { label: "Lazy Loading",    to: "/element/lazy",           icon: "download" },
       { label: "Forms",           to: "/element/forms",          icon: "clipboard" },
       { label: "Virtual List",    to: "/element/virtual-list",   icon: "list",      divider: "Built-ins" },

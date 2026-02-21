@@ -4,7 +4,7 @@
  * Dogfooding Loom's @group decorator to organize the docs site routes.
  * Each section of the docs gets its own group with a shared prefix.
  *
- * 💡 Open DevTools → Console to see the "docs-log" guard fire on every
+ * Open DevTools → Console to see the "docs-log" guard fire on every
  *    navigation. This is a live demo of @guard + @group working together.
  */
 import { group, guard } from "@toyz/loom/router";

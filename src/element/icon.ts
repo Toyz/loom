@@ -19,7 +19,7 @@ import { watch } from "../store/watch";
 import { css } from "../css";
 
 const baseStyles = css`
-  :host {
+  loom-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -28,7 +28,7 @@ const baseStyles = css`
     width: var(--_s);
     height: var(--_s);
   }
-  svg {
+  loom-icon svg {
     width: 100%;
     height: 100%;
     fill: none;
@@ -42,7 +42,7 @@ const baseStyles = css`
 /** Icon path data registry (name → SVG inner content) */
 const registry = new Map<string, string>();
 
-@component("loom-icon")
+@component("loom-icon", { shadow: false })
 @styles(baseStyles)
 export class LoomIcon extends LoomElement {
 

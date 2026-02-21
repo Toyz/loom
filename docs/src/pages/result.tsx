@@ -29,7 +29,7 @@ export default class PageResult extends LoomElement {
             </div>
             <code-block
               lang="ts"
-              code={`// ❌ try/catch — error handling is invisible
+              code={`// [BAD] try/catch — error handling is invisible
 try {
   const data = await fetchTeam();
   render(data);
@@ -38,7 +38,7 @@ try {
   console.error(err);
 }
 
-// ✅ LoomResult — errors are explicit values
+// [OK] LoomResult — errors are explicit values
 const result = await LoomResult.fromPromise(fetchTeam());
 result.match({
   ok:  (team) => render(team),
@@ -92,11 +92,11 @@ const result = await LoomResult.fromPromise(
               code={`const r = LoomResult.ok("hello");
 
 if (r.ok) {
-  r.data;   // ✅ string
-  r.error;  // ✅ undefined
+  r.data;   // -> string
+  r.error;  // -> undefined
 } else {
-  r.error;  // ✅ Error
-  r.data;   // ✅ undefined
+  r.error;  // -> Error
+  r.data;   // -> undefined
 }`}
             ></code-block>
           </div>

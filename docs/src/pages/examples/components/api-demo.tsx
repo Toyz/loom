@@ -126,7 +126,7 @@ export class ApiDemo extends LoomElement {
   // Error boundary — scoped to the "team" @api accessor
   @catch_("team")
   handleError(err: unknown) {
-    this.shadow.innerHTML = `<p style="color:#f87171;padding:1rem">⚠ ${err}</p>`;
+    this.shadow.innerHTML = `<p style="color:#f87171;padding:1rem">Error: ${err}</p>`;
   }
 
   // Post-fetch interceptor: parses Response → JSON

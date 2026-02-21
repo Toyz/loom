@@ -341,7 +341,7 @@ class AnalyticsDemo extends LoomElement {
             </div>
 
             <div class="action-card" onClick={() => { this.handleDelete(); this.refresh(); }}>
-              <div class="action-icon" style={{ background: "rgba(239,68,68,0.15)" }}>🗑️</div>
+              <div class="action-icon" style={{ background: "rgba(239,68,68,0.15)" }}><loom-icon name="trash-2" size={16} color="#ef4444"></loom-icon></div>
               <div class="action-info">
                 <div class="action-label">Delete Item</div>
                 <div class="action-event">@track("button.delete")</div>
@@ -375,7 +375,7 @@ class AnalyticsDemo extends LoomElement {
             </h3>
 
             <div class="action-card">
-              <div class="action-icon" style={{ background: "rgba(251,191,36,0.15)" }}>🎨</div>
+              <div class="action-icon" style={{ background: "rgba(251,191,36,0.15)" }}><loom-icon name="palette" size={16} color="#fbbf24"></loom-icon></div>
               <div class="action-info">
                 <div class="action-label">Theme</div>
                 <div class="action-event">@track("theme.change")</div>

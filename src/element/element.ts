@@ -17,7 +17,13 @@ export abstract class LoomElement extends HTMLElement {
 
   constructor() {
     super();
-    this.shadow = this.attachShadow({ mode: "open" });
+    if ((this.constructor as any).__loom_noshadow) {
+      // Light DOM mode — render directly into the host element.
+      // Cast to ShadowRoot so all existing code (morph, $, $$, css) works unchanged.
+      this.shadow = this as unknown as ShadowRoot;
+    } else {
+      this.shadow = this.attachShadow({ mode: "open" });
+    }
   }
 
   // ── CSS ──

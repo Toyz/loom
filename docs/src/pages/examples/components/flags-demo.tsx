@@ -252,10 +252,10 @@ class FlagsDemo extends LoomElement {
 
   update() {
     const flagList = [
-      { key: "dark-mode", label: "Dark Mode", icon: "🌙", desc: "UI theme toggle" },
-      { key: "beta-export", label: "Beta Export", icon: "📦", desc: "Gated method" },
-      { key: "search-v2", label: "Search v2", icon: "🔍", desc: "Gated method" },
-      { key: "new-sidebar", label: "New Sidebar", icon: "📐", desc: "<loom-flag> slot" },
+      { key: "dark-mode", label: "Dark Mode", icon: "moon", desc: "UI theme toggle" },
+      { key: "beta-export", label: "Beta Export", icon: "package", desc: "Gated method" },
+      { key: "search-v2", label: "Search v2", icon: "search", desc: "Gated method" },
+      { key: "new-sidebar", label: "New Sidebar", icon: "layout", desc: "<loom-flag> slot" },
     ];
 
     return (
@@ -269,7 +269,7 @@ class FlagsDemo extends LoomElement {
             {flagList.map(f => (
               <div class="flag-row">
                 <div class="flag-icon" style={{ background: this.isOn(f.key) ? "rgba(52,211,153,0.15)" : "rgba(239,68,68,0.1)" }}>
-                  {f.icon}
+                  <loom-icon name={f.icon} size={16}></loom-icon>
                 </div>
                 <div class="flag-info">
                   <div class="flag-label">{f.label}</div>
