@@ -5,14 +5,12 @@
  * If setup returns a function, it runs on CONNECT.
  * If the connect function returns a function, it runs on DISCONNECT.
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { createDecorator } from "../src/decorators/create";
 import { LoomElement } from "../src/element";
+import { fixture, cleanup } from "../src/testing";
 
-// Reset app state between tests
-beforeEach(() => {
-  document.body.innerHTML = "";
-});
+afterEach(() => cleanup());
 
 /** Helper to define a unique custom element for each test */
 let tagCounter = 0;
@@ -52,7 +50,7 @@ describe("createDecorator", () => {
     expect(setup.mock.calls[0][3]).toBe(3);
   });
 
-  it("runs connect function on connectedCallback", () => {
+  it("runs connect function on connectedCallback", async () => {
     const connectFn = vi.fn();
     const myDec = createDecorator((_method, _key) => {
       return connectFn;  // connect function
@@ -67,16 +65,15 @@ describe("createDecorator", () => {
 
     expect(connectFn).not.toHaveBeenCalled();
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
     expect(connectFn).toHaveBeenCalledOnce();
     expect(connectFn).toHaveBeenCalledWith(el);
   });
 
-  it("tracks cleanup function for disconnect", () => {
-    const cleanup = vi.fn();
+  it("tracks cleanup function for disconnect", async () => {
+    const cleanupFn = vi.fn();
     const myDec = createDecorator((_method, _key) => {
-      return (_el: any) => cleanup;  // connect returns cleanup
+      return (_el: any) => cleanupFn;  // connect returns cleanup
     });
     const tag = nextTag();
 
@@ -86,15 +83,14 @@ describe("createDecorator", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    expect(cleanup).not.toHaveBeenCalled();
+    await fixture<El>(tag);
+    expect(cleanupFn).not.toHaveBeenCalled();
 
-    document.body.removeChild(el);
-    expect(cleanup).toHaveBeenCalledOnce();
+    cleanup(); // triggers disconnectedCallback
+    expect(cleanupFn).toHaveBeenCalledOnce();
   });
 
-  it("does not break if setup returns void (define-time only)", () => {
+  it("does not break if setup returns void (define-time only)", async () => {
     const myDec = createDecorator((_method, _key) => { /* no connect */ });
     const tag = nextTag();
 
@@ -104,10 +100,9 @@ describe("createDecorator", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
+    const el = await fixture<El>(tag);
     expect(() => {
-      document.body.appendChild(el);
-      document.body.removeChild(el);
+      cleanup();
     }).not.toThrow();
   });
 
@@ -122,7 +117,7 @@ describe("createDecorator", () => {
     expect(setup).toHaveBeenCalledWith(El, "my-widget");
   });
 
-  it("works with typed element generic", () => {
+  it("works with typed element generic", async () => {
     const connectFn = vi.fn();
     const myDec = createDecorator((_method: Function, _key: string) => {
       return connectFn;
@@ -135,8 +130,7 @@ describe("createDecorator", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
     expect(connectFn).toHaveBeenCalledOnce();
   });
 });

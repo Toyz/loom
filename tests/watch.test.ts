@@ -1,19 +1,19 @@
 /**
  * Tests: @watch — all 3 forms (local field, direct Reactive, DI-resolved service)
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { Reactive, CollectionStore } from "../src/store/reactive";
 import { watch } from "../src/store/watch";
 import { watch as watchService } from "../src/di/watch";
 import { reactive } from "../src/store/decorators";
 import { app } from "../src/app";
+import { fixture, cleanup, nextRender } from "../src/testing";
 
 let tagCounter = 0;
 function nextTag() { return `test-watch-${++tagCounter}`; }
 
 beforeEach(() => {
-  document.body.innerHTML = "";
   // Reset app providers (same pattern as di.test.ts)
   (app as any).providers = new Map();
   (app as any).services = [];
@@ -22,8 +22,10 @@ beforeEach(() => {
   (app as any)._started = false;
 });
 
+afterEach(() => cleanup());
+
 describe("@watch (local @reactive field)", () => {
-  it("calls handler with (value, prev) when @reactive field changes", () => {
+  it("calls handler with (value, prev) when @reactive field changes", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -35,13 +37,12 @@ describe("@watch (local @reactive field)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
-    el.count = 5;
+    const el = await fixture<El>(tag);
+    (el as any).count = 5;
     expect(fn).toHaveBeenCalledWith(5, 0);
   });
 
-  it("fires on every change", () => {
+  it("fires on every change", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -53,18 +54,17 @@ describe("@watch (local @reactive field)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
-    el.count = 1;
-    el.count = 2;
-    el.count = 3;
+    const el = await fixture<El>(tag);
+    (el as any).count = 1;
+    (el as any).count = 2;
+    (el as any).count = 3;
     expect(fn).toHaveBeenCalledTimes(3);
     expect(fn).toHaveBeenLastCalledWith(3);
   });
 });
 
 describe("@watch (direct Reactive instance)", () => {
-  it("subscribes to a Reactive on connect and receives (value, prev)", () => {
+  it("subscribes to a Reactive on connect and receives (value, prev)", async () => {
     const fn = vi.fn();
     const tag = nextTag();
     const counter = new Reactive(0);
@@ -75,8 +75,7 @@ describe("@watch (direct Reactive instance)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
 
     counter.set(10);
     expect(fn).toHaveBeenCalledWith(10, 0);
@@ -94,19 +93,16 @@ describe("@watch (direct Reactive instance)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-
-    // Wait for initial render
-    await new Promise((r) => queueMicrotask(r));
+    await fixture<El>(tag);
+    await nextRender();
     renderFn.mockClear();
 
     counter.set(42);
-    await new Promise((r) => queueMicrotask(r));
+    await nextRender();
     expect(renderFn).toHaveBeenCalledWith(42);
   });
 
-  it("unsubscribes on disconnect", () => {
+  it("unsubscribes on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
     const counter = new Reactive(0);
@@ -117,15 +113,14 @@ describe("@watch (direct Reactive instance)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    document.body.removeChild(el);
+    await fixture<El>(tag);
+    cleanup(); // triggers disconnectedCallback
 
     counter.set(99);
     expect(fn).not.toHaveBeenCalled();
   });
 
-  it("works with CollectionStore", () => {
+  it("works with CollectionStore", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -138,8 +133,7 @@ describe("@watch (direct Reactive instance)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
 
     store.add({ text: "a" } as any);
     store.add({ text: "b" } as any);
@@ -148,7 +142,7 @@ describe("@watch (direct Reactive instance)", () => {
 });
 
 describe("@watch (DI-resolved service)", () => {
-  it("subscribes to a service that extends Reactive", () => {
+  it("subscribes to a service that extends Reactive", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -166,15 +160,14 @@ describe("@watch (DI-resolved service)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
 
     const svc = app.get<CounterService>(CounterService);
     svc.increment();
     expect(fn).toHaveBeenCalledWith(1, 0);
   });
 
-  it("subscribes to a named property on a service", () => {
+  it("subscribes to a named property on a service", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -193,15 +186,14 @@ describe("@watch (DI-resolved service)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
 
     const svc = app.get<ThemeService>(ThemeService);
     svc.toggle();
     expect(fn).toHaveBeenCalledWith("dark", "light");
   });
 
-  it("throws when service prop is not Reactive", () => {
+  it("throws when service prop is not Reactive", async () => {
     const tag = nextTag();
 
     class BadService {
@@ -221,7 +213,7 @@ describe("@watch (DI-resolved service)", () => {
     );
   });
 
-  it("cleans up on disconnect", () => {
+  it("cleans up on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -236,9 +228,8 @@ describe("@watch (DI-resolved service)", () => {
     }
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    document.body.removeChild(el);
+    await fixture<El>(tag);
+    cleanup(); // triggers disconnectedCallback
 
     app.get<ScoreService>(ScoreService).set(100);
     expect(fn).not.toHaveBeenCalled();

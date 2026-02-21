@@ -1,10 +1,10 @@
 /**
  * Tests: DOM morphing — morph(), key preservation, loom-keep
  */
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { morph } from "../src/morph";
 
-beforeEach(() => {
+afterEach(() => {
   document.body.innerHTML = "";
 });
 

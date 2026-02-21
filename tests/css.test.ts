@@ -1,8 +1,18 @@
 /**
  * Tests: css`` tagged template + adoptCSS
  */
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { css, adoptCSS } from "../src/css";
+import { cleanup } from "../src/testing";
+
+afterEach(() => cleanup());
+
+/** Create a shadow root inside a tracked container */
+function createShadow(): ShadowRoot {
+  const host = document.createElement("div");
+  document.body.appendChild(host);
+  return host.attachShadow({ mode: "open" });
+}
 
 describe("css()", () => {
   it("returns a CSSStyleSheet", () => {
@@ -31,12 +41,6 @@ describe("css()", () => {
 });
 
 describe("adoptCSS()", () => {
-  function createShadow(): ShadowRoot {
-    const host = document.createElement("div");
-    document.body.appendChild(host);
-    return host.attachShadow({ mode: "open" });
-  }
-
   it("adopts a stylesheet from a string", () => {
     const shadow = createShadow();
     adoptCSS(shadow, ":host { display: flex }");

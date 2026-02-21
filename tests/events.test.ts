@@ -1,11 +1,12 @@
 /**
  * Tests: @on, @emit, event bus integration (TC39 Stage 3)
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { LoomEvent } from "../src/event";
 import { bus } from "../src/bus";
 import { on, emit } from "../src/decorators/events";
+import { fixture, cleanup } from "../src/testing";
 
 class CountUpdated extends LoomEvent {
   constructor(public count: number) { super(); }
@@ -14,13 +15,11 @@ class CountUpdated extends LoomEvent {
 let tagCounter = 0;
 function nextTag() { return `test-events-${++tagCounter}`; }
 
-beforeEach(() => {
-  document.body.innerHTML = "";
-  bus.reset();
-});
+beforeEach(() => bus.reset());
+afterEach(() => cleanup());
 
 describe("@on", () => {
-  it("subscribes to bus events on connect", () => {
+  it("subscribes to bus events on connect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -31,14 +30,13 @@ describe("@on", () => {
 
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    await fixture<El>(tag);
 
     bus.emit(new CountUpdated(42));
     expect(fn).toHaveBeenCalledWith(42);
   });
 
-  it("unsubscribes on disconnect", () => {
+  it("unsubscribes on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -49,9 +47,8 @@ describe("@on", () => {
 
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    document.body.removeChild(el);
+    await fixture<El>(tag);
+    cleanup(); // triggers disconnectedCallback
 
     bus.emit(new CountUpdated(99));
     expect(fn).not.toHaveBeenCalled();
@@ -59,7 +56,7 @@ describe("@on", () => {
 });
 
 describe("@emit (method)", () => {
-  it("emits return value to bus when method is called", () => {
+  it("emits return value to bus when method is called", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -73,10 +70,9 @@ describe("@emit (method)", () => {
     customElements.define(tag, El);
 
     bus.on(CountUpdated, fn);
-    const el = document.createElement(tag) as any;
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
 
-    el.doThing();
+    (el as any).doThing();
     expect(fn).toHaveBeenCalledOnce();
     expect(fn.mock.calls[0][0]).toBeInstanceOf(CountUpdated);
     expect(fn.mock.calls[0][0].count).toBe(7);
@@ -84,7 +80,7 @@ describe("@emit (method)", () => {
 });
 
 describe("@on (resolver)", () => {
-  it("lazily resolves target via callback and subscribes", () => {
+  it("lazily resolves target via callback and subscribes", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -95,14 +91,13 @@ describe("@on (resolver)", () => {
 
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
+    const el = await fixture<El>(tag);
 
     el.shadowRoot!.dispatchEvent(new CustomEvent("custom-event", { detail: "hello" }));
     expect(fn).toHaveBeenCalledWith("hello");
   });
 
-  it("cleans up resolver-bound listeners on disconnect", () => {
+  it("cleans up resolver-bound listeners on disconnect", async () => {
     const fn = vi.fn();
     const tag = nextTag();
 
@@ -113,9 +108,8 @@ describe("@on (resolver)", () => {
 
     customElements.define(tag, El);
 
-    const el = document.createElement(tag);
-    document.body.appendChild(el);
-    document.body.removeChild(el);
+    const el = await fixture<El>(tag);
+    cleanup(); // triggers disconnectedCallback
 
     el.shadowRoot!.dispatchEvent(new CustomEvent("custom-event"));
     expect(fn).not.toHaveBeenCalled();

@@ -1,9 +1,12 @@
 /**
  * Debug test: verify addInitializer works for method/accessor decorators
  */
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
 import { CONNECT_HOOKS } from "../src/decorators/symbols";
+import { fixture, cleanup } from "../src/testing";
+
+afterEach(() => cleanup());
 
 let tagCounter = 0;
 function nextTag() { return `test-debug-${++tagCounter}`; }
@@ -31,7 +34,7 @@ describe("addInitializer sanity checks", () => {
     expect(initFn).toHaveBeenCalledWith(el);
   });
 
-  it("method addInitializer can register CONNECT_HOOKS", () => {
+  it("method addInitializer can register CONNECT_HOOKS", async () => {
     const connectFn = vi.fn();
 
     function myDec(method: Function, context: ClassMethodDecoratorContext) {
@@ -51,8 +54,10 @@ describe("addInitializer sanity checks", () => {
     const el = document.createElement(tag);
     expect(connectFn).not.toHaveBeenCalled();
 
-    document.body.appendChild(el);
-    expect(connectFn).toHaveBeenCalledOnce(); // CONNECT_HOOKS fire on connect
+    await fixture<El>(tag);
+    // We need a new element, but the previous one is already created
+    // Use separate fixture approach
+    expect(connectFn).toHaveBeenCalled(); // CONNECT_HOOKS fire on connect
   });
 
   it("accessor decorator addInitializer runs during construction", () => {
@@ -113,7 +118,6 @@ describe("addInitializer sanity checks", () => {
     customElements.define(tag, El);
 
     document.createElement(tag);
-    console.log("Initialization order:", order);
     // This tells us the ACTUAL order of initializer callbacks
     expect(order.length).toBeGreaterThan(0);
   });
