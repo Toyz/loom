@@ -15,7 +15,7 @@
  */
 
 import { renderLoop } from "./render-loop";
-import { INJECT_PARAMS, ON_HANDLERS } from "./decorators/symbols";
+import { INJECT_PARAMS, ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols";
 import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
 import { LoomResult } from "./result";
@@ -145,6 +145,11 @@ class LoomApp {
       if (!this.providers.has(Svc)) {
         const args = this.resolveParams(Svc.prototype, "constructor");
         this.providers.set(Svc, new Svc(...args));
+      }
+      // Also register by @service("name") string key for name-based injection
+      const svcName: string | undefined = Svc[SERVICE_NAME.key];
+      if (svcName && !this.providers.has(svcName)) {
+        this.providers.set(svcName, this.providers.get(Svc));
       }
       // Wire @on event handlers (bus events + DOM events)
       const instance = this.providers.get(Svc);

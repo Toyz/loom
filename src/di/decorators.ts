@@ -45,9 +45,10 @@ export function resolveServiceName(cls: new (...args: any[]) => any): string {
  *
  * ```ts
  * @inject(AuthService) accessor auth!: AuthService;
+ * @inject("AuthService") accessor auth!: AuthService;
  * ```
  */
-export function inject<T = unknown>(key: new (...args: unknown[]) => T) {
+export function inject<T = unknown>(key: (new (...args: unknown[]) => T) | string) {
   return <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, T>,
     _context: ClassAccessorDecoratorContext<This, T>,

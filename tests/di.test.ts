@@ -76,3 +76,45 @@ describe("app event bus delegation", () => {
     app.off(Ping, fn);
   });
 });
+
+describe("named service resolution", () => {
+  it("app.get() resolves a named service by string after start()", async () => {
+    const { service } = await import("../src/di/decorators");
+    const { SERVICE_NAME } = await import("../src/decorators/symbols");
+
+    class MyApi {
+      url = "https://api.example.com";
+    }
+    // Simulate @service("MyApi")
+    (MyApi as any)[SERVICE_NAME.key] = "MyApi";
+    app.registerService(MyApi);
+    await app.start();
+
+    const byClass = app.get(MyApi);
+    const byName = app.get("MyApi");
+    expect(byName).toBe(byClass);
+    expect(byName).toBeInstanceOf(MyApi);
+  });
+
+  it("@inject('name') accessor resolves by string name", async () => {
+    const { service, inject } = await import("../src/di/decorators");
+    const { SERVICE_NAME } = await import("../src/decorators/symbols");
+
+    class ConfigService {
+      value = 42;
+    }
+    (ConfigService as any)[SERVICE_NAME.key] = "Config";
+    app.registerService(ConfigService);
+    await app.start();
+
+    // Simulate what @inject("Config") does on an accessor
+    const descriptor = inject<ConfigService>("Config");
+    const result = descriptor(
+      {} as any,
+      { kind: "accessor", name: "cfg" } as any,
+    );
+    const instance = result.get!.call({});
+    expect(instance).toBeInstanceOf(ConfigService);
+    expect(instance.value).toBe(42);
+  });
+});
