@@ -198,4 +198,43 @@ describe("@lazy", () => {
     expect(() => { impl.count = 5; }).not.toThrow();
     expect(impl.count).toBe(5);
   });
+
+  // ── REGRESSION: attribute→property bridge ──
+
+  it("REGRESSION: attributes are also set as properties on impl for @prop bindings", async () => {
+    const tag = nextTag();
+    const implTag = `${tag}-impl`;
+
+    class RealComponent extends LoomElement {
+      // Simulates @prop — a property accessor that lives on the prototype
+      _slug = "";
+      get slug() { return this._slug; }
+      set slug(v: string) { this._slug = v; }
+    }
+
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealComponent }))
+    class StubComponent extends LoomElement {}
+
+    customElements.define(tag, StubComponent);
+
+    // Outlet sets slug as an attribute (backward compat)
+    const el = document.createElement(tag);
+    el.setAttribute("slug", "khaati");
+    document.body.appendChild(el);
+
+    await new Promise(r => setTimeout(r, 10));
+
+    const impl = el.shadowRoot!.querySelector(implTag) as any;
+    expect(impl).toBeTruthy();
+
+    // The attribute should be set
+    expect(impl.getAttribute("slug")).toBe("khaati");
+
+    // AND the property should also be set (attribute→property bridge)
+    // This is critical: @prop accessors react to property sets, not setAttribute
+    expect(impl.slug).toBe("khaati");
+
+    el.remove();
+  });
 });

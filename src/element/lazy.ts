@@ -86,6 +86,11 @@ export function lazy(
           // Forward all attributes from shell → real instance
           for (const attr of this.attributes) {
             realEl.setAttribute(attr.name, attr.value);
+            // Also set as property for @prop accessor bindings
+            // (setAttribute alone doesn't trigger reactive setters)
+            if (attr.name in realEl) {
+              (realEl as any)[attr.name] = attr.value;
+            }
           }
 
           // Forward route data via ROUTE_PROPS metadata
