@@ -8,7 +8,7 @@
  */
 
 import type { PersistOptions, StorageAdapter } from "./storage";
-import { isTracing, recordRead } from "../trace";
+import { __getActiveDeps } from "../trace";
 
 export type Subscriber<T> = (value: T, prev: T) => void;
 export type Updater<T> = T | ((prev: T) => T);
@@ -27,9 +27,11 @@ export type Updater<T> = T | ((prev: T) => T);
  */
 export class Reactive<T> {
   private _value: T;
-  private subs = new Set<Subscriber<T>>();
+  private _subs: Subscriber<T>[] = [];
   private _key?: string;
   private _storage?: StorageAdapter;
+  /** Pre-computed persist flag — avoids double property check on every set() */
+  private _persists = false;
   /** Monotonic version counter — bumps on every set() and notify() */
   private _version = 0;
 
@@ -52,10 +54,12 @@ export class Reactive<T> {
     } else {
       this._value = initial;
     }
+    this._persists = !!(this._key && this._storage);
   }
 
   get value(): T {
-    if (isTracing()) recordRead(this);
+    const deps = __getActiveDeps();
+    if (deps) deps.add(this);
     return this._value;
   }
 
@@ -76,17 +80,20 @@ export class Reactive<T> {
     if (this._value !== prev) {
       this._version++;
       // Persist
-      if (this._key && this._storage) {
-        this._storage.set(this._key, JSON.stringify(this._value));
+      if (this._persists) {
+        this._storage!.set(this._key!, JSON.stringify(this._value));
       }
-      this.subs.forEach((s) => s(this._value, prev));
+      for (let i = 0; i < this._subs.length; i++) this._subs[i](this._value, prev);
     }
   }
 
   /** Subscribe to changes. Returns unsubscribe function. */
   subscribe(fn: Subscriber<T>): () => void {
-    this.subs.add(fn);
-    return () => this.subs.delete(fn);
+    this._subs.push(fn);
+    return () => {
+      const idx = this._subs.indexOf(fn);
+      if (idx >= 0) this._subs.splice(idx, 1);
+    };
   }
 
   /** Subscribe and immediately call with current value */
@@ -102,10 +109,10 @@ export class Reactive<T> {
    */
   notify(): void {
     this._version++;
-    if (this._key && this._storage) {
-      this._storage.set(this._key, JSON.stringify(this._value));
+    if (this._persists) {
+      this._storage!.set(this._key!, JSON.stringify(this._value));
     }
-    this.subs.forEach((s) => s(this._value, this._value));
+    for (let i = 0; i < this._subs.length; i++) this._subs[i](this._value, this._value);
   }
 
   /** Clear persisted data and reset to a value */

@@ -19,28 +19,62 @@ const SVG_TAGS = new Set([
 /** Properties that must be set as JS properties, not HTML attributes */
 const PROP_KEYS = new Set(["value", "checked", "selected", "indeterminate"]);
 
+/**
+ * Cache event type strings: "onClick" → "click", "onInput" → "input"
+ * Avoids allocating a new .slice(2).toLowerCase() string per jsx() call.
+ */
+const _eventTypeCache: Record<string, string> = {};
+
+/**
+ * V8 optimization: cloneNode(false) is 2-3x faster than createElement.
+ * Cache template elements for repeated tag names.
+ */
+const _elCache: Record<string, HTMLElement> = {};
+const _svgCache: Record<string, SVGElement> = {};
+
+function acquireElement(tag: string, isSVG: boolean): HTMLElement | SVGElement {
+  if (isSVG) {
+    let tmpl = _svgCache[tag];
+    if (!tmpl) { tmpl = document.createElementNS(SVG_NS, tag) as SVGElement; _svgCache[tag] = tmpl; }
+    return tmpl.cloneNode(false) as SVGElement;
+  }
+  // Custom elements (tag contains hyphen) MUST use createElement — cloneNode
+  // does NOT call the custom element constructor, breaking shadow DOM, reactivity, etc.
+  if (tag.indexOf('-') !== -1) return document.createElement(tag);
+  let tmpl = _elCache[tag];
+  if (!tmpl) { tmpl = document.createElement(tag); _elCache[tag] = tmpl; }
+  return tmpl.cloneNode(false) as HTMLElement;
+}
+
 export function jsx(
   tag: string | Function,
   props: Record<string, any>,
 ): HTMLElement | SVGElement | DocumentFragment {
   if (typeof tag === "function") return tag(props);
 
-  const isSVG = SVG_TAGS.has(tag);
-  const el = isSVG
-    ? document.createElementNS(SVG_NS, tag)
-    : document.createElement(tag);
+  // Fast SVG rejection: SVG tags only start with c,d,e,f,g,i,l,m,p,r,s,t,u
+  // Common HTML tags (div, span, button, a, h1-h6, input, label, ul, li, etc.)
+  // are rejected before touching the Set.
+  const fc = tag.charCodeAt(0);
+  const isSVG = (fc === 99 || fc === 100 || fc === 101 || fc === 102 ||   // c,d,e,f
+                 fc === 103 || fc === 105 || fc === 108 || fc === 109 ||   // g,i,l,m
+                 fc === 112 || fc === 114 || fc === 115 || fc === 116 ||   // p,r,s,t
+                 fc === 117) && SVG_TAGS.has(tag);                         // u
+  const el = acquireElement(tag, isSVG);
 
-  for (const [key, val] of Object.entries(props ?? {})) {
+  if (props) for (const key in props) {
+    const val = props[key];
     if (key === "children") continue;
-    if (key.startsWith("on") && typeof val === "function") {
-      const eventType = key.slice(2).toLowerCase();
+    if (key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && typeof val === "function") {  // 'o','n'
+      let eventType = _eventTypeCache[key];
+      if (!eventType) { eventType = key.slice(2).toLowerCase(); _eventTypeCache[key] = eventType; }
       // Track for morph diffing
       let events: LoomEventMap = (el as any)[LOOM_EVENTS];
-      if (!events) { events = new Map(); (el as any)[LOOM_EVENTS] = events; }
-      if (!events.has(eventType)) {
+      if (!events) { events = Object.create(null); (el as any)[LOOM_EVENTS] = events; }
+      if (!(eventType in events)) {
         el.addEventListener(eventType, loomEventProxy);
       }
-      events.set(eventType, val);
+      events[eventType] = val;
     } else if (key === "ref" && typeof val === "function") {
       val(el);
     } else if (key === "style" && typeof val === "object") {
@@ -51,15 +85,15 @@ export function jsx(
         startSubTrace();
         try {
           const res = val();
-          if (isSVG) el.setAttribute("class", String(res));
-          else (el as HTMLElement).className = String(res);
+          if (isSVG) el.setAttribute("class", '' + res);
+          else (el as HTMLElement).className = '' + res;
 
           const deps = endSubTrace();
           if (deps.size > 0) {
             addBinding(deps, el, () => {
               const v = val();
-              if (isSVG) el.setAttribute("class", String(v));
-              else (el as HTMLElement).className = String(v);
+              if (isSVG) el.setAttribute("class", '' + v);
+              else (el as HTMLElement).className = '' + v;
             });
           }
         } catch (e) {
@@ -87,18 +121,18 @@ export function jsx(
       (el as any)[key] = val;
       // Track for morph diffing (so morph copies them to the existing element)
       let tracked: LoomPropMap = (el as any)[LOOM_PROPS];
-      if (!tracked) { tracked = new Map(); (el as any)[LOOM_PROPS] = tracked; }
-      tracked.set(key, val);
+      if (!tracked) { tracked = Object.create(null); (el as any)[LOOM_PROPS] = tracked; }
+      tracked[key] = val;
     } else {
       // Check for closure binding: class={() => this.theme}
       if (typeof val === "function") {
         startSubTrace();
         try {
           const res = val();
-          el.setAttribute(key, String(res));
+          el.setAttribute(key, '' + res);
           const deps = endSubTrace();
           if (deps.size > 0) {
-            addBinding(deps, el, () => el.setAttribute(key, String(val())));
+            addBinding(deps, el, () => el.setAttribute(key, '' + val()));
           }
         } catch (e) {
           // Fallback or error handling for failed binding execution
@@ -107,7 +141,7 @@ export function jsx(
           endSubTrace(); // Ensure trace stack is popped
         }
       } else {
-        el.setAttribute(key, String(val));
+        el.setAttribute(key, '' + val);
       }
     }
   }
@@ -128,7 +162,7 @@ export function Fragment(props: { children?: any }): DocumentFragment {
 function appendChildren(parent: Node, children: any): void {
   if (children == null || children === false) return;
   if (Array.isArray(children)) {
-    children.forEach((c) => appendChildren(parent, c));
+    for (let i = 0; i < children.length; i++) appendChildren(parent, children[i]);
   } else if (children instanceof Node) {
     parent.appendChild(children);
   } else if (typeof children === "function") {
@@ -147,13 +181,13 @@ function appendChildren(parent: Node, children: any): void {
     startSubTrace();
     try {
       const res = children();
-      textNode.textContent = String(res);
+      textNode.textContent = '' + res;
       const deps = endSubTrace();
 
       if (deps.size > 0) {
         // Create binding with the closure itself as the patcher
         addBinding(deps, textNode, () => {
-          textNode.textContent = String(children());
+          textNode.textContent = '' + children();
         });
       }
     } catch (e) {
@@ -161,7 +195,7 @@ function appendChildren(parent: Node, children: any): void {
       endSubTrace();
     }
   } else {
-    parent.appendChild(document.createTextNode(String(children)));
+    parent.appendChild(document.createTextNode('' + children));
   }
 }
 

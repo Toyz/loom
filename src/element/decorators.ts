@@ -32,9 +32,10 @@ export const component = createDecorator<[tag: string, opts?: { shadow?: boolean
   pendingProps.length = 0; // clear staging area
   (ctor as any)[PROPS.key] = propMap;
 
-  // Wire observedAttributes from @prop fields
+  // Wire observedAttributes from @prop fields — cache the array
+  const _cachedAttrs = Array.from(propMap.keys());
   Object.defineProperty(ctor, "observedAttributes", {
-    get: () => [...propMap.keys()],
+    get: () => _cachedAttrs,
   });
 
   // Wire attributeChangedCallback to update @prop fields
@@ -130,9 +131,12 @@ export function styles(...sheets: CSSStyleSheet[]) {
 
       if ('adoptedStyleSheets' in root) {
         const existing = root.adoptedStyleSheets;
-        const newSheets = sheets.filter((s: CSSStyleSheet) => !existing.includes(s));
-        if (newSheets.length > 0) {
-          root.adoptedStyleSheets = [...existing, ...newSheets];
+        const toAdd: CSSStyleSheet[] = [];
+        for (let i = 0; i < sheets.length; i++) {
+          if (!existing.includes(sheets[i])) toAdd.push(sheets[i]);
+        }
+        if (toAdd.length > 0) {
+          root.adoptedStyleSheets = existing.concat(toAdd);
         }
       }
       orig?.call(this);

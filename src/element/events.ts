@@ -37,17 +37,17 @@ export function event<T extends (...args: any[]) => void>() {
     context: ClassAccessorDecoratorContext<This, T | null>,
   ): ClassAccessorDecoratorResult<This, T | null> => {
     const eventName = String(context.name);
-    const storage = new WeakMap<This, T | null>();
+    const storageKey = Symbol(`event:${eventName}`);
 
     return {
       init() {
         return null;
       },
       get(this: This) {
-        return storage.get(this) ?? null;
+        return (this as any)[storageKey] ?? null;
       },
       set(this: This, value: T | null) {
-        storage.set(this, value);
+        (this as any)[storageKey] = value;
       },
     };
   };

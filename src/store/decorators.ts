@@ -62,17 +62,21 @@ export function reactive<This extends object, V>(
 
         // Wire @watch handlers (WATCHERS is populated because method
         // addInitializer runs BEFORE accessor field init in TC39)
-        for (const w of (this[WATCHERS.key] ?? []).filter(
-          (w: { field: string }) => w.field === key,
-        )) {
-          r.subscribe((v: V, prev: V) => this[w.key](v, prev));
+        const watchers = this[WATCHERS.key];
+        if (watchers) {
+          for (let i = 0; i < watchers.length; i++) {
+            const w = watchers[i];
+            if (w.field === key) r.subscribe((v: V, prev: V) => this[w.key](v, prev));
+          }
         }
 
         // Wire @emit handlers
-        for (const e of (this[EMITTERS.key] ?? []).filter(
-          (e: { field: string }) => e.field === key,
-        )) {
-          r.subscribe((v: V) => bus.emit(e.factory(v)));
+        const emitters = this[EMITTERS.key];
+        if (emitters) {
+          for (let i = 0; i < emitters.length; i++) {
+            const e = emitters[i];
+            if (e.field === key) r.subscribe((v: V) => bus.emit(e.factory(v)));
+          }
         }
       }
       return (this[storageKey] as Reactive<V>).value;

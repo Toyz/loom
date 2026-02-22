@@ -47,22 +47,42 @@ export interface TraceDeps {
  */
 let activeDeps: Set<Reactive<any>> | null = null;
 
+/** Getter for direct inline access by Reactive.value — avoids 2 function calls (isTracing+recordRead) reduced to 1 */
+export function __getActiveDeps(): Set<Reactive<any>> | null { return activeDeps; }
+
 /** Stack of dependency sets for nested tracing (e.g. inside a binding closure) */
 let traceStack: Set<Reactive<any>>[] = [];
 
 /** Active bindings being collected during a traced update() */
 let activeBindings: Map<Reactive<any>, Binding[]> | null = null;
 
-// ── Public API ──
+/** Monotonic generation counter for applyBindings dedup */
+let _applyGen = 0;
+
+// ── Pooled data structures for zero-alloc tracing ──
+
+const _depsPool: Set<Reactive<any>>[] = [];
+const _versionsPool: Map<Reactive<any>, number>[] = [];
+const _bindingsPool: Map<Reactive<any>, Binding[]>[] = [];
+
+function acquireSet(): Set<Reactive<any>> {
+  return _depsPool.pop() ?? new Set();
+}
+function acquireVersions(): Map<Reactive<any>, number> {
+  return _versionsPool.pop() ?? new Map();
+}
+function acquireBindings(): Map<Reactive<any>, Binding[]> {
+  return _bindingsPool.pop() ?? new Map();
+}
 
 /**
  * Begin tracing. Called before update().
  * All Reactive.value reads will be recorded.
  */
 export function startTrace(): void {
-  activeDeps = new Set();
-  traceStack = [];
-  activeBindings = new Map();
+  activeDeps = acquireSet();
+  traceStack.length = 0;
+  activeBindings = acquireBindings();
 }
 
 /**
@@ -70,18 +90,18 @@ export function startTrace(): void {
  * Called after update() completes.
  */
 export function endTrace(): TraceDeps {
-  const deps = activeDeps ?? new Set();
+  const deps = activeDeps ?? acquireSet();
   activeDeps = null;
 
   // Snapshot current versions for dirty checking
-  const versions = new Map<Reactive<any>, number>();
+  const versions = acquireVersions();
   for (const r of deps) {
     versions.set(r, r.peekVersion());
   }
 
-  const bindings = activeBindings ?? new Map();
+  const bindings = activeBindings ?? acquireBindings();
   activeBindings = null;
-  traceStack = [];
+  traceStack.length = 0;
 
   return { deps, versions, bindings };
 }
@@ -111,7 +131,7 @@ export function startSubTrace(): void {
   if (activeDeps) {
     traceStack.push(activeDeps);
   }
-  activeDeps = new Set();
+  activeDeps = acquireSet();
 }
 
 /**
@@ -119,14 +139,12 @@ export function startSubTrace(): void {
  * Merges the captured deps back into the parent trace (so the component remains dirty).
  */
 export function endSubTrace(): Set<Reactive<any>> {
-  const captured = activeDeps ?? new Set();
+  const captured = activeDeps ?? acquireSet();
   activeDeps = traceStack.pop() || null;
 
   // Merge sub-trace deps into parent trace
   if (activeDeps) {
-    for (const r of captured) {
-      activeDeps.add(r);
-    }
+    captured.forEach(r => activeDeps!.add(r));
   }
 
   return captured;
@@ -146,14 +164,14 @@ export function addBinding(
   const binding: Binding = { reactives, target, patcher };
 
   // Register this binding for every reactive it depends on
-  for (const r of reactives) {
-    let list = activeBindings.get(r);
+  reactives.forEach(r => {
+    let list = activeBindings!.get(r);
     if (!list) {
       list = [];
-      activeBindings.set(r, list);
+      activeBindings!.set(r, list);
     }
     list.push(binding);
-  }
+  });
 }
 
 /**
@@ -193,22 +211,28 @@ export function canFastPatch(trace: TraceDeps | null): boolean {
  * Uses a Set to deduplicate patchers (one binding might depend on multiple changed reactives).
  */
 export function applyBindings(trace: TraceDeps): void {
-  const patchersToRun = new Set<() => void>();
+  // Monotonic generation counter for per-call dedup (avoids Set allocation)
+  const gen = ++_applyGen;
+  const toRun: Array<() => void> = [];
 
   for (const [r, ver] of trace.versions) {
     if (r.peekVersion() !== ver) {
       const bindings = trace.bindings.get(r);
       if (bindings) {
-        for (const b of bindings) {
-          patchersToRun.add(b.patcher);
+        for (let i = 0; i < bindings.length; i++) {
+          const p = bindings[i].patcher;
+          if ((p as any).__ran !== gen) {
+            (p as any).__ran = gen;
+            toRun.push(p);
+          }
         }
       }
     }
   }
 
   // Execute unique patchers
-  for (const patcher of patchersToRun) {
-    patcher();
+  for (let i = 0; i < toRun.length; i++) {
+    toRun[i]();
   }
 }
 

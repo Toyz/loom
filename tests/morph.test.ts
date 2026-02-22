@@ -154,7 +154,7 @@ describe("morph()", () => {
     const div = document.createElement("div");
     const handler1 = () => { };
     div.addEventListener("click", handler1);
-    const events1 = new Map([["click", handler1]]);
+    const events1: Record<string, any> = { click: handler1 };
     (div as any).__loomEvents = events1;
     shadow.appendChild(div);
 
@@ -162,14 +162,14 @@ describe("morph()", () => {
     const div2 = document.createElement("div");
     const handler2 = () => { };
     div2.addEventListener("click", handler2);
-    const events2 = new Map([["click", handler2]]);
+    const events2: Record<string, any> = { click: handler2 };
     (div2 as any).__loomEvents = events2;
 
     morph(shadow, div2);
 
     // The old element should now have the new handler
     const el = shadow.firstChild as any;
-    expect(el.__loomEvents.get("click")).toBe(handler2);
+    expect(el.__loomEvents["click"]).toBe(handler2);
   });
 
   it("removes event listeners not in new tree", () => {
@@ -177,7 +177,7 @@ describe("morph()", () => {
     const div = document.createElement("div");
     const handler = () => { };
     div.addEventListener("click", handler);
-    (div as any).__loomEvents = new Map([["click", handler]]);
+    (div as any).__loomEvents = { click: handler };
     shadow.appendChild(div);
 
     // Morph with no events
@@ -188,7 +188,7 @@ describe("morph()", () => {
     // Old events should be cleaned up
     const events = el.__loomEvents;
     if (events) {
-      expect(events.has("click")).toBe(false);
+      expect("click" in events).toBe(false);
     }
   });
 
@@ -210,13 +210,13 @@ describe("morph()", () => {
     const div = document.createElement("div");
     const oldItems = [1, 2, 3];
     (div as any).items = oldItems;
-    (div as any).__loomProps = new Map([["items", oldItems]]);
+    (div as any).__loomProps = { items: oldItems };
     shadow.appendChild(div);
 
     const div2 = document.createElement("div");
     const newItems = [4, 5, 6];
     (div2 as any).items = newItems;
-    (div2 as any).__loomProps = new Map([["items", newItems]]);
+    (div2 as any).__loomProps = { items: newItems };
     morph(shadow, div2);
 
     const el = shadow.firstChild as any;

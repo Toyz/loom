@@ -12,6 +12,13 @@ export type CSSValue = string | number;
 const cssCache = new Map<string, CSSStyleSheet>();
 
 /**
+ * V8 trick: TemplateStringsArray is always the same frozen object for the
+ * same source-level template literal. Use it as a fast identity key to skip
+ * String.raw() entirely on cache hits.
+ */
+const _identityCache = new WeakMap<TemplateStringsArray, CSSStyleSheet>();
+
+/**
  * Tagged template for creating cached CSSStyleSheets.
  *
  * ```ts
@@ -25,13 +32,19 @@ export function css(
   strings: TemplateStringsArray,
   ...values: CSSValue[]
 ): CSSStyleSheet {
+  // Fast path: identity check on the TemplateStringsArray object
+  let sheet = _identityCache.get(strings);
+  if (sheet) return sheet;
+
+  // Slow path: build string and check the string cache
   const text = String.raw(strings, ...values);
-  let sheet = cssCache.get(text);
+  sheet = cssCache.get(text);
   if (!sheet) {
     sheet = new CSSStyleSheet();
     sheet.replaceSync(text);
     cssCache.set(text, sheet);
   }
+  _identityCache.set(strings, sheet);
   return sheet;
 }
 
@@ -57,6 +70,6 @@ export function adoptCSS(
       return s;
     })();
   if (!shadow.adoptedStyleSheets.includes(sheet)) {
-    shadow.adoptedStyleSheets = [...shadow.adoptedStyleSheets, sheet];
+    shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(sheet);
   }
 }

@@ -188,7 +188,7 @@ describe("non-primitive props (LOOM_PROPS)", () => {
     const el = jsx("div", { items }) as any;
     expect(el.items).toEqual(items);
     expect(el.__loomProps).toBeDefined();
-    expect(el.__loomProps.get("items")).toEqual(items);
+    expect(el.__loomProps["items"]).toEqual(items);
   });
 });
 

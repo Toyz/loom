@@ -19,10 +19,10 @@ export const LOOM_EVENTS = "__loomEvents";
 export const LOOM_PROPS = "__loomProps";
 
 /** Type for tracked events on an element */
-export type LoomEventMap = Map<string, EventListener>;
+export type LoomEventMap = Record<string, EventListener>;
 
 /** Type for tracked JS properties on an element */
-export type LoomPropMap = Map<string, any>;
+export type LoomPropMap = Record<string, any>;
 
 // ── Public API ──
 
@@ -74,12 +74,16 @@ function morphChildren(parent: Node, newChildren: Node[]): void {
       continue;
     }
 
-    // Skip unconsumed keyed nodes or kept nodes
-    while (oldChild && (
-      (oldKeyed && getKey(oldChild) && oldKeyed.has(getKey(oldChild)!)) ||
-      (hasKeep && isKeep(oldChild))
-    )) {
-      oldChild = oldChild.nextSibling;
+    // Skip unconsumed keyed nodes or kept nodes — cache getKey to avoid double call
+    while (oldChild) {
+      if (oldKeyed) {
+        const ock = (oldChild.nodeType === 1) ? (oldChild as Element).getAttribute("loom-key") : null;
+        if (ock && oldKeyed.has(ock)) { oldChild = oldChild.nextSibling; continue; }
+      }
+      if (hasKeep && oldChild.nodeType === 1 && (oldChild as Element).hasAttribute("loom-keep")) {
+        oldChild = oldChild.nextSibling; continue;
+      }
+      break;
     }
 
     if (!oldChild) {
@@ -100,7 +104,8 @@ function morphChildren(parent: Node, newChildren: Node[]): void {
   // Remove unconsumed old children
   while (oldChild) {
     const next = oldChild.nextSibling;
-    const isUnconsumedKeyed = oldKeyed && getKey(oldChild) && oldKeyed.has(getKey(oldChild)!);
+    const oldKey = getKey(oldChild);
+    const isUnconsumedKeyed = oldKeyed && oldKey && oldKeyed.has(oldKey);
     if (!isKeep(oldChild) && !isUnconsumedKeyed) {
       parent.removeChild(oldChild);
     }
@@ -119,6 +124,9 @@ function morphChildren(parent: Node, newChildren: Node[]): void {
 
 /** Morph a single node in-place. */
 function morphNode(old: Node, next: Node): void {
+  // Identity short-circuit — same node, nothing to diff
+  if (old === next) return;
+
   // Text nodes
   if (old.nodeType === Node.TEXT_NODE && next.nodeType === Node.TEXT_NODE) {
     if (old.textContent !== next.textContent) {
@@ -140,8 +148,12 @@ function morphNode(old: Node, next: Node): void {
     const oldEl = old as Element;
     const nextEl = next as Element;
 
-    // Patch attributes
-    patchAttributes(oldEl, nextEl);
+    // Patch attributes — skip if both have none
+    const oldAttrLen = oldEl.attributes.length;
+    const nextAttrLen = nextEl.attributes.length;
+    if (oldAttrLen > 0 || nextAttrLen > 0) {
+      patchAttributes(oldEl, nextEl);
+    }
 
     // Patch event listeners
     patchEvents(oldEl, nextEl);
@@ -167,8 +179,11 @@ function morphNode(old: Node, next: Node): void {
       return;
     }
 
-    // Recurse children
-    morphChildren(oldEl, Array.from(nextEl.childNodes));
+    // Recurse children — avoid Array.from iterator overhead
+    const nextNodes = nextEl.childNodes;
+    const nextArr: Node[] = new Array(nextNodes.length);
+    for (let i = 0; i < nextNodes.length; i++) nextArr[i] = nextNodes[i];
+    morphChildren(oldEl, nextArr);
   }
 }
 
@@ -195,7 +210,7 @@ function patchAttributes(old: Element, next: Element): void {
 }
 
 export function loomEventProxy(this: Element, e: Event): void {
-  const handler = ((this as any)[LOOM_EVENTS] as LoomEventMap)?.get(e.type);
+  const handler = ((this as any)[LOOM_EVENTS] as LoomEventMap)?.[e.type];
   if (typeof handler === "function") {
     handler.call(this, e);
   } else if (handler && typeof (handler as any).handleEvent === "function") {
@@ -204,28 +219,34 @@ export function loomEventProxy(this: Element, e: Event): void {
 }
 
 function patchEvents(old: Element, next: Element): void {
-  const oldEvents: LoomEventMap = (old as any)[LOOM_EVENTS] ?? new Map();
-  const newEvents: LoomEventMap = (next as any)[LOOM_EVENTS] ?? new Map();
+  const oldEvents: LoomEventMap = (old as any)[LOOM_EVENTS];
+  const newEvents: LoomEventMap = (next as any)[LOOM_EVENTS];
+  // Early exit: both have no events
+  if (!oldEvents && !newEvents) return;
+  const oe: LoomEventMap = oldEvents ?? Object.create(null);
+  const ne: LoomEventMap = newEvents ?? Object.create(null);
 
   // Remove old listeners not in new
-  for (const type of oldEvents.keys()) {
-    if (!newEvents.has(type)) {
+  for (const type in oe) {
+    if (!(type in ne)) {
       old.removeEventListener(type, loomEventProxy);
-      oldEvents.delete(type);
+      delete oe[type];
     }
   }
 
   // Add/replace listeners from new
-  for (const [type, listener] of newEvents) {
-    if (!oldEvents.has(type)) {
+  for (const type in ne) {
+    if (!(type in oe)) {
       old.addEventListener(type, loomEventProxy);
     }
-    oldEvents.set(type, listener);
+    oe[type] = ne[type];
   }
 
-  // Transfer the map to old element
-  if (newEvents.size > 0) {
-    (old as any)[LOOM_EVENTS] = oldEvents;
+  // Transfer the record to old element if new has any events
+  let hasNew = false;
+  for (const _ in ne) { hasNew = true; break; }
+  if (hasNew) {
+    (old as any)[LOOM_EVENTS] = oe;
   }
 }
 
@@ -234,7 +255,8 @@ function patchEvents(old: Element, next: Element): void {
 const PROP_KEYS = ["value", "checked", "selected", "indeterminate"] as const;
 
 function patchProperties(old: HTMLElement, next: HTMLElement): void {
-  for (const key of PROP_KEYS) {
+  for (let i = 0; i < PROP_KEYS.length; i++) {
+    const key = PROP_KEYS[i];
     if (key in next && (old as any)[key] !== (next as any)[key]) {
       (old as any)[key] = (next as any)[key];
     }
@@ -245,24 +267,27 @@ function patchProperties(old: HTMLElement, next: HTMLElement): void {
 
 function patchJSProps(old: HTMLElement, next: HTMLElement): void {
   const newProps: LoomPropMap | undefined = (next as any)[LOOM_PROPS];
-  const oldProps: LoomPropMap = (old as any)[LOOM_PROPS] ?? new Map();
+  const oldProps: LoomPropMap | undefined = (old as any)[LOOM_PROPS];
+  // Early exit: both have no JS props
+  if (!newProps && !oldProps) return;
+  const op: LoomPropMap = oldProps ?? Object.create(null);
 
   // Remove old props not in new
-  for (const key of oldProps.keys()) {
-    if (!newProps?.has(key)) {
-      oldProps.delete(key);
+  for (const key in op) {
+    if (!newProps || !(key in newProps)) {
+      delete op[key];
     }
   }
 
   // Set/update props from new
   if (newProps) {
-    for (const [key, val] of newProps) {
-      if ((old as any)[key] !== val) {
-        (old as any)[key] = val;
+    for (const key in newProps) {
+      if ((old as any)[key] !== newProps[key]) {
+        (old as any)[key] = newProps[key];
       }
-      oldProps.set(key, val);
+      op[key] = newProps[key];
     }
-    (old as any)[LOOM_PROPS] = oldProps;
+    (old as any)[LOOM_PROPS] = op;
   }
 }
 
@@ -292,9 +317,12 @@ function canMorph(old: Node, next: Node): boolean {
 
 function normalizeChildren(tree: Node | Node[]): Node[] {
   if (Array.isArray(tree)) return tree;
-  // DocumentFragment — extract children
+  // DocumentFragment — extract children without iterator
   if (tree.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
-    return Array.from(tree.childNodes);
+    const nodes = tree.childNodes;
+    const arr: Node[] = new Array(nodes.length);
+    for (let i = 0; i < nodes.length; i++) arr[i] = nodes[i];
+    return arr;
   }
   return [tree];
 }

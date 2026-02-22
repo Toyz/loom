@@ -45,9 +45,12 @@ export abstract class LoomElement extends HTMLElement {
    */
   adoptStyles(sheets: CSSStyleSheet[]): void {
     const existing = this.shadow.adoptedStyleSheets;
-    const newSheets = sheets.filter(s => !existing.includes(s));
-    if (newSheets.length > 0) {
-      this.shadow.adoptedStyleSheets = [...existing, ...newSheets];
+    const toAdd: CSSStyleSheet[] = [];
+    for (let i = 0; i < sheets.length; i++) {
+      if (!existing.includes(sheets[i])) toAdd.push(sheets[i]);
+    }
+    if (toAdd.length > 0) {
+      this.shadow.adoptedStyleSheets = existing.concat(toAdd);
     }
   }
 
@@ -88,9 +91,12 @@ export abstract class LoomElement extends HTMLElement {
 
   connectedCallback(): void {
     // Run decorator-registered connect hooks (from @mount, @interval, @watch, etc.)
-    for (const hook of ((this as any)[CONNECT_HOOKS.key] ?? [])) {
-      const cleanup = hook(this);
-      if (typeof cleanup === "function") this.cleanups.push(cleanup);
+    const hooks = (this as any)[CONNECT_HOOKS.key];
+    if (hooks) {
+      for (let i = 0; i < hooks.length; i++) {
+        const cleanup = hooks[i](this);
+        if (typeof cleanup === "function") this.cleanups.push(cleanup);
+      }
     }
 
     // Trigger initial render for reactive components
@@ -101,8 +107,8 @@ export abstract class LoomElement extends HTMLElement {
 
   disconnectedCallback(): void {
     // Run all track() cleanups (includes decorator-registered cleanups)
-    this.cleanups.forEach((fn) => fn());
-    this.cleanups = [];
+    for (let i = 0; i < this.cleanups.length; i++) this.cleanups[i]();
+    this.cleanups.length = 0;
   }
 
   // ── Lifecycle hooks (override in subclass) ──
@@ -132,57 +138,117 @@ export abstract class LoomElement extends HTMLElement {
   private _updateScheduled = false;
   private _hasUpdated = false;
 
+  private _flushUpdate = (): void => {
+    this._updateScheduled = false;
+    // Skip shouldUpdate() call if not overridden (avoids virtual method dispatch)
+    if (this.shouldUpdate !== LoomElement.prototype.shouldUpdate && !this.shouldUpdate()) return;
+
+    // Tier 1 — SKIP: no traced dependency changed
+    if (this.__traceDeps && !hasDirtyDeps(this.__traceDeps)) return;
+
+    // Tier 2 — FAST PATCH: all dirty deps have bindings
+    if (this.__traceDeps && canFastPatch(this.__traceDeps)) {
+      const dirtyKeys = (this as any)[COMPUTED_DIRTY.key];
+      if (dirtyKeys) {
+        for (let i = 0; i < dirtyKeys.length; i++) {
+          (this as any)[dirtyKeys[i]] = true;
+        }
+      }
+      applyBindings(this.__traceDeps);
+      refreshSnapshots(this.__traceDeps);
+      return;
+    }
+
+    // First render: fast append (no morph diffing against empty shadow root)
+    if (!this._hasUpdated) {
+      this._firstRender();
+      return;
+    }
+
+    this._fullRender();
+  };
+
   /** Called by @reactive setters — batches via microtask */
   scheduleUpdate(): void {
     if (this._updateScheduled) return;
     this._updateScheduled = true;
-    queueMicrotask(() => {
-      this._updateScheduled = false;
-      if (!this.shouldUpdate()) return;
+    queueMicrotask(this._flushUpdate);
+  }
 
-      // Tier 1 — SKIP: no traced dependency changed
-      if (this.__traceDeps && !hasDirtyDeps(this.__traceDeps)) return;
+  /**
+   * Synchronous first render — skips microtask deferral and morph diffing.
+   * Shadow root is empty so we appendChild directly instead of diffing.
+   */
+  private _firstRender(): void {
+    // Skip shouldUpdate() call if not overridden (avoids virtual method dispatch)
+    if (this.shouldUpdate !== LoomElement.prototype.shouldUpdate && !this.shouldUpdate()) return;
 
-      // Tier 2 — FAST PATCH: all dirty deps have bindings
-      if (this.__traceDeps && canFastPatch(this.__traceDeps)) {
-        // Dirty @computed caches (they may depend on a fast-patched reactive)
-        for (const dirtyKey of (this as any)[COMPUTED_DIRTY.key] ?? []) {
-          (this as any)[dirtyKey] = true;
-        }
-        applyBindings(this.__traceDeps);
-        refreshSnapshots(this.__traceDeps);
-        return;
+    startTrace();
+    const result = this.update();
+    // Capture trace BEFORE appendChild — appendChild triggers child connectedCallback
+    // which would call startTrace() and clobber our module-level trace state.
+    this.__traceDeps = endTrace();
+
+    // Fast append — shadow root is empty, no need to diff
+    if (result != null) {
+      if (Array.isArray(result)) {
+        // Batch append via fragment — one reflow instead of N
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < result.length; i++) frag.appendChild(result[i]);
+        this.shadow.appendChild(frag);
+      } else {
+        this.shadow.appendChild(result);
       }
+    }
 
-      // Tier 3 — FULL MORPH: structural change or first render
-      // Dirty all @computed caches
-      for (const dirtyKey of (this as any)[COMPUTED_DIRTY.key] ?? []) {
-        (this as any)[dirtyKey] = true;
+    this._hasUpdated = true;
+    this.firstUpdated();
+    const hooks = (this as any)[FIRST_UPDATED_HOOKS.key];
+    if (hooks) {
+      for (let i = 0; i < hooks.length; i++) {
+        const cleanup = hooks[i](this);
+        if (typeof cleanup === "function") this.cleanups.push(cleanup);
       }
+    }
+  }
 
-      // Trace reactive reads during update()
-      startTrace();
-      const result = this.update();
-
-      // Auto-morph if update() returned DOM nodes
-      if (result != null) {
-        morph(this.shadow, result);
+  /**
+   * Full render with morph diffing — used for subsequent updates.
+   */
+  private _fullRender(): void {
+    // Dirty all @computed caches
+    const dirtyKeys = (this as any)[COMPUTED_DIRTY.key];
+    if (dirtyKeys) {
+      for (let i = 0; i < dirtyKeys.length; i++) {
+        (this as any)[dirtyKeys[i]] = true;
       }
+    }
 
-      // Capture/refresh dependency tracking + bindings
-      this.__traceDeps = endTrace();
+    // Trace reactive reads during update()
+    startTrace();
+    const result = this.update();
 
-      if (!this._hasUpdated) {
-        this._hasUpdated = true;
-        this.firstUpdated();
-        // Run decorator-registered first-updated hooks (from @form, etc.)
-        // These fire after the first morph(), so shadow DOM content exists.
-        for (const hook of ((this as any)[FIRST_UPDATED_HOOKS.key] ?? [])) {
-          const cleanup = hook(this);
+    // Auto-morph if update() returned DOM nodes
+    if (result != null) {
+      morph(this.shadow, result);
+    }
+
+    // Capture/refresh dependency tracking + bindings
+    this.__traceDeps = endTrace();
+
+    if (!this._hasUpdated) {
+      this._hasUpdated = true;
+      this.firstUpdated();
+      // Run decorator-registered first-updated hooks (from @form, etc.)
+      // These fire after the first morph(), so shadow DOM content exists.
+      const fuhooks = (this as any)[FIRST_UPDATED_HOOKS.key];
+      if (fuhooks) {
+        for (let i = 0; i < fuhooks.length; i++) {
+          const cleanup = fuhooks[i](this);
           if (typeof cleanup === "function") this.cleanups.push(cleanup);
         }
       }
-    });
+    }
   }
 
   /**
