@@ -1,10 +1,15 @@
 /**
  * Tests: @lazy decorator — deferred module loading
+ *
+ * Tests the shadow-DOM hosting approach where the shell element creates
+ * a real instance inside its shadow DOM (instead of prototype-copying,
+ * which breaks TC39 private fields).
  */
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { LoomElement } from "../src/element";
-import { lazy } from "../src/element/lazy";
+import { lazy, LAZY_LOADED } from "../src/element/lazy";
 import { component } from "../src/element/decorators";
+import { reactive } from "../src/store/decorators";
 import { fixture, cleanup } from "../src/testing";
 
 let tagCounter = 0;
@@ -13,16 +18,12 @@ function nextTag() { return `test-lazy-${++tagCounter}`; }
 afterEach(() => cleanup());
 
 describe("@lazy", () => {
-  it("defers connectedCallback until module loads", async () => {
-    const fn = vi.fn();
+  it("mounts real component inside shell shadow DOM", async () => {
     const tag = nextTag();
+    const implTag = `${tag}-impl`;
 
-    // The "real" class loaded lazily
     class RealComponent extends LoomElement {
-      connectedCallback() {
-        super.connectedCallback();
-        fn();
-      }
+      update() { return document.createElement("p"); }
     }
 
     @component(tag)
@@ -30,34 +31,15 @@ describe("@lazy", () => {
     class StubComponent extends LoomElement {}
 
     customElements.define(tag, StubComponent);
-    await fixture(tag);
+    const el = await fixture(tag);
 
-    // Wait for the async load to complete
-    await new Promise(r => setTimeout(r, 0));
+    // Wait for async load
+    await new Promise(r => setTimeout(r, 10));
 
-    // The real component's methods should have been copied to the stub
-    expect(fn).toHaveBeenCalled();
-  });
-
-  it("copies prototype methods from loaded class onto stub", async () => {
-    const tag = nextTag();
-
-    class RealComponent extends LoomElement {
-      greet() { return "hello from real"; }
-    }
-
-    @component(tag)
-    @lazy(() => Promise.resolve({ default: RealComponent }))
-    class StubComponent extends LoomElement {}
-
-    customElements.define(tag, StubComponent);
-    const el = await fixture<any>(tag);
-
-    // Wait for lazy load
-    await new Promise(r => setTimeout(r, 0));
-
-    expect(typeof el.greet).toBe("function");
-    expect(el.greet()).toBe("hello from real");
+    // The real component should be hosted inside the shell's shadow DOM
+    const impl = el.shadowRoot!.querySelector(implTag);
+    expect(impl).toBeTruthy();
+    expect(impl).toBeInstanceOf(RealComponent);
   });
 
   it("handles load failure gracefully", async () => {
@@ -72,7 +54,7 @@ describe("@lazy", () => {
     const el = await fixture(tag);
 
     // Wait for the async load to fail
-    await new Promise(r => setTimeout(r, 0));
+    await new Promise(r => setTimeout(r, 10));
 
     // Should show error in shadow DOM
     expect(el.shadowRoot!.innerHTML).toContain("Failed to load component");
@@ -84,9 +66,7 @@ describe("@lazy", () => {
     const loadCount = vi.fn();
     const tag = nextTag();
 
-    class RealComponent extends LoomElement {
-      sayHi() { return "hi"; }
-    }
+    class RealComponent extends LoomElement {}
 
     const loader = () => {
       loadCount();
@@ -101,13 +81,13 @@ describe("@lazy", () => {
 
     // First mount
     await fixture(tag);
-    await new Promise(r => setTimeout(r, 0));
+    await new Promise(r => setTimeout(r, 10));
     expect(loadCount).toHaveBeenCalledTimes(1);
 
     // Cleanup and re-mount
     cleanup();
     await fixture(tag);
-    await new Promise(r => setTimeout(r, 0));
+    await new Promise(r => setTimeout(r, 10));
 
     // Loader should NOT be called again
     expect(loadCount).toHaveBeenCalledTimes(1);
@@ -141,12 +121,81 @@ describe("@lazy", () => {
     const el = await fixture(tag);
 
     // While loading, the loading element should be in the shadow DOM
-    await new Promise(r => setTimeout(r, 0));
+    await new Promise(r => setTimeout(r, 10));
     const loadingEl = el.shadowRoot!.querySelector(loadingTag);
     expect(loadingEl).toBeTruthy();
 
     // Resolve the loader
     resolveLoader({ default: RealComponent });
     await new Promise(r => setTimeout(r, 10));
+  });
+
+  it("forwards attributes from shell to real instance", async () => {
+    const tag = nextTag();
+    const implTag = `${tag}-impl`;
+
+    class RealComponent extends LoomElement {}
+
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealComponent }))
+    class StubComponent extends LoomElement {}
+
+    customElements.define(tag, StubComponent);
+
+    // Create element and set attributes BEFORE connecting to DOM
+    const el = document.createElement(tag);
+    el.setAttribute("data-id", "42");
+    el.setAttribute("slug", "test-slug");
+    document.body.appendChild(el);
+
+    await new Promise(r => setTimeout(r, 10));
+
+    const impl = el.shadowRoot!.querySelector(implTag);
+    expect(impl).toBeTruthy();
+    expect(impl!.getAttribute("data-id")).toBe("42");
+    expect(impl!.getAttribute("slug")).toBe("test-slug");
+
+    // Cleanup
+    el.remove();
+  });
+
+  // ── REGRESSION: TC39 private fields ──
+
+  it("REGRESSION: real instance has correct class identity for private fields", async () => {
+    const tag = nextTag();
+    const implTag = `${tag}-impl`;
+
+    // The real class uses TC39 accessor (which creates #private_accessor_storage)
+    class RealComponent extends LoomElement {
+      @reactive accessor count = 0;
+
+      update() {
+        const p = document.createElement("p");
+        p.textContent = `count: ${this.count}`;
+        return p;
+      }
+    }
+
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealComponent }))
+    class StubComponent extends LoomElement {}
+
+    customElements.define(tag, StubComponent);
+    const el = await fixture(tag);
+
+    await new Promise(r => setTimeout(r, 10));
+
+    // The impl should be a REAL RealComponent instance with private slots
+    const impl = el.shadowRoot!.querySelector(implTag) as any;
+    expect(impl).toBeTruthy();
+    expect(impl).toBeInstanceOf(RealComponent);
+
+    // Accessing @reactive accessor should NOT throw (private field exists)
+    expect(() => impl.count).not.toThrow();
+    expect(impl.count).toBe(0);
+
+    // Setting it should also work (setter uses private field)
+    expect(() => { impl.count = 5; }).not.toThrow();
+    expect(impl.count).toBe(5);
   });
 });
