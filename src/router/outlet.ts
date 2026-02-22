@@ -17,6 +17,8 @@ import { ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols";
 import { matchRoute } from "./route";
 import { RouteChanged } from "./events";
 import { params as paramsSentinel, routeQuery as querySentinel } from "../store/decorators";
+import { app } from "../app";
+import { LoomRouter } from "./router";
 
 @component("loom-outlet")
 class LoomOutlet extends LoomElement {
@@ -40,7 +42,14 @@ class LoomOutlet extends LoomElement {
   firstUpdated() {
     if (this._initialResolved) return;
     this._initialResolved = true;
-    const path = location.hash.slice(1) || "/";
+    // Use the router's mode to read the current path (supports hash + history)
+    let path: string;
+    try {
+      path = app.get<LoomRouter>(LoomRouter).mode.read();
+    } catch {
+      // Fallback: try both hash and pathname
+      path = location.hash.slice(1) || location.pathname || "/";
+    }
     const match = matchRoute(path);
     if (match) {
       this._show(path, match.params);
@@ -132,11 +141,14 @@ class LoomOutlet extends LoomElement {
     }
   }
 
-  /** Parse query params from the URL hash */
+  /** Parse query params from the URL (supports both hash and history mode) */
   private _parseQuery(): URLSearchParams {
     const hash = location.hash;
-    const qIdx = hash.indexOf("?");
-    return new URLSearchParams(qIdx >= 0 ? hash.slice(qIdx + 1) : "");
+    const hashQ = hash.indexOf("?");
+    // Hash mode: query is inside the hash fragment
+    if (hashQ >= 0) return new URLSearchParams(hash.slice(hashQ + 1));
+    // History mode: query is in location.search
+    return new URLSearchParams(location.search);
   }
 
   private _adoptParentStyles(el: HTMLElement): void {
