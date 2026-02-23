@@ -61,7 +61,13 @@ class LoomApp {
   use(keyOrThing: any, instance?: any): this {
     if (instance !== undefined) {
       // Explicit key: app.use(Key, value)
-      this.providers.set(keyOrThing, instance);
+      if (typeof instance === "function" && instance.prototype?.constructor === instance) {
+        // Class constructor → auto-construct with @inject DI resolution
+        const args = this.resolveParams(instance.prototype, "constructor");
+        this.providers.set(keyOrThing, new instance(...args));
+      } else {
+        this.providers.set(keyOrThing, instance);
+      }
     } else if (typeof keyOrThing === "function") {
       if (keyOrThing.prototype?.constructor === keyOrThing) {
         // Class constructor → instantiate

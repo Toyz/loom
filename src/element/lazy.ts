@@ -44,6 +44,20 @@ export function lazy(
     ctor[LAZY_OPTS.key] = opts;
 
     const origConnected = ctor.prototype.connectedCallback;
+    const origAdoptStyles = ctor.prototype.adoptStyles;
+
+    // Override adoptStyles to forward through to impl
+    ctor.prototype.adoptStyles = function (sheets: CSSStyleSheet[]) {
+      // Stash for when impl mounts later
+      this.__lazyStyles = sheets;
+      // Also apply to shell's own shadow (keeps the call valid)
+      origAdoptStyles?.call(this, sheets);
+      // Forward to impl if already mounted
+      const impl = this[LAZY_IMPL.key];
+      if (impl && typeof impl.adoptStyles === "function") {
+        impl.adoptStyles(sheets);
+      }
+    };
 
     ctor.prototype.connectedCallback = async function () {
       // Already loaded — if we have a hosted impl, just call its connected
@@ -100,6 +114,11 @@ export function lazy(
             if (val !== undefined) {
               (realEl as any)[binding.propKey] = val;
             }
+          }
+
+          // Forward stashed styles from adoptStyles() calls before impl mounted
+          if (this.__lazyStyles && typeof (realEl as any).adoptStyles === "function") {
+            (realEl as any).adoptStyles(this.__lazyStyles);
           }
 
           this.shadow.appendChild(realEl);
