@@ -12,6 +12,8 @@
  *   - Concurrent-safe: void update() = no morph, returned Node = auto-morph
  */
 
+import { setReadonlyBypass } from "./store/readonly";
+
 /** Expando key for tracked event listeners */
 export const LOOM_EVENTS = "__loomEvents";
 
@@ -281,11 +283,16 @@ function patchJSProps(old: HTMLElement, next: HTMLElement): void {
 
   // Set/update props from new
   if (newProps) {
-    for (const key in newProps) {
-      if ((old as any)[key] !== newProps[key]) {
-        (old as any)[key] = newProps[key];
+    setReadonlyBypass(true);
+    try {
+      for (const key in newProps) {
+        if ((old as any)[key] !== newProps[key]) {
+          (old as any)[key] = newProps[key];
+        }
+        op[key] = newProps[key];
       }
-      op[key] = newProps[key];
+    } finally {
+      setReadonlyBypass(false);
     }
     (old as any)[LOOM_PROPS] = op;
   }
