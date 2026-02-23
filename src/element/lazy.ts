@@ -60,12 +60,12 @@ export function lazy(
     };
 
     ctor.prototype.connectedCallback = async function () {
-      // Already loaded — if we have a hosted impl, just call its connected
+      // Already loaded — mount the impl for this (possibly new) instance
       if (ctor[LAZY_LOADED.key]) {
         origConnected?.call(this);
-        // Re-mount the impl if disconnected/reconnected
+        // Mount impl if this instance doesn't have one yet
         if (!this[LAZY_IMPL.key] || !this[LAZY_IMPL.key].isConnected) {
-          this._mountLazyImpl?.();
+          ctor.__mountLazyImpl.call(this);
         }
         return;
       }
@@ -88,13 +88,13 @@ export function lazy(
           customElements.define(implTag, RealClass as CustomElementConstructor);
         }
 
-        // Store the impl tag for future mounts
+        // Store the impl tag and shared mount function on the constructor
         ctor[LAZY_LOADED.key] = true;
         ctor.__lazy_impl_tag = implTag;
 
-        // Clear loading indicator and mount
-        this.shadow.innerHTML = "";
-        this._mountLazyImpl = () => {
+        // Shared mount function — can be called by any instance
+        ctor.__mountLazyImpl = function (this: any) {
+          this.shadow.innerHTML = "";
           const realEl = document.createElement(ctor.__lazy_impl_tag);
 
           // Forward all attributes from shell → real instance
@@ -125,7 +125,7 @@ export function lazy(
           this[LAZY_IMPL.key] = realEl;
         };
 
-        this._mountLazyImpl();
+        ctor.__mountLazyImpl.call(this);
       } catch (err) {
         console.error("[Loom @lazy] Failed to load module:", err);
         this.shadow.innerHTML = `<p style="color:red">Failed to load component</p>`;
