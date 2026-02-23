@@ -23,8 +23,8 @@ const LAZY_LOADED = createSymbol<boolean>("lazy:loaded");
 const LAZY_IMPL   = createSymbol("lazy:impl");
 
 export interface LazyOptions {
-  /** Tag name of a loading component to show while the chunk loads */
-  loading?: string;
+  /** Loading indicator — tag name string or factory returning a DOM node (JSX works) */
+  loading?: string | (() => Node);
 }
 
 /**
@@ -72,7 +72,9 @@ export function lazy(
 
       // Show loading indicator
       if (opts?.loading) {
-        const loadingEl = document.createElement(opts.loading);
+        const loadingEl = typeof opts.loading === "function"
+          ? opts.loading()
+          : document.createElement(opts.loading);
         this.shadow.appendChild(loadingEl);
       }
 

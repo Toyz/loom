@@ -87,14 +87,32 @@ class PageAdmin extends LoomElement {}`}></code-block>
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              Pass a <span class="ic">loading</span> option with the tag name of a component to
-              display while the chunk is fetching:
+              Pass a <span class="ic">loading</span> option to display something while the chunk is
+              loading. You can use a tag name string <strong>or a JSX factory</strong> that returns
+              a DOM node:
             </div>
-            <code-block lang="ts" code={`@component("dashboard-page")
+            <code-block lang="ts" code={`// Tag name — simple, use a pre-registered component
+@component("dashboard-page")
 @lazy(() => import("./pages/dashboard"), {
   loading: "app-spinner"
 })
 class DashboardPage extends LoomElement {}`}></code-block>
+            <code-block lang="tsx" code={`// JSX factory — full control, rich loading states
+@component("analytics-page")
+@lazy(() => import("./pages/analytics"), {
+  loading: () => (
+    <div class="loading-skeleton">
+      <div class="skeleton-header" />
+      <div class="skeleton-body" />
+    </div>
+  )
+})
+class AnalyticsPage extends LoomElement {}`}></code-block>
+            <div class="note">
+              Since Loom JSX compiles to real DOM nodes, any component used in the factory
+              (like <span class="ic">&lt;my-spinner /&gt;</span>) is a full Loom element with DI,
+              reactivity, and all decorators.
+            </div>
           </div>
         </section>
 
@@ -112,11 +130,13 @@ class DashboardPage extends LoomElement {}`}></code-block>
           <ol>
             <li>The loading indicator is shown (if configured)</li>
             <li>The loader function is called, triggering a dynamic import</li>
-            <li>The real class's prototype methods and static properties are patched onto the stub</li>
-            <li>The loading indicator is cleared and the real <span class="ic">connectedCallback</span> runs</li>
+            <li>The real class is registered under an internal tag (e.g. <code>my-page-impl</code>)</li>
+            <li>A real instance is created and mounted inside the shell's shadow DOM</li>
+            <li>Attributes, route params, and adopted styles are forwarded from shell → impl</li>
           </ol>
           <div class="note">
             Subsequent mounts skip the loading step entirely — the module is only loaded once.
+            New instances of the same component reuse the shared mount function.
           </div>
         </section>
 
@@ -129,7 +149,7 @@ class DashboardPage extends LoomElement {}`}></code-block>
             <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>loader</code></td><td><code>() =&gt; Promise</code></td><td>Dynamic import returning {`{ default: Class }`}</td></tr>
-              <tr><td><code>opts.loading</code></td><td><code>string</code></td><td>Tag name of a loading component to show</td></tr>
+              <tr><td><code>opts.loading</code></td><td><code>string | (() =&gt; Node)</code></td><td>Tag name or JSX factory for a loading indicator</td></tr>
             </tbody>
           </table>
         </section>
