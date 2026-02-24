@@ -19,6 +19,13 @@ import "./pages/not-found";
 // All other pages — code-split via @lazy
 import "./pages/lazy";
 
+import { installGlobalHook } from "@toyz/loom/debug";
+
+// Only in development
+if (import.meta.env.DEV) {
+  installGlobalHook();
+}
+
 // Boot
 const router = new LoomRouter({ mode: "hash" });
 app.use(router);

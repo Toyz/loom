@@ -50,10 +50,14 @@ export function inspect(el: Element): void {
   }
 
   // Extract current prop values
-  const propKeys: Array<{ key: string }> = meta.props ?? [];
+  const rawProps = meta.props;
   const props: Record<string, any> = {};
-  for (const p of propKeys) {
-    const k = typeof p === "string" ? p : p.key;
+  const propKeyList: string[] =
+    rawProps instanceof Map ? [...rawProps.keys()] :
+    rawProps instanceof Set ? [...rawProps] :
+    Array.isArray(rawProps) ? rawProps.map((p: any) => typeof p === "string" ? p : p.key) :
+    [];
+  for (const k of propKeyList) {
     try {
       props[k] = (el as any)[k];
     } catch {
