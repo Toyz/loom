@@ -34,8 +34,8 @@ export class LoomRouter {
   private _previousTag: string | null = null;
   /** Optional outlet reference for lifecycle dispatch */
   private _outlet: HTMLElement | null = null;
-  /** True while go()/replace() is in flight — suppresses listener-driven _resolve */
-  private _navigating = false;
+  /** Last path processed by _resolve — used to deduplicate async event re-fires */
+  private _lastResolvedPath: string | null = null;
 
   /** Register the outlet so lifecycle hooks can find rendered elements */
   setOutlet(el: HTMLElement): void {
@@ -53,11 +53,7 @@ export class LoomRouter {
 
   /** Start listening for URL changes and resolve the initial route */
   start(): () => void {
-    const cleanup = this.mode.listen(() => {
-      // Skip listener-driven resolve if a programmatic navigation is in flight
-      if (this._navigating) return;
-      this._resolve();
-    });
+    const cleanup = this.mode.listen(() => this._resolve());
     this._resolve();
     return cleanup;
   }
@@ -70,10 +66,8 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.go(allowed);
     }
-    this._navigating = true;
     this.mode.write(path);
     this._resolve();
-    this._navigating = false;
   }
 
   /** Alias for go() */
@@ -89,10 +83,8 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.replace(allowed);
     }
-    this._navigating = true;
     this.mode.replace(path);
     this._resolve();
-    this._navigating = false;
   }
 
   /** Go back in history */
@@ -116,15 +108,27 @@ export class LoomRouter {
     return buildPath(target.name, target.params);
   }
 
-  /** Resolve the current URL against the route table and emit RouteChanged */
+  /**
+   * Resolve the current URL against the route table and emit RouteChanged.
+   * Deduplicates: if the path hasn't changed since the last resolve, skip.
+   * This prevents double-resolution from async hashchange/popstate events
+   * that fire after go()/replace() already resolved the same path.
+   */
   private _resolve(): void {
     const path = this.mode.read();
+
+    // Deduplicate — hashchange/popstate may fire asynchronously after
+    // go()/replace() already resolved this exact path.
+    if (path === this._lastResolvedPath) return;
+    this._lastResolvedPath = path;
+
     const match = matchRoute(path);
     const previous = this._current.path;
     const newTag = match?.entry.tag ?? null;
 
     // ── Route lifecycle hooks ──
     const tagChanged = this._previousTag !== newTag;
+    const pathChanged = previous !== path;
 
     // Call @onRouteLeave on the old element
     if (tagChanged && this._previousTag && this._outlet) {
@@ -148,8 +152,10 @@ export class LoomRouter {
 
     bus.emit(new RouteChanged(path, this._current.params, previous, this._current.meta));
 
-    // Call @onRouteEnter on the new element (after DOM update via microtask)
-    if (tagChanged && newTag && this._outlet) {
+    // Call @onRouteEnter on the new element (after DOM update via microtask).
+    // Fires when the tag changed (new component) OR the path changed
+    // (same component, different params — e.g. /creator/alice → /creator/bob).
+    if ((tagChanged || pathChanged) && newTag && this._outlet) {
       queueMicrotask(() => {
         const newEl = this._outlet?.shadowRoot?.querySelector(newTag)
           ?? this._outlet?.querySelector(newTag);
