@@ -27,6 +27,9 @@ export const params = Symbol("loom:sentinel:params");
 /** Sentinel for full query-param decompose: `@prop({query}) accessor q!: MyType` */
 export const routeQuery = Symbol("loom:sentinel:query");
 
+/** Sentinel for full route-meta decompose: `@prop({meta: routeMeta}) accessor m!: Record<string, unknown>` */
+export const routeMeta = Symbol("loom:sentinel:meta");
+
 /**
  * Internal reactive state. Auto-accessor backed by Reactive<T>.
  * Changes schedule batched `update()` via microtask.
@@ -100,12 +103,14 @@ interface RouteBinding {
   param?: string | symbol;
   params?: symbol;
   query?: string | symbol;
+  meta?: string | symbol;
 }
 
 type PropRouteOpts = {
   param?: string;
   params?: symbol;
   query?: string | symbol;
+  meta?: string | symbol;
 };
 
 /**
@@ -170,6 +175,7 @@ export function prop<This extends object, V>(
       if (opts.params) binding.params = opts.params;
       if (opts.param) binding.param = opts.param;
       if (opts.query) binding.query = opts.query;
+      if (opts.meta) binding.meta = opts.meta;
       ctor[ROUTE_PROPS.key].push(binding);
     });
 

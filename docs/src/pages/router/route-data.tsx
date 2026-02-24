@@ -2,7 +2,8 @@
  * Router — Route Data
  * /router/route-data
  *
- * @prop({ param }), @prop({ params }), @prop({ query }), @prop({ query: routeQuery })
+ * @prop({ param }), @prop({ params }), @prop({ query }), @prop({ query: routeQuery }),
+ * @prop({ meta }), @prop({ meta: routeMeta })
  */
 import { LoomElement } from "@toyz/loom";
 
@@ -12,7 +13,7 @@ export default class PageRouterRouteData extends LoomElement {
       <div>
         <h1>Route Data</h1>
         <p class="subtitle">
-          Inject URL params and query strings into your components with{" "}
+          Inject URL params, query strings, and route metadata into your components with{" "}
           <span class="ic">@prop</span>.
         </p>
 
@@ -125,6 +126,58 @@ class PageSearch extends LoomElement {
 
         <section>
           <div class="group-header">
+            <loom-icon name="database" size={20} color="var(--emerald)"></loom-icon>
+            <h2>Route Metadata</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@prop({"{"}  meta: "key" {"}"})</div>
+            <div class="dec-desc">
+              Pick a single value from the route's <span class="ic">meta</span> object.
+              Meta is set on <span class="ic">@route</span> and <span class="ic">@group</span>,
+              and group meta is inherited by child routes:
+            </div>
+            <code-block lang="ts" code={`@route("/admin/settings", {
+  group: AdminGroup,
+  meta: { layout: "sidebar", role: "admin" }
+})
+@component("page-admin-settings")
+class PageAdminSettings extends LoomElement {
+  @prop({ meta: "layout" }) accessor layout = "";
+  @prop({ meta: "role" }) accessor role = "";
+
+  update() {
+    return (
+      <div class={this.layout}>
+        <p>Role: {this.role}</p>
+      </div>
+    );
+  }
+}`}></code-block>
+          </div>
+
+          <div class="feature-entry">
+            <div class="dec-sig">@prop({"{"}  meta: routeMeta {"}"})</div>
+            <div class="dec-desc">
+              Decompose <strong>all</strong> route metadata into a single object.
+              Import the <span class="ic">routeMeta</span> sentinel from the router:
+            </div>
+            <code-block lang="ts" code={`import { routeMeta } from "@toyz/loom/router";
+
+@route("/dashboard", { meta: { theme: "dark", analytics: "dash" } })
+@component("page-dashboard")
+class PageDashboard extends LoomElement {
+  // { theme: "dark", analytics: "dash" }
+  @prop({ meta: routeMeta }) accessor allMeta: Record<string, unknown> = {};
+
+  update() {
+    return <div data-theme={this.allMeta.theme as string}>Dashboard</div>;
+  }
+}`}></code-block>
+          </div>
+        </section>
+
+        <section>
+          <div class="group-header">
             <loom-icon name="refresh" size={20} color="var(--rose)"></loom-icon>
             <h2>@transform</h2>
           </div>
@@ -154,14 +207,17 @@ class PageUser extends LoomElement {
         <section>
           <div class="group-header">
             <loom-icon name="grid" size={20} color="var(--emerald)"></loom-icon>
-            <h2>Combining Params + Query</h2>
+            <h2>Combining Params + Query + Meta</h2>
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              Mix and match single picks, full decompose, and query strings
-              on the same component:
+              Mix and match single picks, full decompose, query strings,
+              and route metadata on the same component:
             </div>
-            <code-block lang="ts" code={`@route("/users/:id/posts")
+            <code-block lang="ts" code={`@route("/users/:id/posts", {
+  group: AdminGroup, // inherits group meta
+  meta: { analytics: "user-posts" }
+})
 @component("page-user-posts")
 class PageUserPosts extends LoomElement {
   @prop({ param: "id" }) accessor userId = "";
@@ -169,10 +225,12 @@ class PageUserPosts extends LoomElement {
   @prop({ query: "page" })
   @transform((v) => Number(v) || 1)
   accessor page = 1;
+  @prop({ meta: "analytics" }) accessor analyticsPage = "";
+  @prop({ meta: "layout" }) accessor layout = ""; // inherited from group
 
   update() {
     return (
-      <div>
+      <div class={this.layout}>
         <h1>Posts by User {this.userId}</h1>
         <p>Sorted by: {this.sort}, Page: {this.page}</p>
       </div>
@@ -211,6 +269,16 @@ class PageUserPosts extends LoomElement {
                 <td><code>@prop({"{"} query: routeQuery {"}"})</code></td>
                 <td><code>routeQuery</code> from <code>@toyz/loom/router</code></td>
                 <td>Inject all query params as an object</td>
+              </tr>
+              <tr>
+                <td><code>@prop({"{"} meta: "key" {"}"}) </code></td>
+                <td><code>@toyz/loom</code></td>
+                <td>Inject a single value from route metadata</td>
+              </tr>
+              <tr>
+                <td><code>@prop({"{"} meta: routeMeta {"}"})</code></td>
+                <td><code>routeMeta</code> from <code>@toyz/loom/router</code></td>
+                <td>Inject all route metadata as an object</td>
               </tr>
             </tbody>
           </table>

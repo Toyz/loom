@@ -16,7 +16,7 @@ import { prop } from "../store/decorators";
 import { ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols";
 import { matchRoute } from "./route";
 import { RouteChanged } from "./events";
-import { params as paramsSentinel, routeQuery as querySentinel } from "../store/decorators";
+import { params as paramsSentinel, routeQuery as querySentinel, routeMeta as metaSentinel } from "../store/decorators";
 import { app } from "../app";
 import { LoomRouter } from "./router";
 
@@ -35,7 +35,7 @@ class LoomOutlet extends LoomElement {
 
   @on(RouteChanged)
   onRouteChanged(e: RouteChanged) {
-    this._show(e.path, e.params);
+    this._show(e.path, e.params, e.meta);
   }
 
   /** Called after the first render — resolve whatever the current URL is */
@@ -52,11 +52,11 @@ class LoomOutlet extends LoomElement {
     }
     const match = matchRoute(path);
     if (match) {
-      this._show(path, match.params);
+      this._show(path, match.params, match.entry.meta);
     }
   }
 
-  private _show(path: string, params: Record<string, string>): void {
+  private _show(path: string, params: Record<string, string>, meta: Record<string, unknown> = {}): void {
     const match = matchRoute(path);
     const tag = match?.entry.tag ?? null;
 
@@ -67,18 +67,18 @@ class LoomOutlet extends LoomElement {
 
     // Same component — just update data
     if (tag === this._currentTag && this._currentEl) {
-      this._injectRouteData(this._currentEl, params);
+      this._injectRouteData(this._currentEl, params, meta);
       return;
     }
 
     this._clear();
-    this._mount(tag, params);
+    this._mount(tag, params, meta);
     if (this.scrollToTop) this._scrollToTop();
   }
 
-  private _mount(tag: string, params: Record<string, string>): void {
+  private _mount(tag: string, params: Record<string, string>, meta: Record<string, unknown> = {}): void {
     const el = document.createElement(tag);
-    this._injectRouteData(el, params);
+    this._injectRouteData(el, params, meta);
 
     // Pass explicit styles to the routed component
     if (this.styles.length > 0) {
@@ -96,11 +96,11 @@ class LoomOutlet extends LoomElement {
   }
 
   /**
-   * Inject route params and query params into the element.
+   * Inject route params, query params, and meta into the element.
    * Uses ROUTE_PROPS metadata when available (typed properties),
    * falls back to setAttribute for backward compat.
    */
-  private _injectRouteData(el: HTMLElement, params: Record<string, string>): void {
+  private _injectRouteData(el: HTMLElement, params: Record<string, string>, meta: Record<string, unknown> = {}): void {
     const ctor = el.constructor as any;
     const routeBindings = ctor[ROUTE_PROPS.key] ?? [];
     const transforms = ctor[TRANSFORMS.key] as Map<string, Function> | undefined;
@@ -123,6 +123,12 @@ class LoomOutlet extends LoomElement {
       } else if (typeof binding.query === "string") {
         // Single query pick: @prop({ query: "tab" })
         value = queryMap.get(binding.query) ?? "";
+      } else if (binding.meta === metaSentinel) {
+        // Full meta decompose: @prop({meta: routeMeta})
+        value = { ...meta };
+      } else if (typeof binding.meta === "string") {
+        // Single meta pick: @prop({ meta: "layout" })
+        value = meta[binding.meta];
       }
 
       // Apply @transform if registered

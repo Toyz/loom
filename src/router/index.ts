@@ -17,7 +17,7 @@ export { GROUP_META, ROUTE_GROUP } from "./route";
 export { route, guard, group, ROUTE_PATH, GUARD_HANDLERS } from "./decorators";
 
 // Route data sentinels (for @prop({params}) and @prop({query: routeQuery}))
-export { params, routeQuery } from "../store/decorators";
+export { params, routeQuery, routeMeta } from "../store/decorators";
 export { transform } from "../transform/transform";
 
 // Router service
