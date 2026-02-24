@@ -57,6 +57,11 @@ class PageApiUsers extends LoomElement {
                 <td><code>string[]</code></td>
                 <td>Guards that run before <strong>every</strong> child route in this group, preceding any route-level guards.</td>
               </tr>
+              <tr>
+                <td><code>meta</code></td>
+                <td><code>Record&lt;string, unknown&gt;</code></td>
+                <td>Arbitrary metadata inherited by all child routes. Route-level <span class="ic">meta</span> overrides group-level values.</td>
+              </tr>
             </tbody>
           </table>
         </section>
@@ -80,6 +85,39 @@ class AdminGroup {}
 class PageAdminLogs extends LoomElement { }
 
 // Guard order: auth → admin → audit`}></code-block>
+          </div>
+        </section>
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="database" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Group Metadata</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Group <span class="ic">meta</span> is inherited by all child routes.
+              Route-level meta overrides group values. Guards and lifecycle hooks
+              receive the merged metadata:
+            </div>
+            <code-block lang="ts" code={`@group("/admin", { 
+  guards: ["auth"],
+  meta: { layout: "sidebar", requiresAuth: true }
+})
+class AdminGroup {}
+
+// meta = { layout: "sidebar", requiresAuth: true, role: "editor" }
+@route("/posts", { group: AdminGroup, meta: { role: "editor" } })
+@component("page-admin-posts")
+class PageAdminPosts extends LoomElement {}
+
+// Guards read meta from the route context
+@guard("auth")
+checkAuth(ctx: RouteContext) {
+  if (ctx.meta.requiresAuth && !auth.isLoggedIn) {
+    return LoomResult.err("/login");
+  }
+  return LoomResult.ok();
+}`}></code-block>
           </div>
         </section>
 

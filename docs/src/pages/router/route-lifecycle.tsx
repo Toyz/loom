@@ -19,16 +19,18 @@ export default class PageRouteLifecycle extends LoomElement {
             <div class="dec-sig">@onRouteEnter</div>
             <div class="dec-desc">
               Marks a method to run when the route becomes active. The method
-              receives the matched route <span class="ic">params</span>.
+              receives the matched route <span class="ic">params</span> and the merged
+              <span class="ic">meta</span> from the route and its group chain.
             </div>
             <code-block lang="ts" code={`import { onRouteEnter } from "@toyz/loom/router";
 
-@route("/user/:id")
+@route("/user/:id", { meta: { analytics: "user-profile" } })
 @component("page-user")
 class UserPage extends LoomElement {
   @onRouteEnter
-  loadUser(params: Record<string, string>) {
+  loadUser(params: Record<string, string>, meta: Record<string, unknown>) {
     fetch(\`/api/users/\${params.id}\`).then(/* ... */);
+    analytics.track("page_view", { page: meta.analytics });
   }
 }`}></code-block>
           </div>
@@ -64,12 +66,13 @@ class EditorPage extends LoomElement {
             <h2>Combined Usage</h2>
           </div>
           <div class="feature-entry">
-            <code-block lang="ts" code={`@route("/dashboard")
+            <code-block lang="ts" code={`@route("/dashboard", { meta: { layout: "full" } })
 @component("page-dashboard")
 class Dashboard extends LoomElement {
   @onRouteEnter
-  entered(params: Record<string, string>) {
+  entered(params: Record<string, string>, meta: Record<string, unknown>) {
     this.startPolling();
+    console.log("Layout:", meta.layout); // "full"
   }
 
   @onRouteLeave

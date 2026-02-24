@@ -25,11 +25,12 @@ export interface RouteInfo {
   path: string;
   params: Record<string, string>;
   tag: string | null;
+  meta: Record<string, unknown>;
 }
 
 export class LoomRouter {
   readonly mode: RouterMode;
-  private _current: RouteInfo = { path: "/", params: {}, tag: null };
+  private _current: RouteInfo = { path: "/", params: {}, tag: null, meta: {} };
   private _previousTag: string | null = null;
   /** Optional outlet reference for lifecycle dispatch */
   private _outlet: HTMLElement | null = null;
@@ -132,9 +133,10 @@ export class LoomRouter {
       path,
       params: match?.params ?? {},
       tag: newTag,
+      meta: match?.entry.meta ?? {},
     };
 
-    bus.emit(new RouteChanged(path, this._current.params, previous));
+    bus.emit(new RouteChanged(path, this._current.params, previous, this._current.meta));
 
     // Call @onRouteEnter on the new element (after DOM update via microtask)
     if (tagChanged && newTag && this._outlet) {
@@ -145,7 +147,7 @@ export class LoomRouter {
           const handlers: string[] = (newEl as any)[ROUTE_ENTER.key]
             ?? Object.getPrototypeOf(newEl)?.[ROUTE_ENTER.key] ?? [];
           for (const key of handlers) {
-            (newEl as any)[key]?.(this._current.params);
+            (newEl as any)[key]?.(this._current.params, this._current.meta);
           }
         }
       });

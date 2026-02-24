@@ -18,6 +18,7 @@ describe("@group", () => {
     expect((ApiGroup as any)[GROUP_META]).toEqual({
       prefix: "/api",
       guards: [],
+      meta: {},
     });
   });
 
@@ -28,6 +29,7 @@ describe("@group", () => {
     expect((AdminGroup as any)[GROUP_META]).toEqual({
       prefix: "/admin",
       guards: ["auth", "role"],
+      meta: {},
     });
   });
 });
@@ -183,6 +185,7 @@ describe("@group + @route stacking", () => {
     expect((UserLayout as any)[GROUP_META]).toEqual({
       prefix: "/user/:id",
       guards: ["auth"],
+      meta: {},
     });
   });
 });

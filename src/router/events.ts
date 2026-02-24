@@ -10,6 +10,7 @@ export class RouteChanged extends LoomEvent {
     public readonly path: string,
     public readonly params: Record<string, string>,
     public readonly previous: string,
+    public readonly meta: Record<string, unknown> = {},
   ) {
     super();
   }

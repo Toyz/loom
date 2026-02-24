@@ -19,6 +19,8 @@ export const GUARD_HANDLERS = Symbol("loom:route:guards");
 interface GroupOptions {
   /** Named guards to check before rendering any route in this group */
   guards?: string[];
+  /** Arbitrary metadata inherited by child routes */
+  meta?: Record<string, unknown>;
 }
 
 /**
@@ -36,6 +38,7 @@ export const group = createDecorator<[prefix: string, opts?: GroupOptions]>(
     const meta: GroupMeta = {
       prefix,
       guards: opts?.guards ?? [],
+      meta: opts?.meta ?? {},
     };
     (ctor as any)[GROUP_META] = meta;
 
@@ -55,7 +58,7 @@ export const group = createDecorator<[prefix: string, opts?: GroupOptions]>(
 
 // ── Group chain resolution ──
 
-function resolveGroupChain(groupCtor: unknown): { prefix: string; guards: string[] } {
+function resolveGroupChain(groupCtor: unknown): { prefix: string; guards: string[]; meta: Record<string, unknown> } {
   const chain: GroupMeta[] = [];
   let current: any = groupCtor;
 
@@ -66,11 +69,13 @@ function resolveGroupChain(groupCtor: unknown): { prefix: string; guards: string
 
   let prefix = "";
   let guards: string[] = [];
+  let meta: Record<string, unknown> = {};
   for (const g of chain) {
     prefix += g.prefix;
     guards = [...guards, ...g.guards];
+    meta = { ...meta, ...g.meta };
   }
-  return { prefix, guards };
+  return { prefix, guards, meta };
 }
 
 // ── @route (class decorator via createDecorator) ──
@@ -82,6 +87,8 @@ interface RouteOptions {
   group?: unknown;
   /** Named route identifier for programmatic navigation */
   name?: string;
+  /** Arbitrary metadata accessible to guards and lifecycle hooks */
+  meta?: Record<string, unknown>;
 }
 
 /**
@@ -97,6 +104,7 @@ export const route = createDecorator<[pattern: string, opts?: RouteOptions]>(
   (ctor, pattern, opts) => {
     let fullPattern = pattern;
     let allGuards = opts?.guards ?? [];
+    let allMeta: Record<string, unknown> = opts?.meta ?? {};
 
     if (opts?.group) {
       const chain = resolveGroupChain(opts.group);
@@ -104,6 +112,7 @@ export const route = createDecorator<[pattern: string, opts?: RouteOptions]>(
         ? chain.prefix
         : chain.prefix + pattern;
       allGuards = [...chain.guards, ...allGuards];
+      allMeta = { ...chain.meta, ...allMeta }; // route-level overrides group
       (ctor as any)[ROUTE_GROUP] = opts.group;
     }
 
@@ -120,6 +129,7 @@ export const route = createDecorator<[pattern: string, opts?: RouteOptions]>(
       ctor,
       guards: allGuards,
       name: opts?.name,
+      meta: allMeta,
     };
 
     if (opts?.name) {

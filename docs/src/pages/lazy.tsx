@@ -118,7 +118,9 @@ class LazyElementDecorators extends LoomElement { }
 
 @route("/lazy", { group: ElementGroup })
 @component("page-element-lazy")
-@lazy(() => import("./element/lazy"))
+@lazy(() => import("./element/lazy"), {
+  loading: () => <div>Loading...</div>
+})
 @searchable({ title: "Lazy Loading", section: "Element", icon: "download", to: "/element/lazy", keywords: ["lazy", "code splitting", "dynamic import", "deferred", "on-demand"], summary: "Defer component module loading until first mount." })
 class LazyElementLazy extends LoomElement { }
 

@@ -135,12 +135,18 @@ class PageUserDetail extends LoomElement {
                 <td><code>string</code></td>
                 <td>Named route identifier for programmatic navigation via <span class="ic">buildPath()</span> or <span class="ic">router.go({"{"} name {"}"} )</span>.</td>
               </tr>
+              <tr>
+                <td><code>meta</code></td>
+                <td><code>Record&lt;string, unknown&gt;</code></td>
+                <td>Arbitrary metadata accessible to guards and lifecycle hooks via <span class="ic">RouteChanged.meta</span>.</td>
+              </tr>
             </tbody>
           </table>
           <code-block lang="ts" code={`@route("/users/:id", {
   name: "user-detail",
   guards: ["auth"],
   group: ApiGroup,
+  meta: { role: "admin", layout: "dashboard" },
 })
 @component("page-user-detail")
 class PageUserDetail extends LoomElement { }`}></code-block>

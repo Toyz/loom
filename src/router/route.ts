@@ -15,6 +15,8 @@ export interface RouteEntry {
   guards: string[];
   /** Optional name for named-route navigation */
   name?: string;
+  /** Arbitrary metadata — merged from group + route */
+  meta: Record<string, unknown>;
 }
 
 /** Symbol for @group metadata on a constructor */
@@ -27,6 +29,8 @@ export const ROUTE_GROUP = Symbol("loom:route:group-parent");
 export interface GroupMeta {
   prefix: string;
   guards: string[];
+  /** Arbitrary metadata inherited by child routes */
+  meta: Record<string, unknown>;
 }
 
 /** Global route table — populated by @route decorator */
