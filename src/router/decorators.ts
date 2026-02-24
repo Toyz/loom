@@ -157,21 +157,41 @@ function _tagForCtor(ctor: Function): string {
   return (ctor as any).__loom_tag ?? ctor.name.toLowerCase();
 }
 
-// ── @guard (define-time method decorator via createDecorator) ──
+// ── @guard (method decorator — raw TC39, not createDecorator) ──
 
 /**
  * Mark a method as a named route guard.
  *
+ * When used on a @service class, the guard automatically binds
+ * to the service instance, enabling @inject accessors to resolve.
+ *
  * ```ts
- * @guard("auth")
- * checkAuth() {
- *   return this.auth.isLoggedIn ? true : "/login";
+ * @service
+ * class AuthGuards {
+ *   @inject(AuthStore) accessor auth!: AuthStore;
+ *
+ *   @guard("auth")
+ *   checkAuth() {
+ *     return this.auth.isLoggedIn ? true : "/login";
+ *   }
  * }
  * ```
  */
-export const guard = createDecorator<[name?: string]>(
-  (method, key, name) => {
+export function guard(name?: string) {
+  return (method: Function, context: ClassMethodDecoratorContext) => {
+    const key = String(context.name);
     const guardName = name ?? key;
+
+    // Register immediately with the raw method (define-time)
     guardRegistry.set(guardName, { method, key });
-  },
-);
+
+    // When the owning class is instantiated, rebind to the live instance
+    // so @inject accessors (which need `this`) resolve correctly.
+    context.addInitializer(function (this: any) {
+      guardRegistry.set(guardName, {
+        method: method.bind(this),
+        key,
+      });
+    });
+  };
+}

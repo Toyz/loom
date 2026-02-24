@@ -34,6 +34,8 @@ export class LoomRouter {
   private _previousTag: string | null = null;
   /** Optional outlet reference for lifecycle dispatch */
   private _outlet: HTMLElement | null = null;
+  /** True while go()/replace() is in flight — suppresses listener-driven _resolve */
+  private _navigating = false;
 
   /** Register the outlet so lifecycle hooks can find rendered elements */
   setOutlet(el: HTMLElement): void {
@@ -51,7 +53,11 @@ export class LoomRouter {
 
   /** Start listening for URL changes and resolve the initial route */
   start(): () => void {
-    const cleanup = this.mode.listen(() => this._resolve());
+    const cleanup = this.mode.listen(() => {
+      // Skip listener-driven resolve if a programmatic navigation is in flight
+      if (this._navigating) return;
+      this._resolve();
+    });
     this._resolve();
     return cleanup;
   }
@@ -64,8 +70,10 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.go(allowed);
     }
+    this._navigating = true;
     this.mode.write(path);
     this._resolve();
+    this._navigating = false;
   }
 
   /** Alias for go() */
@@ -81,8 +89,10 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.replace(allowed);
     }
+    this._navigating = true;
     this.mode.replace(path);
     this._resolve();
+    this._navigating = false;
   }
 
   /** Go back in history */
