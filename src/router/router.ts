@@ -66,6 +66,7 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.go(allowed);
     }
+    this._lastResolvedPath = null;
     this.mode.write(path);
     this._resolve();
   }
@@ -83,6 +84,7 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.replace(allowed);
     }
+    this._lastResolvedPath = null;
     this.mode.replace(path);
     this._resolve();
   }
