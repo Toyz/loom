@@ -34,8 +34,6 @@ export class LoomRouter {
   private _previousTag: string | null = null;
   /** Optional outlet reference for lifecycle dispatch */
   private _outlet: HTMLElement | null = null;
-  /** Last path processed by _resolve — used to deduplicate async event re-fires */
-  private _lastResolvedPath: string | null = null;
 
   /** Register the outlet so lifecycle hooks can find rendered elements */
   setOutlet(el: HTMLElement): void {
@@ -66,7 +64,6 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.go(allowed);
     }
-    this._lastResolvedPath = null;
     this.mode.write(path);
     this._resolve();
   }
@@ -84,7 +81,6 @@ export class LoomRouter {
     if (typeof allowed === "string") {
       return this.replace(allowed);
     }
-    this._lastResolvedPath = null;
     this.mode.replace(path);
     this._resolve();
   }
@@ -110,19 +106,9 @@ export class LoomRouter {
     return buildPath(target.name, target.params);
   }
 
-  /**
-   * Resolve the current URL against the route table and emit RouteChanged.
-   * Deduplicates: if the path hasn't changed since the last resolve, skip.
-   * This prevents double-resolution from async hashchange/popstate events
-   * that fire after go()/replace() already resolved the same path.
-   */
+  /** Resolve the current URL against the route table and emit RouteChanged */
   private _resolve(): void {
     const path = this.mode.read();
-
-    // Deduplicate — hashchange/popstate may fire asynchronously after
-    // go()/replace() already resolved this exact path.
-    if (path === this._lastResolvedPath) return;
-    this._lastResolvedPath = path;
 
     const match = matchRoute(path);
     const previous = this._current.path;

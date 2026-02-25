@@ -24,7 +24,11 @@ export class HashMode implements RouterMode {
   }
 
   write(path: string): void {
-    location.hash = path;
+    // Use pushState to avoid async hashchange — go() calls _resolve() explicitly.
+    // The hashchange listener only fires for real back/forward navigation.
+    const url = new URL(location.href);
+    url.hash = path;
+    history.pushState(null, "", url);
   }
 
   replace(path: string): void {
@@ -49,14 +53,13 @@ export class HistoryMode implements RouterMode {
   }
 
   write(path: string): void {
+    // pushState does not fire popstate — go() calls _resolve() explicitly.
+    // The popstate listener only fires for real back/forward navigation.
     history.pushState(null, "", path);
-    // pushState doesn't fire popstate — we dispatch manually
-    window.dispatchEvent(new PopStateEvent("popstate"));
   }
 
   replace(path: string): void {
     history.replaceState(null, "", path);
-    window.dispatchEvent(new PopStateEvent("popstate"));
   }
 
   listen(cb: () => void): () => void {
