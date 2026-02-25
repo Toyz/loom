@@ -5,15 +5,25 @@
  * - timestamp (auto-stamped)
  * - clone(overrides?) — typed shallow clone
  * - is(event) — static type guard
+ * - dispatch(...args) — static emit through global bus
  * - toJSON() — serialize to plain object
  * - toString() — debug-friendly string
  */
 
 import type { Constructor } from "./bus";
+import { bus } from "./bus";
 
 export abstract class LoomEvent {
   /** Auto-stamped on creation */
   readonly timestamp = Date.now();
+
+  /** Construct and emit this event through the global bus */
+  static dispatch<T extends LoomEvent>(
+    this: new (...args: any[]) => T,
+    ...args: ConstructorParameters<typeof this>
+  ): void {
+    bus.emit(new this(...args));
+  }
 
   /** Shallow clone with optional overrides */
   clone(overrides?: Partial<this>): this {

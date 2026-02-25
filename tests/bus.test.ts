@@ -2,7 +2,7 @@
  * Tests: EventBus — emit / on / off / clear / reset
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { EventBus } from "../src/bus";
+import { EventBus, bus as globalBus } from "../src/bus";
 import { LoomEvent } from "../src/event";
 
 class TestEvent extends LoomEvent {
@@ -82,5 +82,56 @@ describe("EventBus", () => {
     bus.emit(new OtherEvent(1));
     expect(fn1).not.toHaveBeenCalled();
     expect(fn2).not.toHaveBeenCalled();
+  });
+});
+
+// ── LoomEvent.dispatch() ──
+
+describe("LoomEvent.dispatch()", () => {
+
+  it("emits through the global bus", () => {
+    const fn = vi.fn();
+    globalBus.on(TestEvent, fn);
+    TestEvent.dispatch("dispatched");
+    expect(fn).toHaveBeenCalledOnce();
+    globalBus.reset();
+  });
+
+  it("passes constructor args to the event instance", () => {
+    const fn = vi.fn();
+    globalBus.on(TestEvent, fn);
+    TestEvent.dispatch("hello");
+    const received = fn.mock.calls[0][0] as TestEvent;
+    expect(received.value).toBe("hello");
+    expect(received).toBeInstanceOf(TestEvent);
+    globalBus.reset();
+  });
+
+  it("auto-stamps timestamp", () => {
+    const fn = vi.fn();
+    globalBus.on(TestEvent, fn);
+    const before = Date.now();
+    TestEvent.dispatch("ts");
+    const received = fn.mock.calls[0][0] as TestEvent;
+    expect(received.timestamp).toBeGreaterThanOrEqual(before);
+    expect(received.timestamp).toBeLessThanOrEqual(Date.now());
+    globalBus.reset();
+  });
+
+  it("works with different event types", () => {
+    const fn = vi.fn();
+    globalBus.on(OtherEvent, fn);
+    OtherEvent.dispatch(42);
+    const received = fn.mock.calls[0][0] as OtherEvent;
+    expect(received.n).toBe(42);
+    globalBus.reset();
+  });
+
+  it("does not cross-fire between event types", () => {
+    const fn = vi.fn();
+    globalBus.on(TestEvent, fn);
+    OtherEvent.dispatch(99);
+    expect(fn).not.toHaveBeenCalled();
+    globalBus.reset();
   });
 });
