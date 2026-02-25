@@ -61,7 +61,7 @@ class UserProfile extends LoomElement {
     fn: el => [el.userId],   // args from element state — re-fetches on change
     staleTime: 60_000,       // SWR: cache for 1 minute
   })
-  accessor user!: ApiState<User>;
+  accessor user!: RpcQuery<[string], User>;
 
   update() {
     return this.user.match({
@@ -110,7 +110,7 @@ class EditProfile extends LoomElement {
 
 ### `@rpc(Router, method, opts?)`
 
-Auto-accessor decorator for queries. Returns `ApiState<T>` with `.match()`, `.unwrap()`, `.refetch()`, `.invalidate()`.
+Auto-accessor decorator for queries. Returns `RpcQuery<TArgs, TReturn>` with `.match()`, `.unwrap()`, `.refetch()`, `.invalidate()`. Also accepts `ApiState<T>` for backwards compatibility.
 
 | Option      | Type           | Default | Description                               |
 | ----------- | -------------- | ------- | ----------------------------------------- |
@@ -232,13 +232,14 @@ Everything is inferred from the contract class:
 ```ts
 @rpc(UserRouter, "getUser", { fn: el => [el.userId] })
 //                 ↑ autocompleted        ↑ must be [string]
-accessor user!: ApiState<User>;
+accessor user!: RpcQuery<[string], User>;
 //                       ↑ inferred from UserRouter.getUser return type
 ```
 
 - Method names are autocompleted and type-checked
 - Argument types are inferred from the contract method parameters
-- Return types flow into `ApiState<T>` automatically
+- Return types flow into `RpcQuery<TArgs, TReturn>` automatically
+- `ApiState<T>` still accepted for backwards compatibility
 - Pass the wrong types? Compile error.
 
 ---

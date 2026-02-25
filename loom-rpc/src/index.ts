@@ -20,6 +20,7 @@ export type {
   InferReturn,
   RpcQueryOptions,
   RpcMutator,
+  RpcQuery,
   RpcRequest,
   RpcResponse,
 } from "./types";

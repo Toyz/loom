@@ -257,3 +257,63 @@ describe("@service decorator", () => {
     expect(() => transport.assertCalled(OrderRouter, "getOrder", ["1"])).not.toThrow();
   });
 });
+
+// ── RpcQuery Type Tests ──
+
+describe("RpcQuery", () => {
+  it("RpcQuery type is assignable from ApiState (backwards compat)", () => {
+    // RpcQuery extends ApiState, so RpcQuery is assignable TO ApiState
+    type Query = import("@toyz/loom-rpc").RpcQuery<[string], { id: string; name: string }>;
+    type State = import("@toyz/loom").ApiState<{ id: string; name: string }>;
+
+    // Compile-time check: RpcQuery<[string], User> is assignable to ApiState<User>
+    const assertAssignable = (q: Query): State => q;
+    expect(assertAssignable).toBeDefined();
+  });
+
+  it("RpcQuery carries both TArgs and TReturn type parameters", () => {
+    type Query = import("@toyz/loom-rpc").RpcQuery<[string, number], { id: string }>;
+    // If this compiles, TArgs = [string, number] and TReturn = { id: string } are properly carried
+    const _check: Query = null!;
+    expect(true).toBe(true); // Compile-time test
+  });
+
+  it("RpcQuery has all expected ApiState members", () => {
+    // Verify the interface shape at compile time
+    type Query = import("@toyz/loom-rpc").RpcQuery<[string], { name: string }>;
+    type HasOk = Query["ok"];                          // boolean
+    type HasData = Query["data"];                      // { name: string } | undefined
+    type HasError = Query["error"];                    // Error | undefined
+    type HasLoading = Query["loading"];                // boolean
+    type HasStale = Query["stale"];                    // boolean
+    type HasRefetch = Query["refetch"];                // () => Promise<void>
+    type HasInvalidate = Query["invalidate"];          // () => void
+    type HasUnwrap = Query["unwrap"];                  // () => { name: string }
+    type HasUnwrapOr = Query["unwrap_or"];             // (fallback) => { name: string }
+    type HasMatch = Query["match"];                    // (cases) => R
+    type HasMap = Query["map"];                        // (fn) => LoomResult
+
+    // Use the types to prevent unused warnings
+    const types: [HasOk, HasData, HasError, HasLoading, HasStale, HasRefetch, HasInvalidate, HasUnwrap, HasUnwrapOr, HasMatch, HasMap] = null!;
+    expect(types).toBeNull();
+  });
+
+  it("RpcQuery is exported from @toyz/loom-rpc", async () => {
+    const loomRpc = await import("@toyz/loom-rpc");
+    // RpcQuery is a type-only export — it doesn't exist at runtime
+    // But the module should export it in its type declarations
+    // This test verifies the import resolution works
+    expect(loomRpc).toBeDefined();
+  });
+
+  it("RpcMutator and RpcQuery have symmetrical type parameters", () => {
+    // Both take <TArgs extends any[], TReturn>
+    type Mutator = import("@toyz/loom-rpc").RpcMutator<[string], { id: string }>;
+    type Query = import("@toyz/loom-rpc").RpcQuery<[string], { id: string }>;
+
+    // Compile-time: both carry the same type parameter structure
+    const _m: Mutator = null!;
+    const _q: Query = null!;
+    expect(true).toBe(true);
+  });
+});

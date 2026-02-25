@@ -1,7 +1,7 @@
 /**
  * Packages — @rpc Queries  /packages/rpc-queries
  *
- * @rpc decorator, options, ApiState, .match(), reactive args.
+ * @rpc decorator, options, RpcQuery, .match(), reactive args.
  */
 import { LoomElement } from "@toyz/loom";
 
@@ -27,7 +27,7 @@ import { UserRouter } from "../contracts/user";
 @component("user-list")
 class UserList extends LoomElement {
   @rpc(UserRouter, "listUsers")
-  accessor users!: ApiState\<User[]\>;
+  accessor users!: RpcQuery\<[], User[]\>;
 
   update() {
     return this.users.match({
@@ -51,7 +51,7 @@ class UserList extends LoomElement {
           <code-block lang="ts" code={`@rpc(UserRouter, "getUser", {
   fn: (el): [string] => [el.userId],
 })
-accessor user!: ApiState\<User\>;`}></code-block>
+accessor user!: RpcQuery\<[string], User\>;`}></code-block>
           <p>
             The return type of <span class="ic">fn</span> must match the parameter types of the
             contract method. TypeScript enforces this at compile time.
@@ -89,17 +89,18 @@ accessor user!: ApiState\<User\>;`}></code-block>
   staleTime: 60_000,  // cache for 1 minute
   retry: 2,           // retry twice on failure
 })
-accessor users!: ApiState\<User[]\>;`}></code-block>
+accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
         </section>
 
         <section>
           <div class="group-header">
             <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
-            <h2>ApiState&lt;T&gt;</h2>
+            <h2>RpcQuery&lt;TArgs, TReturn&gt;</h2>
           </div>
           <p>
-            Every <span class="ic">@rpc</span> accessor is an <span class="ic">ApiState&lt;T&gt;</span>{" "}
-            — a reactive state container with pattern matching and Result combinators.
+            Every <span class="ic">@rpc</span> accessor is an <span class="ic">RpcQuery&lt;TArgs, TReturn&gt;</span>{" "}
+            — a typed, reactive state container with pattern matching and Result combinators.
+            <span class="ic">ApiState&lt;T&gt;</span> is also accepted for backwards compatibility.
           </p>
           <table class="api-table">
             <thead><tr><th>Property / Method</th><th>Description</th></tr></thead>

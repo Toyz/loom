@@ -5,6 +5,8 @@
  * Powers the type-safe @rpc and @mutate decorators.
  */
 
+import type { ApiState } from "@toyz/loom";
+
 /**
  * Extract callable method names from a contract class.
  * Filters out non-function properties so only procedure names are valid.
@@ -63,6 +65,22 @@ export interface RpcMutator<TArgs extends any[], TReturn> {
   readonly data: TReturn | undefined;
   /** Reset the mutator state (clear data, error, loading) */
   reset(): void;
+}
+
+/**
+ * State container for a query — auto-fetched, reactive, with SWR.
+ * Extends ApiState for backwards compatibility.
+ *
+ * ```ts
+ * @rpc(UserRouter, "getUser", { fn: el => [el.userId] })
+ * accessor user!: RpcQuery<[string], User>;
+ * ```
+ */
+export interface RpcQuery<TArgs extends any[], TReturn> extends ApiState<TReturn> {
+  // Inherits from ApiState<TReturn>:
+  //   ok, data, error, loading, stale
+  //   refetch(), invalidate()
+  //   unwrap(), unwrap_or(), map(), map_err(), and_then(), match()
 }
 
 /**

@@ -2,14 +2,14 @@
  * LoomRPC — @rpc query decorator
  *
  * Auto-accessor decorator for type-safe RPC queries.
- * Reuses Loom's ApiState pattern under the hood.
+ * Returns an RpcQuery<TArgs, TReturn> with .match(), .unwrap(), .refetch(), etc.
  *
  * ```ts
  * @rpc(UserRouter, "getUser", {
  *   fn: el => [el.userId],
  *   staleTime: 60_000,
  * })
- * accessor user!: ApiState<User>;
+ * accessor user!: RpcQuery<[string], User>;
  * ```
  *
  * The contract class is passed as a runtime value (not just a type)
@@ -17,10 +17,9 @@
  */
 
 import { app, createSymbol } from "@toyz/loom";
-import type { ApiState } from "@toyz/loom";
 import { Reactive } from "@toyz/loom/store";
 import { LoomResult } from "@toyz/loom";
-import type { RpcMethods, InferReturn, RpcQueryOptions } from "./types";
+import type { RpcMethods, InferArgs, InferReturn, RpcQueryOptions, RpcQuery } from "./types";
 import { RpcTransport } from "./transport";
 
 import { resolveServiceName } from "./service";
@@ -32,11 +31,11 @@ export const RPC_QUERIES = createSymbol("rpc:queries");
  * @rpc(Router, method, opts?) — Query decorator
  *
  * Fetches data from the server via the registered RpcTransport.
- * Returns an ApiState<T> with .match(), .unwrap(), .refetch(), etc.
+ * Returns an RpcQuery<TArgs, TReturn> with .match(), .unwrap(), .refetch(), etc.
  *
  * ```ts
  * @rpc(UserRouter, "getUser", { fn: el => [el.userId], staleTime: 60_000 })
- * accessor user!: ApiState<User>;
+ * accessor user!: RpcQuery<[string], User>;
  * ```
  *
  * @param router - The contract class (used for router name + type inference)
@@ -51,13 +50,14 @@ export function rpc<
   method: TMethod,
   opts?: RpcQueryOptions<TRouter, TMethod>,
 ) {
+  type TArgs = InferArgs<TRouter, TMethod>;
   type TReturn = InferReturn<TRouter, TMethod>;
   const routerName = resolveServiceName(router);
 
   return <This extends object>(
-    _target: ClassAccessorDecoratorTarget<This, ApiState<TReturn>>,
-    context: ClassAccessorDecoratorContext<This, ApiState<TReturn>>,
-  ): ClassAccessorDecoratorResult<This, ApiState<TReturn>> => {
+    _target: ClassAccessorDecoratorTarget<This, RpcQuery<TArgs extends any[] ? TArgs : [TArgs], TReturn>>,
+    context: ClassAccessorDecoratorContext<This, RpcQuery<TArgs extends any[] ? TArgs : [TArgs], TReturn>>,
+  ): ClassAccessorDecoratorResult<This, RpcQuery<TArgs extends any[] ? TArgs : [TArgs], TReturn>> => {
     const stateKey = Symbol(`rpc:${String(context.name)}`);
     const traceKey = Symbol(`rpc:trace:${String(context.name)}`);
     const accessorName = String(context.name);
@@ -69,7 +69,7 @@ export function rpc<
     });
 
     return {
-      get(this: any): ApiState<TReturn> {
+      get(this: any): RpcQuery<TArgs extends any[] ? TArgs : [TArgs], TReturn> {
         if (!this[stateKey]) {
           const sentinel = new Reactive(0);
           this[traceKey] = sentinel;
@@ -88,7 +88,7 @@ export function rpc<
         (this[traceKey] as Reactive<number>).value;
         return this[stateKey];
       },
-      set(this: any, _val: ApiState<TReturn>) {
+      set(this: any, _val: RpcQuery<TArgs extends any[] ? TArgs : [TArgs], TReturn>) {
         // State is managed internally
       },
     };
@@ -96,7 +96,7 @@ export function rpc<
 }
 
 /**
- * Internal state factory — mirrors createApiState but uses RpcTransport.
+ * Internal state factory — creates an RpcQuery via RpcTransport.
  */
 function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
   routerName: string,
@@ -104,7 +104,7 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
   opts: RpcQueryOptions<TRouter, TMethod> | undefined,
   scheduleUpdate: () => void,
   host: any,
-): ApiState<TReturn> {
+): RpcQuery<any[], TReturn> {
   let data: TReturn | undefined;
   let error: Error | undefined;
   let loading = true;
@@ -180,7 +180,7 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
     }
   }
 
-  const state: ApiState<TReturn> = {
+  const state: RpcQuery<any[], TReturn> = {
     get ok() {
       return data !== undefined && error === undefined;
     },
