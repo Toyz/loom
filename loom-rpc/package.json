@@ -1,6 +1,6 @@
 {
   "name": "@toyz/loom-rpc",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "type": "module",
   "description": "Type-safe, decorator-driven RPC for Loom — server-agnostic, transport-swappable",
   "license": "MIT",
