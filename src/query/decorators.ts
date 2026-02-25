@@ -12,6 +12,7 @@ import type { ApiState, ApiOptions, InterceptRegistration } from "./types";
 import { Reactive } from "../store/reactive";
 import { createApiState } from "./state";
 import { interceptRegistry } from "./registry";
+import { WATCHERS } from "../decorators/symbols";
 
 // Re-export for barrel
 export { interceptRegistry } from "./registry";
@@ -99,6 +100,16 @@ export function api<T extends object>(
           sentinel.subscribe(() => this.scheduleUpdate?.());
           const notify = () => { sentinel.set((v: number) => v + 1); };
           this[stateKey] = createApiState<T>(opts, notify, this, String(context.name));
+
+          // Wire @watch handlers for this accessor
+          const watchers = this[WATCHERS.key];
+          if (watchers) {
+            for (const w of watchers) {
+              if (w.field === String(context.name)) {
+                sentinel.subscribe(() => this[w.key](this[stateKey], undefined));
+              }
+            }
+          }
         }
         // Read sentinel.value so recordRead() fires during traced update()
         (this[traceKey] as Reactive<number>).value;

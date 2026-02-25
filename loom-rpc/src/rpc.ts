@@ -83,6 +83,17 @@ export function rpc<
             notify,
             this,
           );
+
+          // Wire @watch handlers for this accessor
+          const WATCHERS = createSymbol("watch");
+          const watchers = this[WATCHERS.key];
+          if (watchers) {
+            for (const w of watchers) {
+              if (w.field === accessorName) {
+                sentinel.subscribe(() => this[w.key](this[stateKey], undefined));
+              }
+            }
+          }
         }
         // Read sentinel so traced update() sees the dependency
         (this[traceKey] as Reactive<number>).value;

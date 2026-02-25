@@ -235,3 +235,59 @@ describe("@watch (DI-resolved service)", () => {
     expect(fn).not.toHaveBeenCalled();
   });
 });
+
+// ── @watch + @api integration ──
+
+describe("@watch + @api", () => {
+  it("fires @watch handler when @api data loads", async () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+
+    const { api } = await import("../src/query/decorators");
+    type ApiState<T> = import("../src/query/types").ApiState<T>;
+
+    class El extends LoomElement {
+      @api<{ name: string }>(async () => ({ name: "Alice" }))
+      accessor user!: ApiState<{ name: string }>;
+
+      @watch("user")
+      onUser(state: ApiState<{ name: string }>) { fn(state?.data); }
+    }
+    customElements.define(tag, El);
+
+    const el = await fixture<El>(tag);
+    // Trigger first read to init sentinel
+    void el.user;
+    // Wait for async fetch
+    await new Promise(r => setTimeout(r, 50));
+    expect(fn).toHaveBeenCalled();
+    expect(fn).toHaveBeenCalledWith({ name: "Alice" });
+  });
+
+  it("fires @watch handler on refetch", async () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+    let call = 0;
+
+    const { api } = await import("../src/query/decorators");
+    type ApiState<T> = import("../src/query/types").ApiState<T>;
+
+    class El extends LoomElement {
+      @api<{ v: number }>(async () => ({ v: ++call }))
+      accessor data!: ApiState<{ v: number }>;
+
+      @watch("data")
+      onData(state: ApiState<{ v: number }>) { fn(state?.data); }
+    }
+    customElements.define(tag, El);
+
+    const el = await fixture<El>(tag);
+    void el.data;
+    await new Promise(r => setTimeout(r, 50));
+    fn.mockClear();
+
+    await el.data.refetch();
+    await new Promise(r => setTimeout(r, 50));
+    expect(fn).toHaveBeenCalled();
+  });
+});
