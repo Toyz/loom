@@ -138,6 +138,12 @@ class LoomOutlet extends LoomElement {
       // Apply @transform if registered
       if (transforms?.has(binding.propKey) && value !== undefined) {
         value = transforms.get(binding.propKey)!(value);
+      } else if (typeof value === "string") {
+        // Auto-coerce string → number/boolean based on current property type
+        // (same logic as attributeChangedCallback in @component)
+        const current = (el as any)[binding.propKey];
+        if (typeof current === "number") value = Number(value);
+        else if (typeof current === "boolean") value = value !== "false";
       }
 
       (el as any)[binding.propKey] = value;

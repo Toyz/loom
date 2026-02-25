@@ -15,7 +15,7 @@
  * ```
  */
 
-import { ROUTE_PROPS, createSymbol } from "../decorators/symbols";
+import { ROUTE_PROPS, TRANSFORMS, createSymbol } from "../decorators/symbols";
 
 const LAZY_LOADER = createSymbol("lazy:loader");
 const LAZY_OPTS   = createSymbol<LazyOptions>("lazy:opts");
@@ -98,6 +98,7 @@ export function lazy(
         ctor.__mountLazyImpl = function (this: any) {
           this.shadow.innerHTML = "";
           const realEl = document.createElement(ctor.__lazy_impl_tag);
+          const realCtor = realEl.constructor as any;
 
           // Forward all attributes from shell → real instance
           for (const attr of this.attributes) {
@@ -109,11 +110,36 @@ export function lazy(
             }
           }
 
-          // Forward route data via ROUTE_PROPS metadata
-          const routeBindings: any[] = ctor[ROUTE_PROPS.key] ?? [];
-          for (const binding of routeBindings) {
-            const val = (this as any)[binding.propKey];
+          // Forward route data via ROUTE_PROPS metadata.
+          // Use the REAL component's bindings so propKey (accessor name)
+          // is used instead of the attribute/param name.
+          const realBindings: any[] = realCtor[ROUTE_PROPS.key] ?? [];
+          const stubBindings: any[] = ctor[ROUTE_PROPS.key] ?? [];
+          const transforms = realCtor[TRANSFORMS.key] as Map<string, Function> | undefined;
+
+          for (const binding of realBindings) {
+            // Try to read from stub by propKey first (works when stub has same accessor)
+            let val = (this as any)[binding.propKey];
+
+            // Fallback: if stub used a different accessor name, look up by param/query key
+            if (val === undefined && typeof binding.param === "string") {
+              // Check stub bindings for same param
+              const stubBinding = stubBindings.find((b: any) => b.param === binding.param);
+              if (stubBinding) val = (this as any)[stubBinding.propKey];
+              // Last resort: read from attribute
+              if (val === undefined) val = this.getAttribute(binding.param) ?? undefined;
+            }
+
             if (val !== undefined) {
+              // Apply @transform if registered on the real component
+              if (transforms?.has(binding.propKey)) {
+                val = transforms.get(binding.propKey)!(val);
+              } else if (typeof val === "string") {
+                // Auto-coerce string → number/boolean
+                const current = (realEl as any)[binding.propKey];
+                if (typeof current === "number") val = Number(val);
+                else if (typeof current === "boolean") val = val !== "false";
+              }
               (realEl as any)[binding.propKey] = val;
             }
           }
