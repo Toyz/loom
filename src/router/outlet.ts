@@ -65,9 +65,13 @@ class LoomOutlet extends LoomElement {
       return;
     }
 
-    // Same component — just update data
+    // Same component — update data and force re-render
     if (tag === this._currentTag && this._currentEl) {
       this._injectRouteData(this._currentEl, params, meta);
+      // Force update — route data changed but reactive setters may not
+      // have fired (e.g. unbound params set via setAttribute, or
+      // components that rely on @onRouteEnter to read params).
+      (this._currentEl as any).scheduleUpdate?.();
       return;
     }
 
