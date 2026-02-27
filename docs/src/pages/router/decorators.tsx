@@ -57,20 +57,23 @@ class UserSettings extends LoomElement { ... }`}></code-block>
             <div class="dec-sig">@guard(name?)</div>
             <div class="dec-desc">
               Marks a method as a named route guard.
+              Guards always receive <code>RouteInfo</code> as their first argument,
+              giving access to <code>path</code>, <code>params</code>, <code>tag</code>, and <code>meta</code>.
               Return <code>true</code> to allow, <code>false</code> to block,
               or a <code>string</code> to redirect. Async guards are awaited.
             </div>
-            <code-block lang="ts" code={`import { guard } from "@toyz/loom/router";
+            <code-block lang="ts" code={`import { guard, type RouteInfo } from "@toyz/loom/router";
 
 @guard("auth")
-checkAuth(@inject(AuthService) auth: AuthService) {
+checkAuth(route: RouteInfo, @inject(AuthService) auth: AuthService) {
   return auth.isLoggedIn ? true : "/login";
 }
 
-// Name derived from method name:
-@guard()
-checkRole(@inject(UserStore) users: UserStore) {
-  return users.current?.role === "admin" ? true : "/forbidden";
+// Use route.meta to check role requirements:
+@guard("role")
+checkRole(route: RouteInfo, @inject(UserStore) users: UserStore) {
+  const required = route.meta.role as string;
+  return users.current?.role === required ? true : "/forbidden";
 }`}></code-block>
           </div>
         </section>

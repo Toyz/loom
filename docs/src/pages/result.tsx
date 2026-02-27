@@ -319,7 +319,7 @@ app.maybe(MyService).match({
             <code-block
               lang="ts"
               code={`@guard("auth")
-checkAuth(@inject(TokenStore) t: TokenStore) {
+checkAuth(route: RouteInfo, @inject(TokenStore) t: TokenStore) {
   if (!t.jwt) return LoomResult.err("/login");
   return LoomResult.OK;  // allow navigation
 }`}

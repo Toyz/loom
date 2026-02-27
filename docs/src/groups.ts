@@ -7,7 +7,7 @@
  * Open DevTools → Console to see the "docs-log" guard fire on every
  *    navigation. This is a live demo of @guard + @group working together.
  */
-import { group, guard } from "@toyz/loom/router";
+import { group, guard, type RouteInfo } from "@toyz/loom/router";
 import { service } from "@toyz/loom";
 
 // ── Demo guard ──
@@ -17,12 +17,14 @@ import { service } from "@toyz/loom";
 @service()
 export class DocsGuards {
   @guard("docs-log")
-  log() {
+  log(route: RouteInfo) {
     console.log(
-      "%c🧭 Loom Guard %c docs-log %c— route allowed ✓",
+      "%c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s",
       "color:#a78bfa;font-weight:bold",
       "color:#34d399;font-weight:bold",
       "color:#94a3b8",
+      "color:#64748b",
+      route.path,
     );
     return true;
   }

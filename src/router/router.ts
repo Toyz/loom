@@ -178,6 +178,14 @@ export class LoomRouter {
     // No guards at all = allow
     if (namedGuards.length === 0 && protoGuards.length === 0) return true;
 
+    // Build RouteInfo — passed as arg 0 to every guard
+    const routeInfo: RouteInfo = {
+      path,
+      params: match.params,
+      tag: match.entry.tag,
+      meta: match.entry.meta,
+    };
+
     // 1. Run named guards from the global registry
     for (const guardName of namedGuards) {
       const reg = guardRegistry.get(guardName);
@@ -186,8 +194,8 @@ export class LoomRouter {
         continue;
       }
 
-      const args = this._resolveInjectParams(reg.method, reg.key);
-      const result = await reg.method.apply(null, args);
+      const args = this._resolveGuardInjectParams(reg.method, reg.key);
+      const result = await reg.method.apply(null, [routeInfo, ...args]);
       if (result instanceof LoomResult) {
         if (!result.ok) return result.error as string ?? false;
         continue;
@@ -202,8 +210,8 @@ export class LoomRouter {
       // Skip if already run as a named guard
       if (namedGuards.some((n) => guardRegistry.get(n)?.key === key)) continue;
 
-      const args = this._resolveInjectParams(proto, key);
-      const result = await proto[key].apply(proto, args);
+      const args = this._resolveGuardInjectParams(proto, key);
+      const result = await proto[key].apply(proto, [routeInfo, ...args]);
       if (result instanceof LoomResult) {
         if (!result.ok) return result.error as string ?? false;
         continue;
@@ -231,6 +239,31 @@ export class LoomRouter {
     const args: any[] = [];
     for (const param of methodParams) {
       args[param.index] = app.get(param.key);
+    }
+    return args;
+  }
+
+  /**
+   * Resolve @inject parameters for a guard method.
+   *
+   * Guards receive `RouteInfo` as arg 0 (prepended by _checkGuards),
+   * so @inject indices are offset by −1 to build a clean args array
+   * that gets spread *after* routeInfo.
+   */
+  private _resolveGuardInjectParams(proto: any, method: string): any[] {
+    const injectMeta: Array<{ method: string; index: number; key: any }> =
+      proto[INJECT_PARAMS.key] ?? [];
+    const methodParams = injectMeta
+      .filter((m) => m.method === method)
+      .sort((a, b) => a.index - b.index);
+
+    if (methodParams.length === 0) return [];
+
+    const args: any[] = [];
+    for (const param of methodParams) {
+      // index 0 = routeInfo (prepended), so @inject index N maps to args[N-1]
+      const adjusted = param.index > 0 ? param.index - 1 : 0;
+      args[adjusted] = app.get(param.key);
     }
     return args;
   }

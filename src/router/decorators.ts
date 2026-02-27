@@ -162,6 +162,10 @@ function _tagForCtor(ctor: Function): string {
 /**
  * Mark a method as a named route guard.
  *
+ * Guards always receive `RouteInfo` as their first argument,
+ * giving access to `path`, `params`, `tag`, and `meta`.
+ * Additional `@inject` parameters follow after RouteInfo.
+ *
  * When used on a @service class, the guard automatically binds
  * to the service instance, enabling @inject accessors to resolve.
  *
@@ -171,8 +175,10 @@ function _tagForCtor(ctor: Function): string {
  *   @inject(AuthStore) accessor auth!: AuthStore;
  *
  *   @guard("auth")
- *   checkAuth() {
- *     return this.auth.isLoggedIn ? true : "/login";
+ *   checkAuth(route: RouteInfo) {
+ *     if (!this.auth.isLoggedIn) return "/login";
+ *     if (route.meta.role === "admin" && !this.auth.isAdmin) return "/forbidden";
+ *     return true;
  *   }
  * }
  * ```

@@ -32,23 +32,25 @@ export default class PageRouterGuards extends LoomElement {
               Async guards are awaited:
             </div>
             <code-block lang="ts" code={`import { service, inject } from "@toyz/loom";
-import { guard } from "@toyz/loom/router";
+import { guard, type RouteInfo } from "@toyz/loom/router";
 
 @service
 class Guards {
   @guard("auth")
-  checkAuth(@inject(AuthService) auth: AuthService) {
+  checkAuth(route: RouteInfo, @inject(AuthService) auth: AuthService) {
     return auth.isLoggedIn ? true : "/login";
   }
 
   @guard("admin")
-  checkAdmin(@inject(AuthService) auth: AuthService) {
-    return auth.role === "admin" || "/403";
+  checkAdmin(route: RouteInfo, @inject(AuthService) auth: AuthService) {
+    // Use route.meta to check role requirements set on the route
+    const requiredRole = route.meta.role as string ?? "admin";
+    return auth.role === requiredRole || "/403";
   }
 
   // Name derived from method name: "checkSubscription"
   @guard()
-  checkSubscription(@inject(BillingService) billing: BillingService) {
+  checkSubscription(route: RouteInfo, @inject(BillingService) billing: BillingService) {
     return billing.isActive ? true : "/upgrade";
   }
 }`}></code-block>
