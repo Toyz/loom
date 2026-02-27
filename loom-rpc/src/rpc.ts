@@ -123,12 +123,18 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
   let lastFetchTime = 0;
   let lastArgs: string | undefined;
   let fetching = false;
+  let controller: AbortController | null = null;
 
   const staleTime = opts?.staleTime ?? 0;
   const maxRetries = opts?.retry ?? 0;
   const eager = opts?.eager ?? true;
 
   async function runFetch(): Promise<void> {
+    // Abort any in-flight request
+    controller?.abort();
+    controller = new AbortController();
+    const { signal } = controller;
+
     let transport: RpcTransport;
     try {
       transport = app.get(RpcTransport);
@@ -161,7 +167,7 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
     let attempt = 0;
     while (true) {
       try {
-        data = await transport.call<TReturn>(routerName, method as string, args);
+        data = await transport.call<TReturn>(routerName, method as string, args, signal);
         error = undefined;
         loading = false;
         fetching = false;
@@ -169,6 +175,10 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
         scheduleUpdate();
         return;
       } catch (e) {
+        if (signal.aborted) {
+          fetching = false;
+          return; // Superseded by a newer fetch — silently stop
+        }
         attempt++;
         if (attempt > maxRetries) {
           error = e instanceof Error ? e : new Error(String(e));
@@ -247,7 +257,7 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
       if (data !== undefined && error === undefined) return fn(data);
       return LoomResult.err(error ?? new Error("No data"));
     },
-    match<R>(cases: { ok: (data: TReturn) => R; err: (error: Error) => R; loading?: () => R; [_: string]: unknown }): R {
+    match<R>(cases: { ok: (data: TReturn) => R; err: (error: Error) => R; loading?: () => R;[_: string]: unknown }): R {
       if (loading && data === undefined && error === undefined && cases.loading) {
         return cases.loading();
       }

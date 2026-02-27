@@ -17,7 +17,7 @@ import type { RpcRequest, RpcResponse } from "./types";
  * Registered as a DI service via `app.provide(RpcTransport, impl)`.
  */
 export abstract class RpcTransport {
-  abstract call<T>(router: string, method: string, args: any[]): Promise<T>;
+  abstract call<T>(router: string, method: string, args: any[], signal?: AbortSignal): Promise<T>;
 }
 
 /**
@@ -43,7 +43,7 @@ export class HttpTransport extends RpcTransport {
     this.headers = headers;
   }
 
-  async call<T>(router: string, method: string, args: any[]): Promise<T> {
+  async call<T>(router: string, method: string, args: any[], signal?: AbortSignal): Promise<T> {
     const url = `${this.baseUrl}/${router}/${method}`;
     const body: RpcRequest = { args };
 
@@ -54,6 +54,7 @@ export class HttpTransport extends RpcTransport {
         ...this.headers,
       },
       body: JSON.stringify(body),
+      signal,
     });
 
     if (!res.ok) {
