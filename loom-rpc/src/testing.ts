@@ -89,7 +89,7 @@ export class MockTransport extends RpcTransport {
     }
   }
 
-  async call<T>(router: string, method: string, args: any[]): Promise<T> {
+  async call<T>(router: string, method: string, args: any[], _signal?: AbortSignal): Promise<T> {
     this.calls.push({ router, method, args });
     const key = `${router}.${method}`;
 

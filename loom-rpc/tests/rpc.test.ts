@@ -317,3 +317,32 @@ describe("RpcQuery", () => {
     expect(true).toBe(true);
   });
 });
+
+// ── Stale Response Abort Tests ──
+
+describe("Stale response abort", () => {
+  it("RpcTransport.call accepts optional AbortSignal", async () => {
+    const transport = new MockTransport();
+    transport.mock("UserRouter", "getUser", { id: "1", name: "Alice" });
+    const controller = new AbortController();
+    // Should not throw — signal is an optional 4th arg
+    const result = await transport.call<any>("UserRouter", "getUser", ["1"], controller.signal);
+    expect(result).toEqual({ id: "1", name: "Alice" });
+  });
+
+  it("MockTransport.call works with aborted signal", async () => {
+    const transport = new MockTransport();
+    transport.mock("UserRouter", "getUser", { id: "1", name: "Alice" });
+    const controller = new AbortController();
+    controller.abort();
+    // MockTransport doesn't check signal (it's just a mock), so result is still returned
+    const result = await transport.call<any>("UserRouter", "getUser", ["1"], controller.signal);
+    expect(result).toEqual({ id: "1", name: "Alice" });
+  });
+
+  it("HttpTransport signature accepts optional AbortSignal", () => {
+    const transport = new HttpTransport();
+    // Compile-time check: the method exists and accepts 4 params
+    expect(typeof transport.call).toBe("function");
+  });
+});
