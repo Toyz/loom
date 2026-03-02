@@ -44,6 +44,7 @@ export { watch as watchService } from "../di";
 export { component, query, queryAll } from "../element";
 export { catch_, suspend, mount, unmount } from "../element";
 export { interval, timeout, debounce, throttle, animationFrame } from "../element";
+export { hotkey } from "../element";
 
 // Transform: value transforms, factory, typed helpers
 export { transform, createTransform, typed, typedTransformer } from "../transform";

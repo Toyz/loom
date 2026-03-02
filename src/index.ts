@@ -56,9 +56,9 @@ export {
   catch_, suspend, mount, unmount,
   event, observer,
   interval, timeout, debounce, throttle, animationFrame,
-  form, lazy, slot, transition,
+  form, lazy, slot, transition, hotkey,
 } from "./element";
-export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions } from "./element";
+export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions } from "./element";
 
 // Transform: value transforms
 export {

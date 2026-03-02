@@ -68,6 +68,12 @@ class LazyElementLifecycle extends LoomElement { }
 @searchable({ title: "Timing", section: "Element", icon: "zap", to: "/element/timing", keywords: ["interval", "timeout", "debounce", "throttle", "animation frame", "timing"], summary: "Auto-cleaned timer and animation frame decorators." })
 class LazyElementTiming extends LoomElement { }
 
+@route("/hotkey", { group: ElementGroup })
+@component("page-element-hotkey")
+@lazy(() => import("./element/hotkey"))
+@searchable({ title: "Hotkey", section: "Element", icon: "command", to: "/element/hotkey", keywords: ["hotkey", "keyboard", "shortcut", "key binding", "ctrl", "cmd", "combo"], summary: "Declarative keyboard shortcuts with auto-cleanup." })
+class LazyElementHotkey extends LoomElement { }
+
 @route("/css", { group: ElementGroup })
 @component("page-element-css")
 @lazy(() => import("./element/css"))
@@ -388,7 +394,7 @@ class LazyPackagesAnalyticsTesting extends LoomElement { }
 @component("page-packages-analytics-demo")
 @lazy(() => import("./examples/analytics"))
 @searchable({ title: "Analytics Demo", section: "Packages", icon: "zap", to: "/packages/analytics-demo", keywords: ["analytics", "demo", "live", "example", "interactive"], summary: "Interactive live demo of @track decorator with MockAnalytics." })
-class LazyPackagesAnalyticsDemo extends LoomElement {}
+class LazyPackagesAnalyticsDemo extends LoomElement { }
 
 // ── Flags ──
 
@@ -396,16 +402,16 @@ class LazyPackagesAnalyticsDemo extends LoomElement {}
 @component("page-packages-flags-overview")
 @lazy(() => import("./packages/flags-overview"))
 @searchable({ title: "Flags Overview", section: "Packages", icon: "package", to: "/packages/flags-overview", keywords: ["flags", "feature-flags", "loom-flags", "flag", "toggle", "overview"], summary: "Feature flags for Loom — decorator-driven with real-time reactive updates." })
-class LazyPackagesFlagsOverview extends LoomElement {}
+class LazyPackagesFlagsOverview extends LoomElement { }
 
 @route("/flags-testing", { group: PackagesGroup })
 @component("page-packages-flags-testing")
 @lazy(() => import("./packages/flags-testing"))
 @searchable({ title: "Flags Testing", section: "Packages", icon: "check", to: "/packages/flags-testing", keywords: ["flags", "test", "mock", "MockFlags", "assert"], summary: "MockFlags — drop-in test provider with assertions." })
-class LazyPackagesFlagsTesting extends LoomElement {}
+class LazyPackagesFlagsTesting extends LoomElement { }
 
 @route("/flags-demo", { group: PackagesGroup })
 @component("page-packages-flags-demo")
 @lazy(() => import("./examples/flags"))
 @searchable({ title: "Flags Demo", section: "Packages", icon: "zap", to: "/packages/flags-demo", keywords: ["flags", "demo", "live", "example", "interactive"], summary: "Interactive live demo of @flag decorator and <loom-flag> component." })
-class LazyPackagesFlagsDemo extends LoomElement {}
+class LazyPackagesFlagsDemo extends LoomElement { }

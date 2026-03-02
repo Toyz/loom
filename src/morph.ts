@@ -189,8 +189,13 @@ function morphNode(old: Node, next: Node): void {
       return;
     }
 
-    // Recurse children — pass childNodes directly (ArrayLike, no copy)
-    morphChildren(oldEl, nextEl.childNodes);
+    // Snapshot childNodes — childNodes is a LIVE NodeList.
+    // When morphChildren appends children from nextEl to oldEl,
+    // the live list shrinks mid-iteration, skipping every other child.
+    const nextChildren = nextEl.childNodes;
+    const snapshot: Node[] = new Array(nextChildren.length);
+    for (let i = 0; i < nextChildren.length; i++) snapshot[i] = nextChildren[i];
+    morphChildren(oldEl, snapshot);
   }
 }
 

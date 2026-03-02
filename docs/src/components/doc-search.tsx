@@ -5,7 +5,7 @@
  * Reads from the @searchable registry populated by lazy.ts.
  */
 
-import { LoomElement, component, reactive, css, mount, styles, animationFrame, query } from "@toyz/loom";
+import { LoomElement, component, reactive, css, mount, styles, animationFrame, query, hotkey } from "@toyz/loom";
 import { getSearchEntries, type SearchEntry } from "../search-registry";
 
 const style = css`
@@ -211,16 +211,9 @@ export class DocSearch extends LoomElement {
   private filteredResults: SearchEntry[] = [];
   private needsFocus = false;
 
-  @mount
-  setup() {
-
-    // Global ⌘K / Ctrl+K listener
-    window.addEventListener("keydown", (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        this.open();
-      }
-    });
+  @hotkey("ctrl+k", "meta+k", { global: true })
+  openViaHotkey() {
+    this.open();
   }
 
   @animationFrame
