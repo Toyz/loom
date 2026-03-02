@@ -9,7 +9,7 @@
  * RouteChanged fired before the outlet entered the DOM.
  */
 
-import { LoomElement } from "../element/element";
+import { LoomElement, type Schedulable } from "../element/element";
 import { component } from "../element/decorators";
 import { on } from "../decorators/events";
 import { prop } from "../store/decorators";
@@ -71,7 +71,7 @@ class LoomOutlet extends LoomElement {
       // Force update — route data changed but reactive setters may not
       // have fired (e.g. unbound params set via setAttribute, or
       // components that rely on @onRouteEnter to read params).
-      (this._currentEl as any).scheduleUpdate?.();
+      (this._currentEl as unknown as Schedulable).scheduleUpdate?.();
       return;
     }
 
@@ -105,14 +105,14 @@ class LoomOutlet extends LoomElement {
    * falls back to setAttribute for backward compat.
    */
   private _injectRouteData(el: HTMLElement, params: Record<string, string>, meta: Record<string, unknown> = {}): void {
-    const ctor = el.constructor as any;
-    const routeBindings = ctor[ROUTE_PROPS.key] ?? [];
-    const transforms = ctor[TRANSFORMS.key] as Map<string, Function> | undefined;
+    const ctor = el.constructor as object;
+    const routeBindings = (ROUTE_PROPS.from(ctor) ?? []) as Array<{ propKey: string; param?: string; params?: symbol; query?: string | symbol; meta?: string | symbol }>;
+    const transforms = TRANSFORMS.from(ctor) as Map<string, Function> | undefined;
     const queryMap = this._parseQuery();
     const boundParamKeys = new Set<string>();
 
     for (const binding of routeBindings) {
-      let value: any;
+      let value: unknown;
 
       if (binding.params === paramsSentinel) {
         // Full param decompose: @prop({params})
@@ -141,12 +141,12 @@ class LoomOutlet extends LoomElement {
       } else if (typeof value === "string") {
         // Auto-coerce string → number/boolean based on current property type
         // (same logic as attributeChangedCallback in @component)
-        const current = (el as any)[binding.propKey];
+        const current = (el as unknown as Record<string, unknown>)[binding.propKey];
         if (typeof current === "number") value = Number(value);
         else if (typeof current === "boolean") value = value !== "false";
       }
 
-      (el as any)[binding.propKey] = value;
+      (el as unknown as Record<string, unknown>)[binding.propKey] = value;
     }
 
     // Backward compat: set unbound params as attributes
@@ -168,8 +168,9 @@ class LoomOutlet extends LoomElement {
   }
 
   private _adoptParentStyles(el: HTMLElement): void {
-    if (typeof (el as any).adoptStyles === "function") {
-      (el as any).adoptStyles(this.styles);
+    const loomEl = el as unknown as { adoptStyles?: (styles: CSSStyleSheet[]) => void };
+    if (typeof loomEl.adoptStyles === "function") {
+      loomEl.adoptStyles(this.styles);
     }
   }
 

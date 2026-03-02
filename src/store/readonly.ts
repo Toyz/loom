@@ -28,7 +28,7 @@ export function readonly<This extends object, V>(
   const initedKey = Symbol(`readonly:inited:${name}`);
 
   return {
-    get(this: any): V {
+    get(this: This): V {
       const val = target.get.call(this) as V;
       // Freeze objects/arrays so .push(), .name = ... etc. throw
       if (val !== null && typeof val === "object" && !Object.isFrozen(val)) {
@@ -36,16 +36,17 @@ export function readonly<This extends object, V>(
       }
       return val;
     },
-    set(this: any, val: V) {
+    set(this: This, val: V) {
+      const self = this as unknown as Record<symbol, unknown>;
       // Allow: initial value, morph engine patches, and pre-init writes
-      if (!this[initedKey] || _readonlyBypass) {
+      if (!self[initedKey] || _readonlyBypass) {
         target.set.call(this, val);
-        this[initedKey] = true;
+        self[initedKey] = true;
         return;
       }
       throw new Error(`Cannot mutate readonly property '${name}'`);
     },
-    init(this: any, val: V): V {
+    init(this: This, val: V): V {
       // init runs during field initialization — allow it
       return val;
     },

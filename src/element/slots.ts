@@ -1,4 +1,5 @@
 import { CONNECT_HOOKS } from "../decorators/symbols";
+import type { Schedulable } from "./element";
 /**
  * Loom — @slot<...T> decorator (TC39 Stage 3)
  *
@@ -26,35 +27,39 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
   ): ClassAccessorDecoratorResult<This, T[number][]> => {
     const storageKey = Symbol(`slot:${String(context.name)}`);
 
-    context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-      this[CONNECT_HOOKS.key].push((el: any) => {
+    context.addInitializer(function () {
+      const self = this as object;
+      const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
+      const hook = (el: object) => {
+        const host = el as Schedulable & { shadow: ShadowRoot; track: (fn: () => void) => void } & Record<symbol, unknown>;
         // Defer to allow update() to render the slot elements first
         queueMicrotask(() => {
           const selector = name ? `slot[name="${name}"]` : "slot:not([name])";
-          const slotEl = el.shadow.querySelector(selector) as HTMLSlotElement | null;
+          const slotEl = host.shadow.querySelector(selector) as HTMLSlotElement | null;
 
           if (!slotEl) return;
 
           const updateSlotted = () => {
-            el[storageKey] = slotEl.assignedElements({ flatten: true });
-            el.scheduleUpdate?.();
+            host[storageKey] = slotEl.assignedElements({ flatten: true });
+            host.scheduleUpdate?.();
           };
 
           updateSlotted();
 
           slotEl.addEventListener("slotchange", updateSlotted);
-          el.track(() => slotEl.removeEventListener("slotchange", updateSlotted));
+          host.track(() => slotEl.removeEventListener("slotchange", updateSlotted));
         });
-      });
+      };
+      if (!hooks) CONNECT_HOOKS.set(self, [hook]);
+      else hooks.push(hook);
     });
 
     return {
-      get(this: any): T[number][] {
-        return this[storageKey] ?? [];
+      get(this: This): T[number][] {
+        return (this as unknown as Record<symbol, unknown>)[storageKey] as T[number][] ?? [];
       },
-      set(this: any, val: T[number][]) {
-        this[storageKey] = val;
+      set(this: This, val: T[number][]) {
+        (this as unknown as Record<symbol, unknown>)[storageKey] = val;
       },
     };
   };

@@ -25,10 +25,11 @@ import { ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
  */
 export function onRouteEnter(method: Function, context: ClassMethodDecoratorContext): void {
   const key = String(context.name);
-  context.addInitializer(function (this: any) {
-    const proto = Object.getPrototypeOf(this);
-    if (!proto[ROUTE_ENTER.key]) proto[ROUTE_ENTER.key] = [];
-    if (!proto[ROUTE_ENTER.key].includes(key)) proto[ROUTE_ENTER.key].push(key);
+  context.addInitializer(function () {
+    const proto = Object.getPrototypeOf(this) as object;
+    const existing = ROUTE_ENTER.from(proto) as string[] | undefined;
+    if (!existing) ROUTE_ENTER.set(proto, [key]);
+    else if (!existing.includes(key)) existing.push(key);
   });
 }
 
@@ -37,9 +38,10 @@ export function onRouteEnter(method: Function, context: ClassMethodDecoratorCont
  */
 export function onRouteLeave(method: Function, context: ClassMethodDecoratorContext): void {
   const key = String(context.name);
-  context.addInitializer(function (this: any) {
-    const proto = Object.getPrototypeOf(this);
-    if (!proto[ROUTE_LEAVE.key]) proto[ROUTE_LEAVE.key] = [];
-    if (!proto[ROUTE_LEAVE.key].includes(key)) proto[ROUTE_LEAVE.key].push(key);
+  context.addInitializer(function () {
+    const proto = Object.getPrototypeOf(this) as object;
+    const existing = ROUTE_LEAVE.from(proto) as string[] | undefined;
+    if (!existing) ROUTE_LEAVE.set(proto, [key]);
+    else if (!existing.includes(key)) existing.push(key);
   });
 }

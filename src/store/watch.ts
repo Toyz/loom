@@ -8,6 +8,7 @@
 
 import { app } from "../app";
 import { WATCHERS, CONNECT_HOOKS } from "../decorators/symbols";
+import type { Schedulable } from "../element/element";
 
 /**
  * Watch a local @reactive field, an external Reactive instance,
@@ -44,16 +45,19 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
 
     if (typeof target === "string") {
       // Form 1: local @reactive field — store metadata for @reactive to wire
-      context.addInitializer(function (this: any) {
-        if (!this[WATCHERS.key]) this[WATCHERS.key] = [];
-        this[WATCHERS.key].push({ field: target, key });
+      context.addInitializer(function () {
+        const self = this as object;
+        const existing = WATCHERS.from(self) as Array<{ field: string; key: string }> | undefined;
+        if (!existing) WATCHERS.set(self, [{ field: target, key }]);
+        else existing.push({ field: target, key });
       });
     } else if (typeof target === "function") {
       // Form 3: DI-resolved service constructor
       const service = target as new (...args: unknown[]) => unknown;
-      context.addInitializer(function (this: any) {
-        if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-        this[CONNECT_HOOKS.key].push((el: any) => {
+      context.addInitializer(function () {
+        const self = this as object;
+        const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
+        const hook = (el: object) => {
           const svc = app.get(service);
           const reactive = prop ? (svc as Record<string, unknown>)[prop] : svc;
           if (typeof (reactive as { subscribe?: Function })?.subscribe !== "function") {
@@ -63,22 +67,27 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
           }
           const unsub = (reactive as { subscribe: Function }).subscribe((v: unknown, p: unknown) => {
             method.call(el, v, p);
-            el.scheduleUpdate?.();
+            (el as unknown as Schedulable).scheduleUpdate?.();
           });
           return unsub;
-        });
+        };
+        if (!hooks) CONNECT_HOOKS.set(self, [hook]);
+        else hooks.push(hook);
       });
     } else if (typeof target === "object" && typeof target.subscribe === "function") {
       // Form 2: direct Reactive instance — subscribe on connect via CONNECT_HOOKS
-      context.addInitializer(function (this: any) {
-        if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-        this[CONNECT_HOOKS.key].push((el: any) => {
+      context.addInitializer(function () {
+        const self = this as object;
+        const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
+        const hook = (el: object) => {
           const unsub = target.subscribe((v: unknown, prev: unknown) => {
             method.call(el, v, prev);
-            el.scheduleUpdate?.();
+            (el as unknown as Schedulable).scheduleUpdate?.();
           });
           return unsub;
-        });
+        };
+        if (!hooks) CONNECT_HOOKS.set(self, [hook]);
+        else hooks.push(hook);
       });
     }
   };

@@ -40,17 +40,17 @@ export const group = createDecorator<[prefix: string, opts?: GroupOptions]>(
       guards: opts?.guards ?? [],
       meta: opts?.meta ?? {},
     };
-    (ctor as any)[GROUP_META] = meta;
+    (ctor as unknown as Record<symbol, unknown>)[GROUP_META] = meta;
 
     const existing = routes.find((r) => r.ctor === ctor);
-    if (existing && (ctor as any)[ROUTE_GROUP]) {
+    if (existing && (ctor as unknown as Record<symbol, unknown>)[ROUTE_GROUP]) {
       const newPattern = existing.pattern + prefix;
       const { regex, paramNames } = compilePattern(newPattern);
       existing.pattern = newPattern;
       existing.regex = regex;
       existing.paramNames = paramNames;
       existing.guards = [...meta.guards, ...existing.guards];
-      (ctor as any)[ROUTE_PATH] = newPattern;
+      (ctor as unknown as Record<symbol, unknown>)[ROUTE_PATH] = newPattern;
     }
   },
   { class: true },
@@ -58,13 +58,13 @@ export const group = createDecorator<[prefix: string, opts?: GroupOptions]>(
 
 // ── Group chain resolution ──
 
-function resolveGroupChain(groupCtor: unknown): { prefix: string; guards: string[]; meta: Record<string, unknown> } {
+function resolveGroupChain(groupCtor: Function): { prefix: string; guards: string[]; meta: Record<string, unknown> } {
   const chain: GroupMeta[] = [];
-  let current: any = groupCtor;
+  let current: Function | unknown = groupCtor;
 
-  while (current?.[GROUP_META]) {
-    chain.unshift(current[GROUP_META]);
-    current = current[ROUTE_GROUP];
+  while (current && (current as Record<symbol, unknown>)[GROUP_META]) {
+    chain.unshift((current as Record<symbol, unknown>)[GROUP_META] as GroupMeta);
+    current = (current as Record<symbol, unknown>)[ROUTE_GROUP];
   }
 
   let prefix = "";
@@ -84,7 +84,7 @@ interface RouteOptions {
   /** Named guards to check before this route is rendered */
   guards?: string[];
   /** Group constructor this route belongs to */
-  group?: unknown;
+  group?: Function;
   /** Named route identifier for programmatic navigation */
   name?: string;
   /** Arbitrary metadata accessible to guards and lifecycle hooks */
@@ -113,10 +113,10 @@ export const route = createDecorator<[pattern: string, opts?: RouteOptions]>(
         : chain.prefix + pattern;
       allGuards = [...chain.guards, ...allGuards];
       allMeta = { ...chain.meta, ...allMeta }; // route-level overrides group
-      (ctor as any)[ROUTE_GROUP] = opts.group;
+      (ctor as unknown as Record<symbol, unknown>)[ROUTE_GROUP] = opts.group;
     }
 
-    (ctor as any)[ROUTE_PATH] = fullPattern;
+    (ctor as unknown as Record<symbol, unknown>)[ROUTE_PATH] = fullPattern;
     const { regex, paramNames } = compilePattern(fullPattern);
 
     const entry: RouteEntry = {
@@ -152,9 +152,9 @@ export const route = createDecorator<[pattern: string, opts?: RouteOptions]>(
 
 /** Resolve the custom element tag for a constructor */
 function _tagForCtor(ctor: Function): string {
-  const name = (customElements as any).getName?.(ctor);
+  const name = (customElements as unknown as { getName?: (ctor: Function) => string | undefined }).getName?.(ctor);
   if (name) return name;
-  return (ctor as any).__loom_tag ?? ctor.name.toLowerCase();
+  return (ctor as unknown as Record<string, unknown>).__loom_tag as string ?? ctor.name.toLowerCase();
 }
 
 // ── @guard (method decorator — raw TC39, not createDecorator) ──
@@ -193,7 +193,7 @@ export function guard(name?: string) {
 
     // When the owning class is instantiated, rebind to the live instance
     // so @inject accessors (which need `this`) resolve correctly.
-    context.addInitializer(function (this: any) {
+    context.addInitializer(function () {
       guardRegistry.set(guardName, {
         method: method.bind(this),
         key,

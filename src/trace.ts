@@ -220,9 +220,9 @@ export function applyBindings(trace: TraceDeps): void {
       const bindings = trace.bindings.get(r);
       if (bindings) {
         for (let i = 0; i < bindings.length; i++) {
-          const p = bindings[i].patcher;
-          if ((p as any).__ran !== gen) {
-            (p as any).__ran = gen;
+          const p = bindings[i].patcher as (() => void) & { __ran?: number };
+          if (p.__ran !== gen) {
+            p.__ran = gen;
             toRun.push(p);
           }
         }

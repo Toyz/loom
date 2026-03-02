@@ -5,7 +5,7 @@
  * Configure via tsconfig: "jsxImportSource": "loom"
  */
 
-import { LOOM_EVENTS, LOOM_PROPS, loomEventProxy, type LoomEventMap, type LoomPropMap } from "./morph";
+import { LOOM_EVENTS, LOOM_PROPS, loomEventProxy, type LoomEventMap, type LoomPropMap, type LoomNode } from "./morph";
 import { startSubTrace, endSubTrace, addBinding } from "./trace";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -48,7 +48,7 @@ function acquireElement(tag: string, isSVG: boolean): HTMLElement | SVGElement {
 
 export function jsx(
   tag: string | Function,
-  props: Record<string, any>,
+  props: Record<string, unknown>,
 ): HTMLElement | SVGElement | DocumentFragment {
   if (typeof tag === "function") return tag(props);
 
@@ -57,9 +57,9 @@ export function jsx(
   // are rejected before touching the Set.
   const fc = tag.charCodeAt(0);
   const isSVG = (fc === 99 || fc === 100 || fc === 101 || fc === 102 ||   // c,d,e,f
-                 fc === 103 || fc === 105 || fc === 108 || fc === 109 ||   // g,i,l,m
-                 fc === 112 || fc === 114 || fc === 115 || fc === 116 ||   // p,r,s,t
-                 fc === 117) && SVG_TAGS.has(tag);                         // u
+    fc === 103 || fc === 105 || fc === 108 || fc === 109 ||   // g,i,l,m
+    fc === 112 || fc === 114 || fc === 115 || fc === 116 ||   // p,r,s,t
+    fc === 117) && SVG_TAGS.has(tag);                         // u
   const el = acquireElement(tag, isSVG);
 
   if (props) for (const key in props) {
@@ -69,12 +69,12 @@ export function jsx(
       let eventType = _eventTypeCache[key];
       if (!eventType) { eventType = key.slice(2).toLowerCase(); _eventTypeCache[key] = eventType; }
       // Track for morph diffing
-      let events: LoomEventMap = (el as any)[LOOM_EVENTS];
-      if (!events) { events = Object.create(null); (el as any)[LOOM_EVENTS] = events; }
-      if (!(eventType in events)) {
+      let events: LoomEventMap | undefined = (el as unknown as LoomNode).__loomEvents;
+      if (!events) { events = Object.create(null); (el as unknown as LoomNode).__loomEvents = events!; }
+      if (!(eventType in (events as LoomEventMap))) {
         el.addEventListener(eventType, loomEventProxy);
       }
-      events[eventType] = val;
+      events![eventType] = val as EventListener;
     } else if (key === "ref" && typeof val === "function") {
       val(el);
     } else if (key === "style" && typeof val === "object") {
@@ -102,27 +102,27 @@ export function jsx(
         }
       } else {
         if (isSVG) {
-          el.setAttribute("class", val);
+          el.setAttribute("class", val as string);
         } else {
-          (el as HTMLElement).className = val;
+          (el as HTMLElement).className = val as string;
         }
       }
     } else if (key === "htmlFor") {
-      el.setAttribute("for", val);
+      el.setAttribute("for", val as string);
     } else if (key === "rawHTML" || key === "innerHTML") {
-      el.innerHTML = val;
-      (el as any).__loomRawHTML = true;
+      el.innerHTML = val as string;
+      (el as unknown as LoomNode).__loomRawHTML = true;
     } else if (PROP_KEYS.has(key)) {
-      (el as any)[key] = val;
+      (el as unknown as Record<string, unknown>)[key] = val;
     } else if (typeof val === "boolean") {
       val ? el.setAttribute(key, "") : el.removeAttribute(key);
     } else if (typeof val === "object" || typeof val === "function") {
       // Non-primitive values (arrays, objects) — set as JS property
-      (el as any)[key] = val;
+      (el as unknown as Record<string, unknown>)[key] = val;
       // Track for morph diffing (so morph copies them to the existing element)
-      let tracked: LoomPropMap = (el as any)[LOOM_PROPS];
-      if (!tracked) { tracked = Object.create(null); (el as any)[LOOM_PROPS] = tracked; }
-      tracked[key] = val;
+      let tracked: LoomPropMap | undefined = (el as unknown as LoomNode).__loomProps;
+      if (!tracked) { tracked = Object.create(null); (el as unknown as LoomNode).__loomProps = tracked!; }
+      tracked![key] = val;
     } else {
       // Check for closure binding: class={() => this.theme}
       if (typeof val === "function") {
@@ -153,13 +153,13 @@ export function jsx(
 /** jsxs is the same as jsx — we don't do vDOM diffing */
 export const jsxs = jsx;
 
-export function Fragment(props: { children?: any }): DocumentFragment {
+export function Fragment(props: { children?: unknown }): DocumentFragment {
   const frag = document.createDocumentFragment();
   appendChildren(frag, props?.children);
   return frag;
 }
 
-function appendChildren(parent: Node, children: any): void {
+function appendChildren(parent: Node, children: unknown): void {
   if (children == null || children === false) return;
   if (Array.isArray(children)) {
     for (let i = 0; i < children.length; i++) appendChildren(parent, children[i]);
@@ -168,10 +168,10 @@ function appendChildren(parent: Node, children: any): void {
   } else if (typeof children === "function") {
     // Template function for custom elements: {(item) => <div>...</div>}
     // Distinguished from text closures by having declared parameters (fn.length > 0)
-    if ((parent as any).nodeType === 1 &&
-      (parent as any).tagName?.includes('-') &&
+    if ((parent as Element).nodeType === 1 &&
+      (parent as Element).tagName?.includes('-') &&
       children.length > 0) {
-      (parent as any).__childTemplate = children;
+      (parent as unknown as LoomNode).__childTemplate = children as unknown as Node | Node[];
       return;
     }
     // Phase 2: Closure binding for text — {() => this.count}
@@ -271,7 +271,7 @@ export interface LoomHTMLAttributes {
   onError?: EventHandler<Event>;
   onTransitionEnd?: EventHandler<TransitionEvent>;
   onAnimationEnd?: EventHandler<AnimationEvent>;
-  children?: any;
+  children?: unknown;
 }
 
 export interface LoomInputAttributes extends LoomHTMLAttributes {

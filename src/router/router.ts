@@ -123,10 +123,10 @@ export class LoomRouter {
       const oldEl = this._outlet.shadowRoot?.querySelector(this._previousTag)
         ?? this._outlet.querySelector(this._previousTag);
       if (oldEl) {
-        const handlers: string[] = (oldEl as any)[ROUTE_LEAVE.key]
-          ?? Object.getPrototypeOf(oldEl)?.[ROUTE_LEAVE.key] ?? [];
+        const handlers: string[] = (ROUTE_LEAVE.from(oldEl) as string[] | undefined)
+          ?? (ROUTE_LEAVE.from(Object.getPrototypeOf(oldEl) as object) as string[] | undefined) ?? [];
         for (const key of handlers) {
-          (oldEl as any)[key]?.();
+          (oldEl as unknown as Record<string, Function | undefined>)[key]?.();
         }
       }
     }
@@ -148,10 +148,10 @@ export class LoomRouter {
         const newEl = this._outlet?.shadowRoot?.querySelector(newTag)
           ?? this._outlet?.querySelector(newTag);
         if (newEl) {
-          const handlers: string[] = (newEl as any)[ROUTE_ENTER.key]
-            ?? Object.getPrototypeOf(newEl)?.[ROUTE_ENTER.key] ?? [];
+          const handlers: string[] = (ROUTE_ENTER.from(newEl) as string[] | undefined)
+            ?? (ROUTE_ENTER.from(Object.getPrototypeOf(newEl) as object) as string[] | undefined) ?? [];
           for (const key of handlers) {
-            (newEl as any)[key]?.(this._current.params, this._current.meta);
+            (newEl as unknown as Record<string, Function | undefined>)[key]?.(this._current.params, this._current.meta);
           }
         }
       });
@@ -227,16 +227,16 @@ export class LoomRouter {
    * Resolve @inject parameters for a method.
    * Uses the same INJECT_PARAMS metadata as @factory.
    */
-  private _resolveInjectParams(proto: any, method: string): any[] {
-    const injectMeta: Array<{ method: string; index: number; key: any }> =
-      proto[INJECT_PARAMS.key] ?? [];
+  private _resolveInjectParams(proto: object, method: string): unknown[] {
+    const injectMeta: Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }> =
+      (INJECT_PARAMS.from(proto) as Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }>) ?? [];
     const methodParams = injectMeta
       .filter((m) => m.method === method)
       .sort((a, b) => a.index - b.index);
 
     if (methodParams.length === 0) return [];
 
-    const args: any[] = [];
+    const args: unknown[] = [];
     for (const param of methodParams) {
       args[param.index] = app.get(param.key);
     }
@@ -250,16 +250,16 @@ export class LoomRouter {
    * so @inject indices are offset by −1 to build a clean args array
    * that gets spread *after* routeInfo.
    */
-  private _resolveGuardInjectParams(proto: any, method: string): any[] {
-    const injectMeta: Array<{ method: string; index: number; key: any }> =
-      proto[INJECT_PARAMS.key] ?? [];
+  private _resolveGuardInjectParams(proto: object, method: string): unknown[] {
+    const injectMeta: Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }> =
+      (INJECT_PARAMS.from(proto) as Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }>) ?? [];
     const methodParams = injectMeta
       .filter((m) => m.method === method)
       .sort((a, b) => a.index - b.index);
 
     if (methodParams.length === 0) return [];
 
-    const args: any[] = [];
+    const args: unknown[] = [];
     for (const param of methodParams) {
       // index 0 = routeInfo (prepended), so @inject index N maps to args[N-1]
       const adjusted = param.index > 0 ? param.index - 1 : 0;

@@ -81,7 +81,7 @@ class LoomLink extends LoomElement {
     if (!a) return;
     const resolved = typeof this._target() === "string"
       ? this._target() as string
-      : buildPath((this._target() as any).name, (this._target() as any).params);
+      : buildPath((this._target() as { name: string; params?: Record<string, string> }).name, (this._target() as { name: string; params?: Record<string, string> }).params);
     a.href = this.router.href(this._target());
     a.className = this.router.current.path === resolved ? "active" : "";
   }

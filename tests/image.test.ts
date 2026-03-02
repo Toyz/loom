@@ -37,17 +37,17 @@ class MockImage {
 // ── Mock observers so @component doesn't blow up ──
 
 class MockIntersectionObserver {
-  constructor(_cb: any, _opts?: any) {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  constructor(_cb: any, _opts?: any) { }
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 }
 
 class MockResizeObserver {
-  constructor(_cb: any) {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  constructor(_cb: any) { }
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 }
 
 beforeEach(() => {
@@ -118,5 +118,89 @@ describe("<loom-image> cache API", () => {
     for (const url of urls) {
       expect(LoomImage.isCached(url)).toBe(true);
     }
+  });
+});
+
+// ── Error handling tests ──
+
+class MockFailImage {
+  onload: (() => void) | null = null;
+  onerror: ((e: unknown) => void) | null = null;
+  complete = false;
+  private _src = "";
+
+  get src() { return this._src; }
+  set src(v: string) {
+    this._src = v;
+    // Simulate async image error
+    setTimeout(() => {
+      this.onerror?.(new Error("load failed"));
+    }, 0);
+  }
+}
+
+describe("<loom-image> error handling", () => {
+  beforeEach(() => {
+    LoomImage.clearCache();
+  });
+
+  it("preload rejects when image fails to load", async () => {
+    (globalThis as any).Image = MockFailImage;
+
+    await expect(LoomImage.preload("https://example.com/broken.jpg"))
+      .rejects.toBeTruthy();
+
+    expect(LoomImage.isCached("https://example.com/broken.jpg")).toBe(false);
+    // Restore for other tests
+    (globalThis as any).Image = MockImage;
+  });
+
+  it("preload does not cache failed URLs", async () => {
+    (globalThis as any).Image = MockFailImage;
+
+    try {
+      await LoomImage.preload("https://example.com/fail.jpg");
+    } catch {
+      // expected
+    }
+
+    expect(LoomImage.isCached("https://example.com/fail.jpg")).toBe(false);
+    (globalThis as any).Image = MockImage;
+  });
+
+  it("preload resolves successful URLs even when mixed with failures", async () => {
+    // Sequence mock: first call succeeds, second fails
+    let callCount = 0;
+    class MixedMockImage {
+      onload: (() => void) | null = null;
+      onerror: ((e: unknown) => void) | null = null;
+      complete = false;
+      private _src = "";
+
+      get src() { return this._src; }
+      set src(v: string) {
+        this._src = v;
+        const shouldFail = v.includes("fail");
+        setTimeout(() => {
+          callCount++;
+          if (shouldFail) this.onerror?.(new Error("fail"));
+          else { this.complete = true; this.onload?.(); }
+        }, 0);
+      }
+    }
+
+    (globalThis as any).Image = MixedMockImage;
+
+    const results = await Promise.allSettled([
+      LoomImage.preload("https://example.com/ok.jpg"),
+      LoomImage.preload("https://example.com/fail.jpg"),
+    ]);
+
+    expect(results[0].status).toBe("fulfilled");
+    expect(results[1].status).toBe("rejected");
+    expect(LoomImage.isCached("https://example.com/ok.jpg")).toBe(true);
+    expect(LoomImage.isCached("https://example.com/fail.jpg")).toBe(false);
+
+    (globalThis as any).Image = MockImage;
   });
 });

@@ -19,17 +19,17 @@ export class LoomSymbol<T = unknown> {
   }
 
   /** Read metadata from target — typed */
-  from(target: any): T | undefined {
-    return target[this.key];
+  from(target: object): T | undefined {
+    return (target as Record<symbol, unknown>)[this.key] as T | undefined;
   }
 
   /** Write metadata to target — typed */
-  set(target: any, value: T): void {
-    target[this.key] = value;
+  set(target: object, value: T): void {
+    (target as Record<symbol, unknown>)[this.key] = value;
   }
 
   /** Check if target has this metadata */
-  has(target: any): boolean {
+  has(target: object): boolean {
     return this.key in target;
   }
 
@@ -53,21 +53,21 @@ export function createSymbol<T = unknown>(name: string): LoomSymbol<T> {
 
 export { SYMBOL_REGISTRY };
 
-export const REACTIVES           = createSymbol("reactives");
-export const PROPS               = createSymbol("props");
-export const ON_HANDLERS         = createSymbol("on");
-export const WATCHERS            = createSymbol("watch");
-export const EMITTERS            = createSymbol("emit");
-export const COMPUTED_DIRTY      = createSymbol("computed:dirty");
-export const CATCH_HANDLER       = createSymbol("catch");
-export const CATCH_HANDLERS      = createSymbol("catch:named");
-export const MOUNT_HANDLERS      = createSymbol("mount");
-export const UNMOUNT_HANDLERS    = createSymbol("unmount");
-export const INJECT_PARAMS       = createSymbol("inject:params");
-export const ROUTE_PROPS         = createSymbol("route:props");
-export const TRANSFORMS          = createSymbol("transforms");
-export const ROUTE_ENTER         = createSymbol("route:enter");
-export const ROUTE_LEAVE         = createSymbol("route:leave");
-export const CONNECT_HOOKS       = createSymbol("connect:hooks");
+export const REACTIVES = createSymbol("reactives");
+export const PROPS = createSymbol("props");
+export const ON_HANDLERS = createSymbol("on");
+export const WATCHERS = createSymbol("watch");
+export const EMITTERS = createSymbol("emit");
+export const COMPUTED_DIRTY = createSymbol("computed:dirty");
+export const CATCH_HANDLER = createSymbol("catch");
+export const CATCH_HANDLERS = createSymbol("catch:named");
+export const MOUNT_HANDLERS = createSymbol("mount");
+export const UNMOUNT_HANDLERS = createSymbol("unmount");
+export const INJECT_PARAMS = createSymbol("inject:params");
+export const ROUTE_PROPS = createSymbol("route:props");
+export const TRANSFORMS = createSymbol("transforms");
+export const ROUTE_ENTER = createSymbol("route:enter");
+export const ROUTE_LEAVE = createSymbol("route:leave");
+export const CONNECT_HOOKS = createSymbol("connect:hooks");
 export const FIRST_UPDATED_HOOKS = createSymbol("first-updated:hooks");
-export const SERVICE_NAME        = createSymbol<string>("service:name");
+export const SERVICE_NAME = createSymbol<string>("service:name");

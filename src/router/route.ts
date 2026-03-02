@@ -10,7 +10,7 @@ export interface RouteEntry {
   regex: RegExp;
   paramNames: string[];
   tag: string;
-  ctor: any;
+  ctor: Function;
   /** Named guards to check before rendering this route */
   guards: string[];
   /** Optional name for named-route navigation */

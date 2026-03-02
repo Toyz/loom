@@ -17,9 +17,7 @@ interface FrameCallback {
 }
 
 class RenderLoop {
-  private callbacks = new Set<FrameCallback>();
   private sorted: FrameCallback[] = [];
-  private dirty = false;
   private running = false;
   private prevTime = 0;
   private rafId = 0;
@@ -27,20 +25,27 @@ class RenderLoop {
   /**
    * Register a frame callback at the given layer.
    * Lower layers execute first. Returns an unsubscribe function.
+   * Uses binary insertion to maintain sort order without re-sorting.
    */
   add(layer: number, fn: (dt: number, t: number) => void): () => void {
     const entry: FrameCallback = { layer, fn };
-    this.callbacks.add(entry);
-    this.dirty = true;
+    // Binary insert to maintain sorted order
+    let lo = 0, hi = this.sorted.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >>> 1;
+      if (this.sorted[mid].layer <= layer) lo = mid + 1;
+      else hi = mid;
+    }
+    this.sorted.splice(lo, 0, entry);
     return () => {
-      this.callbacks.delete(entry);
-      this.dirty = true;
+      const idx = this.sorted.indexOf(entry);
+      if (idx >= 0) this.sorted.splice(idx, 1);
     };
   }
 
   /** Number of active callbacks */
   get size(): number {
-    return this.callbacks.size;
+    return this.sorted.length;
   }
 
   start(): void {
@@ -63,15 +68,10 @@ class RenderLoop {
     const dt = this.prevTime ? (timestamp - this.prevTime) / 1000 : 0;
     this.prevTime = timestamp;
 
-    // Re-sort if callbacks changed
-    if (this.dirty) {
-      this.sorted = [...this.callbacks].sort((a, b) => a.layer - b.layer);
-      this.dirty = false;
-    }
-
-    // Dispatch in layer order
-    for (const entry of this.sorted) {
-      entry.fn(dt, timestamp);
+    // Dispatch in layer order (already sorted)
+    const sorted = this.sorted;
+    for (let i = 0; i < sorted.length; i++) {
+      sorted[i].fn(dt, timestamp);
     }
 
     this.rafId = requestAnimationFrame(this.tick);

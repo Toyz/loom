@@ -24,7 +24,15 @@ export const LOOM_PROPS = "__loomProps";
 export type LoomEventMap = Record<string, EventListener>;
 
 /** Type for tracked JS properties on an element */
-export type LoomPropMap = Record<string, any>;
+export type LoomPropMap = Record<string, unknown>;
+
+/** Typed interface for Loom's DOM expando properties */
+export interface LoomNode {
+  __loomEvents?: LoomEventMap;
+  __loomProps?: LoomPropMap;
+  __loomRawHTML?: boolean;
+  __childTemplate?: Node | Node[];
+}
 
 // ── Public API ──
 
@@ -39,7 +47,7 @@ export function morph(root: ShadowRoot | HTMLElement, newTree: Node | Node[]): v
 
 // ── Core algorithm ──
 
-function morphChildren(parent: Node, newChildren: Node[]): void {
+function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
   // Build keyed index & optionally collect keep elements
   let oldKeyed: Map<string, Element> | null = null;
   let hasKeep = false;
@@ -168,7 +176,7 @@ function morphNode(old: Node, next: Node): void {
 
     // innerHTML / rawHTML — if the new element used rawHTML, just slam it
     // The JSX runtime sets a __loomRawHTML marker
-    if ((nextEl as any).__loomRawHTML) {
+    if ((nextEl as unknown as LoomNode).__loomRawHTML) {
       if (oldEl.innerHTML !== nextEl.innerHTML) {
         oldEl.innerHTML = nextEl.innerHTML;
       }
@@ -177,15 +185,12 @@ function morphNode(old: Node, next: Node): void {
 
     // Light DOM custom elements manage their own children — don't recurse.
     // Just like shadow DOM elements, the parent morph only patches attributes.
-    if ((oldEl as any).constructor?.__loom_noshadow) {
+    if ((oldEl.constructor as unknown as Record<string, unknown>)?.__loom_noshadow) {
       return;
     }
 
-    // Recurse children — avoid Array.from iterator overhead
-    const nextNodes = nextEl.childNodes;
-    const nextArr: Node[] = new Array(nextNodes.length);
-    for (let i = 0; i < nextNodes.length; i++) nextArr[i] = nextNodes[i];
-    morphChildren(oldEl, nextArr);
+    // Recurse children — pass childNodes directly (ArrayLike, no copy)
+    morphChildren(oldEl, nextEl.childNodes);
   }
 }
 
@@ -212,17 +217,17 @@ function patchAttributes(old: Element, next: Element): void {
 }
 
 export function loomEventProxy(this: Element, e: Event): void {
-  const handler = ((this as any)[LOOM_EVENTS] as LoomEventMap)?.[e.type];
+  const handler = ((this as unknown as LoomNode).__loomEvents)?.[e.type];
   if (typeof handler === "function") {
     handler.call(this, e);
-  } else if (handler && typeof (handler as any).handleEvent === "function") {
-    (handler as any).handleEvent(e);
+  } else if (handler && typeof (handler as unknown as { handleEvent?: Function }).handleEvent === "function") {
+    (handler as unknown as { handleEvent: (e: Event) => void }).handleEvent(e);
   }
 }
 
 function patchEvents(old: Element, next: Element): void {
-  const oldEvents: LoomEventMap = (old as any)[LOOM_EVENTS];
-  const newEvents: LoomEventMap = (next as any)[LOOM_EVENTS];
+  const oldEvents: LoomEventMap | undefined = (old as unknown as LoomNode).__loomEvents;
+  const newEvents: LoomEventMap | undefined = (next as unknown as LoomNode).__loomEvents;
   // Early exit: both have no events
   if (!oldEvents && !newEvents) return;
   const oe: LoomEventMap = oldEvents ?? Object.create(null);
@@ -248,7 +253,7 @@ function patchEvents(old: Element, next: Element): void {
   let hasNew = false;
   for (const _ in ne) { hasNew = true; break; }
   if (hasNew) {
-    (old as any)[LOOM_EVENTS] = oe;
+    (old as unknown as LoomNode).__loomEvents = oe;
   }
 }
 
@@ -259,8 +264,8 @@ const PROP_KEYS = ["value", "checked", "selected", "indeterminate"] as const;
 function patchProperties(old: HTMLElement, next: HTMLElement): void {
   for (let i = 0; i < PROP_KEYS.length; i++) {
     const key = PROP_KEYS[i];
-    if (key in next && (old as any)[key] !== (next as any)[key]) {
-      (old as any)[key] = (next as any)[key];
+    if (key in next && (old as unknown as Record<string, unknown>)[key] !== (next as unknown as Record<string, unknown>)[key]) {
+      (old as unknown as Record<string, unknown>)[key] = (next as unknown as Record<string, unknown>)[key];
     }
   }
 }
@@ -268,8 +273,8 @@ function patchProperties(old: HTMLElement, next: HTMLElement): void {
 // ── JSX JS-property patching ──
 
 function patchJSProps(old: HTMLElement, next: HTMLElement): void {
-  const newProps: LoomPropMap | undefined = (next as any)[LOOM_PROPS];
-  const oldProps: LoomPropMap | undefined = (old as any)[LOOM_PROPS];
+  const newProps: LoomPropMap | undefined = (next as unknown as LoomNode).__loomProps;
+  const oldProps: LoomPropMap | undefined = (old as unknown as LoomNode).__loomProps;
   // Early exit: both have no JS props
   if (!newProps && !oldProps) return;
   const op: LoomPropMap = oldProps ?? Object.create(null);
@@ -286,15 +291,15 @@ function patchJSProps(old: HTMLElement, next: HTMLElement): void {
     setReadonlyBypass(true);
     try {
       for (const key in newProps) {
-        if ((old as any)[key] !== newProps[key]) {
-          (old as any)[key] = newProps[key];
+        if ((old as unknown as Record<string, unknown>)[key] !== newProps[key]) {
+          (old as unknown as Record<string, unknown>)[key] = newProps[key];
         }
         op[key] = newProps[key];
       }
     } finally {
       setReadonlyBypass(false);
     }
-    (old as any)[LOOM_PROPS] = op;
+    (old as unknown as LoomNode).__loomProps = op;
   }
 }
 
@@ -322,14 +327,19 @@ function canMorph(old: Node, next: Node): boolean {
   return false;
 }
 
-function normalizeChildren(tree: Node | Node[]): Node[] {
+/** Reusable single-element wrapper to avoid allocating [tree] on every call */
+const _singleWrap: Node[] = [null!];
+
+function normalizeChildren(tree: Node | Node[]): ArrayLike<Node> {
   if (Array.isArray(tree)) return tree;
-  // DocumentFragment — extract children without iterator
+  // DocumentFragment — must snapshot because morphChildren moves nodes
+  // out of the fragment, mutating the live childNodes list
   if (tree.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
     const nodes = tree.childNodes;
     const arr: Node[] = new Array(nodes.length);
     for (let i = 0; i < nodes.length; i++) arr[i] = nodes[i];
     return arr;
   }
-  return [tree];
+  _singleWrap[0] = tree;
+  return _singleWrap;
 }

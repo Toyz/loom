@@ -11,6 +11,7 @@ import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, TRAN
 import { Reactive } from "./reactive";
 import { bus } from "../bus";
 import type { PersistOptions } from "./storage";
+import type { Schedulable } from "../element/element";
 
 /**
  * Staging area for @prop registrations.
@@ -42,56 +43,58 @@ export function reactive<This extends object, V>(
   target: ClassAccessorDecoratorTarget<This, V>,
   context: ClassAccessorDecoratorContext<This, V>,
 ): ClassAccessorDecoratorResult<This, V> {
-   const key = String(context.name);
+  const key = String(context.name);
   const storageKey = Symbol(key);
 
   // Store field name for LoomElement introspection
-  context.addInitializer(function (this: any) {
-    if (!this.constructor[REACTIVES.key]) this.constructor[REACTIVES.key] = [];
-    if (!this.constructor[REACTIVES.key].includes(key)) {
-      this.constructor[REACTIVES.key].push(key);
-    }
+  context.addInitializer(function () {
+    const ctor = this!.constructor as object;
+    const existing = REACTIVES.from(ctor) as string[] | undefined;
+    if (!existing) REACTIVES.set(ctor, [key]);
+    else if (!existing.includes(key)) existing.push(key);
   });
 
   return {
-    get(this: any): V {
+    get(this: This): V {
+      const self = this as unknown as Record<symbol, unknown> & Record<string, unknown>;
       // Eagerly create the Reactive on first read so recordRead() fires
       // during traced update() calls — ensures this dep is tracked.
-      if (!this[storageKey]) {
+      if (!self[storageKey]) {
         const backingValue = target.get.call(this) as V;
         const r = new Reactive(backingValue);
-        this[storageKey] = r;
-        r.subscribe(() => this.scheduleUpdate?.());
+        self[storageKey] = r;
+        r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
 
         // Wire @watch handlers (WATCHERS is populated because method
         // addInitializer runs BEFORE accessor field init in TC39)
-        const watchers = this[WATCHERS.key];
+        const watchers = WATCHERS.from(self) as Array<{ field: string; key: string }> | undefined;
         if (watchers) {
           for (let i = 0; i < watchers.length; i++) {
             const w = watchers[i];
-            if (w.field === key) r.subscribe((v: V, prev: V) => this[w.key](v, prev));
+            if (w.field === key) r.subscribe((v: V, prev: V) => (self[w.key] as Function)(v, prev));
           }
         }
 
         // Wire @emit handlers
-        const emitters = this[EMITTERS.key];
+        const emitters = EMITTERS.from(self) as Array<{ field: string; factory: (v: V) => object }> | undefined;
         if (emitters) {
           for (let i = 0; i < emitters.length; i++) {
             const e = emitters[i];
-            if (e.field === key) r.subscribe((v: V) => bus.emit(e.factory(v)));
+            if (e.field === key) r.subscribe((v: V) => bus.emit(e.factory(v) as import("../event").LoomEvent));
           }
         }
       }
-      return (this[storageKey] as Reactive<V>).value;
+      return (self[storageKey] as Reactive<V>).value;
     },
-    set(this: any, val: V) {
+    set(this: This, val: V) {
+      const self = this as unknown as Record<symbol, unknown> & Record<string, unknown>;
       // Ensure Reactive exists (getter may not have run yet,
       // e.g. attributeChangedCallback before connectedCallback)
-      if (!this[storageKey]) (this as any)[key];
-      this[storageKey].set(val);
+      if (!self[storageKey]) void (self[key]);
+      (self[storageKey] as Reactive<V>).set(val);
     },
-    init(this: any, val: V): V {
-      return val;
+    init(this: This, _val: V): V {
+      return _val;
     },
   };
 }
@@ -167,16 +170,17 @@ export function prop<This extends object, V>(
     );
 
     // Store route binding metadata
-    ctx.addInitializer(function (this: any) {
-      const ctor = this.constructor;
-      if (!ctor[ROUTE_PROPS.key]) ctor[ROUTE_PROPS.key] = [];
+    ctx.addInitializer(function () {
+      const ctor = (this as object & { constructor: object }).constructor;
+      const existing = ROUTE_PROPS.from(ctor) as RouteBinding[] | undefined;
 
       const binding: RouteBinding = { propKey };
       if (opts.params) binding.params = opts.params;
       if (opts.param) binding.param = opts.param;
       if (opts.query) binding.query = opts.query;
       if (opts.meta) binding.meta = opts.meta;
-      ctor[ROUTE_PROPS.key].push(binding);
+      if (!existing) ROUTE_PROPS.set(ctor, [binding]);
+      else existing.push(binding);
     });
 
     return result;
@@ -200,21 +204,20 @@ export function computed<This extends object, V>(
   const dirtyKey = Symbol(`dirty:${key}`);
 
   // Track dirty key for scheduleUpdate invalidation
-  context.addInitializer(function (this: any) {
-    if (!this.constructor.prototype[COMPUTED_DIRTY.key]) {
-      this.constructor.prototype[COMPUTED_DIRTY.key] = [];
-    }
-    if (!this.constructor.prototype[COMPUTED_DIRTY.key].includes(dirtyKey)) {
-      this.constructor.prototype[COMPUTED_DIRTY.key].push(dirtyKey);
-    }
+  context.addInitializer(function () {
+    const proto = ((this as object & { constructor: { prototype: object } }).constructor).prototype;
+    const existing = COMPUTED_DIRTY.from(proto) as symbol[] | undefined;
+    if (!existing) COMPUTED_DIRTY.set(proto, [dirtyKey]);
+    else if (!existing.includes(dirtyKey)) existing.push(dirtyKey);
   });
 
-  return function (this: any): V {
-    if (this[dirtyKey] !== false) {
-      this[cacheKey] = target.call(this);
-      this[dirtyKey] = false;
+  return function (this: This): V {
+    const self = this as unknown as Record<symbol, V | boolean>;
+    if (self[dirtyKey] !== false) {
+      self[cacheKey] = target.call(this);
+      self[dirtyKey] = false;
     }
-    return this[cacheKey];
+    return self[cacheKey] as V;
   };
 }
 
@@ -289,27 +292,29 @@ export function store<T extends object>(
     const proxyKey = Symbol(`store:proxy:${key}`);
 
     return {
-      get(this: any): T {
-        if (!this[reactiveKey]) {
+      get(this: This): T {
+        const self = this as unknown as Record<symbol, unknown>;
+        if (!self[reactiveKey]) {
           const initial = JSON.parse(JSON.stringify(defaults));
           const r = new Reactive<T>(initial, persist);
-          this[reactiveKey] = r;
-          r.subscribe(() => this.scheduleUpdate?.());
-          this[proxyKey] = createDeepProxy(r.value, r);
+          self[reactiveKey] = r;
+          r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
+          self[proxyKey] = createDeepProxy(r.value, r);
         }
         // Touch Reactive.value so recordRead() fires during traced update()
-        (this[reactiveKey] as Reactive<T>).value;
-        return this[proxyKey];
+        (self[reactiveKey] as Reactive<T>).value;
+        return self[proxyKey] as T;
       },
-      set(this: any, val: T) {
-        if (!this[reactiveKey]) {
+      set(this: This, val: T) {
+        const self = this as unknown as Record<symbol, unknown>;
+        if (!self[reactiveKey]) {
           const r = new Reactive<T>(val, persist);
-          this[reactiveKey] = r;
-          r.subscribe(() => this.scheduleUpdate?.());
-          this[proxyKey] = createDeepProxy(r.value, r);
+          self[reactiveKey] = r;
+          r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
+          self[proxyKey] = createDeepProxy(r.value, r);
         } else {
-          this[reactiveKey].set(val);
-          this[proxyKey] = createDeepProxy(this[reactiveKey].value, this[reactiveKey]);
+          (self[reactiveKey] as Reactive<T>).set(val);
+          self[proxyKey] = createDeepProxy((self[reactiveKey] as Reactive<T>).value, self[reactiveKey] as Reactive<T>);
         }
       },
     };

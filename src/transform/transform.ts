@@ -23,10 +23,11 @@ export function transform<This extends object, V>(fn: (value: unknown) => V) {
     context: ClassAccessorDecoratorContext<This, V>,
   ): void => {
     const key = String(context.name);
-    context.addInitializer(function (this: any) {
-      const ctor = this.constructor;
-      if (!ctor[TRANSFORMS.key]) ctor[TRANSFORMS.key] = new Map<string, Function>();
-      ctor[TRANSFORMS.key].set(key, fn);
+    context.addInitializer(function () {
+      const ctor = (this as object & { constructor: object }).constructor;
+      const existing = TRANSFORMS.from(ctor) as Map<string, Function> | undefined;
+      if (!existing) TRANSFORMS.set(ctor, new Map<string, Function>([[key, fn]]));
+      else existing.set(key, fn);
     });
   };
 }

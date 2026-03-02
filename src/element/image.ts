@@ -6,6 +6,7 @@
  *  - In-memory image cache (static Map) — repeated URLs are instant
  *  - Smooth fade-in on load
  *  - Customizable placeholder (slot or default shimmer)
+ *  - Error fallback with optional retry URL and customizable error slot
  *
  * Usage:
  *   <loom-image src="/photo.jpg" alt="Description" />
@@ -14,6 +15,11 @@
  * Custom placeholder:
  *   <loom-image src="/photo.jpg">
  *     <div slot="placeholder" class="my-skeleton">Loading...</div>
+ *   </loom-image>
+ *
+ * Custom error state:
+ *   <loom-image src="/photo.jpg" fallback="/fallback.jpg">
+ *     <div slot="error">Failed to load image</div>
  *   </loom-image>
  */
 
@@ -34,7 +40,8 @@ const imageStyles = css`
     line-height: 0;
   }
 
-  .placeholder {
+  .placeholder,
+  .error {
     position: absolute;
     inset: 0;
     border-radius: inherit;
@@ -42,7 +49,8 @@ const imageStyles = css`
     transition: opacity 0.3s ease;
   }
 
-  .placeholder.hidden {
+  .placeholder.hidden,
+  .error.hidden {
     opacity: 0;
     pointer-events: none;
   }
@@ -64,6 +72,23 @@ const imageStyles = css`
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+  }
+
+  .default-error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.06);
+    border-radius: inherit;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .default-error svg {
+    width: 32px;
+    height: 32px;
+    opacity: 0.5;
   }
 
   img {
@@ -101,10 +126,14 @@ export class LoomImage extends LoomElement {
   /** Object-fit mode for the image */
   @prop accessor fit: string = "cover";
 
+  /** Fallback image URL — tried when the primary src fails */
+  @prop accessor fallback = "";
+
   // ── Internal state ──
 
   private _loaded = false;
   private _visible = false;
+  private _error = false;
 
   // ── DOM refs ──
 
@@ -113,6 +142,9 @@ export class LoomImage extends LoomElement {
 
   @query<HTMLDivElement>(".placeholder")
   accessor placeholderEl!: HTMLDivElement;
+
+  @query<HTMLDivElement>(".error")
+  accessor errorEl!: HTMLDivElement;
 
   // ── Lazy loading via @observer ──
 
@@ -143,10 +175,27 @@ export class LoomImage extends LoomElement {
       this.applyImage(img.src);
     };
     img.onerror = () => {
-      // Still hide placeholder on error
-      if (this.placeholderEl) this.placeholderEl.classList.add("hidden");
+      // Try fallback if available and not already using it
+      if (this.fallback && this.src !== this.fallback) {
+        const fallbackImg = new Image();
+        fallbackImg.onload = () => {
+          imageCache.set(this.fallback, fallbackImg);
+          this.applyImage(fallbackImg.src);
+        };
+        fallbackImg.onerror = () => this._showError();
+        fallbackImg.src = this.fallback;
+        return;
+      }
+      this._showError();
     };
     img.src = this.src;
+  }
+
+  /** Transition to error state — hides placeholder, shows error slot */
+  private _showError(): void {
+    this._error = true;
+    if (this.placeholderEl) this.placeholderEl.classList.add("hidden");
+    if (this.errorEl) this.errorEl.classList.remove("hidden");
   }
 
   private applyImage(src: string) {
@@ -222,7 +271,23 @@ export class LoomImage extends LoomElement {
 
     placeholder.appendChild(slot);
 
-    return [placeholder, img];
+    // Error wrapper: user-slotted content or default broken-image icon
+    const errorWrapper = document.createElement("div");
+    errorWrapper.className = "error hidden";
+    errorWrapper.setAttribute("loom-keep", "");
+
+    const errorSlot = document.createElement("slot");
+    errorSlot.name = "error";
+
+    // Default error icon shown when no slotted content
+    const defaultError = document.createElement("div");
+    defaultError.className = "default-error";
+    defaultError.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2z"/><circle cx="15.5" cy="9.5" r="1.5"/><line x1="4" y1="4" x2="20" y2="20" stroke-width="2"/></svg>`;
+    errorSlot.appendChild(defaultError);
+
+    errorWrapper.appendChild(errorSlot);
+
+    return [placeholder, errorWrapper, img];
   }
 
   shouldUpdate(): boolean {

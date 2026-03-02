@@ -20,16 +20,16 @@ import { SYMBOL_REGISTRY } from "../decorators/symbols";
  * Reads all registered symbols from the constructor and logs to console.
  */
 export function inspect(el: Element): void {
-  if (!el || typeof (el as any).tagName !== "string") {
+  if (!el || typeof el.tagName !== "string") {
     console.warn("[Loom] inspect() requires an Element");
     return;
   }
 
-  const ctor = el.constructor as any;
+  const ctor = el.constructor as unknown as Record<string | symbol, unknown>;
   const tag = el.tagName.toLowerCase();
 
   // Collect all registered metadata
-  const meta: Record<string, any> = {};
+  const meta: Record<string, unknown> = {};
   for (const [name, sym] of SYMBOL_REGISTRY) {
     const val = ctor[sym.key];
     if (val !== undefined) {
@@ -39,11 +39,11 @@ export function inspect(el: Element): void {
   }
 
   // Extract current reactive state
-  const state: Record<string, any> = {};
-  const reactiveKeys: string[] = meta.reactives ?? [];
+  const state: Record<string, unknown> = {};
+  const reactiveKeys: string[] = meta.reactives as string[] ?? [];
   for (const key of reactiveKeys) {
     try {
-      state[key] = (el as any)[key];
+      state[key] = (el as unknown as Record<string, unknown>)[key];
     } catch {
       state[key] = "<error reading>";
     }
@@ -51,15 +51,15 @@ export function inspect(el: Element): void {
 
   // Extract current prop values
   const rawProps = meta.props;
-  const props: Record<string, any> = {};
+  const props: Record<string, unknown> = {};
   const propKeyList: string[] =
-    rawProps instanceof Map ? [...rawProps.keys()] :
-    rawProps instanceof Set ? [...rawProps] :
-    Array.isArray(rawProps) ? rawProps.map((p: any) => typeof p === "string" ? p : p.key) :
-    [];
+    rawProps instanceof Map ? [...rawProps.keys()] as string[] :
+      rawProps instanceof Set ? [...rawProps] as string[] :
+        Array.isArray(rawProps) ? rawProps.map((p: unknown) => typeof p === "string" ? p : (p as { key: string }).key) :
+          [];
   for (const k of propKeyList) {
     try {
-      props[k] = (el as any)[k];
+      props[k] = (el as unknown as Record<string, unknown>)[k];
     } catch {
       props[k] = "<error reading>";
     }
@@ -68,7 +68,7 @@ export function inspect(el: Element): void {
   // Pretty print
   const shadow = !ctor.__loom_noshadow;
   const stylesheetCount =
-    (shadow ? el.shadowRoot?.adoptedStyleSheets?.length : (el.getRootNode() as any).adoptedStyleSheets?.length) ?? 0;
+    (shadow ? el.shadowRoot?.adoptedStyleSheets?.length : (el.getRootNode() as unknown as { adoptedStyleSheets?: CSSStyleSheet[] }).adoptedStyleSheets?.length) ?? 0;
 
   console.groupCollapsed(
     `%cLoom %c<${tag}>%c ${shadow ? "shadow" : "light"} DOM`,
@@ -96,5 +96,5 @@ export function inspect(el: Element): void {
  * After calling this, use __loom.inspect($0) in the console.
  */
 export function installGlobalHook(): void {
-  (window as any).__loom = { inspect, SYMBOL_REGISTRY };
+  (window as unknown as Record<string, unknown>).__loom = { inspect, SYMBOL_REGISTRY };
 }

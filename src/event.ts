@@ -19,7 +19,7 @@ export abstract class LoomEvent {
 
   /** Construct and emit this event through the global bus */
   static dispatch<T extends LoomEvent>(
-    this: new (...args: any[]) => T,
+    this: new (...args: unknown[]) => T,
     ...args: ConstructorParameters<typeof this>
   ): void {
     bus.emit(new this(...args));
@@ -46,7 +46,7 @@ export abstract class LoomEvent {
   toJSON(): Record<string, unknown> {
     const out: Record<string, unknown> = {};
     for (const key of Object.keys(this)) {
-      out[key] = (this as any)[key];
+      out[key] = (this as unknown as Record<string, unknown>)[key];
     }
     return out;
   }

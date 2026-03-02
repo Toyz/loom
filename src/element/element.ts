@@ -6,6 +6,11 @@ import { morph } from "../morph";
 import { app } from "../app";
 import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, type TraceDeps } from "../trace";
 
+/** Structural type for objects that support Loom's render scheduling */
+export interface Schedulable {
+  scheduleUpdate?: () => void;
+}
+
 export abstract class LoomElement extends HTMLElement {
   /** Access the LoomApp instance for inline provider resolution */
   protected get app() { return app; }
@@ -17,7 +22,7 @@ export abstract class LoomElement extends HTMLElement {
 
   constructor() {
     super();
-    if ((this.constructor as any).__loom_noshadow) {
+    if ((this.constructor as unknown as Record<string, unknown>).__loom_noshadow) {
       // Light DOM mode — render directly into the host element.
       // Cast to ShadowRoot so all existing code (morph, $, $$, css) works unchanged.
       this.shadow = this as unknown as ShadowRoot;
@@ -91,7 +96,7 @@ export abstract class LoomElement extends HTMLElement {
 
   connectedCallback(): void {
     // Run decorator-registered connect hooks (from @mount, @interval, @watch, etc.)
-    const hooks = (this as any)[CONNECT_HOOKS.key];
+    const hooks = CONNECT_HOOKS.from(this) as Array<(el: LoomElement) => (() => void) | void> | undefined;
     if (hooks) {
       for (let i = 0; i < hooks.length; i++) {
         const cleanup = hooks[i](this);
@@ -100,7 +105,7 @@ export abstract class LoomElement extends HTMLElement {
     }
 
     // Trigger initial render for reactive components
-    const hasReactives = ((this as any)[REACTIVES.key]?.length ?? 0) > 0;
+    const hasReactives = ((REACTIVES.from(this.constructor as object) as string[] | undefined)?.length ?? 0) > 0;
     const overridesUpdate = this.update !== LoomElement.prototype.update;
     if (hasReactives || overridesUpdate) this.scheduleUpdate();
   }
@@ -148,10 +153,10 @@ export abstract class LoomElement extends HTMLElement {
 
     // Tier 2 — FAST PATCH: all dirty deps have bindings
     if (this.__traceDeps && canFastPatch(this.__traceDeps)) {
-      const dirtyKeys = (this as any)[COMPUTED_DIRTY.key];
+      const dirtyKeys = COMPUTED_DIRTY.from(this) as symbol[] | undefined;
       if (dirtyKeys) {
         for (let i = 0; i < dirtyKeys.length; i++) {
-          (this as any)[dirtyKeys[i]] = true;
+          (this as unknown as Record<symbol, boolean>)[dirtyKeys[i]] = true;
         }
       }
       applyBindings(this.__traceDeps);
@@ -203,7 +208,7 @@ export abstract class LoomElement extends HTMLElement {
 
     this._hasUpdated = true;
     this.firstUpdated();
-    const hooks = (this as any)[FIRST_UPDATED_HOOKS.key];
+    const hooks = FIRST_UPDATED_HOOKS.from(this) as Array<(el: LoomElement) => (() => void) | void> | undefined;
     if (hooks) {
       for (let i = 0; i < hooks.length; i++) {
         const cleanup = hooks[i](this);
@@ -217,10 +222,10 @@ export abstract class LoomElement extends HTMLElement {
    */
   private _fullRender(): void {
     // Dirty all @computed caches
-    const dirtyKeys = (this as any)[COMPUTED_DIRTY.key];
+    const dirtyKeys = COMPUTED_DIRTY.from(this) as symbol[] | undefined;
     if (dirtyKeys) {
       for (let i = 0; i < dirtyKeys.length; i++) {
-        (this as any)[dirtyKeys[i]] = true;
+        (this as unknown as Record<symbol, boolean>)[dirtyKeys[i]] = true;
       }
     }
 
@@ -241,7 +246,7 @@ export abstract class LoomElement extends HTMLElement {
       this.firstUpdated();
       // Run decorator-registered first-updated hooks (from @form, etc.)
       // These fire after the first morph(), so shadow DOM content exists.
-      const fuhooks = (this as any)[FIRST_UPDATED_HOOKS.key];
+      const fuhooks = FIRST_UPDATED_HOOKS.from(this) as Array<(el: LoomElement) => (() => void) | void> | undefined;
       if (fuhooks) {
         for (let i = 0; i < fuhooks.length; i++) {
           const cleanup = fuhooks[i](this);

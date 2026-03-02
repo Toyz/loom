@@ -12,6 +12,7 @@ import type { ApiState, ApiOptions, InterceptRegistration } from "./types";
 import { Reactive } from "../store/reactive";
 import { createApiState } from "./state";
 import { interceptRegistry } from "./registry";
+import type { Schedulable } from "../element/element";
 import { WATCHERS } from "../decorators/symbols";
 
 // Re-export for barrel
@@ -79,7 +80,7 @@ export const intercept = createDecorator<[nameOrOpts?: string | InterceptOptions
  * ```
  */
 export function api<T extends object>(
-  fnOrOpts: ((el?: any) => Promise<T>) | ApiOptions<T>,
+  fnOrOpts: ((el?: object) => Promise<T>) | ApiOptions<T>,
 ) {
   return <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, ApiState<T>>,
@@ -92,30 +93,31 @@ export function api<T extends object>(
       typeof fnOrOpts === "function" ? { fn: fnOrOpts } : fnOrOpts;
 
     return {
-      get(this: any): ApiState<T> {
-        if (!this[stateKey]) {
+      get(this: This): ApiState<T> {
+        const self = this as unknown as Record<symbol, unknown> & Record<string, unknown>;
+        if (!self[stateKey]) {
           // Sentinel Reactive for trace integration — notified on every state change
           const sentinel = new Reactive(0);
-          this[traceKey] = sentinel;
-          sentinel.subscribe(() => this.scheduleUpdate?.());
+          self[traceKey] = sentinel;
+          sentinel.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
           const notify = () => { sentinel.set((v: number) => v + 1); };
-          this[stateKey] = createApiState<T>(opts, notify, this, String(context.name));
+          self[stateKey] = createApiState<T>(opts, notify, self, String(context.name));
 
           // Wire @watch handlers for this accessor
-          const watchers = this[WATCHERS.key];
+          const watchers = WATCHERS.from(self) as Array<{ field: string; key: string }> | undefined;
           if (watchers) {
             for (const w of watchers) {
               if (w.field === String(context.name)) {
-                sentinel.subscribe(() => this[w.key](this[stateKey], undefined));
+                sentinel.subscribe(() => (self[w.key] as Function)(self[stateKey], undefined));
               }
             }
           }
         }
         // Read sentinel.value so recordRead() fires during traced update()
-        (this[traceKey] as Reactive<number>).value;
-        return this[stateKey];
+        (self[traceKey] as Reactive<number>).value;
+        return self[stateKey] as ApiState<T>;
       },
-      set(this: any, _val: ApiState<T>) {
+      set(this: This, _val: ApiState<T>) {
         // Ignore external sets — state is managed internally
       },
     };
