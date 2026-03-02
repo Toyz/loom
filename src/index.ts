@@ -57,8 +57,9 @@ export {
   event, observer,
   interval, timeout, debounce, throttle, animationFrame,
   form, lazy, slot, transition, hotkey,
+  log, LogTransport, ConsoleTransport,
 } from "./element";
-export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions } from "./element";
+export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, LogEntry, LogLevel, LogOptions } from "./element";
 
 // Transform: value transforms
 export {

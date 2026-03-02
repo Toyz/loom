@@ -68,11 +68,6 @@ class LazyElementLifecycle extends LoomElement { }
 @searchable({ title: "Timing", section: "Element", icon: "zap", to: "/element/timing", keywords: ["interval", "timeout", "debounce", "throttle", "animation frame", "timing"], summary: "Auto-cleaned timer and animation frame decorators." })
 class LazyElementTiming extends LoomElement { }
 
-@route("/hotkey", { group: ElementGroup })
-@component("page-element-hotkey")
-@lazy(() => import("./element/hotkey"))
-@searchable({ title: "Hotkey", section: "Element", icon: "command", to: "/element/hotkey", keywords: ["hotkey", "keyboard", "shortcut", "key binding", "ctrl", "cmd", "combo"], summary: "Declarative keyboard shortcuts with auto-cleanup." })
-class LazyElementHotkey extends LoomElement { }
 
 @route("/css", { group: ElementGroup })
 @component("page-element-css")
@@ -263,6 +258,18 @@ class LazyDecoratorsEvents extends LoomElement { }
 @lazy(() => import("./decorators/transform"))
 @searchable({ title: "Transform", section: "Decorators", icon: "refresh", to: "/decorators/transform", keywords: ["transform", "@transform", "pipe", "accessor", "computed"], summary: "Value transformation decorators for parsing and conversion." })
 class LazyDecoratorTransform extends LoomElement { }
+
+@route("/hotkey", { group: DecoratorsGroup })
+@component("page-decorator-hotkey")
+@lazy(() => import("./decorators/hotkey"))
+@searchable({ title: "Hotkey", section: "Decorators", icon: "command", to: "/decorators/hotkey", keywords: ["hotkey", "keyboard", "shortcut", "key binding", "ctrl", "cmd", "combo"], summary: "Declarative keyboard shortcuts with auto-cleanup." })
+class LazyDecoratorHotkey extends LoomElement { }
+
+@route("/log", { group: DecoratorsGroup })
+@component("page-decorator-log")
+@lazy(() => import("./decorators/log"))
+@searchable({ title: "Log", section: "Decorators", icon: "zap", to: "/decorators/log", keywords: ["log", "logging", "transport", "console", "sentry", "debug", "structured"], summary: "Structured method logging with pluggable transports." })
+class LazyDecoratorLog extends LoomElement { }
 
 @route("/symbols", { group: DecoratorsGroup })
 @component("page-decorator-symbols")
