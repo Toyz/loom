@@ -121,36 +121,65 @@ export function throttle(ms: number) {
 /**
  * Centralized rAF loop via RenderLoop. Method receives (deltaTime, timestamp).
  * Use layer to control execution order (lower = earlier).
+ * Use fps to cap the callback rate (default: uncapped, runs every frame).
  *
  * ```ts
- * @animationFrame(10)       // layer 10
+ * @animationFrame(10)                        // layer 10, every frame
  * draw(dt: number, t: number) { ... }
  *
- * @animationFrame()          // default layer 0
- * physics(dt: number) { ... }
+ * @animationFrame({ fps: 30 })               // 30fps, layer 0
+ * particles(dt: number, t: number) { ... }
  *
- * @animationFrame            // also valid
+ * @animationFrame({ fps: 24, layer: 5 })     // 24fps, layer 5
+ * ambient(dt: number, t: number) { ... }
+ *
+ * @animationFrame                             // also valid (layer 0, every frame)
  * render(dt: number) { ... }
  * ```
  */
-const _af = createDecorator<[layer: number]>((method, _key, layer) => {
+
+export interface AnimationFrameOptions {
+  /** Execution layer — lower layers run first (default: 0) */
+  layer?: number;
+  /** Target frames per second — caps callback rate (default: uncapped) */
+  fps?: number;
+}
+
+const _af = createDecorator<[layer: number, fps: number | undefined]>((method, _key, layer, fps) => {
   return (el: HTMLElement) => {
+    if (fps && fps > 0 && fps < 60) {
+      const budget = 1 / fps;
+      let acc = 0;
+      return renderLoop.add(layer, (dt: number, t: number) => {
+        acc += dt;
+        if (acc >= budget) {
+          acc -= budget;
+          method.call(el, dt, t);
+        }
+      });
+    }
     return renderLoop.add(layer, (dt: number, t: number) => method.call(el, dt, t));
   };
 });
 
+export function animationFrame(opts: AnimationFrameOptions): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function animationFrame(layer?: number): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function animationFrame(method: Function, context: ClassMethodDecoratorContext): void;
 export function animationFrame(
-  methodOrLayer?: Function | number,
+  methodOrLayerOrOpts?: Function | number | AnimationFrameOptions,
   context?: ClassMethodDecoratorContext,
 ): void | ((method: Function, context: ClassMethodDecoratorContext) => void) {
   // Called as @animationFrame (no parens) — method is first arg
-  if (typeof methodOrLayer === "function" && context) {
-    _af(0)(methodOrLayer, context);
+  if (typeof methodOrLayerOrOpts === "function" && context) {
+    _af(0, undefined)(methodOrLayerOrOpts, context);
     return;
   }
+  // Called as @animationFrame({ fps: 30, layer: 5 })
+  if (typeof methodOrLayerOrOpts === "object" && methodOrLayerOrOpts !== null) {
+    const opts = methodOrLayerOrOpts as AnimationFrameOptions;
+    return _af(opts.layer ?? 0, opts.fps);
+  }
   // Called as @animationFrame() or @animationFrame(layer)
-  const layer = typeof methodOrLayer === "number" ? methodOrLayer : 0;
-  return _af(layer);
+  const layer = typeof methodOrLayerOrOpts === "number" ? methodOrLayerOrOpts : 0;
+  return _af(layer, undefined);
 }

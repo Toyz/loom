@@ -88,12 +88,15 @@ onScroll() {
             <h2>@animationFrame</h2>
           </div>
           <div class="feature-entry">
-            <div class="dec-sig">@animationFrame(layer?)</div>
+            <div class="dec-sig">@animationFrame(layer?) | @animationFrame(options?)</div>
             <div class="dec-desc">
               Centralized <span class="ic">requestAnimationFrame</span> loop via <span class="ic">RenderLoop</span>.
               Method receives <span class="ic">(dt, timestamp)</span>. Lower layers run first.
+              Optionally cap the FPS to skip frames — perfect for ambient effects,
+              UI counters, or particle fade-outs that don't need 60fps.
             </div>
-            <code-block lang="ts" code={`@animationFrame(0)   // physics first
+            <code-block lang="ts" code={`// Layer-based ordering (full 60fps)
+@animationFrame(0)   // physics first
 physics(dt: number) {
   this.velocity += this.gravity * dt;
 }
@@ -102,7 +105,35 @@ physics(dt: number) {
 draw(dt: number) {
   this.ctx.clearRect(0, 0, this.w, this.h);
   this.ctx.fillRect(this.x, this.y, 10, 10);
+}
+
+// FPS-capped — runs at ~30fps instead of 60
+@animationFrame({ fps: 30 })
+particles(dt: number) {
+  this.updateParticles(dt);
+}
+
+// Combined — layer 5, capped at 24fps
+@animationFrame({ fps: 24, layer: 5 })
+ambient(dt: number, t: number) {
+  this.ambientGlow = Math.sin(t / 1000) * 0.5 + 0.5;
 }`}></code-block>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <strong>Options object:</strong>
+            </div>
+            <table class="api-table">
+              <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td><code>layer</code></td><td>number</td><td>0</td><td>Execution order — lower layers run first</td></tr>
+                <tr><td><code>fps</code></td><td>number</td><td>uncapped</td><td>Target frames per second (1–59). Skips frames to match the target rate.</td></tr>
+              </tbody>
+            </table>
+            <div class="note">
+              FPS capping uses a zero-allocation dt accumulator — just a number comparison
+              per frame. The global render loop stays at 60fps; individual callbacks self-throttle.
+            </div>
           </div>
         </section>
 
@@ -119,6 +150,7 @@ draw(dt: number) {
               <tr><td><code>@debounce(ms)</code></td><td>Delay until idle</td><td>clearTimeout on disconnect</td></tr>
               <tr><td><code>@throttle(ms)</code></td><td>Rate-limit calls</td><td>clearTimeout on disconnect</td></tr>
               <tr><td><code>@animationFrame(n)</code></td><td>rAF loop, layer-ordered</td><td>Unregistered on disconnect</td></tr>
+              <tr><td><code>@animationFrame({'{'}fps, layer{'}'})</code></td><td>FPS-capped rAF loop</td><td>Unregistered on disconnect</td></tr>
             </tbody>
           </table>
           <div class="note">

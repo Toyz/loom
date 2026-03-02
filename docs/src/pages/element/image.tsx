@@ -64,6 +64,12 @@ export default class PageElementImage extends LoomElement {
                 <td>"cover"</td>
                 <td>CSS object-fit value (cover, contain, fill, etc.)</td>
               </tr>
+              <tr>
+                <td><code>fallback</code></td>
+                <td>string</td>
+                <td>""</td>
+                <td>Fallback image URL — tried when the primary src fails to load</td>
+              </tr>
             </tbody>
           </table>
         </section>
@@ -95,6 +101,8 @@ export default class PageElementImage extends LoomElement {
             <li>On first intersection, the image is fetched and stored in a static <span class="ic">Map</span> cache</li>
             <li>Repeated URLs skip the network entirely — the cached <span class="ic">HTMLImageElement</span> is reused instantly</li>
             <li>A default shimmer skeleton shows while loading, or slot your own placeholder</li>
+            <li>If the image fails, the <span class="ic">fallback</span> URL is tried first</li>
+            <li>If both fail, the <span class="ic">error</span> slot is shown (default: broken-image icon)</li>
             <li>The image fades in with a 300ms <span class="ic">opacity</span> transition</li>
             <li><span class="ic">loom-keep</span> prevents the <span class="ic">&lt;img&gt;</span> from being morphed</li>
           </ul>
@@ -111,6 +119,21 @@ export default class PageElementImage extends LoomElement {
               replace the default shimmer. It fades out when the image loads.
             </div>
             <code-block lang="tsx" code={CUSTOM_PLACEHOLDER}></code-block>
+          </div>
+        </section>
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="alert-triangle" size={20} color="var(--rose)"></loom-icon>
+            <h2>Error Handling</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              When an image fails to load, <span class="ic">&lt;loom-image&gt;</span> first tries the{" "}
+              <span class="ic">fallback</span> URL (if set). If both fail, the <span class="ic">error</span>{" "}
+              slot is shown — either your custom content or a default broken-image icon.
+            </div>
+            <code-block lang="tsx" code={ERROR_HANDLING}></code-block>
           </div>
         </section>
 
@@ -164,6 +187,13 @@ class MyPage extends LoomElement {
           height={400}
           fit="contain"
         />
+
+        {/* With fallback for broken images */}
+        <loom-image
+          src="/photo.jpg"
+          fallback="/placeholder.jpg"
+          alt="With fallback"
+        />
       </div>
     );
   }
@@ -183,6 +213,32 @@ console.log(LoomImage.isCached("/hero-banner.jpg")); // true
 
 // Clear cache when needed
 LoomImage.clearCache(); // clear all`;
+
+const ERROR_HANDLING = `{/* Fallback URL — tried when src fails */}
+<loom-image src="/broken.jpg" fallback="/backup.jpg" />
+
+{/* Custom error state — slot your own content */}
+<loom-image src="/missing.jpg">
+  <div slot="error" style="
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #1a1a2e;
+    color: #f87171;
+  ">
+    <span>⚠ Image unavailable</span>
+  </div>
+</loom-image>
+
+{/* Fallback + custom error (error shows only if both fail) */}
+<loom-image src="/photo.jpg" fallback="/fallback.jpg">
+  <my-error-card slot="error" />
+</loom-image>
+
+{/* Default — shows a built-in broken-image icon */}
+<loom-image src="/nope.jpg" />`;
 
 const CUSTOM_PLACEHOLDER = `{/* Default — built-in shimmer skeleton */}
 <loom-image src="/photo.jpg" />

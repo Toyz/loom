@@ -26,7 +26,7 @@ export { event } from "./events";
 export { observer } from "./observers";
 
 // Timing decorators
-export { interval, timeout, debounce, throttle, animationFrame } from "./timing";
+export { interval, timeout, debounce, throttle, animationFrame, type AnimationFrameOptions } from "./timing";
 
 // Form decorator
 export { form } from "./form";
