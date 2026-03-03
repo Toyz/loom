@@ -53,6 +53,8 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   { name: "@animationFrame", id: "animationframe", color: "var(--amber)", category: "Timing" },
   { name: "@hotkey", id: "hotkey", color: "var(--amber)", category: "Timing" },
   { name: "@log", id: "log", color: "var(--amber)", category: "Timing" },
+  { name: "@provide", id: "provide", color: "var(--cyan)", category: "Context" },
+  { name: "@consume", id: "consume", color: "var(--cyan)", category: "Context" },
 
   // Transform
   { name: "@transform", id: "transform", color: "var(--emerald)", category: "Transform" },

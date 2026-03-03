@@ -58,8 +58,9 @@ export {
   interval, timeout, debounce, throttle, animationFrame,
   form, lazy, slot, transition, hotkey,
   log, LogTransport, ConsoleTransport,
+  provide, consume, ContextRequestEvent,
 } from "./element";
-export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, LogEntry, LogLevel, LogOptions } from "./element";
+export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, LogEntry, LogLevel, LogOptions, ContextCallback } from "./element";
 
 // Transform: value transforms
 export {

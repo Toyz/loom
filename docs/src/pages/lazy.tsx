@@ -271,6 +271,12 @@ class LazyDecoratorHotkey extends LoomElement { }
 @searchable({ title: "Log", section: "Decorators", icon: "zap", to: "/decorators/log", keywords: ["log", "logging", "transport", "console", "sentry", "debug", "structured"], summary: "Structured method logging with pluggable transports." })
 class LazyDecoratorLog extends LoomElement { }
 
+@route("/context", { group: DecoratorsGroup })
+@component("page-decorator-context")
+@lazy(() => import("./decorators/context"))
+@searchable({ title: "Context", section: "Decorators", icon: "thread", to: "/decorators/context", keywords: ["context", "provide", "consume", "shadow dom", "cross-boundary", "W3C", "data sharing"], summary: "Cross-shadow-DOM data sharing with class-based keys." })
+class LazyDecoratorContext extends LoomElement { }
+
 @route("/symbols", { group: DecoratorsGroup })
 @component("page-decorator-symbols")
 @lazy(() => import("./decorators/symbols"))

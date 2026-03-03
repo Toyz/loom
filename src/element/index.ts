@@ -50,3 +50,7 @@ export type { HotkeyOptions } from "./hotkey";
 // Log decorator + transport
 export { log, LogTransport, ConsoleTransport, resetLogTransport } from "./log";
 export type { LogEntry, LogLevel, LogOptions } from "./log";
+
+// Context: provide/consume across shadow boundaries
+export { provide, consume, ContextRequestEvent } from "./context";
+export type { ContextCallback } from "./context";
