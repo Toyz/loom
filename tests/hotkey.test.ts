@@ -224,4 +224,75 @@ describe("@hotkey", () => {
         document.dispatchEvent(key("Escape"));
         expect(fn).not.toHaveBeenCalled();
     });
+
+    it("object combo form: { key, ctrl }", async () => {
+        const tag = nextTag();
+        const fn = vi.fn();
+
+        class El extends LoomElement {
+            @hotkey({ key: "k", ctrl: true, global: true })
+            handler() { fn(); }
+        }
+        customElements.define(tag, El);
+
+        await fixture<El>(tag);
+        document.dispatchEvent(key("k", { ctrlKey: true }));
+        expect(fn).toHaveBeenCalledOnce();
+    });
+
+    it("object combo form: mod key (cross-platform)", async () => {
+        const tag = nextTag();
+        const fn = vi.fn();
+
+        class El extends LoomElement {
+            @hotkey({ key: "s", mod: true, global: true })
+            handler() { fn(); }
+        }
+        customElements.define(tag, El);
+
+        await fixture<El>(tag);
+        // In test env navigator.platform may not be Mac, so mod → ctrl
+        document.dispatchEvent(key("s", { ctrlKey: true }));
+        expect(fn).toHaveBeenCalledOnce();
+    });
+
+    it("object combo with shift+alt", async () => {
+        const tag = nextTag();
+        const fn = vi.fn();
+
+        class El extends LoomElement {
+            @hotkey({ key: "p", ctrl: true, shift: true, global: true })
+            handler() { fn(); }
+        }
+        customElements.define(tag, El);
+
+        await fixture<El>(tag);
+
+        // Wrong modifiers — should not fire
+        document.dispatchEvent(key("p", { ctrlKey: true }));
+        expect(fn).not.toHaveBeenCalled();
+
+        // Correct modifiers
+        document.dispatchEvent(key("p", { ctrlKey: true, shiftKey: true }));
+        expect(fn).toHaveBeenCalledOnce();
+    });
+
+    it("mixed string and object combos", async () => {
+        const tag = nextTag();
+        const fn = vi.fn();
+
+        class El extends LoomElement {
+            @hotkey("ctrl+k", { key: "k", meta: true }, { global: true })
+            handler() { fn(); }
+        }
+        customElements.define(tag, El);
+
+        await fixture<El>(tag);
+
+        document.dispatchEvent(key("k", { ctrlKey: true }));
+        expect(fn).toHaveBeenCalledOnce();
+
+        document.dispatchEvent(key("k", { metaKey: true }));
+        expect(fn).toHaveBeenCalledTimes(2);
+    });
 });

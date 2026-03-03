@@ -30,9 +30,10 @@ export default class PageElementHotkey extends LoomElement {
                     <div class="feature-entry">
                         <div class="dec-sig">@hotkey(...combos, options?)</div>
                         <div class="dec-desc">
-                            Binds a method to one or more keyboard shortcuts. The method receives the{" "}
-                            <span class="ic">KeyboardEvent</span> as its argument. Listeners are auto-cleaned
-                            on disconnect — no manual teardown needed.
+                            Binds a method to one or more keyboard shortcuts. Combos can be
+                            strings (<span class="ic">"mod+k"</span>) or objects
+                            (<span class="ic">{"{ key, mod, ctrl, ... }"}</span>). Mix freely.
+                            Listeners are auto-cleaned on disconnect.
                         </div>
                     </div>
                     <div class="feature-entry">
@@ -73,6 +74,34 @@ export default class PageElementHotkey extends LoomElement {
                             Use <span class="ic">mod</span> for cross-platform shortcuts — it maps to{" "}
                             <span class="ic">⌘ Cmd</span> on macOS and <span class="ic">Ctrl</span> everywhere else.
                         </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="group-header">
+                        <loom-icon name="hash" size={20} color="var(--rose)"></loom-icon>
+                        <h2>Object Combos</h2>
+                    </div>
+                    <div class="feature-entry">
+                        <div class="dec-desc">
+                            Instead of string combos, use <span class="ic">HotkeyCombo</span> objects
+                            for programmatic or complex definitions. Object combos can also carry
+                            inline <span class="ic">global</span> and <span class="ic">preventDefault</span> settings.
+                        </div>
+                        <table class="api-table">
+                            <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+                            <tbody>
+                                <tr><td><code>key</code></td><td>string</td><td>—</td><td>Key to match (e.g. "k", "escape")</td></tr>
+                                <tr><td><code>ctrl</code></td><td>boolean</td><td>false</td><td>Require Ctrl</td></tr>
+                                <tr><td><code>shift</code></td><td>boolean</td><td>false</td><td>Require Shift</td></tr>
+                                <tr><td><code>alt</code></td><td>boolean</td><td>false</td><td>Require Alt / Option</td></tr>
+                                <tr><td><code>meta</code></td><td>boolean</td><td>false</td><td>Require Meta / Cmd / Win</td></tr>
+                                <tr><td><code>mod</code></td><td>boolean</td><td>false</td><td>⌘ on Mac, Ctrl elsewhere</td></tr>
+                                <tr><td><code>global</code></td><td>boolean</td><td>false</td><td>Listen on document</td></tr>
+                                <tr><td><code>preventDefault</code></td><td>boolean</td><td>true</td><td>Call e.preventDefault()</td></tr>
+                            </tbody>
+                        </table>
+                        <code-block lang="ts" code={OBJECT_COMBOS}></code-block>
                     </div>
                 </section>
 
@@ -156,7 +185,27 @@ closeModal() { this.modalOpen = false; }
 
 // Opt out of preventDefault
 @hotkey("ctrl+a", { preventDefault: false })
-selectAll() { this.allSelected = true; }`;
+selectAll() { this.allSelected = true; }
+
+// Mix string and object combos
+@hotkey("ctrl+k", { key: "k", meta: true }, { global: true })
+openSearch() { ... }`;
+
+const OBJECT_COMBOS = `// Object combo — explicit modifiers
+@hotkey({ key: "k", mod: true, global: true })
+openSearch() { ... }
+
+// Multi-modifier with shift
+@hotkey({ key: "p", ctrl: true, shift: true })
+openCommandPalette() { ... }
+
+// Inline options — no trailing options object needed
+@hotkey({ key: "escape", global: true, preventDefault: false })
+closeModal() { this.open = false; }
+
+// Mix string + object — both work together
+@hotkey("ctrl+s", { key: "s", meta: true })
+save() { this.persist(); }`;
 
 const LIVE_DEMO = `// From docs/src/components/doc-search.tsx — the actual code!
 @component("doc-search")

@@ -27,6 +27,33 @@ export interface HotkeyOptions {
     preventDefault?: boolean;
 }
 
+/**
+ * Object-based key combo definition.
+ *
+ * ```ts
+ * @hotkey({ key: "k", mod: true })
+ * @hotkey({ key: "s", ctrl: true, shift: true })
+ * ```
+ */
+export interface HotkeyCombo {
+    /** The key to listen for (e.g. "k", "escape", "enter") */
+    key: string;
+    /** Require Ctrl (default: false) */
+    ctrl?: boolean;
+    /** Require Shift (default: false) */
+    shift?: boolean;
+    /** Require Alt/Option (default: false) */
+    alt?: boolean;
+    /** Require Meta/Cmd/Win (default: false) */
+    meta?: boolean;
+    /** Cross-platform: Meta on Mac, Ctrl elsewhere (default: false) */
+    mod?: boolean;
+    /** Listen on document instead of the element */
+    global?: boolean;
+    /** Prevent default browser behavior */
+    preventDefault?: boolean;
+}
+
 interface ParsedCombo {
     ctrl: boolean;
     shift: boolean;
@@ -83,6 +110,24 @@ function parseCombo(raw: string): ParsedCombo {
     return cached;
 }
 
+function comboFromObject(obj: HotkeyCombo): ParsedCombo {
+    let ctrl = obj.ctrl ?? false;
+    let meta = obj.meta ?? false;
+
+    if (obj.mod) {
+        if (isMac) meta = true;
+        else ctrl = true;
+    }
+
+    return {
+        ctrl,
+        shift: obj.shift ?? false,
+        alt: obj.alt ?? false,
+        meta,
+        key: obj.key.toLowerCase(),
+    };
+}
+
 function matchesCombo(e: KeyboardEvent, combo: ParsedCombo): boolean {
     return (
         e.ctrlKey === combo.ctrl &&
@@ -115,23 +160,39 @@ function matchesCombo(e: KeyboardEvent, combo: ParsedCombo): boolean {
  * ```
  */
 export function hotkey(
-    ...args: [...combos: string[], options: HotkeyOptions] | string[]
+    ...args: [...combos: (string | HotkeyCombo)[], options: HotkeyOptions] | (string | HotkeyCombo)[]
 ): (method: Function, context: ClassMethodDecoratorContext) => void {
-    // Separate combo strings from trailing options object
+    // Separate combo defs from trailing options object (no .key = pure options)
     let options: HotkeyOptions = {};
-    let comboStrings: string[];
+    let comboDefs: (string | HotkeyCombo)[];
 
     const last = args[args.length - 1];
-    if (typeof last === "object" && last !== null) {
+    if (typeof last === "object" && last !== null && !("key" in last)) {
+        // Trailing options (no .key property means it's HotkeyOptions, not HotkeyCombo)
         options = last as HotkeyOptions;
-        comboStrings = args.slice(0, -1) as string[];
+        comboDefs = args.slice(0, -1) as (string | HotkeyCombo)[];
     } else {
-        comboStrings = args as string[];
+        comboDefs = args as (string | HotkeyCombo)[];
     }
 
-    const combos = comboStrings.map(parseCombo);
-    const preventDefault = options.preventDefault ?? true;
-    const global = options.global ?? false;
+    const combos: ParsedCombo[] = [];
+    let comboGlobal: boolean | undefined;
+    let comboPreventDefault: boolean | undefined;
+
+    for (const def of comboDefs) {
+        if (typeof def === "string") {
+            combos.push(parseCombo(def));
+        } else {
+            combos.push(comboFromObject(def));
+            // Object combos can carry their own global/preventDefault
+            if (def.global !== undefined) comboGlobal = def.global;
+            if (def.preventDefault !== undefined) comboPreventDefault = def.preventDefault;
+        }
+    }
+
+    // Object combo settings serve as fallbacks to trailing options
+    const preventDefault = options.preventDefault ?? comboPreventDefault ?? true;
+    const global = options.global ?? comboGlobal ?? false;
 
     return (method: Function, context: ClassMethodDecoratorContext) => {
         context.addInitializer(function (this: any) {

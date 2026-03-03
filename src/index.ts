@@ -60,7 +60,7 @@ export {
   log, LogTransport, ConsoleTransport,
   provide, consume, ContextRequestEvent,
 } from "./element";
-export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, LogEntry, LogLevel, LogOptions, ContextCallback } from "./element";
+export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, HotkeyCombo, LogEntry, LogLevel, LogOptions, ContextCallback } from "./element";
 
 // Transform: value transforms
 export {
