@@ -110,6 +110,11 @@ export function provide<T>(key: (new () => T) | string | symbol) {
 
                 return () => {
                     (host as HTMLElement).removeEventListener(CONTEXT_REQUEST, handler);
+                    // Notify consumers this provider is gone so they can
+                    // re-request from a higher ancestor provider.
+                    for (const cb of [...subs]) {
+                        cb(undefined as T, () => {});
+                    }
                     subs.clear();
                 };
             };
@@ -135,10 +140,11 @@ export function provide<T>(key: (new () => T) | string | symbol) {
                 const self = this as unknown as Record<symbol, unknown>;
                 self[storageKey] = value;
 
-                // Notify all subscribed consumers
+                // Notify all subscribed consumers (snapshot to guard
+                // against mid-callback unsubscribes mutating the Set)
                 const subs = self[subscribersKey] as Set<ContextCallback<T>> | undefined;
                 if (subs) {
-                    for (const cb of subs) {
+                    for (const cb of [...subs]) {
                         cb(value, () => subs.delete(cb));
                     }
                 }
@@ -177,11 +183,25 @@ export function consume<T>(key: (new () => T) | string | symbol) {
             const hook = (el: object) => {
                 const host = el as HTMLElement & Schedulable & Record<symbol, unknown>;
 
-                // Callback from provider
+                // Callback from provider — also handles provider disconnect:
+                // when a provider is removed it sends undefined, so the
+                // consumer re-dispatches to find a higher ancestor provider.
                 const callback: ContextCallback<T> = (value, unsubscribe) => {
+                    const wasConnected = host[unsubKey] !== undefined;
                     host[storageKey] = value;
                     host[unsubKey] = unsubscribe;
                     host.scheduleUpdate?.();
+
+                    // Provider disconnected — try to find a higher one
+                    if (value === undefined && wasConnected) {
+                        queueMicrotask(() => {
+                            if (host.isConnected) {
+                                host.dispatchEvent(
+                                    new ContextRequestEvent<T>(key, callback, true),
+                                );
+                            }
+                        });
+                    }
                 };
 
                 // Defer dispatch so ancestor providers are connected first.
