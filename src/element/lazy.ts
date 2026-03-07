@@ -25,6 +25,8 @@ const LAZY_IMPL   = createSymbol("lazy:impl");
 export interface LazyOptions {
   /** Loading indicator — tag name string or factory returning a DOM node (JSX works) */
   loading?: string | (() => Node);
+  /** Error fallback — tag name string or factory returning a DOM node (JSX works) */
+  error?: string | (() => Node);
 }
 
 /**
@@ -156,7 +158,15 @@ export function lazy(
         ctor.__mountLazyImpl.call(this);
       } catch (err) {
         console.error("[Loom @lazy] Failed to load module:", err);
-        this.shadow.innerHTML = `<p style="color:red">Failed to load component</p>`;
+        this.shadow.innerHTML = "";
+        if (opts?.error) {
+          const errorEl = typeof opts.error === "function"
+            ? opts.error()
+            : document.createElement(opts.error);
+          this.shadow.appendChild(errorEl);
+        } else {
+          this.shadow.innerHTML = `<p style="color:red">Failed to load component</p>`;
+        }
       }
     };
   };
