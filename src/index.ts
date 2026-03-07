@@ -59,8 +59,9 @@ export {
   form, lazy, slot, transition, hotkey,
   log, LogTransport, ConsoleTransport,
   provide, consume, ContextRequestEvent,
+  portal,
 } from "./element";
-export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, HotkeyCombo, LogEntry, LogLevel, LogOptions, ContextCallback } from "./element";
+export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, HotkeyCombo, LogEntry, LogLevel, LogOptions, ContextCallback, PortalOptions } from "./element";
 
 // Transform: value transforms
 export {

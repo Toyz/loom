@@ -30,7 +30,7 @@ class MockResizeObserver {
     mockResizeObserverInstances.push(this);
   }
   observe(el: any, opts?: any) { this.observed.push({ el, opts }); }
-  unobserve() {}
+  unobserve() { }
   disconnect() { this.observed = []; }
 }
 
@@ -44,7 +44,7 @@ class MockIntersectionObserver {
     mockIntersectionObserverInstances.push(this);
   }
   observe(el: any) { this.observed.push(el); }
-  unobserve() {}
+  unobserve() { }
   disconnect() { this.observed = []; }
 }
 
@@ -291,10 +291,10 @@ describe("multiple @observer decorators", () => {
 
     class El extends LoomElement {
       @observer("resize")
-      onResize(_entry: any) {}
+      onResize(_entry: any) { }
 
       @observer("mutation", { childList: true })
-      onChange(_record: any) {}
+      onChange(_record: any) { }
     }
     customElements.define(tag, El);
 
@@ -308,5 +308,37 @@ describe("multiple @observer decorators", () => {
     cleanup();
     expect(ro.observed.length).toBe(0);
     expect(mo.observed.length).toBe(0);
+  });
+
+  it("reconnecting re-creates observers", async () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @observer("resize")
+      onResize(entry: any) { fn(entry); }
+    }
+    customElements.define(tag, El);
+
+    const el = await fixture<El>(tag);
+    expect(mockResizeObserverInstances.length).toBe(1);
+    const ro1 = mockResizeObserverInstances[0];
+    expect(ro1.observed.length).toBe(1);
+
+    // Disconnect — observer should be disconnected
+    el.remove();
+    expect(ro1.observed.length).toBe(0);
+
+    // Reconnect — should create a new observer
+    document.body.appendChild(el);
+    expect(mockResizeObserverInstances.length).toBe(2);
+    const ro2 = mockResizeObserverInstances[1];
+    expect(ro2.observed.length).toBe(1);
+
+    // New observer fires correctly
+    ro2.callback([{ contentRect: { width: 200 } }]);
+    expect(fn).toHaveBeenCalledOnce();
+
+    el.remove();
   });
 });

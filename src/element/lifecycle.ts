@@ -137,7 +137,7 @@ export function mount(method: Function, context: ClassMethodDecoratorContext) {
   context.addInitializer(function (this: any) {
     if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
     this[CONNECT_HOOKS.key].push((el: any) => {
-      method.call(el);
+      return method.call(el);
     });
   });
 }

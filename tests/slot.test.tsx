@@ -4,7 +4,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { LoomElement, component } from "../src";
 import { slot } from "../src/element/slots";
-import { cleanup, nextRender } from "../src/testing";
+import { fixture, cleanup, nextRender } from "../src/testing";
 
 let tagCounter = 0;
 function nextTag() { return `test-slot-${++tagCounter}`; }
@@ -53,5 +53,48 @@ describe("@slot", () => {
     const el = document.createElement(tag) as InstanceType<typeof El>;
     (el as any).items = [1, 2, 3];
     expect((el as any).items).toEqual([1, 2, 3]);
+  });
+
+  it("multiple @slot accessors on one class", () => {
+    const tag = nextTag();
+
+    @component(tag)
+    class El extends LoomElement {
+      @slot()
+      accessor defaultItems!: Element[];
+
+      @slot("header")
+      accessor headerItems!: Element[];
+
+      @slot("footer")
+      accessor footerItems!: Element[];
+    }
+
+    const el = document.createElement(tag) as InstanceType<typeof El>;
+    expect(el.defaultItems ?? []).toEqual([]);
+    expect(el.headerItems ?? []).toEqual([]);
+    expect(el.footerItems ?? []).toEqual([]);
+  });
+
+  it("cleanup removes slotchange listener", async () => {
+    const tag = nextTag();
+
+    @component(tag)
+    class El extends LoomElement {
+      @slot()
+      accessor items!: Element[];
+
+      update() {
+        return <div><slot></slot></div>;
+      }
+    }
+
+    const el = document.createElement(tag) as InstanceType<typeof El>;
+    document.body.appendChild(el);
+    await new Promise(r => setTimeout(r, 10));
+
+    // Should not throw when removed
+    el.remove();
+    expect(el.items ?? []).toEqual([]);
   });
 });

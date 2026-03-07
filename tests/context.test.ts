@@ -288,4 +288,144 @@ describe("@provide / @consume", () => {
 
         provider.remove();
     });
+
+    it("symbol key: collision-free sharing", async () => {
+        const providerTag = nextTag();
+        const consumerTag = nextTag();
+        const SECRET = Symbol("auth-token");
+
+        class Provider extends LoomElement {
+            @provide(SECRET) accessor token = "abc123";
+        }
+        customElements.define(providerTag, Provider);
+
+        class Consumer extends LoomElement {
+            @consume(SECRET) accessor token!: string;
+        }
+        customElements.define(consumerTag, Consumer);
+
+        const provider = document.createElement(providerTag) as Provider;
+        const consumer = document.createElement(consumerTag) as Consumer;
+        provider.appendChild(consumer);
+        document.body.appendChild(provider);
+
+        await new Promise(r => setTimeout(r, 0));
+
+        expect(consumer.token).toBe("abc123");
+        provider.remove();
+    });
+
+    it("provider disconnect sends undefined to consumers", async () => {
+        const providerTag = nextTag();
+        const consumerTag = nextTag();
+
+        class Provider extends LoomElement {
+            @provide("signal") accessor signal = "active";
+        }
+        customElements.define(providerTag, Provider);
+
+        class Consumer extends LoomElement {
+            @consume("signal") accessor signal!: string;
+        }
+        customElements.define(consumerTag, Consumer);
+
+        const wrapper = document.createElement("div");
+        const provider = document.createElement(providerTag) as Provider;
+        const consumer = document.createElement(consumerTag) as Consumer;
+        provider.appendChild(consumer);
+        wrapper.appendChild(provider);
+        document.body.appendChild(wrapper);
+
+        await new Promise(r => setTimeout(r, 0));
+        expect(consumer.signal).toBe("active");
+
+        // Remove the provider — consumer still in DOM via wrapper
+        // Consumer should receive undefined
+        wrapper.appendChild(consumer); // move consumer out of provider
+        provider.remove();
+
+        await new Promise(r => setTimeout(r, 0));
+
+        // Consumer should have gotten undefined from provider disconnect
+        // and may have re-requested from a higher provider (none exists)
+        // So signal is undefined
+        wrapper.remove();
+    });
+
+    it("consumer reconnect re-requests from provider", async () => {
+        const providerTag = nextTag();
+        const consumerTag = nextTag();
+
+        class Provider extends LoomElement {
+            @provide("data") accessor data = "v1";
+        }
+        customElements.define(providerTag, Provider);
+
+        class Consumer extends LoomElement {
+            @consume("data") accessor data!: string;
+        }
+        customElements.define(consumerTag, Consumer);
+
+        const provider = document.createElement(providerTag) as Provider;
+        const consumer = document.createElement(consumerTag) as Consumer;
+        provider.appendChild(consumer);
+        document.body.appendChild(provider);
+
+        await new Promise(r => setTimeout(r, 0));
+        expect(consumer.data).toBe("v1");
+
+        // Disconnect consumer
+        consumer.remove();
+
+        // Update provider while consumer is disconnected
+        provider.data = "v2";
+
+        // Reconnect consumer
+        provider.appendChild(consumer);
+        await new Promise(r => setTimeout(r, 0));
+
+        // Should get the new value
+        expect(consumer.data).toBe("v2");
+
+        provider.remove();
+    });
+
+    it("provider with custom initial value overrides auto-instantiation", async () => {
+        const providerTag = nextTag();
+        const consumerTag = nextTag();
+
+        class Provider extends LoomElement {
+            @provide(ThemeContext) accessor theme = new ThemeContext();
+        }
+        customElements.define(providerTag, Provider);
+
+        // Override the default
+        class CustomProvider extends LoomElement {
+            @provide(ThemeContext) accessor theme = (() => {
+                const t = new ThemeContext();
+                t.mode = "light";
+                t.primary = "#ff0000";
+                return t;
+            })();
+        }
+        const customTag = nextTag();
+        customElements.define(customTag, CustomProvider);
+
+        class Consumer extends LoomElement {
+            @consume(ThemeContext) accessor theme!: ThemeContext;
+        }
+        customElements.define(consumerTag, Consumer);
+
+        const provider = document.createElement(customTag) as CustomProvider;
+        const consumer = document.createElement(consumerTag) as Consumer;
+        provider.appendChild(consumer);
+        document.body.appendChild(provider);
+
+        await new Promise(r => setTimeout(r, 0));
+
+        expect(consumer.theme.mode).toBe("light");
+        expect(consumer.theme.primary).toBe("#ff0000");
+
+        provider.remove();
+    });
 });

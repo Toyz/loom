@@ -53,6 +53,32 @@ describe("@interval", () => {
     vi.advanceTimersByTime(500);
     expect(fn).toHaveBeenCalledTimes(1); // no more calls
   });
+
+  it("reconnect restarts interval", async () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @interval(100)
+      tick() { fn(); }
+    }
+    customElements.define(tag, El);
+
+    const el = await fixture<El>(tag);
+    vi.advanceTimersByTime(150);
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    // Disconnect
+    el.remove();
+    vi.advanceTimersByTime(300);
+    expect(fn).toHaveBeenCalledTimes(1); // no more
+
+    // Reconnect
+    document.body.appendChild(el);
+    vi.advanceTimersByTime(250);
+    expect(fn).toHaveBeenCalledTimes(3); // 2 more ticks
+    el.remove();
+  });
 });
 
 describe("@timeout", () => {

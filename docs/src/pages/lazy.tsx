@@ -277,6 +277,12 @@ class LazyDecoratorLog extends LoomElement { }
 @searchable({ title: "Context", section: "Decorators", icon: "thread", to: "/decorators/context", keywords: ["context", "provide", "consume", "shadow dom", "cross-boundary", "W3C", "data sharing"], summary: "Cross-shadow-DOM data sharing with class-based keys." })
 class LazyDecoratorContext extends LoomElement { }
 
+@route("/portal", { group: DecoratorsGroup })
+@component("page-decorator-portal")
+@lazy(() => import("./decorators/portal"))
+@searchable({ title: "Portal", section: "Decorators", icon: "external-link", to: "/decorators/portal", keywords: ["portal", "teleport", "modal", "tooltip", "dropdown", "stacking context", "body"], summary: "Teleport content to external DOM targets." })
+class LazyDecoratorPortal extends LoomElement { }
+
 @route("/symbols", { group: DecoratorsGroup })
 @component("page-decorator-symbols")
 @lazy(() => import("./decorators/symbols"))

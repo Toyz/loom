@@ -295,4 +295,32 @@ describe("@hotkey", () => {
         document.dispatchEvent(key("k", { metaKey: true }));
         expect(fn).toHaveBeenCalledTimes(2);
     });
+
+    it("reconnect re-registers global hotkey", async () => {
+        const tag = nextTag();
+        const fn = vi.fn();
+
+        class El extends LoomElement {
+            @hotkey("escape", { global: true })
+            handler() { fn(); }
+        }
+        customElements.define(tag, El);
+
+        const el = await fixture<El>(tag);
+
+        document.dispatchEvent(key("Escape"));
+        expect(fn).toHaveBeenCalledOnce();
+
+        // Disconnect — should remove listener
+        el.remove();
+        document.dispatchEvent(key("Escape"));
+        expect(fn).toHaveBeenCalledOnce(); // no more
+
+        // Reconnect — should re-register
+        document.body.appendChild(el);
+        document.dispatchEvent(key("Escape"));
+        expect(fn).toHaveBeenCalledTimes(2);
+
+        el.remove();
+    });
 });

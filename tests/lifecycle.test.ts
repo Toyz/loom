@@ -44,6 +44,45 @@ describe("@mount", () => {
     expect(fn1).toHaveBeenCalledOnce();
     expect(fn2).toHaveBeenCalledOnce();
   });
+
+  it("cleanup return from @mount runs on disconnect", async () => {
+    const cleanupFn = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @mount
+      setup() { return cleanupFn; }
+    }
+    customElements.define(tag, El);
+
+    await fixture<El>(tag);
+    expect(cleanupFn).not.toHaveBeenCalled();
+
+    cleanup();
+    expect(cleanupFn).toHaveBeenCalledOnce();
+  });
+
+  it("reconnect re-fires @mount", async () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @mount
+      setup() { fn(); }
+    }
+    customElements.define(tag, El);
+
+    const el = await fixture<El>(tag);
+    expect(fn).toHaveBeenCalledOnce();
+
+    // Disconnect and reconnect
+    el.remove();
+    document.body.appendChild(el);
+    await new Promise(r => setTimeout(r, 0));
+
+    expect(fn).toHaveBeenCalledTimes(2);
+    el.remove();
+  });
 });
 
 describe("@unmount", () => {
@@ -62,6 +101,37 @@ describe("@unmount", () => {
 
     cleanup(); // triggers disconnectedCallback
     expect(fn).toHaveBeenCalledOnce();
+  });
+
+  it("supports multiple @unmount methods", async () => {
+    const fn1 = vi.fn();
+    const fn2 = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @unmount a() { fn1(); }
+      @unmount b() { fn2(); }
+    }
+    customElements.define(tag, El);
+
+    await fixture<El>(tag);
+    cleanup();
+
+    expect(fn1).toHaveBeenCalledOnce();
+    expect(fn2).toHaveBeenCalledOnce();
+  });
+
+  it("does not fire on initial connect", async () => {
+    const fn = vi.fn();
+    const tag = nextTag();
+
+    class El extends LoomElement {
+      @unmount teardown() { fn(); }
+    }
+    customElements.define(tag, El);
+
+    await fixture<El>(tag);
+    expect(fn).not.toHaveBeenCalled();
   });
 });
 

@@ -79,6 +79,7 @@ const sections: NavSection[] = [
       { label: "Hotkey", to: "/decorators/hotkey", icon: "command" },
       { label: "Log", to: "/decorators/log", icon: "zap" },
       { label: "Context", to: "/decorators/context", icon: "thread" },
+      { label: "Portal", to: "/decorators/portal", icon: "external-link" },
       { label: "Typed Symbols", to: "/decorators/symbols", icon: "key" },
     ],
   },

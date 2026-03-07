@@ -54,3 +54,7 @@ export type { LogEntry, LogLevel, LogOptions } from "./log";
 // Context: provide/consume across shadow boundaries
 export { provide, consume, ContextRequestEvent } from "./context";
 export type { ContextCallback } from "./context";
+
+// Portal: teleport content to external DOM targets
+export { portal } from "./portal";
+export type { PortalOptions } from "./portal";
