@@ -121,6 +121,14 @@ const demoStyles = css`
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
+    background-image:
+      linear-gradient(45deg, #444 25%, transparent 25%),
+      linear-gradient(-45deg, #444 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #444 75%),
+      linear-gradient(-45deg, transparent 75%, #444 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    background-color: #666;
   }
 
   .url-display {
@@ -186,7 +194,7 @@ const PRESETS = [
   { color: "000000", label: "Black" },
   { color: "ffffff", label: "White" },
   { color: "808080", label: "Gray" },
-  { color: "ff339980", label: "Pink 50%" },
+  { color: "ff3399", label: "Hot Pink" },
 ];
 
 @component("placeholder-demo")
@@ -280,7 +288,7 @@ class PlaceholderDemo extends LoomElement {
               {PRESETS.map(p => (
                 <div
                   class={`preset ${this.hexColor === p.color ? "active" : ""}`}
-                  style={{ background: `#${p.color.slice(0, 6)}` }}
+                  style={{ background: `#${p.color}` }}
                   title={p.label}
                   onClick={() => this.setPreset(p.color)}
                 ></div>
