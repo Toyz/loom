@@ -6,6 +6,7 @@ const pkg = JSON.parse(readFileSync("../package.json", "utf-8"));
 const loomRpcPkg = JSON.parse(readFileSync("../loom-rpc/package.json", "utf-8"));
 const loomAnalyticsPkg = JSON.parse(readFileSync("../loom-analytics/package.json", "utf-8"));
 const loomFlagsPkg = JSON.parse(readFileSync("../loom-flags/package.json", "utf-8"));
+const loomPlaceholderPkg = JSON.parse(readFileSync("../loom-placeholder/package.json", "utf-8"));
 
 export default defineConfig({
   base: process.env.CI ? "/loom/" : "/",
@@ -23,6 +24,7 @@ export default defineConfig({
     __LOOM_RPC_VERSION__: JSON.stringify(loomRpcPkg.version),
     __LOOM_ANALYTICS_VERSION__: JSON.stringify(loomAnalyticsPkg.version),
     __LOOM_FLAGS_VERSION__: JSON.stringify(loomFlagsPkg.version),
+    __LOOM_PLACEHOLDER_VERSION__: JSON.stringify(loomPlaceholderPkg.version),
     __CREATE_LOOM_VERSION__: JSON.stringify(
       JSON.parse(readFileSync("../create-loom/package.json", "utf-8")).version,
     ),
@@ -41,6 +43,9 @@ export default defineConfig({
       // loom-flags aliases
       "@toyz/loom-flags/testing": resolve(__dirname, "../loom-flags/src/testing.ts"),
       "@toyz/loom-flags": resolve(__dirname, "../loom-flags/src/index.ts"),
+      // loom-placeholder aliases
+      "@toyz/loom-placeholder/testing": resolve(__dirname, "../loom-placeholder/src/testing.ts"),
+      "@toyz/loom-placeholder": resolve(__dirname, "../loom-placeholder/src/index.ts"),
     },
   },
   esbuild: {

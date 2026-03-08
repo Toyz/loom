@@ -434,3 +434,23 @@ class LazyPackagesFlagsTesting extends LoomElement { }
 @lazy(() => import("./examples/flags"))
 @searchable({ title: "Flags Demo", section: "Packages", icon: "zap", to: "/packages/flags-demo", keywords: ["flags", "demo", "live", "example", "interactive"], summary: "Interactive live demo of @flag decorator and <loom-flag> component." })
 class LazyPackagesFlagsDemo extends LoomElement { }
+
+// ── Placeholder ──
+
+@route("/placeholder-overview", { group: PackagesGroup })
+@component("page-packages-placeholder-overview")
+@lazy(() => import("./packages/placeholder-overview"))
+@searchable({ title: "Placeholder Overview", section: "Packages", icon: "package", to: "/packages/placeholder-overview", keywords: ["placeholder", "loom-placeholder", "rgba", "image", "overview"], summary: "Placeholder components for Loom — pluggable providers, ships with rgba.lol." })
+class LazyPackagesPlaceholderOverview extends LoomElement { }
+
+@route("/placeholder-testing", { group: PackagesGroup })
+@component("page-packages-placeholder-testing")
+@lazy(() => import("./packages/placeholder-testing"))
+@searchable({ title: "Placeholder Testing", section: "Packages", icon: "check", to: "/packages/placeholder-testing", keywords: ["placeholder", "test", "mock", "MockPlaceholder", "assert"], summary: "MockPlaceholder — drop-in test provider with assertions." })
+class LazyPackagesPlaceholderTesting extends LoomElement { }
+
+@route("/placeholder-demo", { group: PackagesGroup })
+@component("page-packages-placeholder-demo")
+@lazy(() => import("./examples/placeholder"))
+@searchable({ title: "Placeholder Demo", section: "Packages", icon: "zap", to: "/packages/placeholder-demo", keywords: ["placeholder", "demo", "live", "rgba", "interactive"], summary: "Interactive live demo of <loom-placeholder> with RgbaPlaceholder." })
+class LazyPackagesPlaceholderDemo extends LoomElement { }
