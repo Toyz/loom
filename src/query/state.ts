@@ -211,6 +211,8 @@ export function createApiState<T>(
       await runFetch();
     },
     invalidate() {
+      data = undefined;
+      error = undefined;
       stale = true;
       runFetch();
     },

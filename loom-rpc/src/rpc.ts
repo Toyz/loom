@@ -231,6 +231,8 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
       await runFetch();
     },
     invalidate() {
+      data = undefined;
+      error = undefined;
       stale = true;
       lastArgs = undefined;
       runFetch();
