@@ -35,6 +35,8 @@ jobs:
           cd loom-analytics && npm ci && npm link @toyz/loom && npm run build
           cd ..
           cd loom-flags && npm ci && npm link @toyz/loom && npm run build
+          cd ..
+          cd loom-placeholder && npm ci && npm link @toyz/loom && npm run build
 
       # Build the docs site
       - name: Build Docs
