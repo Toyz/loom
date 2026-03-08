@@ -17,6 +17,7 @@ import {
   RgbaPlaceholder,
 } from "@toyz/loom-placeholder";
 import { scrollbar } from "../../../shared/scrollbar";
+import "../../../shared/tooltip";
 
 // Register provider for the demo
 app.use(PlaceholderProvider, new RgbaPlaceholder());
@@ -286,12 +287,14 @@ class PlaceholderDemo extends LoomElement {
             </h3>
             <div class="preset-grid">
               {PRESETS.map(p => (
-                <div
-                  class={`preset ${this.hexColor === p.color ? "active" : ""}`}
-                  style={{ background: `#${p.color}` }}
-                  title={p.label}
-                  onClick={() => this.setPreset(p.color)}
-                ></div>
+                <doc-tooltip text={p.label}>
+                  <div
+                    class={`preset ${this.hexColor === p.color ? "active" : ""}`}
+                    style={{ background: `#${p.color}` }}
+                    title={p.label}
+                    onClick={() => this.setPreset(p.color)}
+                  ></div>
+                </doc-tooltip>
               ))}
             </div>
           </div>
