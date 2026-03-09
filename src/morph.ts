@@ -48,18 +48,24 @@ export function morph(root: ShadowRoot | HTMLElement, newTree: Node | Node[]): v
 // ── Core algorithm ──
 
 function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
-  // Build keyed index & optionally collect keep elements
+  // Build keyed index & collect keep set in a single scan
   let oldKeyed: Map<string, Element> | null = null;
-  let hasKeep = false;
+  let keepSet: Set<Node> | null = null;
 
   let current = parent.firstChild;
   while (current) {
-    const key = getKey(current);
-    if (key) {
-      if (!oldKeyed) oldKeyed = new Map();
-      oldKeyed.set(key, current as Element);
+    if (current.nodeType === 1) {
+      const el = current as Element;
+      const key = el.getAttribute("loom-key");
+      if (key) {
+        if (!oldKeyed) oldKeyed = new Map();
+        oldKeyed.set(key, el);
+      }
+      if (el.hasAttribute("loom-keep")) {
+        if (!keepSet) keepSet = new Set();
+        keepSet.add(el);
+      }
     }
-    if (isKeep(current)) hasKeep = true;
     current = current.nextSibling;
   }
 
@@ -84,13 +90,13 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
       continue;
     }
 
-    // Skip unconsumed keyed nodes or kept nodes — cache getKey to avoid double call
+    // Skip unconsumed keyed nodes or kept nodes
     while (oldChild) {
-      if (oldKeyed) {
-        const ock = (oldChild.nodeType === 1) ? (oldChild as Element).getAttribute("loom-key") : null;
+      if (oldKeyed && oldChild.nodeType === 1) {
+        const ock = (oldChild as Element).getAttribute("loom-key");
         if (ock && oldKeyed.has(ock)) { oldChild = oldChild.nextSibling; continue; }
       }
-      if (hasKeep && oldChild.nodeType === 1 && (oldChild as Element).hasAttribute("loom-keep")) {
+      if (keepSet && keepSet.has(oldChild)) {
         oldChild = oldChild.nextSibling; continue;
       }
       break;
@@ -114,9 +120,10 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
   // Remove unconsumed old children
   while (oldChild) {
     const next = oldChild.nextSibling;
+    const isKept = keepSet && keepSet.has(oldChild);
     const oldKey = getKey(oldChild);
     const isUnconsumedKeyed = oldKeyed && oldKey && oldKeyed.has(oldKey);
-    if (!isKeep(oldChild) && !isUnconsumedKeyed) {
+    if (!isKept && !isUnconsumedKeyed) {
       parent.removeChild(oldChild);
     }
     oldChild = next;
@@ -125,7 +132,7 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
   // Also remove unconsumed keyed nodes that were skipped
   if (oldKeyed) {
     for (const old of oldKeyed.values()) {
-      if (!isKeep(old)) {
+      if (!keepSet || !keepSet.has(old)) {
         parent.removeChild(old);
       }
     }
@@ -193,8 +200,12 @@ function morphNode(old: Node, next: Node): void {
     // When morphChildren appends children from nextEl to oldEl,
     // the live list shrinks mid-iteration, skipping every other child.
     const nextChildren = nextEl.childNodes;
-    const snapshot: Node[] = new Array(nextChildren.length);
-    for (let i = 0; i < nextChildren.length; i++) snapshot[i] = nextChildren[i];
+    const len = nextChildren.length;
+    if (len > _snapshotBuf.length) _snapshotBuf.length = len;
+    for (let i = 0; i < len; i++) _snapshotBuf[i] = nextChildren[i];
+    // Create a fixed-length view so morphChildren sees exactly `len` items
+    const snapshot = { length: len } as ArrayLike<Node>;
+    for (let i = 0; i < len; i++) (snapshot as any)[i] = _snapshotBuf[i];
     morphChildren(oldEl, snapshot);
   }
 }
@@ -247,7 +258,9 @@ function patchEvents(old: Element, next: Element): void {
   }
 
   // Add/replace listeners from new
+  let hasNew = false;
   for (const type in ne) {
+    hasNew = true;
     if (!(type in oe)) {
       old.addEventListener(type, loomEventProxy);
     }
@@ -255,8 +268,6 @@ function patchEvents(old: Element, next: Element): void {
   }
 
   // Transfer the record to old element if new has any events
-  let hasNew = false;
-  for (const _ in ne) { hasNew = true; break; }
   if (hasNew) {
     (old as unknown as LoomNode).__loomEvents = oe;
   }
@@ -331,6 +342,9 @@ function canMorph(old: Node, next: Node): boolean {
   }
   return false;
 }
+
+/** Pooled snapshot buffer — grows to match the largest childNodes list, avoids per-element allocation */
+let _snapshotBuf: Node[] = [];
 
 /** Reusable single-element wrapper to avoid allocating [tree] on every call */
 const _singleWrap: Node[] = [null!];

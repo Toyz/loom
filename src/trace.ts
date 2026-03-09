@@ -144,7 +144,7 @@ export function endSubTrace(): Set<Reactive<any>> {
 
   // Merge sub-trace deps into parent trace
   if (activeDeps) {
-    captured.forEach(r => activeDeps!.add(r));
+    for (const r of captured) activeDeps.add(r);
   }
 
   return captured;
@@ -164,14 +164,14 @@ export function addBinding(
   const binding: Binding = { reactives, target, patcher };
 
   // Register this binding for every reactive it depends on
-  reactives.forEach(r => {
+  for (const r of reactives) {
     let list = activeBindings!.get(r);
     if (!list) {
       list = [];
       activeBindings!.set(r, list);
     }
     list.push(binding);
-  });
+  }
 }
 
 /**
@@ -210,10 +210,13 @@ export function canFastPatch(trace: TraceDeps | null): boolean {
  * Only patches bindings for deps that actually changed.
  * Uses a Set to deduplicate patchers (one binding might depend on multiple changed reactives).
  */
+/** Pooled buffer for applyBindings — avoids array allocation per call */
+const _toRunBuf: Array<() => void> = [];
+
 export function applyBindings(trace: TraceDeps): void {
   // Monotonic generation counter for per-call dedup (avoids Set allocation)
   const gen = ++_applyGen;
-  const toRun: Array<() => void> = [];
+  _toRunBuf.length = 0;
 
   for (const [r, ver] of trace.versions) {
     if (r.peekVersion() !== ver) {
@@ -223,7 +226,7 @@ export function applyBindings(trace: TraceDeps): void {
           const p = bindings[i].patcher as (() => void) & { __ran?: number };
           if (p.__ran !== gen) {
             p.__ran = gen;
-            toRun.push(p);
+            _toRunBuf.push(p);
           }
         }
       }
@@ -231,9 +234,10 @@ export function applyBindings(trace: TraceDeps): void {
   }
 
   // Execute unique patchers
-  for (let i = 0; i < toRun.length; i++) {
-    toRun[i]();
+  for (let i = 0; i < _toRunBuf.length; i++) {
+    _toRunBuf[i]();
   }
+  _toRunBuf.length = 0;
 }
 
 /**
@@ -244,4 +248,20 @@ export function refreshSnapshots(trace: TraceDeps): void {
   for (const r of trace.deps) {
     trace.versions.set(r, r.peekVersion());
   }
+}
+
+/**
+ * Return a trace's pooled structures back to the pools.
+ * Call after the trace is no longer needed (after refreshSnapshots).
+ * Prevents unbounded pool growth.
+ */
+export function releaseTrace(trace: TraceDeps): void {
+  trace.deps.clear();
+  _depsPool.push(trace.deps);
+  trace.versions.clear();
+  _versionsPool.push(trace.versions);
+  // Clear binding arrays, then the map itself
+  for (const list of trace.bindings.values()) list.length = 0;
+  trace.bindings.clear();
+  _bindingsPool.push(trace.bindings);
 }

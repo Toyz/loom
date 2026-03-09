@@ -4,7 +4,7 @@ import { type CSSValue, adoptCSS } from "../css";
 import { COMPUTED_DIRTY, REACTIVES, CONNECT_HOOKS, FIRST_UPDATED_HOOKS } from "../decorators/symbols";
 import { morph } from "../morph";
 import { app } from "../app";
-import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, type TraceDeps } from "../trace";
+import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, releaseTrace, type TraceDeps } from "../trace";
 
 /** Structural type for objects that support Loom's render scheduling */
 export interface Schedulable {
@@ -192,6 +192,7 @@ export abstract class LoomElement extends HTMLElement {
     const result = this.update();
     // Capture trace BEFORE appendChild — appendChild triggers child connectedCallback
     // which would call startTrace() and clobber our module-level trace state.
+    if (this.__traceDeps) releaseTrace(this.__traceDeps);
     this.__traceDeps = endTrace();
 
     // Fast append — shadow root is empty, no need to diff
@@ -239,6 +240,7 @@ export abstract class LoomElement extends HTMLElement {
     }
 
     // Capture/refresh dependency tracking + bindings
+    if (this.__traceDeps) releaseTrace(this.__traceDeps);
     this.__traceDeps = endTrace();
 
     if (!this._hasUpdated) {
