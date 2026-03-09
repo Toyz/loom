@@ -15,7 +15,7 @@
  * ```
  */
 
-import { ROUTE_PROPS, TRANSFORMS, ROUTE_ENTER, ROUTE_LEAVE, createSymbol } from "../decorators/symbols";
+import { PROPS, ROUTE_PROPS, TRANSFORMS, ROUTE_ENTER, ROUTE_LEAVE, createSymbol } from "../decorators/symbols";
 import { bus } from "../bus";
 import { LazyLoadStart, LazyLoadEnd } from "./lazy-events";
 
@@ -164,6 +164,26 @@ export function lazy(
             // (setAttribute alone doesn't trigger reactive setters)
             if (attr.name in realEl) {
               (realEl as any)[attr.name] = attr.value;
+            }
+          }
+
+          // Forward @prop values set programmatically on the shell.
+          // The attribute loop above only catches HTML attributes;
+          // this handles JS property writes (e.g. shellEl.count = 5).
+          const propsMap: Map<string, string> | undefined = realCtor[PROPS.key];
+          if (propsMap) {
+            const transforms: Map<string, Function> | undefined = realCtor[TRANSFORMS.key];
+            for (const [_attr, field] of propsMap) {
+              // Skip if already forwarded via attribute loop
+              if (this.hasAttribute(field) || this.hasAttribute(_attr)) continue;
+              const val = (this as any)[field];
+              if (val !== undefined && val !== null) {
+                if (transforms?.has(field)) {
+                  (realEl as any)[field] = transforms.get(field)!(val);
+                } else {
+                  (realEl as any)[field] = val;
+                }
+              }
             }
           }
 
