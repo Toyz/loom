@@ -5,6 +5,21 @@ import { LoomElement, component, css, styles as applyStyles } from "@toyz/loom";
 import { route } from "@toyz/loom/router";
 import { DECORATOR_COUNT } from "../data/decorators";
 
+const btnStyle = css`a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--accent);
+  color: #fff;
+  transition: all 0.2s;
+}
+a:hover { background: var(--accent-dim); text-decoration: none; }`;
+
 const styles = css`
   :host { display: block; }
 
@@ -82,23 +97,11 @@ const styles = css`
     border: none;
   }
 
-  .btn-primary,
-  loom-link.btn-primary::part(anchor) {
-    background: var(--accent);
+  .btn-primary {
     color: #fff;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    font-weight: 600;
     text-decoration: none;
-    transition: all 0.2s;
   }
-  .btn-primary:hover,
-  loom-link.btn-primary::part(anchor):hover {
-    background: var(--accent-dim);
+  .btn-primary:hover {
     text-decoration: none;
   }
 
@@ -234,7 +237,7 @@ export class PageHome extends LoomElement {
             A decorator-driven web component framework. No virtual DOM, no build-time magic — just TypeScript, JSX, and the platform.
           </p>
           <div class="hero-actions">
-            <loom-link to="/guides/getting-started" class="btn-primary">
+            <loom-link to="/guides/getting-started" styles={[btnStyle]} class="btn-primary">
               <loom-icon name="rocket" size={16} color="#fff"></loom-icon>
               Get Started
             </loom-link>
