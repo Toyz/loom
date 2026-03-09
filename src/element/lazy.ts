@@ -16,6 +16,8 @@
  */
 
 import { ROUTE_PROPS, TRANSFORMS, ROUTE_ENTER, ROUTE_LEAVE, createSymbol } from "../decorators/symbols";
+import { bus } from "../bus";
+import { LazyLoadStart, LazyLoadEnd } from "./lazy-events";
 
 const LAZY_LOADER = createSymbol("lazy:loader");
 const LAZY_OPTS   = createSymbol<LazyOptions>("lazy:opts");
@@ -129,6 +131,10 @@ export function lazy(
         this.shadow.appendChild(loadingEl);
       }
 
+      const tag = ctor.__loom_tag ?? this.tagName.toLowerCase();
+      const t0 = performance.now();
+      bus.emit(new LazyLoadStart(tag));
+
       try {
         const mod = await loader();
         const RealClass = (mod as { default?: Function }).default ?? mod;
@@ -229,8 +235,10 @@ export function lazy(
         };
 
         ctor.__mountLazyImpl.call(this);
+        bus.emit(new LazyLoadEnd(tag, true, performance.now() - t0));
       } catch (err) {
         console.error("[Loom @lazy] Failed to load module:", err);
+        bus.emit(new LazyLoadEnd(tag, false, performance.now() - t0, err));
         this.shadow.innerHTML = "";
         if (opts?.error) {
           const errorEl = typeof opts.error === "function"

@@ -141,6 +141,49 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
 
         <section>
           <div class="group-header">
+            <loom-icon name="bolt" size={20} color="var(--rose)"></loom-icon>
+            <h2>Events</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">@lazy</span> emits global events over the bus so any component can react
+              to loading state — show progress bars, dim backgrounds, or track metrics.
+            </div>
+            <code-block lang="tsx" code={`import { LoomElement, on, LazyLoadStart, LazyLoadEnd } from "@toyz/loom";
+
+@on(LazyLoadStart)
+onLazyStart(e: LazyLoadStart) {
+  console.log(\`Loading <\${e.tag}>…\`);
+  this.showProgressBar = true;
+}
+
+@on(LazyLoadEnd)
+onLazyEnd(e: LazyLoadEnd) {
+  this.showProgressBar = false;
+  if (!e.success) {
+    console.error(\`<\${e.tag}> failed in \${e.duration}ms\`, e.error);
+  }
+}`}></code-block>
+          </div>
+
+          <table class="api-table">
+            <thead><tr><th>Event</th><th>Property</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td rowSpan={1}><span class="ic">LazyLoadStart</span></td><td><code>tag</code></td><td><code>string</code></td><td>Custom element tag name being loaded</td></tr>
+              <tr><td rowSpan={4}><span class="ic">LazyLoadEnd</span></td><td><code>tag</code></td><td><code>string</code></td><td>Custom element tag name</td></tr>
+              <tr><td><code>success</code></td><td><code>boolean</code></td><td><code>true</code> if module loaded successfully</td></tr>
+              <tr><td><code>duration</code></td><td><code>number</code></td><td>Milliseconds elapsed during load</td></tr>
+              <tr><td><code>error</code></td><td><code>unknown?</code></td><td>Error object when <code>success</code> is <code>false</code></td></tr>
+            </tbody>
+          </table>
+          <doc-notification type="note">
+            Events are only emitted on the <strong>first load</strong> of a module. Cached re-mounts
+            skip the loader entirely and do not emit events.
+          </doc-notification>
+        </section>
+
+        <section>
+          <div class="group-header">
             <loom-icon name="book" size={20} color="var(--emerald)"></loom-icon>
             <h2>API Reference</h2>
           </div>
@@ -149,6 +192,7 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
             <tbody>
               <tr><td><code>loader</code></td><td><code>() =&gt; Promise</code></td><td>Dynamic import returning {`{ default: Class }`}</td></tr>
               <tr><td><code>opts.loading</code></td><td><code>string | (() =&gt; Node)</code></td><td>Tag name or JSX factory for a loading indicator</td></tr>
+              <tr><td><code>opts.error</code></td><td><code>string | (() =&gt; Node)</code></td><td>Tag name or JSX factory for an error fallback</td></tr>
             </tbody>
           </table>
         </section>

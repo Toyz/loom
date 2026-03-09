@@ -35,6 +35,7 @@ export type { FormState, FormSchema, FieldSchema } from "./form";
 // Lazy loading decorator
 export { lazy } from "./lazy";
 export type { LazyOptions } from "./lazy";
+export { LazyLoadStart, LazyLoadEnd } from "./lazy-events";
 
 // Slot decorator
 export { slot } from "./slots";

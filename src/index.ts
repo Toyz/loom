@@ -60,6 +60,7 @@ export {
   log, LogTransport, ConsoleTransport,
   provide, consume, ContextRequestEvent,
   portal,
+  LazyLoadStart, LazyLoadEnd,
 } from "./element";
 export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, HotkeyCombo, LogEntry, LogLevel, LogOptions, ContextCallback, PortalOptions } from "./element";
 
