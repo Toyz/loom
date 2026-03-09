@@ -15,7 +15,7 @@
  * ```
  */
 
-import { ROUTE_PROPS, TRANSFORMS, createSymbol } from "../decorators/symbols";
+import { ROUTE_PROPS, TRANSFORMS, ROUTE_ENTER, ROUTE_LEAVE, createSymbol } from "../decorators/symbols";
 
 const LAZY_LOADER = createSymbol("lazy:loader");
 const LAZY_OPTS   = createSymbol<LazyOptions>("lazy:opts");
@@ -95,7 +95,8 @@ export function lazy(
         // Also forward unbound attributes
         for (const attr of this.attributes) {
           if (attr.name in impl && !realBindings.some((b: any) => b.propKey === attr.name)) {
-            (impl as any)[attr.name] = attr.value;
+            try { (impl as any)[attr.name] = attr.value; }
+            catch { /* getter-only property — skip */ }
           }
         }
 
@@ -201,6 +202,30 @@ export function lazy(
 
           this.shadow.appendChild(realEl);
           this[LAZY_IMPL.key] = realEl;
+
+          // Forward @onRouteEnter / @onRouteLeave from shell → impl.
+          // The router looks up these handlers by querying the outlet's shadow
+          // for the tag (which returns the shell), then reads ROUTE_ENTER metadata.
+          // We copy the metadata and create forwarding stubs on the shell instance
+          // so the router's handler invocation delegates to the impl.
+          const implProto = Object.getPrototypeOf(realEl) as object;
+          const enterHandlers: string[] = (ROUTE_ENTER.from(implProto) as string[] | undefined) ?? [];
+          const leaveHandlers: string[] = (ROUTE_LEAVE.from(implProto) as string[] | undefined) ?? [];
+
+          if (enterHandlers.length > 0) {
+            ROUTE_ENTER.set(this, enterHandlers);
+            ROUTE_ENTER.set(Object.getPrototypeOf(this) as object, enterHandlers);
+            for (const key of enterHandlers) {
+              (this as any)[key] = (...args: unknown[]) => (realEl as any)[key]?.(...args);
+            }
+          }
+          if (leaveHandlers.length > 0) {
+            ROUTE_LEAVE.set(this, leaveHandlers);
+            ROUTE_LEAVE.set(Object.getPrototypeOf(this) as object, leaveHandlers);
+            for (const key of leaveHandlers) {
+              (this as any)[key] = (...args: unknown[]) => (realEl as any)[key]?.(...args);
+            }
+          }
         };
 
         ctor.__mountLazyImpl.call(this);
