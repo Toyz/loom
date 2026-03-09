@@ -730,6 +730,424 @@ describe("@lazy extremes", () => {
         expect(loadCount).toHaveBeenCalledTimes(1);
         el2.remove();
     });
+
+    it("opts.error as tag name renders custom error element on failure", async () => {
+        const tag = nextTag();
+        const errorTag = `${tag}-err`;
+
+        class ErrorIndicator extends HTMLElement {
+            connectedCallback() { this.textContent = "Custom Error"; }
+        }
+        if (!customElements.get(errorTag)) {
+            customElements.define(errorTag, ErrorIndicator);
+        }
+
+        const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+
+        @component(tag)
+        @lazy(() => Promise.reject(new Error("boom")), { error: errorTag })
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        const errEl = el.shadowRoot!.querySelector(errorTag);
+        expect(errEl).toBeTruthy();
+        expect(errEl!.textContent).toBe("Custom Error");
+        // Default red <p> should NOT be present
+        expect(el.shadowRoot!.querySelector("p[style]")).toBeNull();
+        consoleSpy.mockRestore();
+    });
+
+    it("opts.error as factory function renders factory node on failure", async () => {
+        const tag = nextTag();
+        const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+
+        const errorFactory = () => {
+            const span = document.createElement("span");
+            span.className = "lazy-error";
+            span.textContent = "Factory Error";
+            return span;
+        };
+
+        @component(tag)
+        @lazy(() => Promise.reject(new Error("boom")), { error: errorFactory })
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        const errEl = el.shadowRoot!.querySelector(".lazy-error");
+        expect(errEl).toBeTruthy();
+        expect(errEl!.textContent).toBe("Factory Error");
+        consoleSpy.mockRestore();
+    });
+
+    it("opts.loading as factory function renders factory node during load", async () => {
+        const tag = nextTag();
+        let resolveLoader!: (v: any) => void;
+        const loaderPromise = new Promise(r => { resolveLoader = r; });
+
+        class RealComponent extends LoomElement { }
+
+        const loadingFactory = () => {
+            const div = document.createElement("div");
+            div.className = "spinner";
+            div.textContent = "Loading...";
+            return div;
+        };
+
+        @component(tag)
+        @lazy(() => loaderPromise, { loading: loadingFactory })
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 10));
+
+        // Factory loading node should be in shadow DOM while loading
+        const spinner = el.shadowRoot!.querySelector(".spinner");
+        expect(spinner).toBeTruthy();
+        expect(spinner!.textContent).toBe("Loading...");
+
+        // Resolve — impl replaces loading indicator
+        resolveLoader({ default: RealComponent });
+        await new Promise(r => setTimeout(r, 20));
+
+        expect(el.shadowRoot!.querySelector(".spinner")).toBeNull();
+    });
+
+    it("adoptStyles forwarded to impl after mount", async () => {
+        const tag = nextTag();
+        const implTag = `${tag}-impl`;
+
+        const adoptSpy = vi.fn();
+        class RealComponent extends LoomElement {
+            adoptStyles(sheets: CSSStyleSheet[]) { adoptSpy(sheets); }
+        }
+
+        @component(tag)
+        @lazy(() => Promise.resolve({ default: RealComponent }))
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        // Impl should be mounted
+        const impl = el.shadowRoot!.querySelector(implTag);
+        expect(impl).toBeTruthy();
+
+        // Call adoptStyles on the shell AFTER impl is mounted
+        const sheet = new CSSStyleSheet();
+        (el as any).adoptStyles([sheet]);
+
+        expect(adoptSpy).toHaveBeenCalledWith([sheet]);
+    });
+
+    it("adoptStyles stashed before impl mount and forwarded after resolve", async () => {
+        const tag = nextTag();
+        const implTag = `${tag}-impl`;
+
+        let resolveLoader!: (v: any) => void;
+        const loaderPromise = new Promise(r => { resolveLoader = r; });
+
+        const adoptSpy = vi.fn();
+        class RealComponent extends LoomElement {
+            adoptStyles(sheets: CSSStyleSheet[]) { adoptSpy(sheets); }
+        }
+
+        @component(tag)
+        @lazy(() => loaderPromise)
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 10));
+
+        // Call adoptStyles BEFORE impl is mounted (during load)
+        const sheet = new CSSStyleSheet();
+        (el as any).adoptStyles([sheet]);
+
+        // Impl shouldn't exist yet
+        expect(el.shadowRoot!.querySelector(implTag)).toBeNull();
+
+        // Resolve loader — impl mounts and should receive stashed styles
+        resolveLoader({ default: RealComponent });
+        await new Promise(r => setTimeout(r, 20));
+
+        expect(el.shadowRoot!.querySelector(implTag)).toBeTruthy();
+        expect(adoptSpy).toHaveBeenCalledWith([sheet]);
+    });
+
+    it("bare module export (no .default) still mounts impl", async () => {
+        const tag = nextTag();
+        const implTag = `${tag}-impl`;
+
+        class RealComponent extends LoomElement {
+            update() {
+                const p = document.createElement("p");
+                p.textContent = "bare-export";
+                return p;
+            }
+        }
+
+        @component(tag)
+        @lazy(() => Promise.resolve(RealComponent))  // no { default: ... }
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        const impl = el.shadowRoot!.querySelector(implTag);
+        expect(impl).toBeTruthy();
+        expect(impl).toBeInstanceOf(RealComponent);
+    });
+
+    it("rapid 20x connect/disconnect during pending load doesn't crash", async () => {
+        const tag = nextTag();
+        const implTag = `${tag}-impl`;
+
+        let resolveLoader!: (v: any) => void;
+        const loaderPromise = new Promise(r => { resolveLoader = r; });
+
+        class RealComponent extends LoomElement { }
+
+        @component(tag)
+        @lazy(() => loaderPromise)
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+
+        const el = document.createElement(tag);
+
+        // Rapid cycling while load is still pending
+        for (let i = 0; i < 20; i++) {
+            document.body.appendChild(el);
+            el.remove();
+        }
+
+        // Resolve AFTER all the cycling
+        resolveLoader({ default: RealComponent });
+        await new Promise(r => setTimeout(r, 20));
+
+        // No crash = pass. Element is disconnected so no impl expected.
+        expect(true).toBe(true);
+
+        // Final reconnect should mount impl successfully
+        document.body.appendChild(el);
+        await new Promise(r => setTimeout(r, 20));
+
+        const impl = el.shadowRoot!.querySelector(implTag);
+        expect(impl).toBeTruthy();
+        el.remove();
+    });
+
+    it("reconnect after LAZY_LOADED creates fresh impl for new instance", async () => {
+        const tag = nextTag();
+        const implTag = `${tag}-impl`;
+
+        class RealComponent extends LoomElement { }
+
+        @component(tag)
+        @lazy(() => Promise.resolve({ default: RealComponent }))
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+
+        // First instance loads the module
+        const el1 = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        const impl1 = el1.shadowRoot!.querySelector(implTag);
+        expect(impl1).toBeTruthy();
+
+        // Disconnect first, create second instance (LAZY_LOADED path)
+        cleanup();
+
+        const el2 = document.createElement(tag);
+        document.body.appendChild(el2);
+        await new Promise(r => setTimeout(r, 20));
+
+        const impl2 = el2.shadowRoot!.querySelector(implTag);
+        expect(impl2).toBeTruthy();
+
+        // They should be different impl instances
+        expect(impl2).not.toBe(impl1);
+        el2.remove();
+    });
+
+    it("concurrent instances during pending load — both get impl after resolve", async () => {
+        const tag = nextTag();
+        const implTag = `${tag}-impl`;
+
+        let resolveLoader!: (v: any) => void;
+        const loaderPromise = new Promise(r => { resolveLoader = r; });
+
+        class RealComponent extends LoomElement { }
+
+        @component(tag)
+        @lazy(() => loaderPromise)
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+
+        // Mount TWO instances while loader is still pending
+        const el1 = document.createElement(tag);
+        const el2 = document.createElement(tag);
+        document.body.appendChild(el1);
+        document.body.appendChild(el2);
+
+        await new Promise(r => setTimeout(r, 10));
+
+        // Neither should have impl yet
+        expect(el1.shadowRoot!.querySelector(implTag)).toBeNull();
+        expect(el2.shadowRoot!.querySelector(implTag)).toBeNull();
+
+        // Resolve — both should mount
+        resolveLoader({ default: RealComponent });
+        await new Promise(r => setTimeout(r, 30));
+
+        // The first instance gets impl via the initial load path
+        const impl1 = el1.shadowRoot!.querySelector(implTag);
+        expect(impl1).toBeTruthy();
+
+        // Second instance: connectedCallback also awaited the same loader
+        // OR it hit the LAZY_LOADED path on a subsequent connect.
+        // Either way, it should have an impl.
+        const impl2 = el2.shadowRoot!.querySelector(implTag);
+        expect(impl2).toBeTruthy();
+
+        // Different impl instances
+        expect(impl1).not.toBe(impl2);
+        el1.remove();
+        el2.remove();
+    });
+
+    it("disconnect + reconnect reuses LAZY_LOADED path without double-mounting", async () => {
+        const tag = nextTag();
+        const implTag = `${tag}-impl`;
+
+        class RealComponent extends LoomElement { }
+
+        @component(tag)
+        @lazy(() => Promise.resolve({ default: RealComponent }))
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        const impl1 = el.shadowRoot!.querySelector(implTag);
+        expect(impl1).toBeTruthy();
+
+        // Disconnect and immediately reconnect
+        el.remove();
+        document.body.appendChild(el);
+        await new Promise(r => setTimeout(r, 20));
+
+        // Should have exactly ONE impl, not two stacked
+        const impls = el.shadowRoot!.querySelectorAll(implTag);
+        expect(impls.length).toBe(1);
+        el.remove();
+    });
+
+    it("loading + error options together — loading shows then error replaces on failure", async () => {
+        const tag = nextTag();
+        let rejectLoader!: (e: Error) => void;
+        const loaderPromise = new Promise((_, rej) => { rejectLoader = rej; });
+
+        const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+
+        const loadingFactory = () => {
+            const div = document.createElement("div");
+            div.className = "loading-both";
+            div.textContent = "Loading...";
+            return div;
+        };
+        const errorFactory = () => {
+            const div = document.createElement("div");
+            div.className = "error-both";
+            div.textContent = "Oops!";
+            return div;
+        };
+
+        @component(tag)
+        @lazy(() => loaderPromise, { loading: loadingFactory, error: errorFactory })
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 10));
+
+        // Loading should be visible
+        expect(el.shadowRoot!.querySelector(".loading-both")).toBeTruthy();
+        expect(el.shadowRoot!.querySelector(".error-both")).toBeNull();
+
+        // Reject — error should replace loading
+        rejectLoader(new Error("fail"));
+        await new Promise(r => setTimeout(r, 20));
+
+        expect(el.shadowRoot!.querySelector(".loading-both")).toBeNull();
+        expect(el.shadowRoot!.querySelector(".error-both")).toBeTruthy();
+        expect(el.shadowRoot!.querySelector(".error-both")!.textContent).toBe("Oops!");
+        consoleSpy.mockRestore();
+    });
+
+    it("loader that throws synchronously is caught as error", async () => {
+        const tag = nextTag();
+        const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => { });
+
+        @component(tag)
+        @lazy(() => { throw new Error("sync boom"); })
+        class StubComponent extends LoomElement { }
+
+        customElements.define(tag, StubComponent);
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        // Should show default error fallback
+        expect(el.shadowRoot!.innerHTML).toContain("Failed to load component");
+        expect(consoleSpy).toHaveBeenCalled();
+        consoleSpy.mockRestore();
+    });
+
+    it("origConnected chaining — stub @mount fires on reconnect (LAZY_LOADED path)", async () => {
+        const tag = nextTag();
+        const calls: string[] = [];
+
+        class RealComponent extends LoomElement { }
+
+        @component(tag)
+        @lazy(() => Promise.resolve({ default: RealComponent }))
+        class StubComponent extends LoomElement {
+            @mount setup() { calls.push("stub-mount"); }
+        }
+
+        customElements.define(tag, StubComponent);
+
+        // First connect — async load path, origConnected is NOT called
+        const el = await fixture(tag);
+        await new Promise(r => setTimeout(r, 20));
+
+        // @lazy replaces connectedCallback; origConnected (with @mount hooks)
+        // is only called on the LAZY_LOADED fast path, not during initial load.
+        const firstLoadCalls = calls.length;
+
+        // Disconnect and reconnect — hits LAZY_LOADED fast path (line 66-72)
+        // which DOES call origConnected
+        calls.length = 0;
+        el.remove();
+        document.body.appendChild(el);
+        await new Promise(r => setTimeout(r, 20));
+
+        expect(calls).toContain("stub-mount");
+        el.remove();
+    });
 });
 
 // ═════════════════════════════════════════════
