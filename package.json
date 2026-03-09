@@ -1,9 +1,8 @@
 {
   "name": "@toyz/loom",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "type": "module",
   "description": "Decorator-driven web component framework with reactive state, DOM morphing, DI, and JSX",
-  "sideEffects": false,
   "license": "MIT",
   "author": "toyz",
   "repository": {
