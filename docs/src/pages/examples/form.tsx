@@ -10,11 +10,7 @@ export default class ExampleForm extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Contact Form</h1>
-        <p class="subtitle">
-          Bidirectional form binding with <span class="ic">@form</span>,{" "}
-          <span class="ic">toTrimmed</span>, and validation.
-        </p>
+        <doc-header title="Contact Form" subtitle="Bidirectional form binding with @form, toTrimmed, and validation."></doc-header>
 
         <section>
           <div class="group-header">
@@ -72,6 +68,7 @@ export default class ExampleForm extends LoomElement {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

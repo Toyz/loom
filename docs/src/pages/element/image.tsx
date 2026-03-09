@@ -10,11 +10,7 @@ export default class PageElementImage extends LoomElement {
   update() {
     return (
       <div>
-        <h1>&lt;loom-image&gt;</h1>
-        <p class="subtitle">
-          Lazy-loaded images with an in-memory cache, customizable placeholder,
-          and smooth fade-in — powered by <span class="ic">@observer("intersection")</span>.
-        </p>
+        <doc-header title="&lt;loom-image&gt;" subtitle="Lazy-loaded images with an in-memory cache, customizable placeholder, and smooth fade-in — powered by @observer(&quot;intersection&quot;)."></doc-header>
 
         <section>
           <div class="group-header">
@@ -283,6 +279,7 @@ class PhotoGallery extends LoomElement {
         {this.photos.map(url => (
           <loom-image src={url} fit="cover" />
         ))}
+        <doc-nav></doc-nav>
       </div>
     );
   }

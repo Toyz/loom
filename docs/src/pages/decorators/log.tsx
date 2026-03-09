@@ -9,11 +9,7 @@ export default class PageElementLog extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@log</h1>
-        <p class="subtitle">
-          Structured method logging with pluggable transports.
-          Same DI pattern as <span class="ic">RpcTransport</span> in loom-rpc.
-        </p>
+        <doc-header title="@log" subtitle="Structured method logging with pluggable transports. Same DI pattern as RpcTransport in loom-rpc."></doc-header>
 
         <section>
           <div class="group-header">
@@ -137,11 +133,12 @@ export default class PageElementLog extends LoomElement {
             <li>Async methods log after the Promise resolves or rejects</li>
             <li>Errors always log at <span class="ic">"error"</span> level regardless of configured level</li>
           </ul>
-          <div class="note">
+          <doc-notification type="note">
             Zero-config safe — if no <span class="ic">LogTransport</span> is registered,{" "}
             <span class="ic">@log</span> is a transparent pass-through with no overhead.
-          </div>
+          </doc-notification>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

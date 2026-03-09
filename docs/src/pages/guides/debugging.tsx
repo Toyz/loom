@@ -10,10 +10,7 @@ export default class PageDebugging extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Debugging</h1>
-        <p class="subtitle">
-          Zero-install component inspection. No browser extension needed — just import and go.
-        </p>
+        <doc-header title="Debugging" subtitle="Zero-install component inspection. No browser extension needed — just import and go."></doc-header>
 
         <section>
           <div class="group-header">
@@ -227,6 +224,7 @@ export function cache(ttl: number) {
             production builds.
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

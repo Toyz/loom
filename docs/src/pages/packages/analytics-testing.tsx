@@ -9,8 +9,7 @@ export default class PageAnalyticsTesting extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Analytics Testing</h1>
-        <p class="subtitle">MockAnalytics — drop-in test transport with assertions.</p>
+        <doc-header title="Analytics Testing" subtitle="MockAnalytics — drop-in test transport with assertions."></doc-header>
 
         <section>
           <div class="group-header">
@@ -96,6 +95,7 @@ it("tracks method invocation", () => {
   analytics.assertTracked("save", { method: "handleSave" });
 });`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

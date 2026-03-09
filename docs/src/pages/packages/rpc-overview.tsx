@@ -9,8 +9,7 @@ export default class PageRpcOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@toyz/loom-rpc</h1>
-        <p class="subtitle">Type-safe, decorator-driven RPC — server-agnostic, transport-swappable.</p>
+        <doc-header title="@toyz/loom-rpc" subtitle="Type-safe, decorator-driven RPC — server-agnostic, transport-swappable."></doc-header>
 
         <section>
           <div class="group-header">
@@ -130,6 +129,7 @@ class UserProfile extends LoomElement {
 accessor user!: ApiState\<User\>;
 //                       ↑ inferred from UserRouter.getUser return type`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

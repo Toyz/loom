@@ -8,10 +8,7 @@ export default class PageRouterGroups extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Route Groups</h1>
-        <p class="subtitle">
-          Organize routes with shared prefixes and guards using <span class="ic">@group</span>.
-        </p>
+        <doc-header title="Route Groups" subtitle="Organize routes with shared prefixes and guards using @group."></doc-header>
 
         <section>
           <div class="group-header">
@@ -195,6 +192,7 @@ class PageMember extends LoomElement { }`}></code-block>
             </div>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

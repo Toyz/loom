@@ -8,11 +8,7 @@ export default class PageRouterOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Router Overview</h1>
-        <p class="subtitle">
-          Dual-mode decorator-driven routing with guards, typed params, and outlets.
-          Import from <span class="ic">@toyz/loom/router</span>.
-        </p>
+        <doc-header title="Router Overview" subtitle="Dual-mode decorator-driven routing with guards, typed params, and outlets. Import from @toyz/loom/router."></doc-header>
 
         <section>
           <div class="group-header">
@@ -79,11 +75,11 @@ class App extends LoomElement {
   }
 }`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             <span class="ic">inherit-styles</span> passes the parent's adopted stylesheets to
             the routed component. Set <span class="ic">scrollToTop="false"</span> to opt out of
             automatic scroll reset on navigation.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -103,6 +99,7 @@ onRoute(e: RouteChanged) {
 }`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -7,8 +7,7 @@ export default class PageJsx extends LoomElement {
   update() {
     return (
       <div>
-        <h1>JSX &amp; Morphing</h1>
-        <p class="subtitle">Zero virtual DOM — JSX compiles directly to DOM nodes, and Loom morphs in-place.</p>
+        <doc-header title="JSX &amp; Morphing" subtitle="Zero virtual DOM — JSX compiles directly to DOM nodes, and Loom morphs in-place."></doc-header>
 
         <section>
           <div class="group-header">
@@ -65,9 +64,9 @@ export default class PageJsx extends LoomElement {
             </div>
             <code-block lang="ts" code={`<div rawHTML={markdownToHtml(content)} />`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             <strong>Warning:</strong> rawHTML bypasses Loom's DOM diffing. Only use with trusted content — never user input.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -121,6 +120,7 @@ export default class PageJsx extends LoomElement {
 <div onPointerDown={this.handleDrag} />`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

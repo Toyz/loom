@@ -10,11 +10,7 @@ export default class ExampleThemeSwitcher extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Theme Switcher</h1>
-        <p class="subtitle">
-          A dark/light toggle using <span class="ic">@reactive</span>,{" "}
-          <span class="ic">@styles</span>, and <span class="ic">loom-icon</span>.
-        </p>
+        <doc-header title="Theme Switcher" subtitle="A dark/light toggle using @reactive, @styles, and loom-icon."></doc-header>
 
         <section>
           <div class="group-header">
@@ -45,6 +41,7 @@ export default class ExampleThemeSwitcher extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/theme-toggle.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

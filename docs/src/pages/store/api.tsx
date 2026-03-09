@@ -7,8 +7,7 @@ export default class PageFetch extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Fetch</h1>
-        <p class="subtitle">Declarative async data fetching with interceptor pipelines and scoped error boundaries.</p>
+        <doc-header title="Fetch" subtitle="Declarative async data fetching with interceptor pipelines and scoped error boundaries."></doc-header>
 
         {/* ── Basic Usage ── */}
         <section>
@@ -132,11 +131,11 @@ export default class PageFetch extends LoomElement {
               <tr><td><code>@catch_("team")</code></td><td>Method decorator — scoped to a specific <code>@api</code> accessor by name</td></tr>
             </tbody>
           </table>
-          <div class="note">
+          <doc-notification type="note">
             Named handlers take priority: if <span class="ic">@catch_("team")</span> exists and
             the <span class="ic">team</span> accessor fails, only the named handler fires.
             Unmatched errors fall through to the general <span class="ic">@catch_</span>.
-          </div>
+          </doc-notification>
         </section>
 
         {/* ── Key Behaviors ── */}
@@ -155,6 +154,7 @@ export default class PageFetch extends LoomElement {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

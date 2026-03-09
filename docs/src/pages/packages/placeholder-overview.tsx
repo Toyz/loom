@@ -9,8 +9,7 @@ export default class PagePlaceholderOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@toyz/loom-placeholder</h1>
-        <p class="subtitle">Placeholder components for Loom — pluggable providers, ships with rgba.lol.</p>
+        <doc-header title="@toyz/loom-placeholder" subtitle="Placeholder components for Loom — pluggable providers, ships with rgba.lol."></doc-header>
 
         <section>
           <div class="group-header">
@@ -127,6 +126,7 @@ app.use(PlaceholderProvider, new MyPlaceholderProvider());`}></code-block>
             No component changes.
           </p>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -9,10 +9,7 @@ export default class PageElementHotkey extends LoomElement {
     update() {
         return (
             <div>
-                <h1>@hotkey</h1>
-                <p class="subtitle">
-                    Declarative keyboard shortcuts with auto-cleanup on disconnect.
-                </p>
+                <doc-header title="@hotkey" subtitle="Declarative keyboard shortcuts with auto-cleanup on disconnect."></doc-header>
 
                 <section>
                     <div class="group-header">
@@ -70,10 +67,10 @@ export default class PageElementHotkey extends LoomElement {
                                 <tr><td><code>mod</code></td><td>—</td><td>⌘ on Mac, Ctrl elsewhere</td></tr>
                             </tbody>
                         </table>
-                        <div class="note">
+                        <doc-notification type="note">
                             Use <span class="ic">mod</span> for cross-platform shortcuts — it maps to{" "}
                             <span class="ic">⌘ Cmd</span> on macOS and <span class="ic">Ctrl</span> everywhere else.
-                        </div>
+                        </doc-notification>
                     </div>
                 </section>
 
@@ -124,10 +121,10 @@ export default class PageElementHotkey extends LoomElement {
                             docs search is powered by <span class="ic">@hotkey</span>:
                         </div>
                         <code-block lang="ts" code={LIVE_DEMO}></code-block>
-                        <div class="note">
+                        <doc-notification type="note">
                             This is the actual code running in this docs site. The search palette
                             you see when pressing ⌘K uses <span class="ic">@hotkey</span> for its keyboard shortcut.
-                        </div>
+                        </doc-notification>
                     </div>
                 </section>
 
@@ -144,7 +141,8 @@ export default class PageElementHotkey extends LoomElement {
                         <li>The <span class="ic">mod</span> modifier detects macOS via <span class="ic">navigator.platform</span></li>
                     </ul>
                 </section>
-            </div>
+              <doc-nav></doc-nav>
+      </div>
         );
     }
 }

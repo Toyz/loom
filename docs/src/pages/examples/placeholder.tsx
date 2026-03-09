@@ -10,12 +10,7 @@ export default class ExamplePlaceholder extends LoomElement {
   update() {
     return (
       <div>
-        <h1>&lt;loom-placeholder&gt; — Placeholder Images</h1>
-        <p class="subtitle">
-          Solid-color placeholder images powered by{" "}
-          <a href="https://rgba.lol" target="_blank" style={{ color: "var(--accent)" }}>rgba.lol</a>{" "}
-          — adjust color, size, and format in real time.
-        </p>
+        <doc-header title="&lt;loom-placeholder&gt; — Placeholder Images" subtitle="Solid-color placeholder images powered by <a href=&quot;https://rgba.lol&quot; target=&quot;_blank&quot; style={{ color: &quot;var(--accent)&quot; }}>rgba.lol</a> — adjust color, size, and format in real time."></doc-header>
 
         <section>
           <div class="group-header">
@@ -61,6 +56,7 @@ app.use(PlaceholderProvider, new RgbaPlaceholder());`}></code-block>
           </div>
           <source-block file="docs/src/pages/examples/components/placeholder-demo.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

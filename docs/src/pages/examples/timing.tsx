@@ -10,12 +10,7 @@ export default class ExampleTiming extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Timing Decorators</h1>
-        <p class="subtitle">
-          Interactive demos for <span class="ic">@interval</span>,{" "}
-          <span class="ic">@timeout</span>, <span class="ic">@debounce</span>,{" "}
-          <span class="ic">@throttle</span>, and <span class="ic">@animationFrame</span>.
-        </p>
+        <doc-header title="Timing Decorators" subtitle="Interactive demos for @interval, @timeout, @debounce, @throttle, and @animationFrame."></doc-header>
 
         <section>
           <timing-showcase></timing-showcase>
@@ -43,6 +38,7 @@ export default class ExampleTiming extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/timing-showcase.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

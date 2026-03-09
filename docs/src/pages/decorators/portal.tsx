@@ -9,11 +9,8 @@ export default class PageDecoratorPortal extends LoomElement {
     update() {
         return (
             <div>
-                <h1>@portal</h1>
-                <p class="subtitle">
-                    Teleport rendered content to an external DOM target.
-                    Escape shadow DOM stacking context for modals, tooltips, dropdowns.
-                </p>
+                <doc-header title="@portal" subtitle="Teleport rendered content to an external DOM target.
+                    Escape shadow DOM stacking context for modals, tooltips, dropdowns."></doc-header>
 
                 <section>
                     <div class="group-header">
@@ -72,12 +69,13 @@ export default class PageDecoratorPortal extends LoomElement {
                         <li>Reconnecting the element re-creates the portal automatically</li>
                         <li>Multiple <span class="ic">@portal</span> decorators can target different containers</li>
                     </ul>
-                    <div class="note">
+                    <doc-notification type="note">
                         If the target selector doesn't match any element, a warning is logged
                         and the portal is skipped — no crash.
-                    </div>
+                    </doc-notification>
                 </section>
-            </div>
+              <doc-nav></doc-nav>
+      </div>
         );
     }
 }

@@ -7,8 +7,7 @@ export default class PageStoreStorage extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Storage Adapters</h1>
-        <p class="subtitle">Pluggable persistence backends for reactive state.</p>
+        <doc-header title="Storage Adapters" subtitle="Pluggable persistence backends for reactive state."></doc-header>
 
         <section>
           <div class="group-header">
@@ -111,6 +110,7 @@ onLogin(() => {
 });`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

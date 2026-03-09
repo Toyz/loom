@@ -7,8 +7,7 @@ export default class PageStoreDecorator extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@store Decorator</h1>
-        <p class="subtitle">Component-scoped reactive stores with optional persistence.</p>
+        <doc-header title="@store Decorator" subtitle="Component-scoped reactive stores with optional persistence."></doc-header>
 
         <section>
           <div class="group-header">
@@ -146,6 +145,7 @@ class MyPrefs extends LoomElement {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

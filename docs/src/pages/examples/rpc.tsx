@@ -10,12 +10,7 @@ export default class ExampleRpc extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@rpc — Type-Safe RPC</h1>
-        <p class="subtitle">
-          Declarative server calls with <span class="ic">@rpc</span> queries and{" "}
-          <span class="ic">@mutate</span> mutations, powered by{" "}
-          <span class="ic">MockTransport</span> — no server required.
-        </p>
+        <doc-header title="@rpc — Type-Safe RPC" subtitle="Declarative server calls with @rpc queries and @mutate mutations, powered by MockTransport — no server required."></doc-header>
 
         <section>
           <div class="group-header">
@@ -73,6 +68,7 @@ class UserRouter {
           </div>
           <source-block file="docs/src/pages/examples/components/rpc-demo.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

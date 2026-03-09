@@ -9,11 +9,8 @@ export default class PageResult extends LoomElement {
   update() {
     return (
       <div>
-        <h1>LoomResult&lt;T, E&gt;</h1>
-        <p class="subtitle">
-          A Rust-inspired Result type for explicit, composable error handling.
-          Used throughout the framework and available as a public utility.
-        </p>
+        <doc-header title="LoomResult&lt;T, E&gt;" subtitle="A Rust-inspired Result type for explicit, composable error handling.
+          Used throughout the framework and available as a public utility."></doc-header>
 
         <section>
           <div class="group-header">
@@ -222,13 +219,13 @@ match(cases) {
             ></code-block>
           </div>
 
-          <div class="note">
+          <doc-notification type="note">
             This pattern means <strong>simple uses stay simple</strong> — you
             can always call <span class="ic">.match({"{ ok, err }"})</span> on any
             Result-like type. But when you need richer handling, the
             branches are right there, fully typed. <strong>Opt-in
             granularity, not mandatory complexity.</strong>
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -399,6 +396,7 @@ checkAuth(route: RouteInfo, @inject(TokenStore) t: TokenStore) {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

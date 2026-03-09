@@ -26,12 +26,7 @@ export default class PageExampleImageGallery extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Image Gallery</h1>
-        <p class="subtitle">
-          A responsive grid of <span class="ic">&lt;loom-image&gt;</span> elements
-          — each one lazy-loads on scroll and is cached in memory.
-          Images served by <a href="https://rgba.lol" target="_blank">rgba.lol</a>.
-        </p>
+        <doc-header title="Image Gallery" subtitle="A responsive grid of <loom-image> elements — each one lazy-loads on scroll and is cached in memory. Images served by <a href=&quot;https://rgba.lol&quot; target=&quot;_blank&quot;>rgba.lol</a>."></doc-header>
 
         <section>
           <div class="group-header">
@@ -90,6 +85,7 @@ export default class PageExampleImageGallery extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/image-gallery.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -10,11 +10,7 @@ export default class ExampleAnalytics extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@track — Event Tracking</h1>
-        <p class="subtitle">
-          Decorator-driven analytics with <span class="ic">@track</span> and{" "}
-          <span class="ic">MockAnalytics</span> — no backend required.
-        </p>
+        <doc-header title="@track — Event Tracking" subtitle="Decorator-driven analytics with @track and MockAnalytics — no backend required."></doc-header>
 
         <section>
           <div class="group-header">
@@ -63,6 +59,7 @@ app.use(AnalyticsTransport, analytics);`}></code-block>
           </div>
           <source-block file="docs/src/pages/examples/components/analytics-demo.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

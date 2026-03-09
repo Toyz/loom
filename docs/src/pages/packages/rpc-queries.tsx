@@ -9,8 +9,7 @@ export default class PageRpcQueries extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@rpc — Queries</h1>
-        <p class="subtitle">Auto-fetching, reactive queries with SWR caching and pattern matching.</p>
+        <doc-header title="@rpc — Queries" subtitle="Auto-fetching, reactive queries with SWR caching and pattern matching."></doc-header>
 
         <section>
           <div class="group-header">
@@ -139,6 +138,7 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
   });
 }`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

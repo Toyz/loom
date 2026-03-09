@@ -9,8 +9,7 @@ export default class PageFlagsOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@toyz/loom-flags</h1>
-        <p class="subtitle">Feature flags for Loom — decorator-driven with real-time reactive updates.</p>
+        <doc-header title="@toyz/loom-flags" subtitle="Feature flags for Loom — decorator-driven with real-time reactive updates."></doc-header>
 
         <section>
           <div class="group-header">
@@ -134,6 +133,7 @@ socket.on("flag:update", ({ flag, enabled }) => {
 
 // Every @flag and <loom-flag> reacts — zero manual work`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

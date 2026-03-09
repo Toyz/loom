@@ -9,8 +9,7 @@ export default class PageRpcTesting extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Testing</h1>
-        <p class="subtitle">MockTransport — drop-in test transport with mocks, delays, and assertions.</p>
+        <doc-header title="Testing" subtitle="MockTransport — drop-in test transport with mocks, delays, and assertions."></doc-header>
 
         <section>
           <div class="group-header">
@@ -158,6 +157,7 @@ describe("UserProfile", () => {
   afterEach(() => transport.reset());
 });`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

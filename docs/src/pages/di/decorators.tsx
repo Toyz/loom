@@ -9,8 +9,7 @@ export default class PageDIDecorators extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Decorators</h1>
-        <p class="subtitle">DI-specific decorators for services, injection, and provider factories.</p>
+        <doc-header title="Decorators" subtitle="DI-specific decorators for services, injection, and provider factories."></doc-header>
 
         <section>
           <div class="group-header">
@@ -125,10 +124,10 @@ class TodoPage extends LoomElement {
   }
 }`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             <strong>Deprecation:</strong> The <span class="ic">watchService</span> export still works
             but is deprecated and will be removed in v1.0. Use <span class="ic">@watch(Service)</span> instead.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -146,6 +145,7 @@ class TodoPage extends LoomElement {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

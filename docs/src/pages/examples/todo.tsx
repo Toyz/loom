@@ -10,12 +10,7 @@ export default class ExampleTodo extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Todo List</h1>
-        <p class="subtitle">
-          A persistent todo list using{" "}
-          <span class="ic">@store</span> with <span class="ic">LocalAdapter</span>,{" "}
-          <span class="ic">@computed</span>, and <span class="ic">@styles</span>.
-        </p>
+        <doc-header title="Todo List" subtitle="A persistent todo list using @store with LocalAdapter, @computed, and @styles."></doc-header>
 
         <section>
           <div class="group-header">
@@ -50,6 +45,7 @@ export default class ExampleTodo extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/todo-list.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -11,11 +11,7 @@ export default class PageRouterRouteData extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Route Data</h1>
-        <p class="subtitle">
-          Inject URL params, query strings, and route metadata into your components with{" "}
-          <span class="ic">@prop</span>.
-        </p>
+        <doc-header title="Route Data" subtitle="Inject URL params, query strings, and route metadata into your components with @prop."></doc-header>
 
         <section>
           <div class="group-header">
@@ -283,6 +279,7 @@ class PageUserPosts extends LoomElement {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

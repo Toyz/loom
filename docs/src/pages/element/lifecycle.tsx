@@ -3,14 +3,96 @@
  *
  * @mount, @unmount, @catch_, @suspend, firstUpdated, shouldUpdate
  */
-import { LoomElement } from "@toyz/loom";
+import { LoomElement, css, styles as applyStyles } from "@toyz/loom";
 
+const lifecycleStyles = css`
+  .lc-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin: 1rem 0;
+  }
+
+  .lc-step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    background: var(--bg-surface, #13131a);
+    border-radius: var(--radius-sm, 6px);
+    border-left: 3px solid transparent;
+    transition: background 0.15s ease;
+  }
+  .lc-step:hover {
+    background: var(--bg-hover, #1a1a24);
+  }
+
+  .lc-step.indigo  { border-left-color: var(--accent, #818cf8); }
+  .lc-step.emerald { border-left-color: var(--emerald, #34d399); }
+  .lc-step.amber   { border-left-color: var(--amber, #fbbf24); }
+  .lc-step.cyan    { border-left-color: var(--cyan, #22d3ee); }
+  .lc-step.rose    { border-left-color: var(--rose, #f472b6); }
+
+  .lc-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.625rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .lc-step.indigo  .lc-num { background: rgba(129,140,248,0.12); color: var(--accent, #818cf8); }
+  .lc-step.emerald .lc-num { background: rgba(52,211,153,0.12);  color: var(--emerald, #34d399); }
+  .lc-step.amber   .lc-num { background: rgba(251,191,36,0.12);  color: var(--amber, #fbbf24); }
+  .lc-step.cyan    .lc-num { background: rgba(34,211,238,0.12);  color: var(--cyan, #22d3ee); }
+  .lc-step.rose    .lc-num { background: rgba(244,114,182,0.12); color: var(--rose, #f472b6); }
+
+  .lc-hook {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+    color: var(--text-primary, #e8e8f0);
+    font-weight: 500;
+    white-space: nowrap;
+    min-width: 180px;
+  }
+
+  .lc-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted, #5e5e74);
+  }
+
+  .lc-sep {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.125rem 0;
+  }
+  .lc-sep::before,
+  .lc-sep::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle, #1e1e2a);
+  }
+  .lc-sep span {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted, #5e5e74);
+    white-space: nowrap;
+  }
+`;
+
+@applyStyles(lifecycleStyles)
 export default class PageElementLifecycle extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Lifecycle</h1>
-        <p class="subtitle">Hooks for setup, teardown, error handling, and async loading.</p>
+        <doc-header title="Lifecycle" subtitle="Hooks for setup, teardown, error handling, and async loading."></doc-header>
 
         <section>
           <div class="group-header">
@@ -198,10 +280,10 @@ class CanvasWrapper extends LoomElement {
   }
 }`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             Default is <span class="ic">true</span> — all components render normally unless you override this.
             Built-in elements like <span class="ic">&lt;loom-canvas&gt;</span> and <span class="ic">&lt;loom-virtual&gt;</span> use this to block re-morphing.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -209,19 +291,52 @@ class CanvasWrapper extends LoomElement {
             <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
             <h2>Full Lifecycle Order</h2>
           </div>
-          <table class="api-table">
-            <thead><tr><th>Phase</th><th>Hook</th><th>Timing</th></tr></thead>
-            <tbody>
-              <tr><td>1</td><td><code>constructor()</code></td><td>Element created</td></tr>
-              <tr><td>2</td><td><code>@mount</code></td><td>Connected to DOM</td></tr>
-              <tr><td>3</td><td><code>shouldUpdate()</code></td><td>Before each render — return false to skip</td></tr>
-              <tr><td>4</td><td><code>update()</code></td><td>First render</td></tr>
-              <tr><td>5</td><td><code>firstUpdated()</code></td><td>After first render</td></tr>
-              <tr><td>6</td><td><code>shouldUpdate()</code> + <code>update()</code></td><td>On each @reactive change</td></tr>
-              <tr><td>7</td><td><code>@unmount</code></td><td>Disconnected from DOM</td></tr>
-            </tbody>
-          </table>
+
+          <div class="lc-flow">
+            <div class="lc-step indigo">
+              <div class="lc-num">1</div>
+              <span class="lc-hook">constructor()</span>
+              <span class="lc-desc">Element created — shadow root attached, no DOM yet</span>
+            </div>
+            <div class="lc-step emerald">
+              <div class="lc-num">2</div>
+              <span class="lc-hook">@mount</span>
+              <span class="lc-desc">Connected to DOM — setup subscriptions, adopt styles</span>
+            </div>
+            <div class="lc-step amber">
+              <div class="lc-num">3</div>
+              <span class="lc-hook">shouldUpdate()</span>
+              <span class="lc-desc">Gate check — return false to skip render</span>
+            </div>
+            <div class="lc-step cyan">
+              <div class="lc-num">4</div>
+              <span class="lc-hook">update()</span>
+              <span class="lc-desc">First render — return JSX, DOM is morphed</span>
+            </div>
+            <div class="lc-step emerald">
+              <div class="lc-num">5</div>
+              <span class="lc-hook">firstUpdated()</span>
+              <span class="lc-desc">One-time — shadow DOM is fully populated</span>
+            </div>
+
+            <div class="lc-sep"><span>re-render loop</span></div>
+
+            <div class="lc-step amber">
+              <div class="lc-num">6</div>
+              <span class="lc-hook">shouldUpdate() → update()</span>
+              <span class="lc-desc">On each @reactive change — morphs only what changed</span>
+            </div>
+
+            <div class="lc-sep"><span>disconnect</span></div>
+
+            <div class="lc-step rose">
+              <div class="lc-num">7</div>
+              <span class="lc-hook">@unmount</span>
+              <span class="lc-desc">Disconnected from DOM — cleanup timers, close connections</span>
+            </div>
+          </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

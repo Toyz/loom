@@ -9,8 +9,7 @@ export default class PageElementLazy extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Lazy Loading</h1>
-        <p class="subtitle">Defer component module loading until first mount with <span class="ic">@lazy</span>.</p>
+        <doc-header title="Lazy Loading" subtitle="Defer component module loading until first mount with @lazy."></doc-header>
 
         <section>
           <div class="group-header">
@@ -108,11 +107,11 @@ class DashboardPage extends LoomElement {}`}></code-block>
   )
 })
 class AnalyticsPage extends LoomElement {}`}></code-block>
-            <div class="note">
+            <doc-notification type="note">
               Since Loom JSX compiles to real DOM nodes, any component used in the factory
               (like <span class="ic">&lt;my-spinner /&gt;</span>) is a full Loom element with DI,
               reactivity, and all decorators.
-            </div>
+            </doc-notification>
           </div>
         </section>
 
@@ -134,10 +133,10 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
             <li>A real instance is created and mounted inside the shell's shadow DOM</li>
             <li>Attributes, route params, and adopted styles are forwarded from shell → impl</li>
           </ol>
-          <div class="note">
+          <doc-notification type="note">
             Subsequent mounts skip the loading step entirely — the module is only loaded once.
             New instances of the same component reuse the shared mount function.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -153,6 +152,7 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

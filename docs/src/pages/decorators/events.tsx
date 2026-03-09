@@ -9,8 +9,7 @@ export default class PageDecoratorEvents extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Events</h1>
-        <p class="subtitle">Typed, class-based events and declarative event decorators.</p>
+        <doc-header title="Events" subtitle="Typed, class-based events and declarative event decorators."></doc-header>
 
         {/* ═══════════ Define ═══════════ */}
 
@@ -100,10 +99,10 @@ onShadowScroll(e: Event) { this.scrollY = (e.target as Element).scrollTop; }
 // Listen to input events on a queried element
 @on(el => el.formEl, "submit")
 onSubmit(e: Event) { e.preventDefault(); this.save(); }`}></code-block>
-            <div class="note">
+            <doc-notification type="note">
               The resolver receives the component instance and must return an <span class="ic">EventTarget</span>.
               Listeners are auto-cleaned on disconnect, just like the static form.
-            </div>
+            </doc-notification>
           </div>
         </section>
 
@@ -224,6 +223,8 @@ class Page extends LoomElement {
 }`}></code-block>
           </div>
         </section>
+
+        <doc-nav></doc-nav>
       </div>
     );
   }

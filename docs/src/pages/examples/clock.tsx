@@ -10,12 +10,7 @@ export default class ExampleClock extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Live Clock</h1>
-        <p class="subtitle">
-          A real-time clock using <span class="ic">@reactive</span>,{" "}
-          <span class="ic">@interval</span>, and{" "}
-          <span class="ic">@styles</span>.
-        </p>
+        <doc-header title="Live Clock" subtitle="A real-time clock using @reactive, @interval, and @styles."></doc-header>
 
         <section>
           <div class="group-header">
@@ -45,6 +40,7 @@ export default class ExampleClock extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/live-clock.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

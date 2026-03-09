@@ -7,8 +7,7 @@ export default class PageRouteLifecycle extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Route Lifecycle</h1>
-        <p class="subtitle">Run code when entering or leaving a route.</p>
+        <doc-header title="Route Lifecycle" subtitle="Run code when entering or leaving a route."></doc-header>
 
         <section>
           <div class="group-header">
@@ -111,6 +110,7 @@ class Dashboard extends LoomElement {
             </div>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

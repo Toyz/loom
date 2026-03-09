@@ -10,13 +10,7 @@ export default class ExampleCanvasGame extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Canvas Game</h1>
-        <p class="subtitle">
-          A playable breakout clone built with{" "}
-          <span class="ic">&lt;loom-canvas&gt;</span>,{" "}
-          <span class="ic">@animationFrame</span>, and{" "}
-          <span class="ic">@reactive</span>.
-        </p>
+        <doc-header title="Canvas Game" subtitle="A playable breakout clone built with <loom-canvas>, @animationFrame, and @reactive."></doc-header>
 
         <section>
           <div class="group-header">
@@ -50,6 +44,7 @@ export default class ExampleCanvasGame extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/canvas-game-demo.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -7,8 +7,7 @@ export default class PageStoreReactive extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Reactive State</h1>
-        <p class="subtitle">Observable values and CRUD collections with optional persistence.</p>
+        <doc-header title="Reactive State" subtitle="Observable values and CRUD collections with optional persistence."></doc-header>
 
         <section>
           <div class="group-header">
@@ -134,6 +133,7 @@ prefs.swapStorage({
 prefs.clear({ theme: "dark", lang: "en" });`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

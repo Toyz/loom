@@ -10,12 +10,7 @@ export default class ExampleFlags extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@flag — Feature Flags</h1>
-        <p class="subtitle">
-          Decorator-driven feature flags with <span class="ic">@flag</span>,{" "}
-          <span class="ic">&lt;loom-flag&gt;</span>, and{" "}
-          <span class="ic">MockFlags</span> — no backend required.
-        </p>
+        <doc-header title="@flag — Feature Flags" subtitle="Decorator-driven feature flags with @flag, <loom-flag>, and MockFlags — no backend required."></doc-header>
 
         <section>
           <div class="group-header">
@@ -61,6 +56,7 @@ app.use(FlagProvider, flags);`}></code-block>
           </div>
           <source-block file="docs/src/pages/examples/components/flags-demo.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

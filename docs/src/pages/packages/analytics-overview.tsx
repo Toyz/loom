@@ -9,8 +9,7 @@ export default class PageAnalyticsOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@toyz/loom-analytics</h1>
-        <p class="subtitle">Zero-dependency, transport-swappable analytics — decorator-driven event tracking.</p>
+        <doc-header title="@toyz/loom-analytics" subtitle="Zero-dependency, transport-swappable analytics — decorator-driven event tracking."></doc-header>
 
         <section>
           <div class="group-header">
@@ -123,6 +122,7 @@ accessor theme = "dark";`}></code-block>
             method name, property name, etc.) before being passed to your transport.
           </p>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

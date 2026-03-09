@@ -9,8 +9,7 @@ export default class PageDecoratorTransform extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Transform</h1>
-        <p class="subtitle">Value transformation decorators for parsing and conversion.</p>
+        <doc-header title="Transform" subtitle="Value transformation decorators for parsing and conversion."></doc-header>
 
         {/* ═══════════ @transform ═══════════ */}
 
@@ -144,6 +143,7 @@ const toUpperCase = createTransform<string, string>(
 @prop @transform(toUpperCase) accessor title!: string;`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

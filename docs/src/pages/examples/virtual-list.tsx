@@ -10,10 +10,7 @@ export default class ExampleVirtualList extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Virtual List</h1>
-        <p class="subtitle">
-          Render 100k items without breaking a sweat.
-        </p>
+        <doc-header title="Virtual List" subtitle="Render 100k items without breaking a sweat."></doc-header>
 
         <section>
           <div class="group-header">
@@ -49,6 +46,7 @@ export default class ExampleVirtualList extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/virtual-list-demo.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

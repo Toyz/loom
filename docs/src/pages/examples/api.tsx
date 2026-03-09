@@ -10,12 +10,7 @@ export default class ExampleApi extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@api — Data Fetching</h1>
-        <p class="subtitle">
-          Declarative async data with <span class="ic">@api</span>, response
-          pipelines via <span class="ic">pipe</span>, and scoped error
-          boundaries with <span class="ic">@catch_</span>.
-        </p>
+        <doc-header title="@api — Data Fetching" subtitle="Declarative async data with @api, response pipelines via pipe, and scoped error boundaries with @catch_."></doc-header>
 
         <section>
           <div class="group-header">
@@ -53,6 +48,7 @@ export default class ExampleApi extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/api-demo.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

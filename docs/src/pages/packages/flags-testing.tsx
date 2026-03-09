@@ -9,10 +9,7 @@ export default class PageFlagsTesting extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Testing Feature Flags</h1>
-        <p class="subtitle">
-          <span class="ic">MockFlags</span> — drop-in test provider with assertions, no backend required.
-        </p>
+        <doc-header title="Testing Feature Flags" subtitle="MockFlags — drop-in test provider with assertions, no backend required."></doc-header>
 
         <section>
           <div class="group-header">
@@ -90,6 +87,7 @@ expect(el.flagEnabled).toBe(false);
 flags.enable("my-flag");
 expect(el.flagEnabled).toBe(true);`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

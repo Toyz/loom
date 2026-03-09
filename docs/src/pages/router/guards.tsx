@@ -8,16 +8,13 @@ export default class PageRouterGuards extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Route Guards</h1>
-        <p class="subtitle">
-          Protect routes with named, injectable guard functions.
-        </p>
+        <doc-header title="Route Guards" subtitle="Protect routes with named, injectable guard functions."></doc-header>
 
-        <div class="note">
+        <doc-notification type="note">
           <strong>🧭 See It Live</strong> — This docs site uses a <span class="ic">docs-log</span> guard
           on every section. Open <strong>DevTools → Console</strong> and click any nav link
           to watch it fire in real-time!
-        </div>
+        </doc-notification>
 
         <section>
           <div class="group-header">
@@ -111,6 +108,7 @@ class PageBilling extends LoomElement { }`}></code-block>
             </div>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

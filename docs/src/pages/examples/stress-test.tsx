@@ -10,12 +10,7 @@ export default class ExampleStressTest extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Stress Test</h1>
-        <p class="subtitle">
-          Traced Template Projection in action — a <span class="ic">@interval(16)</span> ticks
-          at 60fps while <span class="ic">@computed</span> derives stats and{" "}
-          <span class="ic">@watch</span> reacts to changes.
-        </p>
+        <doc-header title="Stress Test" subtitle="Traced Template Projection in action — a @interval(16) ticks at 60fps while @computed derives stats and @watch reacts to changes."></doc-header>
 
         <section>
           <div class="group-header">
@@ -66,6 +61,7 @@ export default class ExampleStressTest extends LoomElement {
           </div>
           <source-block file="docs/src/pages/examples/components/stress-test.tsx"></source-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

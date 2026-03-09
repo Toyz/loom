@@ -9,8 +9,7 @@ export default class PageElementQueries extends LoomElement {
   update() {
     return (
       <div>
-        <h1>DOM Queries</h1>
-        <p class="subtitle">Lazy shadow DOM selectors via decorators.</p>
+        <doc-header title="DOM Queries" subtitle="Lazy shadow DOM selectors via decorators."></doc-header>
 
         <section>
           <div class="group-header">
@@ -93,6 +92,7 @@ get submitBtn() {
 @query(".submit-btn") submitBtn!: HTMLButtonElement;`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

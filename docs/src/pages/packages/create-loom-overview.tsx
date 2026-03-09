@@ -9,8 +9,7 @@ export default class PageCreateLoomOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@toyz/create-loom</h1>
-        <p class="subtitle">Scaffold a new Loom + TypeScript + Vite project in seconds.</p>
+        <doc-header title="@toyz/create-loom" subtitle="Scaffold a new Loom + TypeScript + Vite project in seconds."></doc-header>
 
         <section>
           <div class="group-header">
@@ -126,6 +125,7 @@ export class App extends LoomElement {
   "include": ["src"]
 }`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

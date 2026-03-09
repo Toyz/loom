@@ -9,8 +9,7 @@ export default class PageRpcTransports extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Transports</h1>
-        <p class="subtitle">Pluggable transport layer — swap HTTP, WebSocket, or mock with one DI line.</p>
+        <doc-header title="Transports" subtitle="Pluggable transport layer — swap HTTP, WebSocket, or mock with one DI line."></doc-header>
 
         <section>
           <div class="group-header">
@@ -138,6 +137,7 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
 // Swap in — zero component changes
 app.use(RpcTransport, new WsTransport(ws));`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -9,11 +9,8 @@ export default class PageTesting extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Testing</h1>
-        <p class="subtitle">
-          Harness utilities for testing Loom components with Vitest and
-          happy-dom.
-        </p>
+        <doc-header title="Testing" subtitle="Harness utilities for testing Loom components with Vitest and
+          happy-dom."></doc-header>
 
         <section>
           <h2>Setup</h2>
@@ -211,6 +208,7 @@ describe("TestCounter", () => {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -9,8 +9,7 @@ export default class PageRpcMutations extends LoomElement {
   update() {
     return (
       <div>
-        <h1>@mutate — Mutations</h1>
-        <p class="subtitle">Manual, type-safe server writes with loading and error tracking.</p>
+        <doc-header title="@mutate — Mutations" subtitle="Manual, type-safe server writes with loading and error tracking."></doc-header>
 
         <section>
           <div class="group-header">
@@ -130,6 +129,7 @@ this.toggleRole.call("1", "admin");
 // ✗ Compile error — wrong argument types
 this.toggleRole.call(42, "superadmin");`}></code-block>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

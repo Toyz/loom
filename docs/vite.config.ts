@@ -11,7 +11,7 @@ const loomPlaceholderPkg = JSON.parse(readFileSync("../loom-placeholder/package.
 export default defineConfig({
   base: process.env.CI ? "/loom/" : "/",
   server: {
-    port: 4200,
+    port: 5173,
     fs: {
       allow: [".."],
     },

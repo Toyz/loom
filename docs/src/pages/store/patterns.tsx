@@ -9,8 +9,7 @@ export default class PageStorePatterns extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Patterns</h1>
-        <p class="subtitle">Common patterns for wiring stores into components and services.</p>
+        <doc-header title="Patterns" subtitle="Common patterns for wiring stores into components and services."></doc-header>
 
         <section>
           <div class="group-header">
@@ -147,6 +146,7 @@ function onAuthenticated() {
 }`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

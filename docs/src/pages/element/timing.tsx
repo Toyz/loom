@@ -9,8 +9,7 @@ export default class PageElementTiming extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Timing</h1>
-        <p class="subtitle">Auto-cleaned timer and animation frame decorators.</p>
+        <doc-header title="Timing" subtitle="Auto-cleaned timer and animation frame decorators."></doc-header>
 
         <section>
           <div class="group-header">
@@ -130,10 +129,10 @@ ambient(dt: number, t: number) {
                 <tr><td><code>fps</code></td><td>number</td><td>uncapped</td><td>Target frames per second (1–59). Skips frames to match the target rate.</td></tr>
               </tbody>
             </table>
-            <div class="note">
+            <doc-notification type="note">
               FPS capping uses a zero-allocation dt accumulator — just a number comparison
               per frame. The global render loop stays at 60fps; individual callbacks self-throttle.
-            </div>
+            </doc-notification>
           </div>
         </section>
 
@@ -153,10 +152,10 @@ ambient(dt: number, t: number) {
               <tr><td><code>@animationFrame({'{'}fps, layer{'}'})</code></td><td>FPS-capped rAF loop</td><td>Unregistered on disconnect</td></tr>
             </tbody>
           </table>
-          <div class="note">
+          <doc-notification type="note">
             All timing decorators are built on <span class="ic">createDecorator</span> and automatically
             clean up when the element disconnects from the DOM — no manual teardown needed.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -220,6 +219,7 @@ class LiveSearch extends LoomElement {
 }`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

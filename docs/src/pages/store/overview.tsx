@@ -9,8 +9,7 @@ export default class PageStoreOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>State Management</h1>
-        <p class="subtitle">Reactive primitives, component stores, and persistent storage — everything you need to manage state in Loom.</p>
+        <doc-header title="State Management" subtitle="Reactive primitives, component stores, and persistent storage — everything you need to manage state in Loom."></doc-header>
 
         {/* ═══════════ Philosophy ═══════════ */}
 
@@ -105,6 +104,7 @@ class TodoApp extends LoomElement {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

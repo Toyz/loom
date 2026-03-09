@@ -7,8 +7,7 @@ export default class PageVirtualList extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Virtual List</h1>
-        <p class="subtitle">Render thousands of items efficiently with windowed virtualization.</p>
+        <doc-header title="Virtual List" subtitle="Render thousands of items efficiently with windowed virtualization."></doc-header>
 
         <section>
           <div class="group-header">
@@ -21,10 +20,10 @@ export default class PageVirtualList extends LoomElement {
               Items are measured, cached, and recycled — you get smooth scrolling even with 100k+ rows.
             </div>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             <span class="ic">LoomVirtual</span> is a built-in element that ships with Loom. Import it explicitly
             to register the custom element (it's excluded from the main barrel to avoid side effects):
-          </div>
+          </doc-notification>
           <code-block lang="ts" code={`import "@toyz/loom/element/virtual";`}></code-block>
         </section>
 
@@ -68,11 +67,11 @@ loom-virtual {
   overflow: hidden;     /* clip host — inner viewport scrolls */
 }`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             The internal structure is <span class="ic">.vl-viewport → .vl-spacer → .vl-window</span>.
             The viewport scrolls, the spacer sets the total height, and the window is absolutely positioned
             to render only visible items.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -166,6 +165,7 @@ setCount(n: number) {
 </loom-virtual>`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

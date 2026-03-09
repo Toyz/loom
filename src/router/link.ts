@@ -4,6 +4,10 @@
  * Declarative navigation link. Renders an <a> that adapts
  * its href to the current router mode (hash vs history).
  * Adds `.active` class when the current route matches.
+ *
+ * Consumer CSS overrides:
+ *   const inline = css`a { display: inline; }`;
+ *   <loom-link to="/foo" styles={[inline]}>Foo</loom-link>
  */
 
 import { LoomElement } from "../element/element";
@@ -22,6 +26,8 @@ class LoomLink extends LoomElement {
   @prop accessor name = "";
   /** Params for named route substitution (JSON string or object via JSX) */
   @prop accessor params = "";
+  /** Optional CSSStyleSheets to adopt — overrides default anchor styles */
+  @prop accessor styles: CSSStyleSheet[] = [];
 
   @query("a") accessor anchor!: HTMLAnchorElement;
 
@@ -43,6 +49,14 @@ class LoomLink extends LoomElement {
         gap: inherit;
       }
     `;
+
+    // Adopt consumer style overrides
+    if (this.styles.length) {
+      this.shadow.adoptedStyleSheets = [
+        ...this.shadow.adoptedStyleSheets,
+        ...this.styles,
+      ];
+    }
 
     // Build initial DOM
     const a = document.createElement("a");

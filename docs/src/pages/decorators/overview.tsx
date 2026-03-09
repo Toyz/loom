@@ -9,18 +9,13 @@
  *   - DI: /di/overview
  */
 import { LoomElement } from "@toyz/loom";
-import { DECORATOR_LIST, DECORATOR_COUNT } from "../../data/decorators";
 
 export default class PageDecoratorsOverview extends LoomElement {
 
   update() {
     return (
       <div>
-        <h1>Decorators</h1>
-        <p class="subtitle">
-          {DECORATOR_COUNT} core decorators. <span class="ic">createDecorator</span> is the
-          foundation — every built-in decorator is built on it.
-        </p>
+        <doc-header title="Decorators" subtitle="36 core decorators. createDecorator is the foundation — every built-in decorator is built on it."></doc-header>
 
         {/* ═══════════ Foundation ═══════════ */}
 
@@ -153,7 +148,10 @@ onTheme(val: string, prev: string) { }`}></code-block>
         {/* ═══════════ See Also ═══════════ */}
 
         <section>
-          <h2>More Decorators</h2>
+          <div class="group-header">
+            <loom-icon name="link" size={20} color="var(--cyan)"></loom-icon>
+            <h2>More Decorators</h2>
+          </div>
           <table class="api-table">
             <thead><tr><th>Category</th><th>Decorators</th><th>Page</th></tr></thead>
             <tbody>
@@ -195,6 +193,7 @@ onTheme(val: string, prev: string) { }`}></code-block>
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

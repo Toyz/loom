@@ -3,116 +3,118 @@
  *
  * End-to-end walkthrough building a todo app.
  */
-import { LoomElement } from "@toyz/loom";
+import { LoomElement, css, styles as applyStyles } from "@toyz/loom";
+import { inlineLink } from "../styles/doc-page";
 
+const styles = css`
+  /* ── Custom list bullets ── */
+  ul { list-style: none; padding: 0; margin-bottom: var(--space-4); }
+  li {
+    position: relative; padding-left: var(--space-5);
+    color: var(--text-secondary); margin-bottom: var(--space-2);
+    line-height: var(--leading-normal);
+  }
+  li::before {
+    content: ""; position: absolute; left: 0; top: 10px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── File tree ── */
+  .file-tree {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.8;
+    margin-bottom: var(--space-4);
+    color: var(--text-secondary);
+  }
+  .file-tree .dir  { color: var(--accent); }
+  .file-tree .file { color: var(--text-muted); }
+  .file-tree .hl   { color: var(--emerald); font-weight: 600; }
+
+  /* ── Concepts grid ── */
+  .concepts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+  .concept-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-align: center;
+  }
+  .concept-card .name {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .concept-card .desc {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+    line-height: 1.5;
+  }
+
+  /* ── Step numbers ── */
+  .step { margin-bottom: var(--space-10); }
+  .step-header {
+    display: flex; align-items: center;
+    gap: var(--space-3); margin-bottom: var(--space-4);
+  }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent-glow); border: 1px solid var(--accent-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--text-xs); font-weight: 700;
+    font-family: var(--font-mono); color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── Callouts ── */
+  .callout {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-dim);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-top: var(--space-4);
+    display: flex; align-items: flex-start; gap: var(--space-3);
+  }
+  .callout strong { color: var(--accent); }
+
+  .result-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-align: center;
+    margin-top: var(--space-4);
+  }
+  .result-card h3 {
+    color: var(--emerald); margin: 0 0 var(--space-2);
+    font-size: var(--text-lg);
+  }
+  .result-card p {
+    color: var(--text-muted); font-size: var(--text-sm); margin: 0;
+  }
+`;
+
+@applyStyles(styles)
 export default class PageFirstApp extends LoomElement {
+
   update() {
-    this.css`
-      /* ── Custom list bullets ── */
-      ul { list-style: none; padding: 0; margin-bottom: var(--space-4); }
-      li {
-        position: relative; padding-left: var(--space-5);
-        color: var(--text-secondary); margin-bottom: var(--space-2);
-        line-height: var(--leading-normal);
-      }
-      li::before {
-        content: ""; position: absolute; left: 0; top: 10px;
-        width: 6px; height: 6px; border-radius: 50%;
-        background: var(--accent);
-      }
-
-      /* ── File tree ── */
-      .file-tree {
-        background: var(--bg-surface);
-        border: 1px solid var(--border-subtle);
-        border-radius: var(--radius-md);
-        padding: var(--space-4) var(--space-5);
-        font-family: var(--font-mono);
-        font-size: var(--text-sm);
-        line-height: 1.8;
-        margin-bottom: var(--space-4);
-        color: var(--text-secondary);
-      }
-      .file-tree .dir  { color: var(--accent); }
-      .file-tree .file { color: var(--text-muted); }
-      .file-tree .hl   { color: var(--emerald); font-weight: 600; }
-
-      /* ── Concepts grid ── */
-      .concepts {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: var(--space-3);
-        margin-bottom: var(--space-6);
-      }
-      .concept-card {
-        background: var(--bg-surface);
-        border: 1px solid var(--border-subtle);
-        border-radius: var(--radius-md);
-        padding: var(--space-4);
-        text-align: center;
-      }
-      .concept-card .name {
-        font-family: var(--font-mono);
-        font-size: var(--text-sm);
-        color: var(--accent);
-        font-weight: 600;
-      }
-      .concept-card .desc {
-        font-size: var(--text-xs);
-        color: var(--text-muted);
-        margin-top: var(--space-1);
-        line-height: 1.5;
-      }
-
-      /* ── Step numbers ── */
-      .step { margin-bottom: var(--space-10); }
-      .step-header {
-        display: flex; align-items: center;
-        gap: var(--space-3); margin-bottom: var(--space-4);
-      }
-      .step-num {
-        width: 28px; height: 28px; border-radius: 50%;
-        background: var(--accent-glow); border: 1px solid var(--accent-dim);
-        display: flex; align-items: center; justify-content: center;
-        font-size: var(--text-xs); font-weight: 700;
-        font-family: var(--font-mono); color: var(--accent);
-        flex-shrink: 0;
-      }
-
-      /* ── Callouts ── */
-      .callout {
-        background: var(--accent-glow);
-        border: 1px solid var(--accent-dim);
-        border-radius: var(--radius-md);
-        padding: var(--space-3) var(--space-4);
-        font-size: var(--text-sm);
-        color: var(--text-secondary);
-        margin-top: var(--space-4);
-        display: flex; align-items: flex-start; gap: var(--space-3);
-      }
-      .callout strong { color: var(--accent); }
-
-      .result-card {
-        background: var(--bg-surface);
-        border: 1px solid var(--border-subtle);
-        border-radius: var(--radius-lg);
-        padding: var(--space-6);
-        text-align: center;
-        margin-top: var(--space-4);
-      }
-      .result-card h3 {
-        color: var(--emerald); margin: 0 0 var(--space-2);
-        font-size: var(--text-lg);
-      }
-      .result-card p {
-        color: var(--text-muted); font-size: var(--text-sm); margin: 0;
-      }
-    `;
-
     return (
       <div>
-        <h1>Your First App</h1>
-        <p class="subtitle">Build a persistent todo list in 4 files. No CLI, no build config — just Vite + Loom.</p>
+        <doc-header title="Your First App" subtitle="Build a persistent todo list in 4 files. No CLI, no build config — just Vite + Loom."></doc-header>
 
         {/* ─── What You'll Learn ─── */}
 
@@ -379,9 +381,10 @@ app.start();`}></code-block>
             <li><span class="ic">@watch(store)</span> auto-subscribes to stores — no manual cleanup needed</li>
             <li><span class="ic">loom-key</span> enables efficient keyed DOM reconciliation</li>
             <li>Persistence is a single constructor option — swap <span class="ic">LocalAdapter</span> for <span class="ic">SessionAdapter</span> or your own backend</li>
-            <li>No build config beyond <span class="ic">tsconfig.json</span> — see <loom-link to="/guides/getting-started" style="color: var(--accent)">Getting Started</loom-link></li>
+            <li>No build config beyond <span class="ic">tsconfig.json</span> — see <loom-link to="/guides/getting-started" styles={[inlineLink]} style="color: var(--accent)">Getting Started</loom-link></li>
           </ul>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

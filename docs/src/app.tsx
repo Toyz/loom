@@ -18,6 +18,7 @@ const sections: NavSection[] = [
       { label: "Getting Started", to: "/guides/getting-started", icon: "book" },
       { label: "Your First App", to: "/guides/your-first-app", icon: "sparkles" },
       { label: "Debugging", to: "/guides/debugging", icon: "search" },
+      { label: "LoomResult", to: "/result", icon: "sparkles" },
     ],
   },
   {
@@ -33,10 +34,24 @@ const sections: NavSection[] = [
       { label: "Light DOM", to: "/element/light-dom", icon: "sun" },
       { label: "Lazy Loading", to: "/element/lazy", icon: "download" },
       { label: "Forms", to: "/element/forms", icon: "clipboard" },
+      { label: "Fetch", to: "/store/api", icon: "zap", divider: "Data Fetching" },
       { label: "Virtual List", to: "/element/virtual-list", icon: "list", divider: "Built-ins" },
       { label: "Icon", to: "/element/icon", icon: "star" },
       { label: "Canvas", to: "/element/canvas", icon: "canvas" },
       { label: "Image", to: "/element/image", icon: "image" },
+    ],
+  },
+  {
+    title: "Decorators",
+    items: [
+      { label: "Overview", to: "/decorators/overview", icon: "hash" },
+      { label: "Events", to: "/decorators/events", icon: "broadcast" },
+      { label: "Transform", to: "/decorators/transform", icon: "refresh" },
+      { label: "Hotkey", to: "/decorators/hotkey", icon: "command" },
+      { label: "Log", to: "/decorators/log", icon: "zap" },
+      { label: "Context", to: "/decorators/context", icon: "thread" },
+      { label: "Portal", to: "/decorators/portal", icon: "external-link" },
+      { label: "Typed Symbols", to: "/decorators/symbols", icon: "key" },
     ],
   },
   {
@@ -47,14 +62,6 @@ const sections: NavSection[] = [
       { label: "Decorator", to: "/store/store-decorator", icon: "package" },
       { label: "Storage", to: "/store/storage", icon: "database" },
       { label: "Patterns", to: "/store/patterns", icon: "layers" },
-      { label: "Fetch", to: "/store/api", icon: "zap" },
-    ],
-  },
-  {
-    title: "DI & Services",
-    items: [
-      { label: "Overview", to: "/di/overview", icon: "box" },
-      { label: "Decorators", to: "/di/decorators", icon: "hash" },
     ],
   },
   {
@@ -71,16 +78,10 @@ const sections: NavSection[] = [
     ],
   },
   {
-    title: "Decorators",
+    title: "DI & Services",
     items: [
-      { label: "Overview", to: "/decorators/overview", icon: "hash" },
-      { label: "Events", to: "/decorators/events", icon: "broadcast" },
-      { label: "Transform", to: "/decorators/transform", icon: "refresh" },
-      { label: "Hotkey", to: "/decorators/hotkey", icon: "command" },
-      { label: "Log", to: "/decorators/log", icon: "zap" },
-      { label: "Context", to: "/decorators/context", icon: "thread" },
-      { label: "Portal", to: "/decorators/portal", icon: "external-link" },
-      { label: "Typed Symbols", to: "/decorators/symbols", icon: "key" },
+      { label: "Overview", to: "/di/overview", icon: "box" },
+      { label: "Decorators", to: "/di/decorators", icon: "hash" },
     ],
   },
   {
@@ -476,7 +477,7 @@ const styles = css`
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 10px 16px;
+    padding: 7px 16px;
     border-radius: 10px;
     font-size: 0.8125rem;
     font-weight: 450;
@@ -507,19 +508,29 @@ const styles = css`
     background: var(--accent, #818cf8);
   }
 
-  /* Icon inside link */
+  /* Icon inside link — rainbow cycle via nth-child */
   .nav-link loom-icon,
   .home-item loom-icon {
     flex-shrink: 0;
-    opacity: 0.5;
-    transition: opacity 0.18s ease;
+    transition: opacity 0.18s ease, filter 0.18s ease;
   }
-  .nav-link.active loom-icon {
-    opacity: 1;
-  }
-  .nav-link:hover loom-icon {
-    opacity: 0.75;
-  }
+
+  /* 10-color palette cycling through golden-angle hue steps */
+  .nav-link:nth-child(10n+1) loom-icon { color: hsl(260, 70%, 70%); }
+  .nav-link:nth-child(10n+2) loom-icon { color: hsl(330, 65%, 68%); }
+  .nav-link:nth-child(10n+3) loom-icon { color: hsl(170, 60%, 60%); }
+  .nav-link:nth-child(10n+4) loom-icon { color: hsl(35,  70%, 65%); }
+  .nav-link:nth-child(10n+5) loom-icon { color: hsl(200, 65%, 65%); }
+  .nav-link:nth-child(10n+6) loom-icon { color: hsl(290, 55%, 68%); }
+  .nav-link:nth-child(10n+7) loom-icon { color: hsl(140, 55%, 60%); }
+  .nav-link:nth-child(10n+8) loom-icon { color: hsl(15,  70%, 65%); }
+  .nav-link:nth-child(10n+9) loom-icon { color: hsl(55,  65%, 60%); }
+  .nav-link:nth-child(10n+10) loom-icon { color: hsl(220, 65%, 70%); }
+
+  /* Dim when inactive, full when active */
+  .nav-link loom-icon { opacity: 0.55; }
+  .nav-link.active loom-icon { opacity: 1; filter: brightness(1.2); }
+  .nav-link:hover loom-icon { opacity: 0.85; }
 
   /* ─────────── Main Content ─────────── */
 
@@ -688,12 +699,6 @@ export class DocsApp extends LoomElement {
               </loom-link>
             </div>
 
-            <div class={`nav-link standalone ${this.isActive("/result") ? "active" : ""}`}>
-              <loom-link to="/result">
-                <loom-icon name="sparkles" size="18"></loom-icon>
-                LoomResult
-              </loom-link>
-            </div>
 
 
             {sections.map(s => (

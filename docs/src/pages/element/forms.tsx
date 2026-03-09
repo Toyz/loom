@@ -9,8 +9,7 @@ export default class PageElementForms extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Forms</h1>
-        <p class="subtitle">Typed form state with transforms, validation, and explicit binding via <span class="ic">@form</span>.</p>
+        <doc-header title="Forms" subtitle="Typed form state with transforms, validation, and explicit binding via @form."></doc-header>
 
         <section>
           <div class="group-header">
@@ -149,6 +148,7 @@ if (this.login.validate()) {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

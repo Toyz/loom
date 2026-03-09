@@ -9,11 +9,7 @@ export default class PageDecoratorContext extends LoomElement {
     update() {
         return (
             <div>
-                <h1>@provide / @consume</h1>
-                <p class="subtitle">
-                    Cross-shadow-DOM data sharing with class-based keys.
-                    Same pattern as <span class="ic">@service</span>.
-                </p>
+                <doc-header title="@provide / @consume" subtitle="Cross-shadow-DOM data sharing with class-based keys. Same pattern as @service."></doc-header>
 
                 <section>
                     <div class="group-header">
@@ -81,13 +77,14 @@ export default class PageDecoratorContext extends LoomElement {
                         <li>Both use <span class="ic">CONNECT_HOOKS</span> for auto-cleanup on disconnect</li>
                         <li>Consumer defers dispatch via <span class="ic">queueMicrotask</span> so ancestor providers connect first</li>
                     </ul>
-                    <div class="note">
+                    <doc-notification type="note">
                         If no provider is found, the consumer stays at its initial value
                         (<span class="ic">undefined</span> for <span class="ic">!</span> accessors).
                         No errors, no warnings.
-                    </div>
+                    </doc-notification>
                 </section>
-            </div>
+              <doc-nav></doc-nav>
+      </div>
         );
     }
 }

@@ -9,8 +9,7 @@ export default class PageElementIcon extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Icon</h1>
-        <p class="subtitle">SVG icon system with lazy registration.</p>
+        <doc-header title="Icon" subtitle="SVG icon system with lazy registration."></doc-header>
 
         <section>
           <div class="group-header">
@@ -23,10 +22,10 @@ export default class PageElementIcon extends LoomElement {
               Icons are registered by name, rendered into shadow DOM, and styled via CSS custom properties.
             </div>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             Like <span class="ic">LoomVirtual</span>, <span class="ic">LoomIcon</span> is excluded from the main barrel
             to avoid side effects. Import it explicitly to register the element:
-          </div>
+          </doc-notification>
           <code-block lang="ts" code={`import { LoomIcon } from "@toyz/loom/element/icon";`}></code-block>
         </section>
 
@@ -50,10 +49,10 @@ LoomIcon.registerAll({
   close:  '<path d="M18 6L6 18M6 6l12 12" />',
 });`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             Register icons early in your app's entry point — before any component that uses
             <span class="ic">&lt;loom-icon&gt;</span> renders.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -118,6 +117,7 @@ LoomIcon.registerAll({
 <loom-icon name="bolt" color="var(--amber)"></loom-icon>`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

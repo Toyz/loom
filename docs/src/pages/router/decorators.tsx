@@ -9,8 +9,7 @@ export default class PageRouterDecorators extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Decorators</h1>
-        <p class="subtitle">Router-specific decorators for route registration, guards, and groups.</p>
+        <doc-header title="Decorators" subtitle="Router-specific decorators for route registration, guards, and groups."></doc-header>
 
         <section>
           <div class="group-header">
@@ -153,6 +152,7 @@ class UserSettings extends LoomElement { }
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

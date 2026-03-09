@@ -9,8 +9,7 @@ export default class PageElementCSS extends LoomElement {
   update() {
     return (
       <div>
-        <h1>CSS</h1>
-        <p class="subtitle">Scoped styles via tagged template literals, the @styles decorator, and CSSStyleSheet.</p>
+        <doc-header title="CSS" subtitle="Scoped styles via tagged template literals, the @styles decorator, and CSSStyleSheet."></doc-header>
 
         <section>
           <div class="group-header">
@@ -103,10 +102,10 @@ class MyCard extends LoomElement {
   }
 }`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             <loom-icon name="bolt" size={14} color="var(--amber)"></loom-icon> Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
             and avoids style adoption on every render call.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -188,6 +187,7 @@ class ThemeCard extends LoomElement {
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

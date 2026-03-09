@@ -10,11 +10,7 @@ export default class PageCanvas extends LoomElement {
   update() {
     return (
       <div>
-        <h1>&lt;loom-canvas&gt;</h1>
-        <p class="subtitle">
-          A built-in canvas web component with auto-resize, DPR-aware scaling,
-          and per-frame draw callbacks via Loom's <span class="ic">RenderLoop</span>.
-        </p>
+        <doc-header title="&lt;loom-canvas&gt;" subtitle="A built-in canvas web component with auto-resize, DPR-aware scaling, and per-frame draw callbacks via Loom's RenderLoop."></doc-header>
 
         <section>
           <div class="group-header">
@@ -128,6 +124,7 @@ export default class PageCanvas extends LoomElement {
             <code-block lang="ts" code={IMPERATIVE}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

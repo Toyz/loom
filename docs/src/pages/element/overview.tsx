@@ -1,16 +1,16 @@
 /**
  * Element Overview — /element/overview
  *
- * Base class, shadow DOM, update(), css(), API reference.
+ * Base class, shadow DOM, update(), @styles, API reference.
  */
 import { LoomElement } from "@toyz/loom";
+import { inlineLink } from "../../styles/doc-page";
 
 export default class PageElementOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>LoomElement</h1>
-        <p class="subtitle">The base class for every Loom web component.</p>
+        <doc-header title="LoomElement" subtitle="The base class for every Loom web component."></doc-header>
 
         <section>
           <div class="group-header">
@@ -22,41 +22,21 @@ export default class PageElementOverview extends LoomElement {
               <span class="ic">LoomElement</span> extends <span class="ic">HTMLElement</span> and provides Shadow DOM,
               scoped CSS, lifecycle management, and automatic DOM morphing. Every Loom component inherits from it.
             </div>
-            <code-block lang="ts" code={`import { LoomElement } from "@toyz/loom";
+            <code-block lang="ts" code={`import { LoomElement, component, styles, css } from "@toyz/loom";
+
+const sheet = css\`
+  :host { display: block; padding: 16px; }
+  p { color: #888; }
+\`;
 
 @component("my-widget")
+@styles(sheet)
 export class MyWidget extends LoomElement {
   update() {
-    this.css\`
-      :host { display: block; padding: 16px; }
-      p { color: #888; }
-    \`;
     return <p>Hello from a Loom component!</p>;
   }
 }`}></code-block>
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
-            <h2>API Reference</h2>
-          </div>
-          <table class="api-table">
-            <thead>
-              <tr><th>Member</th><th>Type</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>shadow</code></td><td>ShadowRoot</td><td>The component's open shadow root</td></tr>
-              <tr><td><code>update()</code></td><td>() =&gt; Node | void</td><td>Render method — return JSX or void. Called on every reactive change.</td></tr>
-              <tr><td><code>css``</code></td><td>tagged template</td><td>Scoped CSS — adopted into the shadow root as a <code>CSSStyleSheet</code></td></tr>
-              <tr><td><code>scheduleUpdate()</code></td><td>() =&gt; void</td><td>Manually trigger a re-render on the next animation frame</td></tr>
-              <tr><td><code>firstUpdated()</code></td><td>() =&gt; void</td><td>Called once after the first render</td></tr>
-              <tr><td><code>shouldUpdate()</code></td><td>() =&gt; boolean</td><td>Return false to skip a render cycle. Default: true</td></tr>
-              <tr><td><code>$(sel)</code></td><td>(sel: string) =&gt; Element</td><td>Shorthand for <code>this.shadow.querySelector(sel)</code></td></tr>
-              <tr><td><code>$$(sel)</code></td><td>(sel: string) =&gt; Element[]</td><td>Shorthand for <code>Array.from(this.shadow.querySelectorAll(sel))</code></td></tr>
-            </tbody>
-          </table>
         </section>
 
         <section>
@@ -70,10 +50,6 @@ export class MyWidget extends LoomElement {
               changes. Return a JSX node and Loom will morph the shadow DOM to match — only touching elements that actually changed.
             </div>
             <code-block lang="ts" code={`update() {
-  // CSS is set once, then cached
-  this.css\`p { color: var(--accent); }\`;
-
-  // JSX compiles to real DOM nodes
   return (
     <div>
       <p>Count: {this.count}</p>
@@ -82,10 +58,10 @@ export class MyWidget extends LoomElement {
   );
 }`}></code-block>
           </div>
-          <div class="note">
+          <doc-notification type="note">
             If <span class="ic">update()</span> returns <span class="ic">void</span>, no morph occurs — useful when you
             manage the DOM imperatively.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -114,6 +90,32 @@ class MyCounter extends LoomElement {
 }`}></code-block>
           </div>
         </section>
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <h2>API Reference</h2>
+          </div>
+          <table class="api-table">
+            <thead>
+              <tr><th>Member</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>shadow</code></td><td>ShadowRoot</td><td>The component's open shadow root</td></tr>
+              <tr><td><code>update()</code></td><td>() =&gt; Node | void</td><td>Render method — return JSX or void. Called on every reactive change.</td></tr>
+              <tr><td><code>scheduleUpdate()</code></td><td>() =&gt; void</td><td>Manually trigger a re-render on the next animation frame</td></tr>
+              <tr><td><code>shouldUpdate()</code></td><td>() =&gt; boolean</td><td>Return false to skip a render cycle. Default: true</td></tr>
+              <tr><td><code>$(sel)</code></td><td>(sel: string) =&gt; Element</td><td>Shorthand for <code>this.shadow.querySelector(sel)</code></td></tr>
+              <tr><td><code>$$(sel)</code></td><td>(sel: string) =&gt; Element[]</td><td>Shorthand for <code>Array.from(this.shadow.querySelectorAll(sel))</code></td></tr>
+            </tbody>
+          </table>
+          <doc-notification type="note">
+            See <loom-link to="/element/lifecycle" styles={[inlineLink]} style="color: var(--accent)">Lifecycle</loom-link> for <span class="ic">@mount</span>, <span class="ic">@unmount</span>, <span class="ic">firstUpdated()</span>.
+            See <loom-link to="/element/css" styles={[inlineLink]} style="color: var(--accent)">CSS</loom-link> for <span class="ic">@styles</span> and <span class="ic">css``</span>.
+            See <loom-link to="/element/decorators" styles={[inlineLink]} style="color: var(--accent)">Decorators</loom-link> for the full decorator cheat sheet.
+          </doc-notification>
+        </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

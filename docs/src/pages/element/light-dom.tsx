@@ -9,10 +9,7 @@ export default class PageElementLightDom extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Light DOM</h1>
-        <p class="subtitle">
-          Skip shadow DOM encapsulation for leaf components that should inherit parent styles.
-        </p>
+        <doc-header title="Light DOM" subtitle="Skip shadow DOM encapsulation for leaf components that should inherit parent styles."></doc-header>
 
         <section>
           <div class="group-header">
@@ -148,6 +145,7 @@ class MyButton extends LoomElement { ... }`}></code-block>
             </div>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

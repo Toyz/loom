@@ -1,54 +1,55 @@
 /**
  * Getting Started — /guides/getting-started
  */
-import { LoomElement } from "@toyz/loom";
+import { LoomElement, css, styles as applyStyles } from "@toyz/loom";
 
+const styles = css`
+  .step {
+    margin-bottom: var(--space-10);
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .note {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent-dim);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-top: var(--space-4);
+  }
+  .note strong { color: var(--accent); }
+`;
+
+@applyStyles(styles)
 export default class PageGettingStarted extends LoomElement {
+
   update() {
-    this.css`
-      .step {
-        margin-bottom: var(--space-10);
-      }
-
-      .step-header {
-        display: flex;
-        align-items: center;
-        gap: var(--space-3);
-        margin-bottom: var(--space-4);
-      }
-
-      .step-num {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: var(--accent-glow);
-        border: 1px solid var(--accent-dim);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: var(--text-xs);
-        font-weight: 700;
-        font-family: var(--font-mono);
-        color: var(--accent);
-        flex-shrink: 0;
-      }
-
-      .note {
-        background: var(--accent-glow);
-        border: 1px solid var(--accent-dim);
-        border-radius: var(--radius-md);
-        padding: var(--space-4) var(--space-5);
-        font-size: var(--text-sm);
-        color: var(--text-secondary);
-        margin-top: var(--space-4);
-      }
-      .note strong { color: var(--accent); }
-    `;
-
     return (
       <div>
-        <h1>Getting Started</h1>
-        <p class="subtitle">From zero to your first Loom component in under 2 minutes.</p>
+        <doc-header title="Getting Started" subtitle="From zero to your first Loom component in under 2 minutes."></doc-header>
 
         <div class="step">
           <div class="step-header">
@@ -57,9 +58,9 @@ export default class PageGettingStarted extends LoomElement {
           </div>
           <code-block lang="bash" code={`npm create @toyz/loom my-app\ncd my-app\nnpm install\nnpm run dev`}></code-block>
           <p>That's it — you're running. The scaffolder sets up TypeScript, Vite, and the Loom JSX runtime for you.</p>
-          <div class="note">
+          <doc-notification type="note">
             <strong>Prefer manual setup?</strong> Skip to step 2.
-          </div>
+          </doc-notification>
         </div>
 
         <div class="step">
@@ -84,9 +85,9 @@ export default class PageGettingStarted extends LoomElement {
     "jsxImportSource": "@toyz/loom"
   }
 }`}></code-block>
-          <div class="note">
+          <doc-notification type="note">
             <strong>Important:</strong> <span class="ic">target: "es2022"</span> is required — Loom uses TC39 decorators, which need native class field support.
-          </div>
+          </doc-notification>
         </div>
 
         <div class="step">
@@ -140,9 +141,9 @@ import "./my-counter"; // side-effect: registers the component
 app.start();`}></code-block>
           <p>Then use it in your HTML:</p>
           <code-block lang="html" code={`<my-counter></my-counter>`}></code-block>
-          <div class="note">
+          <doc-notification type="note">
             <strong>Note:</strong> Components use Shadow DOM by default. Styles are scoped — no leaking, no conflicts.
-          </div>
+          </doc-notification>
         </div>
 
         <div class="step">
@@ -154,11 +155,12 @@ app.start();`}></code-block>
           <code-block lang="bash" code={`npm test          # Run tests (Vitest)
 npm run build     # TypeScript → dist/
 npm run clean     # Remove dist/`}></code-block>
-          <div class="note">
+          <doc-notification type="note">
             <strong>Tip:</strong> Tests also run automatically before <span class="ic">npm publish</span> via the
             <span class="ic">prepublishOnly</span> hook.
-          </div>
+          </doc-notification>
         </div>
+        <doc-nav></doc-nav>
       </div>
     );
   }

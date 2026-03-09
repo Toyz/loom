@@ -9,8 +9,7 @@ export default class PagePlaceholderTesting extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Placeholder Testing</h1>
-        <p class="subtitle">MockPlaceholder — drop-in test provider with assertions.</p>
+        <doc-header title="Placeholder Testing" subtitle="MockPlaceholder — drop-in test provider with assertions."></doc-header>
 
         <section>
           <div class="group-header">
@@ -77,6 +76,7 @@ mock.reset();`}></code-block>
             </tbody>
           </table>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

@@ -8,10 +8,7 @@ export default class PageRouterRoutes extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Routes &amp; Params</h1>
-        <p class="subtitle">
-          Declarative routing with <span class="ic">@route</span>, dynamic segments, and fully typed route data.
-        </p>
+        <doc-header title="Routes &amp; Params" subtitle="Declarative routing with @route, dynamic segments, and fully typed route data."></doc-header>
 
         <section>
           <div class="group-header">
@@ -197,6 +194,7 @@ router.go({ name: "user-post", params: { id: "42", slug: "hello" } });
             </div>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

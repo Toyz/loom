@@ -10,11 +10,7 @@ export default class PageDecoratorsSymbols extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Typed Symbols</h1>
-        <p class="subtitle">
-          <span class="ic">LoomSymbol&lt;T&gt;</span> wraps native symbols with type-safe
-          metadata access. Every piece of Loom metadata flows through this system.
-        </p>
+        <doc-header title="Typed Symbols" subtitle="LoomSymbol<T> wraps native symbols with type-safe metadata access. Every piece of Loom metadata flows through this system."></doc-header>
 
         {/* ═══════════ Problem ═══════════ */}
 
@@ -209,6 +205,7 @@ ON_HANDLERS      // { event, key }[] — @on bindings
 TRANSFORMS       // Map<string, Function> — @transform fns`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

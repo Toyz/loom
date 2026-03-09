@@ -9,8 +9,7 @@ export default class PageDIOverview extends LoomElement {
   update() {
     return (
       <div>
-        <h1>DI &amp; Services</h1>
-        <p class="subtitle">Service container, singleton management, and provider patterns.</p>
+        <doc-header title="DI &amp; Services" subtitle="Service container, singleton management, and provider patterns."></doc-header>
 
         <section>
           <div class="group-header">
@@ -143,6 +142,7 @@ class Boot {
 }`}></code-block>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }

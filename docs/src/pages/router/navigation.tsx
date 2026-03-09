@@ -8,11 +8,7 @@ export default class PageRouterNavigation extends LoomElement {
   update() {
     return (
       <div>
-        <h1>Navigation</h1>
-        <p class="subtitle">
-          Navigate declaratively with <span class="ic">&lt;loom-link&gt;</span> or
-          programmatically via the router service.
-        </p>
+        <doc-header title="Navigation" subtitle="Navigate declaratively with <loom-link> or programmatically via the router service."></doc-header>
 
         <section>
           <div class="group-header">
@@ -46,8 +42,26 @@ export default class PageRouterNavigation extends LoomElement {
               <tr><td><span class="ic">to</span></td><td><code>string</code></td><td>Path to navigate to (default: <code>"/"</code>)</td></tr>
               <tr><td><span class="ic">name</span></td><td><code>string</code></td><td>Named route — overrides <code>to</code> with the resolved path</td></tr>
               <tr><td><span class="ic">params</span></td><td><code>string</code></td><td>JSON params for named route substitution</td></tr>
+              <tr><td><span class="ic">styles</span></td><td><code>CSSStyleSheet[]</code></td><td>Extra stylesheets adopted into the shadow root — override anchor display, sizing, etc.</td></tr>
             </tbody>
           </table>
+
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Use <span class="ic">styles</span> to override the internal anchor's CSS. For example, for inline text flow or full-width nav cards:
+            </div>
+            <code-block lang="tsx" code={`import { css } from "@toyz/loom";
+
+// Inline in flowing text
+const inline = css\`a { display: inline; }\`;
+<loom-link to="/foo" styles={[inline]}>Foo</loom-link>
+
+// Full-width clickable card
+const fill = css\`a { display: flex; width: 100%; height: 100%; }\`;
+<loom-link to="/bar" styles={[fill]} class="card">
+  <span>Bar</span>
+</loom-link>`}></code-block>
+          </div>
         </section>
 
         <section>
@@ -104,9 +118,9 @@ setup() {
               <tr><td><span class="ic">current</span></td><td>Current route info: <code>path</code>, <code>params</code>, <code>query</code></td></tr>
             </tbody>
           </table>
-          <div class="note">
+          <doc-notification type="note">
             <strong>Target</strong> can be a <span class="ic">string</span> path or a <span class="ic">{`{ name, params? }`}</span> object for named routes.
-          </div>
+          </doc-notification>
         </section>
 
         <section>
@@ -122,6 +136,7 @@ setup() {
             </div>
           </div>
         </section>
+        <doc-nav></doc-nav>
       </div>
     );
   }
