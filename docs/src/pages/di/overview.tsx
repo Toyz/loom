@@ -81,7 +81,7 @@ const db = app.maybe(DatabasePool);`}></code-block>
               Auto-instantiated singleton registered on <span class="ic">app.start()</span>.
               Constructor <span class="ic">@inject</span> params are resolved automatically.
             </div>
-            <code-block lang="ts" code={`import { service } from "@toyz/loom";
+            <code-block lang="ts" code={`import { service } from "@toyz/loom/di";
 
 @service
 class BookmarkStore extends CollectionStore<Bookmark> {

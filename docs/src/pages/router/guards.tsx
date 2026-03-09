@@ -28,7 +28,7 @@ export default class PageRouterGuards extends LoomElement {
               <span class="ic">false</span> to block, or a <span class="ic">string</span> to redirect.
               Async guards are awaited:
             </div>
-            <code-block lang="ts" code={`import { service, inject } from "@toyz/loom";
+            <code-block lang="ts" code={`import { service, inject } from "@toyz/loom/di";
 import { guard, type RouteInfo } from "@toyz/loom/router";
 
 @service

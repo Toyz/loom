@@ -144,7 +144,8 @@ export default class PageElementLog extends LoomElement {
   }
 }
 
-const QUICK_START = `import { app, LogTransport, ConsoleTransport, log } from "@toyz/loom";
+const QUICK_START = `import { app } from "@toyz/loom";
+import { LogTransport, ConsoleTransport, log } from "@toyz/loom/element";
 
 // Register a transport
 app.use(LogTransport, new ConsoleTransport());
@@ -178,13 +179,15 @@ const TRANSPORT = `abstract class LogTransport {
 // Register via DI
 app.use(LogTransport, new MyCustomTransport());`;
 
-const CONSOLE_TRANSPORT = `import { app, LogTransport, ConsoleTransport } from "@toyz/loom";
+const CONSOLE_TRANSPORT = `import { app } from "@toyz/loom";
+import { LogTransport, ConsoleTransport } from "@toyz/loom/element";
 
 app.use(LogTransport, new ConsoleTransport());
 // Output: [my-search] open() args: [...] → result (1.2ms)`;
 
 const SENTRY_EXAMPLE = `import * as Sentry from "@sentry/browser";
-import { LogTransport, type LogEntry } from "@toyz/loom";
+import { type LogEntry } from "@toyz/loom";
+import { LogTransport } from "@toyz/loom/element";
 
 class SentryTransport extends LogTransport {
   send(entry: LogEntry) {

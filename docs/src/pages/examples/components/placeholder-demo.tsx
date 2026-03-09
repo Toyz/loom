@@ -4,14 +4,7 @@
  * Interactive demo of <loom-placeholder> with RgbaPlaceholder.
  * Adjust color, size, and format in real time to see the component react.
  */
-import {
-  LoomElement,
-  component,
-  reactive,
-  css,
-  styles,
-  app,
-} from "@toyz/loom";
+import { LoomElement, component, reactive, css, styles, app } from "@toyz/loom";
 import {
   PlaceholderProvider,
   RgbaPlaceholder,

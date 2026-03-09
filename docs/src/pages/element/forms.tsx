@@ -33,8 +33,9 @@ export default class PageElementForms extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-sig">@form&lt;T&gt;(schema)</div>
-            <code-block lang="tsx" code={`import { LoomElement, component, form } from "@toyz/loom";
-import type { FormState } from "@toyz/loom";
+            <code-block lang="tsx" code={`import { LoomElement, component } from "@toyz/loom";
+import { form } from "@toyz/loom/element";
+import type { FormState } from "@toyz/loom/element";
 
 interface LoginForm {
   email: string;

@@ -160,8 +160,9 @@ export default class PageFetch extends LoomElement {
   }
 }
 
-const BASIC = `import { LoomElement, component, api } from "@toyz/loom";
-import type { ApiState } from "@toyz/loom";
+const BASIC = `import { LoomElement, component } from "@toyz/loom";
+import { api } from "@toyz/loom/query";
+import type { ApiState } from "@toyz/loom/query";
 
 interface User { name: string; email: string; }
 

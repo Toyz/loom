@@ -147,7 +147,7 @@ export default class PageElementHotkey extends LoomElement {
     }
 }
 
-const QUICK_START = `import { hotkey } from "@toyz/loom";
+const QUICK_START = `import { hotkey } from "@toyz/loom/element";
 
 // Open search with ⌘K (Mac) or Ctrl+K (Windows/Linux)
 @hotkey("mod+k")

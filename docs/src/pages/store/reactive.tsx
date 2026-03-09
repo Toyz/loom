@@ -16,7 +16,7 @@ export default class PageStoreReactive extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">A generic observable value container. Notifies subscribers when the value changes.</div>
-            <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom";
+            <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom/store";
 
 // In-memory (lost on reload)
 const count = new Reactive(0);
@@ -65,7 +65,7 @@ unsub();`}></code-block>
               CRUD layer over <span class="ic">Reactive&lt;T[]&gt;</span>. Items must have an <span class="ic">id: string</span> field.
               Auto-generates UUIDs if omitted.
             </div>
-            <code-block lang="ts" code={`import { CollectionStore, LocalAdapter } from "@toyz/loom";
+            <code-block lang="ts" code={`import { CollectionStore, LocalAdapter } from "@toyz/loom/store";
 
 interface Todo {
   id: string;
@@ -116,7 +116,7 @@ todos.subscribe((items) => {
               Use <span class="ic">swapStorage</span> to upgrade storage backend at runtime — for example,
               starting in-memory and switching to localStorage once the user logs in:
             </div>
-            <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom";
+            <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom/store";
 
 // Start in-memory (anonymous user)
 const prefs = new Reactive({ theme: "dark", lang: "en" });

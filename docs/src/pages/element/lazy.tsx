@@ -39,7 +39,8 @@ export default class PageElementLazy extends LoomElement {
               loader function that returns a dynamic <code>import()</code>. The imported module
               should have a <code>default</code> export with the real component class.
             </div>
-            <code-block lang="ts" code={`import { LoomElement, component, lazy } from "@toyz/loom";
+            <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
+import { lazy } from "@toyz/loom/element";
 
 // Stub — registered immediately, implementation loaded on first mount
 @component("heavy-chart")
@@ -64,7 +65,8 @@ class HeavyChart extends LoomElement {}
               code-split pages. The stub registers the route immediately, but the page
               module only loads when a user navigates to it.
             </div>
-            <code-block lang="ts" code={`import { LoomElement, component, lazy } from "@toyz/loom";
+            <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
+import { lazy } from "@toyz/loom/element";
 import { route } from "@toyz/loom/router";
 
 @route("/settings")
@@ -149,7 +151,8 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
               <span class="ic">@lazy</span> emits global events over the bus so any component can react
               to loading state — show progress bars, dim backgrounds, or track metrics.
             </div>
-            <code-block lang="tsx" code={`import { LoomElement, on, LazyLoadStart, LazyLoadEnd } from "@toyz/loom";
+            <code-block lang="tsx" code={`import { LoomElement, on } from "@toyz/loom";
+import { LazyLoadStart, LazyLoadEnd } from "@toyz/loom/element";
 
 @on(LazyLoadStart)
 onLazyStart(e: LazyLoadStart) {

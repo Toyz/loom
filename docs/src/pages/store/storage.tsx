@@ -40,7 +40,7 @@ export default class PageStoreStorage extends LoomElement {
               <tr><td><code>SessionAdapter</code></td><td>sessionStorage</td><td>Current tab only</td></tr>
             </tbody>
           </table>
-          <code-block lang="ts" code={`import { Reactive, LocalAdapter, SessionAdapter } from "@toyz/loom";
+          <code-block lang="ts" code={`import { Reactive, LocalAdapter, SessionAdapter } from "@toyz/loom/store";
 
 // Persists to localStorage
 const prefs = new Reactive({ theme: "dark" }, {

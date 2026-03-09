@@ -44,7 +44,7 @@ accessor userId!: number;`}></code-block>
               The <span class="ic">typed&lt;T&gt;()</span> helper generates a schema-based transform that
               converts an object's properties according to the specified constructor functions.
             </div>
-            <code-block lang="ts" code={`import { typed } from "@toyz/loom";
+            <code-block lang="ts" code={`import { typed } from "@toyz/loom/transform";
 
 interface UserParams {
   id: number;
@@ -72,7 +72,7 @@ accessor routeParams!: UserParams;`}></code-block>
               Shorthand decorator that combines <span class="ic">@transform</span> and <span class="ic">typed&lt;T&gt;()</span> into
               a single decorator. Use when you don't need to compose transforms:
             </div>
-            <code-block lang="ts" code={`import { typedTransformer } from "@toyz/loom";
+            <code-block lang="ts" code={`import { typedTransformer } from "@toyz/loom/transform";
 
 interface UserParams {
   id: number;
@@ -115,7 +115,7 @@ accessor routeParams!: UserParams;`}></code-block>
                 <tr><td><code>toTrimmed</code></td><td>String → trimmed string</td></tr>
               </tbody>
             </table>
-            <code-block lang="ts" code={`import { toNumber, toBoolean, toDate } from "@toyz/loom";
+            <code-block lang="ts" code={`import { toNumber, toBoolean, toDate } from "@toyz/loom/transform";
 
 @prop @transform(toNumber) accessor count!: number;
 @prop @transform(toBoolean) accessor enabled!: boolean;
@@ -134,7 +134,7 @@ accessor routeParams!: UserParams;`}></code-block>
             <div class="dec-desc">
               Use <span class="ic">createTransform</span> for reusable transforms with validation or complex logic:
             </div>
-            <code-block lang="ts" code={`import { createTransform } from "@toyz/loom";
+            <code-block lang="ts" code={`import { createTransform } from "@toyz/loom/transform";
 
 const toUpperCase = createTransform<string, string>(
   (value) => value.toUpperCase()

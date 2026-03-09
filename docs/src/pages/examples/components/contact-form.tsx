@@ -3,9 +3,7 @@
  *
  * Demonstrates: @component, @form, @styles, toTrimmed, FormState<T>
  */
-import {
-  LoomElement, component, css, styles,
-} from "@toyz/loom";
+import { LoomElement, component, css, styles } from "@toyz/loom";
 import { form } from "@toyz/loom/element";
 import type { FormState } from "@toyz/loom/element";
 

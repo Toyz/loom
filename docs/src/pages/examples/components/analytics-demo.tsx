@@ -4,14 +4,7 @@
  * Interactive demo of @track with MockAnalytics.
  * Shows tracked buttons, tracked accessor, and live event log.
  */
-import {
-  LoomElement,
-  component,
-  reactive,
-  css,
-  styles,
-  app,
-} from "@toyz/loom";
+import { LoomElement, component, reactive, css, styles, app } from "@toyz/loom";
 import { AnalyticsTransport, track } from "@toyz/loom-analytics";
 import { MockAnalytics } from "@toyz/loom-analytics/testing";
 import { scrollbar } from "../../../shared/scrollbar";

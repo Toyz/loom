@@ -4,19 +4,7 @@
  * Cards: Stopwatch (@interval), Toast (@timeout), Search (@debounce),
  *        Mouse Track (@throttle), Bounce (@animationFrame)
  */
-import {
-  LoomElement,
-  component,
-  reactive,
-  css,
-  styles,
-  interval,
-  timeout,
-  debounce,
-  throttle,
-  animationFrame,
-  query,
-} from "@toyz/loom";
+import { LoomElement, component, reactive, css, styles, interval, timeout, debounce, throttle, animationFrame, query } from "@toyz/loom";
 
 /* ─── Styles ─── */
 const sheet = css`

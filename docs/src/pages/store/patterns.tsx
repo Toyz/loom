@@ -27,7 +27,8 @@ export default class PageStorePatterns extends LoomElement {
           <div class="feature-entry">
             <h3>Direct Store Instance</h3>
             <div class="dec-desc">Pass a <span class="ic">Reactive</span> or <span class="ic">CollectionStore</span> variable directly:</div>
-            <code-block lang="tsx" code={`import { component, LoomElement, CollectionStore, LocalAdapter } from "@toyz/loom";
+            <code-block lang="tsx" code={`import { component, LoomElement } from "@toyz/loom";
+import { CollectionStore, LocalAdapter } from "@toyz/loom/store";
 import { watch } from "@toyz/loom/decorators";
 
 interface Todo { id: string; text: string; done: boolean }
@@ -60,8 +61,8 @@ class TodoList extends LoomElement {
           <div class="feature-entry">
             <h3>DI-Resolved Service</h3>
             <div class="dec-desc">Pass a <span class="ic">@service</span> class — the decorator resolves it via <span class="ic">app.get()</span>:</div>
-            <code-block lang="ts" code={`import { service, inject } from "@toyz/loom";
-import { Reactive, LocalAdapter } from "@toyz/loom";
+            <code-block lang="ts" code={`import { service, inject } from "@toyz/loom/di";
+import { Reactive, LocalAdapter } from "@toyz/loom/store";
 
 @service
 class ThemeService {

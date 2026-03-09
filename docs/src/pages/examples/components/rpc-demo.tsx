@@ -4,14 +4,7 @@
  * Dogfoods @toyz/loom-rpc with MockTransport — no server needed.
  * Shows @rpc queries, @mutate mutations, loading states, and error handling.
  */
-import {
-  LoomElement,
-  component,
-  css,
-  reactive,
-  styles,
-  app,
-} from "@toyz/loom";
+import { LoomElement, component, css, reactive, styles, app } from "@toyz/loom";
 import type { ApiState } from "@toyz/loom/query";
 import { rpc, mutate, RpcTransport, service } from "@toyz/loom-rpc";
 import { MockTransport } from "@toyz/loom-rpc/testing";

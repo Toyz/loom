@@ -83,7 +83,7 @@ delete this.state.meta;              // delete`}></code-block>
               back the store with <code>localStorage</code>, <code>sessionStorage</code>,
               or any custom <span class="ic">StorageAdapter</span>:
             </div>
-            <code-block lang="ts" code={`import { LocalAdapter } from "@toyz/loom";
+            <code-block lang="ts" code={`import { LocalAdapter } from "@toyz/loom/store";
 
 @component("my-prefs")
 class MyPrefs extends LoomElement {

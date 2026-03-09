@@ -169,7 +169,7 @@ export default class PageFirstApp extends LoomElement {
             <h2>Define the Store</h2>
           </div>
           <p>Create <span class="ic">src/store.ts</span>  — a typed collection with automatic localStorage persistence:</p>
-          <code-block lang="ts" code={`import { CollectionStore, LocalAdapter } from "@toyz/loom";
+          <code-block lang="ts" code={`import { CollectionStore, LocalAdapter } from "@toyz/loom/store";
 
 export interface Todo {
   id: string;

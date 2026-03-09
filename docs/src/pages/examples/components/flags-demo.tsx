@@ -4,15 +4,7 @@
  * Interactive demo of @flag and <loom-flag> with MockFlags.
  * Toggle flags on/off, see @flag-gated methods and <loom-flag> slots react in real time.
  */
-import {
-  LoomElement,
-  component,
-  reactive,
-  css,
-  styles,
-  app,
-  on,
-} from "@toyz/loom";
+import { LoomElement, component, reactive, css, styles, app, on } from "@toyz/loom";
 import { FlagProvider, flag, FlagChanged } from "@toyz/loom-flags";
 import { MockFlags } from "@toyz/loom-flags/testing";
 import { scrollbar } from "../../../shared/scrollbar";

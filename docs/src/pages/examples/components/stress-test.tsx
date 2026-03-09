@@ -9,18 +9,7 @@
  * Decorators: @component, @styles, @reactive, @computed, @interval,
  *             @mount, @unmount, @watch
  */
-import {
-  LoomElement,
-  component,
-  reactive,
-  prop,
-  computed,
-  css,
-  styles,
-  mount,
-  unmount,
-  watch,
-} from "@toyz/loom";
+import { LoomElement, component, reactive, prop, computed, css, styles, mount, unmount, watch } from "@toyz/loom";
 
 // ── Cell component — fully independent ──
 
