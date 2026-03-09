@@ -61,6 +61,54 @@ export function lazy(
       }
     };
 
+    // Override scheduleUpdate so the outlet's same-component re-navigation
+    // propagates updated route params from the shell → impl element.
+    const origScheduleUpdate = ctor.prototype.scheduleUpdate;
+    ctor.prototype.scheduleUpdate = function () {
+      const impl = this[LAZY_IMPL.key];
+      if (impl) {
+        // Re-forward route props from shell → impl
+        const realCtor = impl.constructor as any;
+        const realBindings: any[] = realCtor[ROUTE_PROPS.key] ?? [];
+        const stubBindings: any[] = ctor[ROUTE_PROPS.key] ?? [];
+        const transforms = realCtor[TRANSFORMS.key] as Map<string, Function> | undefined;
+
+        for (const binding of realBindings) {
+          let val = (this as any)[binding.propKey];
+          if (val === undefined && typeof binding.param === "string") {
+            const stubBinding = stubBindings.find((b: any) => b.param === binding.param);
+            if (stubBinding) val = (this as any)[stubBinding.propKey];
+            if (val === undefined) val = this.getAttribute(binding.param) ?? undefined;
+          }
+          if (val !== undefined) {
+            if (transforms?.has(binding.propKey)) {
+              val = transforms.get(binding.propKey)!(val);
+            } else if (typeof val === "string") {
+              const current = (impl as any)[binding.propKey];
+              if (typeof current === "number") val = Number(val);
+              else if (typeof current === "boolean") val = val !== "false";
+            }
+            (impl as any)[binding.propKey] = val;
+          }
+        }
+
+        // Also forward unbound attributes
+        for (const attr of this.attributes) {
+          if (attr.name in impl && !realBindings.some((b: any) => b.propKey === attr.name)) {
+            (impl as any)[attr.name] = attr.value;
+          }
+        }
+
+        // Schedule the impl's update instead of the shell's
+        if (typeof impl.scheduleUpdate === "function") {
+          impl.scheduleUpdate();
+        }
+        return;
+      }
+      // No impl yet — fall through to normal shell update
+      origScheduleUpdate?.call(this);
+    };
+
     ctor.prototype.connectedCallback = async function () {
       // Already loaded — mount the impl for this (possibly new) instance
       if (ctor[LAZY_LOADED.key]) {
