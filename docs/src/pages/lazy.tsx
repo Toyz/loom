@@ -125,6 +125,12 @@ class LazyElementDecorators extends LoomElement { }
 @searchable({ title: "Lazy Loading", section: "Element", icon: "download", to: "/element/lazy", keywords: ["lazy", "code splitting", "dynamic import", "deferred", "on-demand"], summary: "Defer component module loading until first mount." })
 class LazyElementLazy extends LoomElement { }
 
+@route("/observer", { group: ElementGroup })
+@component("page-element-observer")
+@lazy(() => import("./element/observer"))
+@searchable({ title: "Observer", section: "Element", icon: "eye", to: "/element/observer", keywords: ["observer", "resize", "intersection", "mutation", "observe", "viewport", "visibility"], summary: "Auto-managed ResizeObserver, IntersectionObserver, and MutationObserver with lifecycle cleanup." })
+class LazyElementObserver extends LoomElement { }
+
 @route("/forms", { group: ElementGroup })
 @component("page-element-forms")
 @lazy(() => import("./element/forms"))

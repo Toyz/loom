@@ -94,7 +94,7 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@on(EventClass)</code></td><td>Method</td><td>Declarative event listener — <loom-link to="/decorators/events" style="color: var(--accent)">Events</loom-link></td></tr>
               <tr><td><code>@emit(EventClass)</code></td><td>Method</td><td>Dispatch typed events — <loom-link to="/decorators/events" style="color: var(--accent)">Events</loom-link></td></tr>
               <tr><td><code>@transition(opts)</code></td><td>Method</td><td>Enter/leave CSS animations for conditional DOM</td></tr>
-              <tr><td><code>@observer(type, opts?)</code></td><td>Method</td><td>Auto-managed Resize/Intersection/Mutation observer</td></tr>
+              <tr><td><code>@observer(type, opts?)</code></td><td>Method</td><td>Auto-managed Resize/Intersection/Mutation observer — <loom-link to="/element/observer" style="color: var(--accent)">Observer</loom-link></td></tr>
             </tbody>
           </table>
         </section>

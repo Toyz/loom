@@ -26,6 +26,7 @@ export const navOrder: NavEntry[] = [
   { label: "Decorators", to: "/element/decorators", section: "Element", icon: "hash" },
   { label: "Light DOM", to: "/element/light-dom", section: "Element", icon: "sun" },
   { label: "Lazy Loading", to: "/element/lazy", section: "Element", icon: "download" },
+  { label: "Observer", to: "/element/observer", section: "Element", icon: "eye" },
   { label: "Forms", to: "/element/forms", section: "Element", icon: "clipboard" },
   { label: "Fetch", to: "/store/api", section: "Element", icon: "zap" },
   { label: "Virtual List", to: "/element/virtual-list", section: "Element", icon: "list" },
