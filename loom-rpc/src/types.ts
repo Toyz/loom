@@ -5,7 +5,7 @@
  * Powers the type-safe @rpc and @mutate decorators.
  */
 
-import type { ApiState } from "@toyz/loom";
+import type { ApiState } from "@toyz/loom/query";
 
 /**
  * Extract callable method names from a contract class.

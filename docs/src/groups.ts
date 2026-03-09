@@ -8,7 +8,7 @@
  *    navigation. This is a live demo of @guard + @group working together.
  */
 import { group, guard, type RouteInfo } from "@toyz/loom/router";
-import { service } from "@toyz/loom";
+import { service } from "@toyz/loom/di";
 
 // ── Demo guard ──
 // A silly guard that always allows navigation but logs it to the console.
@@ -31,22 +31,22 @@ export class DocsGuards {
 }
 
 @group("/element", { guards: ["docs-log"] })
-export class ElementGroup {}
+export class ElementGroup { }
 
 @group("/router", { guards: ["docs-log"] })
-export class RouterGroup {}
+export class RouterGroup { }
 
 @group("/store", { guards: ["docs-log"] })
-export class StoreGroup {}
+export class StoreGroup { }
 
 @group("/decorators", { guards: ["docs-log"] })
-export class DecoratorsGroup {}
+export class DecoratorsGroup { }
 
 @group("/di", { guards: ["docs-log"] })
-export class DIGroup {}
+export class DIGroup { }
 
 @group("/packages", { guards: ["docs-log"] })
-export class PackagesGroup {}
+export class PackagesGroup { }
 
 @group("/examples", { guards: ["docs-log"] })
-export class ExamplesGroup {}
+export class ExamplesGroup { }

@@ -9,8 +9,8 @@
  *   <source-block file="src/element/image.ts" lang="ts"></source-block>
  */
 import { LoomElement, component, prop, css, styles, mount } from "@toyz/loom";
-import { api, intercept } from "@toyz/loom";
-import type { ApiState, ApiCtx } from "@toyz/loom";
+import { api, intercept } from "@toyz/loom/query";
+import type { ApiState, ApiCtx } from "@toyz/loom/query";
 
 const sheet = css`
   :host { display: block; }

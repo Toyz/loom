@@ -3,7 +3,8 @@
  *
  * Demonstrates: @component, @store, @computed, @query, @styles, css, loom-icon
  */
-import { LoomElement, component, computed, query, css, styles, store, LocalAdapter } from "@toyz/loom";
+import { LoomElement, component, computed, query, css, styles, store } from "@toyz/loom";
+import { LocalAdapter } from "@toyz/loom/store";
 
 interface Todo { id: number; text: string; done: boolean; }
 
@@ -161,7 +162,7 @@ export class TodoList extends LoomElement {
   get filtered(): Todo[] {
     const { todos, filter } = this.data;
     if (filter === "active") return todos.filter(t => !t.done);
-    if (filter === "done")   return todos.filter(t => t.done);
+    if (filter === "done") return todos.filter(t => t.done);
     return todos;
   }
 
@@ -198,7 +199,7 @@ export class TodoList extends LoomElement {
       <div>
         <div class="todo-input">
           <input type="text" placeholder="What needs to be done?"
-                 onKeyDown={(e: KeyboardEvent) => e.key === "Enter" && this.add()} />
+            onKeyDown={(e: KeyboardEvent) => e.key === "Enter" && this.add()} />
           <button class="add-btn" onClick={() => this.add()}>
             <loom-icon name="plus" size={14} color="#fff"></loom-icon>
             Add
@@ -208,7 +209,7 @@ export class TodoList extends LoomElement {
         <div class="filters">
           {(["all", "active", "done"] as const).map(f => (
             <button class={this.data.filter === f ? "active" : ""}
-                    onClick={() => this.setFilter(f)}>
+              onClick={() => this.setFilter(f)}>
               {f[0].toUpperCase() + f.slice(1)}
             </button>
           ))}
@@ -216,24 +217,24 @@ export class TodoList extends LoomElement {
 
         {this.filtered.length === 0
           ? <div class="empty">
-              <loom-icon name="clipboard-list" size={36} color="var(--text-muted)"></loom-icon>
-              <div class="empty-text">
-                {this.data.todos.length === 0
-                  ? "Nothing here yet — add a todo above."
-                  : `No ${this.data.filter} items.`}
-              </div>
+            <loom-icon name="clipboard-list" size={36} color="var(--text-muted)"></loom-icon>
+            <div class="empty-text">
+              {this.data.todos.length === 0
+                ? "Nothing here yet — add a todo above."
+                : `No ${this.data.filter} items.`}
             </div>
+          </div>
           : this.filtered.map(t => (
-              <div class={"todo-item" + (t.done ? " done" : "")}>
-                <div class="check" onClick={() => this.toggle(t.id)}>
-                  <loom-icon name="check" size={12} color="#fff"></loom-icon>
-                </div>
-                <span class="text" onClick={() => this.toggle(t.id)}>{t.text}</span>
-                <button class="del" onClick={() => this.deleteTodo(t.id)} title="Delete">
-                  <loom-icon name="x" size={14}></loom-icon>
-                </button>
+            <div class={"todo-item" + (t.done ? " done" : "")}>
+              <div class="check" onClick={() => this.toggle(t.id)}>
+                <loom-icon name="check" size={12} color="#fff"></loom-icon>
               </div>
-            ))
+              <span class="text" onClick={() => this.toggle(t.id)}>{t.text}</span>
+              <button class="del" onClick={() => this.deleteTodo(t.id)} title="Delete">
+                <loom-icon name="x" size={14}></loom-icon>
+              </button>
+            </div>
+          ))
         }
 
         {this.data.todos.length > 0 && (

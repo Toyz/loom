@@ -4,9 +4,10 @@
  * Demonstrates: @component, @form, @styles, toTrimmed, FormState<T>
  */
 import {
-  LoomElement, component, form, css, styles,
+  LoomElement, component, css, styles,
 } from "@toyz/loom";
-import type { FormState } from "@toyz/loom";
+import { form } from "@toyz/loom/element";
+import type { FormState } from "@toyz/loom/element";
 
 interface ContactData {
   name: string;

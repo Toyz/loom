@@ -5,7 +5,8 @@
  * Reads from the @searchable registry populated by lazy.ts.
  */
 
-import { LoomElement, component, reactive, css, mount, styles, animationFrame, query, hotkey } from "@toyz/loom";
+import { LoomElement, component, reactive, css, mount, styles, animationFrame, query } from "@toyz/loom";
+import { hotkey } from "@toyz/loom/element";
 import { getSearchEntries, type SearchEntry } from "../search-registry";
 
 const style = css`

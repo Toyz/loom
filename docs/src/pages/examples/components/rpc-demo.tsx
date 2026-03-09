@@ -12,7 +12,7 @@ import {
   styles,
   app,
 } from "@toyz/loom";
-import type { ApiState } from "@toyz/loom";
+import type { ApiState } from "@toyz/loom/query";
 import { rpc, mutate, RpcTransport, service } from "@toyz/loom-rpc";
 import { MockTransport } from "@toyz/loom-rpc/testing";
 import type { RpcMutator } from "@toyz/loom-rpc";

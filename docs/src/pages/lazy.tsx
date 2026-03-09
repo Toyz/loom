@@ -7,7 +7,8 @@
  *
  * @searchable registers pages into the global search index for ⌘K.
  */
-import { LoomElement, component, lazy } from "@toyz/loom";
+import { LoomElement, component } from "@toyz/loom";
+import { lazy } from "@toyz/loom/element";
 import { route } from "@toyz/loom/router";
 import { searchable } from "../search-registry";
 import {

@@ -5,4 +5,4 @@
  * Re-exported here for backward compatibility.
  */
 
-export { service, SERVICE_NAME, resolveServiceName } from "@toyz/loom";
+export { service, SERVICE_NAME, resolveServiceName } from "@toyz/loom/di";

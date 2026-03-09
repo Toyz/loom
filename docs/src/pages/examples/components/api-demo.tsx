@@ -4,8 +4,8 @@
  * Live demo of @api fetching /api/team.json
  */
 import { LoomElement, component, css, styles, catch_ } from "@toyz/loom";
-import { api, intercept } from "@toyz/loom";
-import type { ApiState, ApiCtx } from "@toyz/loom";
+import { api, intercept } from "@toyz/loom/query";
+import type { ApiState, ApiCtx } from "@toyz/loom/query";
 
 interface TeamMember {
   name: string;

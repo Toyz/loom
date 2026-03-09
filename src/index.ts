@@ -1,8 +1,13 @@
 /**
- * Loom — Barrel exports
+ * Loom — Barrel exports (slim)
  *
- * Import everything from "@toyz/loom":
- * import { EventBus, LoomEvent, Reactive, LoomElement, component, ... } from "@toyz/loom";
+ * Core essentials only. Heavy modules use subpath imports:
+ *   @toyz/loom/router    — LoomRouter, route, guard, LoomOutlet, LoomLink, etc.
+ *   @toyz/loom/store     — Reactive, CollectionStore, storage adapters, params, routeQuery
+ *   @toyz/loom/di        — service, inject, factory
+ *   @toyz/loom/transform — transform, typed, toNumber, toBoolean, etc.
+ *   @toyz/loom/element   — form, lazy, slot, transition, hotkey, portal, log, provide, consume, etc.
+ *   @toyz/loom/query     — api, intercept, createApiState
  */
 
 // App entry point
@@ -28,74 +33,23 @@ export { jsx, jsxs, Fragment } from "./jsx-runtime";
 export { renderLoop } from "./render-loop";
 export type { RenderLoop } from "./render-loop";
 
-// ── Domain re-exports ──
+// ── Store (core only — adapters & route sentinels via @toyz/loom/store) ──
 
-// Store: reactive state, persistence
-export {
-  Reactive, CollectionStore,
-  MemoryStorage, LocalAdapter, SessionAdapter, LocalMedium, SessionMedium,
-  reactive, prop, computed, params, routeQuery,
-  watch,
-  store,
-} from "./store";
-export type {
-  Subscriber, Updater, Identifiable,
-  StorageAdapter, StorageMedium, PersistOptions,
-} from "./store";
+export { reactive, prop, computed, watch, store } from "./store";
 
-// DI: service container decorators
-export { service, resolveServiceName, inject, factory } from "./di";
-export { SERVICE_NAME } from "./decorators/symbols";
-/** @deprecated Use `@watch(Service)` or `@watch(Service, "prop")` instead. Will be removed in v1.0. */
-export { watch as watchService } from "./di";
+// ── Element: base class + core decorators ──
 
-// Element: base class, element decorators
 export {
   LoomElement,
   component, query, queryAll, styles,
   catch_, suspend, mount, unmount,
   event, observer,
   interval, timeout, debounce, throttle, animationFrame,
-  form, lazy, slot, transition, hotkey,
-  log, LogTransport, ConsoleTransport,
-  provide, consume, ContextRequestEvent,
-  portal,
-  LazyLoadStart, LazyLoadEnd,
 } from "./element";
-export type { FormState, FormSchema, FieldSchema, LazyOptions, TransitionOptions, HotkeyOptions, HotkeyCombo, LogEntry, LogLevel, LogOptions, ContextCallback, PortalOptions } from "./element";
 
-// Transform: value transforms
-export {
-  transform, createTransform,
-  typed, typedTransformer,
-  toNumber, toBoolean, toDate, toJSON, toTrimmed, toInt, toFloat,
-} from "./transform";
-export type { TransformSchema } from "./transform";
+// ── Decorators: event decorators + factory ──
 
-// Decorators: event decorators + factory
 export { on, emit, createDecorator, createSymbol, LoomSymbol, SYMBOL_REGISTRY } from "./decorators";
-
-// Router
-export {
-  LoomRouter,
-  RouteChanged,
-  route,
-  guard,
-  group,
-  matchRoute,
-  routes,
-  LoomOutlet,
-  LoomLink,
-  HashMode,
-  HistoryMode,
-  onRouteEnter,
-  onRouteLeave,
-} from "./router";
-export type { RouterMode, RouterOptions, RouteInfo, RouteEntry, GroupMeta } from "./router";
-
-// Query: @api data fetching + @intercept middleware
-export { api, intercept, createApiState } from "./query";
-export type { ApiCtx, ApiState, ApiOptions, InterceptOptions } from "./query";
 
 // Result type
 export { LoomResult } from "./result";
