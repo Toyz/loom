@@ -252,6 +252,35 @@ export function lazy(
               (this as any)[key] = (...args: unknown[]) => (realEl as any)[key]?.(...args);
             }
           }
+
+          // Forward custom methods from impl → shell.
+          // Walk the impl's prototype chain up to (but not including)
+          // HTMLElement, and create forwarding stubs on this shell instance
+          // for any method not already present.
+          const shellProto = Object.getPrototypeOf(this);
+          let proto = implProto;
+          while (proto && proto !== HTMLElement.prototype) {
+            for (const key of Object.getOwnPropertyNames(proto)) {
+              // Skip constructor, built-in lifecycle, and anything already on the shell
+              if (
+                key === "constructor" ||
+                key === "connectedCallback" ||
+                key === "disconnectedCallback" ||
+                key === "attributeChangedCallback" ||
+                key === "adoptedCallback" ||
+                key === "update" ||
+                key === "scheduleUpdate" ||
+                key === "adoptStyles" ||
+                key.startsWith("_")
+              ) continue;
+
+              const desc = Object.getOwnPropertyDescriptor(proto, key);
+              if (desc && typeof desc.value === "function" && !(key in shellProto)) {
+                (this as any)[key] = (...args: unknown[]) => (realEl as any)[key]?.(...args);
+              }
+            }
+            proto = Object.getPrototypeOf(proto);
+          }
         };
 
         ctor.__mountLazyImpl.call(this);
