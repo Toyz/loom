@@ -12,6 +12,8 @@ export default defineConfig({
       // Point @toyz/loom imports to the source in the parent monorepo
       "@toyz/loom/store": resolve(__dirname, "../src/store/index.ts"),
       "@toyz/loom/decorators": resolve(__dirname, "../src/decorators/index.ts"),
+      "@toyz/loom/di": resolve(__dirname, "../src/di/index.ts"),
+      "@toyz/loom/query": resolve(__dirname, "../src/query/index.ts"),
       "@toyz/loom": resolve(__dirname, "../src/index.ts"),
       // Point @toyz/loom-rpc to our own source
       "@toyz/loom-rpc/testing": resolve(__dirname, "src/testing.ts"),
