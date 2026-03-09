@@ -113,6 +113,16 @@ export function lazy(
     };
 
     ctor.prototype.connectedCallback = async function () {
+      // Set up .ready promise — resolves when impl is fully mounted
+      let readyResolve: (el: any) => void;
+      let readyReject: (err: unknown) => void;
+      this.ready = new Promise<any>((res, rej) => {
+        readyResolve = res;
+        readyReject = rej;
+      });
+      // Suppress unhandled rejection if nobody awaits .ready on error
+      this.ready.catch(() => {});
+
       // Already loaded — mount the impl for this (possibly new) instance
       if (ctor[LAZY_LOADED.key]) {
         origConnected?.call(this);
@@ -120,8 +130,54 @@ export function lazy(
         if (!this[LAZY_IMPL.key] || !this[LAZY_IMPL.key].isConnected) {
           ctor.__mountLazyImpl.call(this);
         }
+        readyResolve!(this);
         return;
       }
+
+      // Install a Proxy on the instance prototype to auto-queue method
+      // calls made before the impl loads. Unknown method calls are buffered
+      // and replayed after mount. Each queued call returns a Promise that
+      // resolves to the real return value.
+      const origProto = Object.getPrototypeOf(this);
+      const lazyQueue: Array<{ method: string; args: unknown[]; resolve: (v: any) => void }> = [];
+      const queueProxy = new Proxy(origProto, {
+        get: (target: any, prop: string | symbol, receiver: any) => {
+          // Symbols and known properties — pass through normally
+          if (typeof prop === "symbol" || prop in target) {
+            return Reflect.get(target, prop, receiver);
+          }
+          // Skip Promise protocol, conversion methods, and internals
+          if (
+            prop === "then" || prop === "catch" || prop === "finally" ||
+            prop === "toJSON" || prop === "valueOf" || prop === "toString" ||
+            prop === "toLocaleString" || prop === "constructor" ||
+            prop === "nodeType" || prop === "nodeName" ||
+            prop.startsWith("_")
+          ) {
+            return undefined;
+          }
+          // Unknown string property — return a queuing function
+          return (...args: unknown[]) => {
+            return new Promise<any>(resolve => {
+              lazyQueue.push({ method: prop, args, resolve });
+            });
+          };
+        },
+      });
+      Object.setPrototypeOf(this, queueProxy);
+
+      // Helper: restore prototype and replay queued calls
+      const replayQueue = () => {
+        Object.setPrototypeOf(this, origProto);
+        const impl = this[LAZY_IMPL.key];
+        if (impl) {
+          for (const { method, args, resolve } of lazyQueue) {
+            const fn = (impl as any)[method];
+            resolve(typeof fn === "function" ? fn.call(impl, ...args) : fn);
+          }
+        }
+        lazyQueue.length = 0;
+      };
 
       // Show loading indicator
       if (opts?.loading) {
@@ -283,9 +339,30 @@ export function lazy(
           }
         };
 
+        // Restore original prototype BEFORE mount so that property reads
+        // inside __mountLazyImpl (e.g., prop forwarding checking this.heading)
+        // don't get intercepted by the queue proxy.
+        Object.setPrototypeOf(this, origProto);
+
         ctor.__mountLazyImpl.call(this);
+
+        // Replay any method calls that were queued while loading
+        const impl = this[LAZY_IMPL.key];
+        if (impl && lazyQueue.length > 0) {
+          for (const { method, args, resolve } of lazyQueue) {
+            const fn = (impl as any)[method];
+            resolve(typeof fn === "function" ? fn.call(impl, ...args) : fn);
+          }
+          lazyQueue.length = 0;
+        }
+
         bus.emit(new LazyLoadEnd(tag, true, performance.now() - t0));
+        readyResolve!(this);
       } catch (err) {
+        // Clean up proxy without replaying
+        Object.setPrototypeOf(this, origProto);
+        lazyQueue.length = 0;
+
         console.error("[Loom @lazy] Failed to load module:", err);
         bus.emit(new LazyLoadEnd(tag, false, performance.now() - t0, err));
         this.shadow.innerHTML = "";
@@ -297,6 +374,7 @@ export function lazy(
         } else {
           this.shadow.innerHTML = `<p style="color:red">Failed to load component</p>`;
         }
+        readyReject!(err);
       }
     };
   };
