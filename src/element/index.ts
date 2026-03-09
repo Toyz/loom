@@ -59,3 +59,17 @@ export type { ContextCallback } from "./context";
 // Portal: teleport content to external DOM targets
 export { portal } from "./portal";
 export type { PortalOptions } from "./portal";
+
+// Media: reactive media query binding
+export { media } from "./media";
+
+// Fullscreen: toggle fullscreen API
+export { fullscreen } from "./fullscreen";
+export type { FullscreenOptions } from "./fullscreen";
+
+// Clipboard: declarative copy/paste
+export { clipboard } from "./clipboard";
+
+// Drag & Drop: declarative DnD
+export { draggable, dropzone } from "./dnd";
+export type { DraggableOptions, DropzoneOptions } from "./dnd";

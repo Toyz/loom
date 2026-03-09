@@ -149,6 +149,11 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@log(opts?)</code></td><td>Method</td><td>Structured logging — <loom-link to="/decorators/log" style="color: var(--accent)">Log</loom-link></td></tr>
               <tr><td><code>@context(Key)</code></td><td>Accessor</td><td>Cross-shadow-DOM data sharing — <loom-link to="/decorators/context" style="color: var(--accent)">Context</loom-link></td></tr>
               <tr><td><code>@portal(target)</code></td><td>Method</td><td>Teleport content — <loom-link to="/decorators/portal" style="color: var(--accent)">Portal</loom-link></td></tr>
+              <tr><td><code>@media(query)</code></td><td>Accessor</td><td>Reactive media queries — <loom-link to="/decorators/media" style="color: var(--accent)">Media</loom-link></td></tr>
+              <tr><td><code>@fullscreen()</code></td><td>Accessor</td><td>Toggle Fullscreen API — <loom-link to="/decorators/fullscreen" style="color: var(--accent)">Fullscreen</loom-link></td></tr>
+              <tr><td><code>@clipboard(mode)</code></td><td>Method</td><td>Declarative copy/paste — <loom-link to="/decorators/clipboard" style="color: var(--accent)">Clipboard</loom-link></td></tr>
+              <tr><td><code>@draggable(opts?)</code></td><td>Method</td><td>Make element draggable — <loom-link to="/decorators/dnd" style="color: var(--accent)">Drag & Drop</loom-link></td></tr>
+              <tr><td><code>@dropzone(opts?)</code></td><td>Method</td><td>Accept dropped content — <loom-link to="/decorators/dnd" style="color: var(--accent)">Drag & Drop</loom-link></td></tr>
             </tbody>
           </table>
         </section>

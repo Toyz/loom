@@ -53,6 +53,10 @@ const sections: NavSection[] = [
       { label: "Context", to: "/decorators/context", icon: "thread" },
       { label: "Portal", to: "/decorators/portal", icon: "external-link" },
       { label: "Typed Symbols", to: "/decorators/symbols", icon: "key" },
+      { label: "Media", to: "/decorators/media", icon: "monitor" },
+      { label: "Fullscreen", to: "/decorators/fullscreen", icon: "maximize" },
+      { label: "Clipboard", to: "/decorators/clipboard", icon: "clipboard" },
+      { label: "Drag & Drop", to: "/decorators/dnd", icon: "move" },
     ],
   },
   {

@@ -43,6 +43,10 @@ export const navOrder: NavEntry[] = [
   { label: "Context", to: "/decorators/context", section: "Decorators", icon: "thread" },
   { label: "Portal", to: "/decorators/portal", section: "Decorators", icon: "external-link" },
   { label: "Typed Symbols", to: "/decorators/symbols", section: "Decorators", icon: "key" },
+  { label: "Media", to: "/decorators/media", section: "Decorators", icon: "monitor" },
+  { label: "Fullscreen", to: "/decorators/fullscreen", section: "Decorators", icon: "maximize" },
+  { label: "Clipboard", to: "/decorators/clipboard", section: "Decorators", icon: "clipboard" },
+  { label: "Drag & Drop", to: "/decorators/dnd", section: "Decorators", icon: "move" },
 
   // Store
   { label: "Overview", to: "/store/overview", section: "Store", icon: "archive" },

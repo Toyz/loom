@@ -57,6 +57,13 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   { name: "@consume", id: "consume", color: "var(--cyan)", category: "Context" },
   { name: "@portal", id: "portal", color: "var(--cyan)", category: "Context" },
 
+  // Platform
+  { name: "@media", id: "media", color: "var(--rose)", category: "Platform" },
+  { name: "@fullscreen", id: "fullscreen", color: "var(--rose)", category: "Platform" },
+  { name: "@clipboard", id: "clipboard", color: "var(--rose)", category: "Platform" },
+  { name: "@draggable", id: "draggable", color: "var(--rose)", category: "Platform" },
+  { name: "@dropzone", id: "dropzone", color: "var(--rose)", category: "Platform" },
+
   // Transform
   { name: "@transform", id: "transform", color: "var(--emerald)", category: "Transform" },
   { name: "createTransform", id: "createtransform", color: "var(--emerald)", category: "Transform" },

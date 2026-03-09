@@ -296,6 +296,30 @@ class LazyDecoratorPortal extends LoomElement { }
 @searchable({ title: "Typed Symbols", section: "Decorators", icon: "key", to: "/decorators/symbols", keywords: ["LoomSymbol", "createSymbol", "symbol", "metadata", "typed", "registry", "SYMBOL_REGISTRY"], summary: "Type-safe symbol metadata with LoomSymbol<T>." })
 class LazyDecoratorSymbols extends LoomElement { }
 
+@route("/media", { group: DecoratorsGroup })
+@component("page-decorator-media")
+@lazy(() => import("./decorators/media"))
+@searchable({ title: "Media", section: "Decorators", icon: "monitor", to: "/decorators/media", keywords: ["media", "matchMedia", "responsive", "breakpoint", "mobile", "dark mode", "prefers-color-scheme"], summary: "Reactive media query binding for accessor fields." })
+class LazyDecoratorMedia extends LoomElement { }
+
+@route("/fullscreen", { group: DecoratorsGroup })
+@component("page-decorator-fullscreen")
+@lazy(() => import("./decorators/fullscreen"))
+@searchable({ title: "Fullscreen", section: "Decorators", icon: "maximize", to: "/decorators/fullscreen", keywords: ["fullscreen", "maximize", "toggle", "escape", "video", "immersive"], summary: "Boolean accessor bound to the Fullscreen API." })
+class LazyDecoratorFullscreen extends LoomElement { }
+
+@route("/clipboard", { group: DecoratorsGroup })
+@component("page-decorator-clipboard")
+@lazy(() => import("./decorators/clipboard"))
+@searchable({ title: "Clipboard", section: "Decorators", icon: "clipboard", to: "/decorators/clipboard", keywords: ["clipboard", "copy", "paste", "write", "read", "share"], summary: "Declarative clipboard read/write." })
+class LazyDecoratorClipboard extends LoomElement { }
+
+@route("/dnd", { group: DecoratorsGroup })
+@component("page-decorator-dnd")
+@lazy(() => import("./decorators/dnd"))
+@searchable({ title: "Drag & Drop", section: "Decorators", icon: "move", to: "/decorators/dnd", keywords: ["drag", "drop", "draggable", "dropzone", "dnd", "kanban", "reorder", "sortable"], summary: "Declarative HTML5 Drag and Drop." })
+class LazyDecoratorDnd extends LoomElement { }
+
 // ── Examples ──
 
 @route("/clock", { group: ExamplesGroup })
