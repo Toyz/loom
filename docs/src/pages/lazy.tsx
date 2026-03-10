@@ -41,6 +41,12 @@ class LazyFirstApp extends LoomElement { }
 @searchable({ title: "Debugging", section: "Guides", icon: "search", to: "/guides/debugging", keywords: ["debug", "inspect", "devtools", "symbols", "metadata", "console"], summary: "Zero-install component inspection with inspect() and createSymbol()." })
 class LazyDebugging extends LoomElement { }
 
+@route("/guides/hydration")
+@component("page-hydration")
+@lazy(() => import("./guides/hydration"))
+@searchable({ title: "Hydration", section: "Guides", icon: "zap", to: "/guides/hydration", keywords: ["hydration", "DSD", "declarative shadow DOM", "FCP", "performance", "pre-render", "sync render"], summary: "Instant FCP with Declarative Shadow DOM — zero extra dependencies." })
+class LazyHydration extends LoomElement { }
+
 // ── Standalone ──
 
 @route("/result")
