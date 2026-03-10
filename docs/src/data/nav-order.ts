@@ -15,6 +15,7 @@ export const navOrder: NavEntry[] = [
   { label: "Your First App", to: "/guides/your-first-app", section: "Guides", icon: "sparkles" },
   { label: "Debugging", to: "/guides/debugging", section: "Guides", icon: "search" },
   { label: "LoomResult", to: "/result", section: "Guides", icon: "sparkles" },
+  { label: "Hydration", to: "/guides/hydration", section: "Guides", icon: "zap" },
 
   // Element
   { label: "Overview", to: "/element/overview", section: "Element", icon: "cube" },

@@ -26,6 +26,11 @@ export abstract class LoomElement extends HTMLElement {
       // Light DOM mode — render directly into the host element.
       // Cast to ShadowRoot so all existing code (morph, $, $$, css) works unchanged.
       this.shadow = this as unknown as ShadowRoot;
+    } else if (this.shadowRoot) {
+      // Declarative Shadow DOM — browser already created a shadow root
+      // from <template shadowrootmode="open"> in the HTML.
+      // Reuse it instead of calling attachShadow (which would throw).
+      this.shadow = this.shadowRoot;
     } else {
       this.shadow = this.attachShadow({ mode: "open" });
     }
@@ -197,7 +202,14 @@ export abstract class LoomElement extends HTMLElement {
 
     // Fast append — shadow root is empty, no need to diff
     if (result != null) {
-      if (Array.isArray(result)) {
+      // Hydration: if shadow root already has content (from Declarative Shadow DOM),
+      // morph against it to wire up event listeners and trace bindings without
+      // destroying the pre-rendered DOM. When DSD HTML matches update() output,
+      // morph is a no-op diff — zero DOM mutations.
+      const hasExistingContent = this.shadow.childNodes.length > 0;
+      if (hasExistingContent) {
+        morph(this.shadow, result);
+      } else if (Array.isArray(result)) {
         // Batch append via fragment — one reflow instead of N
         const frag = document.createDocumentFragment();
         for (let i = 0; i < result.length; i++) frag.appendChild(result[i]);

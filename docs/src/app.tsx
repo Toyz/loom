@@ -19,6 +19,7 @@ const sections: NavSection[] = [
       { label: "Your First App", to: "/guides/your-first-app", icon: "sparkles" },
       { label: "Debugging", to: "/guides/debugging", icon: "search" },
       { label: "LoomResult", to: "/result", icon: "sparkles" },
+      { label: "Hydration", to: "/guides/hydration", icon: "zap" },
     ],
   },
   {
