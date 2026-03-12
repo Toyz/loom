@@ -18,7 +18,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { CONNECT_HOOKS, localSymbol } from "../decorators/symbols";
 import type { Schedulable } from "./element";
 
 // ── Context Request Event ──
@@ -63,8 +63,8 @@ export function provide<T>(key: (new () => T) | string | symbol) {
         target: ClassAccessorDecoratorTarget<This, T>,
         context: ClassAccessorDecoratorContext<This, T>,
     ): ClassAccessorDecoratorResult<This, T> => {
-        const storageKey = Symbol(`ctx:provide:${String(context.name)}`);
-        const subscribersKey = Symbol(`ctx:subs:${String(context.name)}`);
+        const storage = localSymbol<T>(`ctx:provide:${String(context.name)}`);
+        const subs_ = localSymbol<Set<ContextCallback<T>>>(`ctx:subs:${String(context.name)}`);
 
         context.addInitializer(function () {
             const self = this as object;
@@ -74,13 +74,13 @@ export function provide<T>(key: (new () => T) | string | symbol) {
                 const host = el as HTMLElement & Schedulable & Record<symbol, unknown>;
 
                 // Auto-instantiate class key if no value set
-                if (host[storageKey] === undefined && typeof key === "function") {
-                    host[storageKey] = new (key as new () => T)();
+                if (host[storage.key] === undefined && typeof key === "function") {
+                    host[storage.key] = new (key as new () => T)();
                 }
 
                 // Subscriber list for reactive updates
-                if (!host[subscribersKey]) host[subscribersKey] = new Set<ContextCallback<T>>();
-                const subs = host[subscribersKey] as Set<ContextCallback<T>>;
+                if (!host[subs_.key]) host[subs_.key] = new Set<ContextCallback<T>>();
+                const subs = host[subs_.key] as Set<ContextCallback<T>>;
 
                 // Listen for context requests from descendants
                 const handler = (e: Event) => {
@@ -90,7 +90,7 @@ export function provide<T>(key: (new () => T) | string | symbol) {
                     // Stop propagation so nearest provider wins
                     e.stopPropagation();
 
-                    const currentValue = host[storageKey] as T;
+                    const currentValue = host[storage.key] as T;
 
                     if (req.subscribe) {
                         // Subscriber — store callback for future updates
@@ -113,7 +113,7 @@ export function provide<T>(key: (new () => T) | string | symbol) {
                     // Notify consumers this provider is gone so they can
                     // re-request from a higher ancestor provider.
                     for (const cb of [...subs]) {
-                        cb(undefined as T, () => {});
+                        cb(undefined as T, () => { });
                     }
                     subs.clear();
                 };
@@ -126,23 +126,23 @@ export function provide<T>(key: (new () => T) | string | symbol) {
         return {
             init(this: This, value: T): T {
                 // Capture initial accessor value into our storage
-                (this as unknown as Record<symbol, unknown>)[storageKey] = value;
+                (this as unknown as Record<symbol, unknown>)[storage.key] = value;
                 return value;
             },
             get(this: This): T {
                 const self = this as unknown as Record<symbol, unknown>;
-                if (self[storageKey] === undefined && typeof key === "function") {
-                    self[storageKey] = new (key as new () => T)();
+                if (self[storage.key] === undefined && typeof key === "function") {
+                    self[storage.key] = new (key as new () => T)();
                 }
-                return self[storageKey] as T;
+                return self[storage.key] as T;
             },
             set(this: This, value: T) {
                 const self = this as unknown as Record<symbol, unknown>;
-                self[storageKey] = value;
+                self[storage.key] = value;
 
                 // Notify all subscribed consumers (snapshot to guard
                 // against mid-callback unsubscribes mutating the Set)
-                const subs = self[subscribersKey] as Set<ContextCallback<T>> | undefined;
+                const subs = self[subs_.key] as Set<ContextCallback<T>> | undefined;
                 if (subs) {
                     for (const cb of [...subs]) {
                         cb(value, () => subs.delete(cb));
@@ -173,8 +173,8 @@ export function consume<T>(key: (new () => T) | string | symbol) {
         _target: ClassAccessorDecoratorTarget<This, T>,
         context: ClassAccessorDecoratorContext<This, T>,
     ): ClassAccessorDecoratorResult<This, T> => {
-        const storageKey = Symbol(`ctx:consume:${String(context.name)}`);
-        const unsubKey = Symbol(`ctx:unsub:${String(context.name)}`);
+        const storage = localSymbol<T>(`ctx:consume:${String(context.name)}`);
+        const unsub_ = localSymbol<() => void>(`ctx:unsub:${String(context.name)}`);
 
         context.addInitializer(function () {
             const self = this as object;
@@ -187,9 +187,9 @@ export function consume<T>(key: (new () => T) | string | symbol) {
                 // when a provider is removed it sends undefined, so the
                 // consumer re-dispatches to find a higher ancestor provider.
                 const callback: ContextCallback<T> = (value, unsubscribe) => {
-                    const wasConnected = host[unsubKey] !== undefined;
-                    host[storageKey] = value;
-                    host[unsubKey] = unsubscribe;
+                    const wasConnected = host[unsub_.key] !== undefined;
+                    host[storage.key] = value;
+                    host[unsub_.key] = unsubscribe;
                     host.scheduleUpdate?.();
 
                     // Provider disconnected — try to find a higher one
@@ -215,9 +215,9 @@ export function consume<T>(key: (new () => T) | string | symbol) {
 
                 return () => {
                     // Unsubscribe from provider on disconnect
-                    const unsub = host[unsubKey] as (() => void) | undefined;
+                    const unsub = host[unsub_.key] as (() => void) | undefined;
                     unsub?.();
-                    host[unsubKey] = undefined;
+                    host[unsub_.key] = undefined;
                 };
             };
 
@@ -227,10 +227,10 @@ export function consume<T>(key: (new () => T) | string | symbol) {
 
         return {
             get(this: This): T {
-                return (this as unknown as Record<symbol, unknown>)[storageKey] as T;
+                return (this as unknown as Record<symbol, unknown>)[storage.key] as T;
             },
             set(this: This, value: T) {
-                (this as unknown as Record<symbol, unknown>)[storageKey] = value;
+                (this as unknown as Record<symbol, unknown>)[storage.key] = value;
             },
         };
     };

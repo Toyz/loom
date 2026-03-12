@@ -15,6 +15,8 @@
  * ```
  */
 
+import { localSymbol } from "../decorators/symbols";
+
 /** Flipped to true by the morph engine around prop patches */
 export let _readonlyBypass = false;
 
@@ -25,7 +27,7 @@ export function readonly<This extends object, V>(
   context: ClassAccessorDecoratorContext<This, V>,
 ): ClassAccessorDecoratorResult<This, V> {
   const name = String(context.name);
-  const initedKey = Symbol(`readonly:inited:${name}`);
+  const inited = localSymbol<boolean>(`readonly:inited:${name}`);
 
   return {
     get(this: This): V {
@@ -39,9 +41,9 @@ export function readonly<This extends object, V>(
     set(this: This, val: V) {
       const self = this as unknown as Record<symbol, unknown>;
       // Allow: initial value, morph engine patches, and pre-init writes
-      if (!self[initedKey] || _readonlyBypass) {
+      if (!self[inited.key] || _readonlyBypass) {
         target.set.call(this, val);
-        self[initedKey] = true;
+        self[inited.key] = true;
         return;
       }
       throw new Error(`Cannot mutate readonly property '${name}'`);

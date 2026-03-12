@@ -1,9 +1,9 @@
 /**
  * Todo List — A reactive todo with add, toggle, delete, and filter.
  *
- * Demonstrates: @component, @store, @computed, @query, @styles, css, loom-icon
+ * Demonstrates: @component, @store, @computed, @query, @watch, @styles, css, loom-icon, $reset
  */
-import { LoomElement, component, computed, query, css, styles, store } from "@toyz/loom";
+import { LoomElement, component, computed, query, css, styles, store, watch } from "@toyz/loom";
 import { LocalAdapter } from "@toyz/loom/store";
 
 interface Todo { id: number; text: string; done: boolean; }
@@ -166,22 +166,30 @@ export class TodoList extends LoomElement {
     return todos;
   }
 
+  /** @watch — fires whenever the store mutates (deep or full replacement) */
+  @watch("data")
+  onDataChange(current: TodoData, prev: TodoData) {
+    const delta = current.todos.length - (prev?.todos?.length ?? 0);
+    if (delta > 0) console.log(`[todo] +${delta} item(s), total: ${current.todos.length}`);
+    else if (delta < 0) console.log(`[todo] ${delta} item(s), total: ${current.todos.length}`);
+  }
+
   add() {
     const text = this.input.value.trim();
     if (!text) return;
-    this.data.todos = [...this.data.todos, { id: this.data.nextId++, text, done: false }];
+    this.data.todos.push({ id: this.data.nextId++, text, done: false });
     this.input.value = "";
     this.input.focus();
   }
 
   toggle(id: number) {
-    this.data.todos = this.data.todos.map(t =>
-      t.id === id ? { ...t, done: !t.done } : t
-    );
+    const todo = this.data.todos.find(t => t.id === id);
+    if (todo) todo.done = !todo.done;
   }
 
   deleteTodo(id: number) {
-    this.data.todos = this.data.todos.filter(t => t.id !== id);
+    const idx = this.data.todos.findIndex(t => t.id === id);
+    if (idx !== -1) this.data.todos.splice(idx, 1);
   }
 
   setFilter(f: "all" | "active" | "done") {
@@ -190,6 +198,11 @@ export class TodoList extends LoomElement {
 
   clearDone() {
     this.data.todos = this.data.todos.filter(t => !t.done);
+  }
+
+  /** $reset — restore the store to its initial defaults */
+  resetAll() {
+    (this as any).$reset_data();
   }
 
   update() {
@@ -246,6 +259,10 @@ export class TodoList extends LoomElement {
                 Clear done ({doneCount})
               </button>
             )}
+            <button class="clear-btn" onClick={() => this.resetAll()} title="$reset — restore defaults">
+              <loom-icon name="rotate-ccw" size={12}></loom-icon>
+              Reset all
+            </button>
           </div>
         )}
       </div>

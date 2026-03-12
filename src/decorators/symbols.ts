@@ -51,6 +51,15 @@ export function createSymbol<T = unknown>(name: string): LoomSymbol<T> {
   return sym;
 }
 
+/**
+ * Create a typed LoomSymbol without singleton registration.
+ * Use for per-accessor private storage keys where you want
+ * the typed .from()/.set()/.has() API but not shared identity.
+ */
+export function localSymbol<T = unknown>(name: string): LoomSymbol<T> {
+  return new LoomSymbol<T>(name);
+}
+
 export { SYMBOL_REGISTRY };
 
 export const REACTIVES = createSymbol("reactives");

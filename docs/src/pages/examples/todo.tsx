@@ -32,6 +32,8 @@ export default class ExampleTodo extends LoomElement {
             <li><span class="ic">@store</span> — Deep-proxy reactive state with automatic persistence</li>
             <li><span class="ic">LocalAdapter</span> — Todos survive page refreshes via localStorage</li>
             <li><span class="ic">@computed</span> — Derived <span class="ic">filtered</span> list recalculates only when dependencies change</li>
+            <li><span class="ic">@watch</span> — Reactive watcher fires on every store mutation with accurate <span class="ic">prev</span></li>
+            <li><span class="ic">$reset</span> — One-call restore to initial defaults via <span class="ic">$reset_data()</span></li>
             <li><span class="ic">@styles</span> — Auto-adopt scoped CSS on connect</li>
             <li><span class="ic">@query</span> — Direct DOM ref to the input element</li>
             <li><span class="ic">loom-icon</span> — SVG icons from the icon registry</li>

@@ -7,7 +7,7 @@
  * @store    — Component-scoped reactive store (auto-accessor)
  */
 
-import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols";
+import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, TRANSFORMS, localSymbol } from "../decorators/symbols";
 import { Reactive } from "./reactive";
 import { bus } from "../bus";
 import type { PersistOptions } from "./storage";
@@ -44,7 +44,7 @@ export function reactive<This extends object, V>(
   context: ClassAccessorDecoratorContext<This, V>,
 ): ClassAccessorDecoratorResult<This, V> {
   const key = String(context.name);
-  const storageKey = Symbol(key);
+  const storage = localSymbol<Reactive<V>>(`reactive:${key}`);
 
   // Store field name for LoomElement introspection
   context.addInitializer(function () {
@@ -59,10 +59,10 @@ export function reactive<This extends object, V>(
       const self = this as unknown as Record<symbol, unknown> & Record<string, unknown>;
       // Eagerly create the Reactive on first read so recordRead() fires
       // during traced update() calls — ensures this dep is tracked.
-      if (!self[storageKey]) {
+      if (!self[storage.key]) {
         const backingValue = target.get.call(this) as V;
         const r = new Reactive(backingValue);
-        self[storageKey] = r;
+        self[storage.key] = r;
         r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
 
         // Wire @watch handlers (WATCHERS is populated because method
@@ -84,14 +84,14 @@ export function reactive<This extends object, V>(
           }
         }
       }
-      return (self[storageKey] as Reactive<V>).value;
+      return (self[storage.key] as Reactive<V>).value;
     },
     set(this: This, val: V) {
       const self = this as unknown as Record<symbol, unknown> & Record<string, unknown>;
       // Ensure Reactive exists (getter may not have run yet,
       // e.g. attributeChangedCallback before connectedCallback)
-      if (!self[storageKey]) void (self[key]);
-      (self[storageKey] as Reactive<V>).set(val);
+      if (!self[storage.key]) void (self[key]);
+      (self[storage.key] as Reactive<V>).set(val);
     },
     init(this: This, _val: V): V {
       return _val;
@@ -200,43 +200,37 @@ export function computed<This extends object, V>(
   context: ClassGetterDecoratorContext<This, V>,
 ): (this: This) => V {
   const key = String(context.name);
-  const cacheKey = Symbol(`computed:${key}`);
-  const dirtyKey = Symbol(`dirty:${key}`);
+  const cache = localSymbol<V>(`computed:${key}`);
+  const dirty = localSymbol<boolean>(`computed:dirty:${key}`);
 
   // Track dirty key for scheduleUpdate invalidation
   context.addInitializer(function () {
     const proto = ((this as object & { constructor: { prototype: object } }).constructor).prototype;
     const existing = COMPUTED_DIRTY.from(proto) as symbol[] | undefined;
-    if (!existing) COMPUTED_DIRTY.set(proto, [dirtyKey]);
-    else if (!existing.includes(dirtyKey)) existing.push(dirtyKey);
+    if (!existing) COMPUTED_DIRTY.set(proto, [dirty.key]);
+    else if (!existing.includes(dirty.key)) existing.push(dirty.key);
   });
 
   return function (this: This): V {
     const self = this as unknown as Record<symbol, V | boolean>;
-    if (self[dirtyKey] !== false) {
-      self[cacheKey] = target.call(this);
-      self[dirtyKey] = false;
+    if (self[dirty.key] !== false) {
+      self[cache.key] = target.call(this);
+      self[dirty.key] = false;
     }
-    return self[cacheKey] as V;
+    return self[cache.key] as V;
   };
 }
 
 // ── @store decorator ──
 
-const STORE_META = Symbol("loom:store:meta");
-
-interface StoreMeta {
-  key: string;
-  defaults: unknown;
-  persist?: PersistOptions;
-}
-
 /**
  * Create a deep proxy that intercepts mutations and notifies the Reactive.
+ * Snapshots prev value before mutation for accurate watcher callbacks.
  */
 function createDeepProxy<T extends object>(
   obj: T,
   reactive: Reactive<T>,
+  onBeforeMutate?: () => void,
 ): T {
   const proxyCache = new WeakMap<object, unknown>();
 
@@ -253,11 +247,13 @@ function createDeepProxy<T extends object>(
         return value;
       },
       set(t, p, value, receiver) {
+        onBeforeMutate?.();
         const result = Reflect.set(t, p, value, receiver);
         reactive.notify();
         return result;
       },
       deleteProperty(t, p) {
+        onBeforeMutate?.();
         const result = Reflect.deleteProperty(t, p);
         reactive.notify();
         return result;
@@ -272,51 +268,271 @@ function createDeepProxy<T extends object>(
 }
 
 /**
- * Component-scoped reactive store with optional persistence (auto-accessor).
+ * Build the accessor descriptor shared by both bare and factory forms.
+ */
+function buildStoreAccessor<This extends object, T extends object>(
+  defaults: T,
+  persist: PersistOptions | undefined,
+  key: string,
+): ClassAccessorDecoratorResult<This, T> {
+  const reactive_ = localSymbol<Reactive<T>>(`store:${key}`);
+  const proxy_ = localSymbol<T>(`store:proxy:${key}`);
+  const defaults_ = localSymbol<T>(`store:defaults:${key}`);
+  const prev_ = localSymbol<T>(`store:prev:${key}`);
+
+  function initStore(self: Record<symbol | string, unknown>, initialValue: T) {
+    const r = new Reactive<T>(initialValue, persist);
+    self[reactive_.key] = r;
+    self[defaults_.key] = defaults;
+    r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
+
+    // Wire @watch handlers — same pattern as @reactive
+    const watchers = WATCHERS.from(self) as Array<{ field: string; key: string }> | undefined;
+    if (watchers) {
+      for (let i = 0; i < watchers.length; i++) {
+        const w = watchers[i];
+        if (w.field === key) {
+          r.subscribe((v: T, prev: T) => {
+            // Use the snapshot if available for accurate prev
+            const actualPrev = (self[prev_.key] as T | undefined) ?? prev;
+            (self[w.key] as Function)(v, actualPrev);
+            self[prev_.key] = undefined;
+          });
+        }
+      }
+    }
+
+    // Wire @emit handlers
+    const emitters = EMITTERS.from(self) as Array<{ field: string; factory: (v: T) => object }> | undefined;
+    if (emitters) {
+      for (let i = 0; i < emitters.length; i++) {
+        const e = emitters[i];
+        if (e.field === key) r.subscribe((v: T) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+      }
+    }
+
+    // Snapshot callback — called by deep proxy before mutation
+    const onBeforeMutate = () => {
+      if (self[prev_.key] === undefined) {
+        try {
+          self[prev_.key] = structuredClone(r.peek());
+        } catch {
+          // Fallback for non-cloneable values
+          self[prev_.key] = r.peek();
+        }
+      }
+    };
+
+    self[proxy_.key] = createDeepProxy(r.value, r, onBeforeMutate);
+
+    // Inject $reset method on the instance
+    const resetName = `$reset_${key}`;
+    (self as Record<string, unknown>)[resetName] = () => {
+      const fresh = structuredClone(defaults);
+      (self[reactive_.key] as Reactive<T>).set(fresh);
+      self[proxy_.key] = createDeepProxy(
+        (self[reactive_.key] as Reactive<T>).value,
+        self[reactive_.key] as Reactive<T>,
+        onBeforeMutate,
+      );
+    };
+  }
+
+  return {
+    get(this: This): T {
+      const self = this as unknown as Record<symbol | string, unknown>;
+      if (!self[reactive_.key]) {
+        const initial = structuredClone(defaults);
+        initStore(self, initial);
+      }
+      // Touch Reactive.value so recordRead() fires during traced update()
+      (self[reactive_.key] as Reactive<T>).value;
+      return self[proxy_.key] as T;
+    },
+    set(this: This, val: T) {
+      const self = this as unknown as Record<symbol | string, unknown>;
+      if (!self[reactive_.key]) {
+        initStore(self, val);
+      } else {
+        (self[reactive_.key] as Reactive<T>).set(val);
+
+        // Snapshot callback for the new proxy
+        const onBeforeMutate = () => {
+          if (self[prev_.key] === undefined) {
+            try {
+              self[prev_.key] = structuredClone((self[reactive_.key] as Reactive<T>).peek());
+            } catch {
+              self[prev_.key] = (self[reactive_.key] as Reactive<T>).peek();
+            }
+          }
+        };
+
+        self[proxy_.key] = createDeepProxy(
+          (self[reactive_.key] as Reactive<T>).value,
+          self[reactive_.key] as Reactive<T>,
+          onBeforeMutate,
+        );
+      }
+    },
+  };
+}
+
+/**
+ * Component-scoped reactive store (auto-accessor).
  *
+ * Bare decorator — uses the accessor's initializer as defaults:
+ * ```ts
+ * @store accessor state: TodoState = { items: [], filter: "all" };
+ * ```
+ *
+ * Factory form — explicit defaults and optional persistence:
  * ```ts
  * @store<TodoState>({ items: [], filter: "all" })
  * accessor state!: TodoState;
+ *
+ * @store<TodoState>({ items: [], filter: "all" }, { key: "todos", storage })
+ * accessor state!: TodoState;
+ * ```
+ *
+ * Instances get a `$reset_<field>()` method to restore defaults:
+ * ```ts
+ * this.$reset_state();
  * ```
  */
+
+// Bare decorator form
+export function store<This extends object, T extends object>(
+  target: ClassAccessorDecoratorTarget<This, T>,
+  context: ClassAccessorDecoratorContext<This, T>,
+): ClassAccessorDecoratorResult<This, T>;
+
+// Factory form
 export function store<T extends object>(
   defaults: T,
   persist?: PersistOptions,
-) {
-  return <This extends object>(
-    _target: ClassAccessorDecoratorTarget<This, T>,
-    context: ClassAccessorDecoratorContext<This, T>,
-  ): ClassAccessorDecoratorResult<This, T> => {
-    const key = String(context.name);
-    const reactiveKey = Symbol(`store:${key}`);
-    const proxyKey = Symbol(`store:proxy:${key}`);
+): <This extends object>(
+  target: ClassAccessorDecoratorTarget<This, T>,
+  context: ClassAccessorDecoratorContext<This, T>,
+) => ClassAccessorDecoratorResult<This, T>;
 
+export function store<This extends object, T extends object>(
+  targetOrDefaults: ClassAccessorDecoratorTarget<This, T> | T,
+  contextOrPersist?: ClassAccessorDecoratorContext<This, T> | PersistOptions,
+): ClassAccessorDecoratorResult<This, T> | (<This2 extends object>(
+  target: ClassAccessorDecoratorTarget<This2, T>,
+  context: ClassAccessorDecoratorContext<This2, T>,
+) => ClassAccessorDecoratorResult<This2, T>) {
+
+  // Bare @store — context is present
+  if (contextOrPersist && typeof (contextOrPersist as ClassAccessorDecoratorContext<This, T>).name !== "undefined"
+    && typeof (contextOrPersist as ClassAccessorDecoratorContext<This, T>).addInitializer === "function") {
+    const context = contextOrPersist as ClassAccessorDecoratorContext<This, T>;
+    const key = String(context.name);
+
+    // For bare form, we need the init value. We wrap init to capture it,
+    // then build the accessor with those defaults.
+    const reactive_ = localSymbol<Reactive<T>>(`store:${key}`);
+    const proxy_ = localSymbol<T>(`store:proxy:${key}`);
+    const defaults_ = localSymbol<T>(`store:defaults:${key}`);
+    const prev_ = localSymbol<T>(`store:prev:${key}`);
+
+    // We can't call buildStoreAccessor yet because we don't have defaults.
+    // Instead, inline the logic and capture defaults from init().
     return {
+      init(this: This, value: T): T {
+        // Stash defaults on the instance for $reset
+        const self = this as unknown as Record<symbol | string, unknown>;
+        self[defaults_.key] = structuredClone(value);
+        return value;
+      },
       get(this: This): T {
-        const self = this as unknown as Record<symbol, unknown>;
-        if (!self[reactiveKey]) {
-          const initial = JSON.parse(JSON.stringify(defaults));
-          const r = new Reactive<T>(initial, persist);
-          self[reactiveKey] = r;
+        const self = this as unknown as Record<symbol | string, unknown>;
+        if (!self[reactive_.key]) {
+          // Use the init value (already stored via init()) as defaults
+          const defaults = self[defaults_.key] as T;
+          const initial = structuredClone(defaults);
+          const r = new Reactive<T>(initial);
+          self[reactive_.key] = r;
           r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
-          self[proxyKey] = createDeepProxy(r.value, r);
+
+          // Wire @watch
+          const watchers = WATCHERS.from(self) as Array<{ field: string; key: string }> | undefined;
+          if (watchers) {
+            for (let i = 0; i < watchers.length; i++) {
+              const w = watchers[i];
+              if (w.field === key) {
+                r.subscribe((v: T, prev: T) => {
+                  const actualPrev = (self[prev_.key] as T | undefined) ?? prev;
+                  (self[w.key] as Function)(v, actualPrev);
+                  self[prev_.key] = undefined;
+                });
+              }
+            }
+          }
+
+          // Wire @emit
+          const emitters = EMITTERS.from(self) as Array<{ field: string; factory: (v: T) => object }> | undefined;
+          if (emitters) {
+            for (let i = 0; i < emitters.length; i++) {
+              const e = emitters[i];
+              if (e.field === key) r.subscribe((v: T) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+            }
+          }
+
+          const onBeforeMutate = () => {
+            if (self[prev_.key] === undefined) {
+              try { self[prev_.key] = structuredClone(r.peek()); }
+              catch { self[prev_.key] = r.peek(); }
+            }
+          };
+
+          self[proxy_.key] = createDeepProxy(r.value, r, onBeforeMutate);
+
+          // $reset method
+          (self as Record<string, unknown>)[`$reset_${key}`] = () => {
+            const fresh = structuredClone(defaults);
+            (self[reactive_.key] as Reactive<T>).set(fresh);
+            self[proxy_.key] = createDeepProxy(
+              (self[reactive_.key] as Reactive<T>).value,
+              self[reactive_.key] as Reactive<T>,
+              onBeforeMutate,
+            );
+          };
         }
-        // Touch Reactive.value so recordRead() fires during traced update()
-        (self[reactiveKey] as Reactive<T>).value;
-        return self[proxyKey] as T;
+        (self[reactive_.key] as Reactive<T>).value;
+        return self[proxy_.key] as T;
       },
       set(this: This, val: T) {
-        const self = this as unknown as Record<symbol, unknown>;
-        if (!self[reactiveKey]) {
-          const r = new Reactive<T>(val, persist);
-          self[reactiveKey] = r;
-          r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
-          self[proxyKey] = createDeepProxy(r.value, r);
-        } else {
-          (self[reactiveKey] as Reactive<T>).set(val);
-          self[proxyKey] = createDeepProxy((self[reactiveKey] as Reactive<T>).value, self[reactiveKey] as Reactive<T>);
+        const self = this as unknown as Record<symbol | string, unknown>;
+        if (!self[reactive_.key]) {
+          // Trigger getter to init, then set
+          void (this as unknown as Record<string, T>)[key];
         }
+        (self[reactive_.key] as Reactive<T>).set(val);
+        const onBeforeMutate = () => {
+          if (self[prev_.key] === undefined) {
+            try { self[prev_.key] = structuredClone((self[reactive_.key] as Reactive<T>).peek()); }
+            catch { self[prev_.key] = (self[reactive_.key] as Reactive<T>).peek(); }
+          }
+        };
+        self[proxy_.key] = createDeepProxy(
+          (self[reactive_.key] as Reactive<T>).value,
+          self[reactive_.key] as Reactive<T>,
+          onBeforeMutate,
+        );
       },
     };
+  }
+
+  // Factory form — @store<T>(defaults, persist?)
+  const defaults = targetOrDefaults as T;
+  const persist = contextOrPersist as PersistOptions | undefined;
+
+  return <This2 extends object>(
+    _target: ClassAccessorDecoratorTarget<This2, T>,
+    context: ClassAccessorDecoratorContext<This2, T>,
+  ): ClassAccessorDecoratorResult<This2, T> => {
+    const key = String(context.name);
+    return buildStoreAccessor<This2, T>(defaults, persist, key);
   };
 }

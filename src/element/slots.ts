@@ -1,4 +1,4 @@
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { CONNECT_HOOKS, localSymbol } from "../decorators/symbols";
 import type { Schedulable } from "./element";
 /**
  * Loom — @slot<...T> decorator (TC39 Stage 3)
@@ -25,7 +25,7 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
     _target: ClassAccessorDecoratorTarget<This, T[number][]>,
     context: ClassAccessorDecoratorContext<This, T[number][]>,
   ): ClassAccessorDecoratorResult<This, T[number][]> => {
-    const storageKey = Symbol(`slot:${String(context.name)}`);
+    const storage = localSymbol<T[number][]>(`slot:${String(context.name)}`);
 
     context.addInitializer(function () {
       const self = this as object;
@@ -40,7 +40,7 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
           if (!slotEl) return;
 
           const updateSlotted = () => {
-            host[storageKey] = slotEl.assignedElements({ flatten: true });
+            host[storage.key] = slotEl.assignedElements({ flatten: true });
             host.scheduleUpdate?.();
           };
 
@@ -56,10 +56,10 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
 
     return {
       get(this: This): T[number][] {
-        return (this as unknown as Record<symbol, unknown>)[storageKey] as T[number][] ?? [];
+        return (this as unknown as Record<symbol, unknown>)[storage.key] as T[number][] ?? [];
       },
       set(this: This, val: T[number][]) {
-        (this as unknown as Record<symbol, unknown>)[storageKey] = val;
+        (this as unknown as Record<symbol, unknown>)[storage.key] = val;
       },
     };
   };

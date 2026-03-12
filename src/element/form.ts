@@ -24,6 +24,7 @@
 
 import { LoomResult } from "../result";
 import { Reactive } from "../store/reactive";
+import { localSymbol } from "../decorators/symbols";
 
 
 // ── Types ──
@@ -207,15 +208,15 @@ export function form<T extends object>(
     _target: ClassAccessorDecoratorTarget<This, FormState<T>>,
     context: ClassAccessorDecoratorContext<This, FormState<T>>,
   ): ClassAccessorDecoratorResult<This, FormState<T>> => {
-    const stateKey = Symbol(`form:${String(context.name)}`);
+    const state_ = localSymbol<FormState<T>>(`form:${String(context.name)}`);
 
     return {
       get(this: any): FormState<T> {
-        if (!this[stateKey]) {
+        if (!this[state_.key]) {
           const scheduleUpdate = () => this.scheduleUpdate?.();
-          this[stateKey] = createFormState<T>(schema, scheduleUpdate);
+          this[state_.key] = createFormState<T>(schema, scheduleUpdate);
         }
-        return this[stateKey];
+        return this[state_.key];
       },
       set(this: any, _val: FormState<T>) {
         // Ignore external sets — state is managed internally

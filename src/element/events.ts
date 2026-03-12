@@ -23,7 +23,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { CONNECT_HOOKS, localSymbol } from "../decorators/symbols";
 
 /**
  * Decorator for typed event callback props.
@@ -37,17 +37,17 @@ export function event<T extends (...args: any[]) => void>() {
     context: ClassAccessorDecoratorContext<This, T | null>,
   ): ClassAccessorDecoratorResult<This, T | null> => {
     const eventName = String(context.name);
-    const storageKey = Symbol(`event:${eventName}`);
+    const storage = localSymbol<T | null>(`event:${eventName}`);
 
     return {
       init() {
         return null;
       },
       get(this: This) {
-        return (this as any)[storageKey] ?? null;
+        return (this as any)[storage.key] ?? null;
       },
       set(this: This, value: T | null) {
-        (this as any)[storageKey] = value;
+        (this as any)[storage.key] = value;
       },
     };
   };
