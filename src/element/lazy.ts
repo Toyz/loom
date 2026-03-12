@@ -20,15 +20,19 @@ import { bus } from "../bus";
 import { LazyLoadStart, LazyLoadEnd } from "./lazy-events";
 
 const LAZY_LOADER = createSymbol("lazy:loader");
-const LAZY_OPTS   = createSymbol<LazyOptions>("lazy:opts");
+const LAZY_OPTS = createSymbol<LazyOptions>("lazy:opts");
 const LAZY_LOADED = createSymbol<boolean>("lazy:loaded");
-const LAZY_IMPL   = createSymbol("lazy:impl");
+const LAZY_IMPL = createSymbol("lazy:impl");
 
 export interface LazyOptions {
   /** Loading indicator — tag name string or factory returning a DOM node (JSX works) */
   loading?: string | (() => Node);
   /** Error fallback — tag name string or factory returning a DOM node (JSX works) */
   error?: string | (() => Node);
+  /** When to trigger the load. 'mount' (default) = on connectedCallback. 'viewport' = on IntersectionObserver. */
+  trigger?: 'mount' | 'viewport';
+  /** IntersectionObserver rootMargin for viewport trigger. Default: '200px' (start loading 200px before visible). */
+  rootMargin?: string;
 }
 
 /**
@@ -46,6 +50,17 @@ export function lazy(
     const ctor = value as any;
     ctor[LAZY_LOADER.key] = loader;
     ctor[LAZY_OPTS.key] = opts;
+
+    /**
+     * Static .prefetch() — warm the import cache before mount.
+     * Returns the cached module promise. Idempotent.
+     */
+    ctor.prefetch = (): Promise<unknown> => {
+      if (!ctor.__prefetchPromise) {
+        ctor.__prefetchPromise = loader();
+      }
+      return ctor.__prefetchPromise;
+    };
 
     const origConnected = ctor.prototype.connectedCallback;
     const origAdoptStyles = ctor.prototype.adoptStyles;
@@ -112,6 +127,16 @@ export function lazy(
       origScheduleUpdate?.call(this);
     };
 
+    // disconnectedCallback — clean up viewport observer
+    const origDisconnected = ctor.prototype.disconnectedCallback;
+    ctor.prototype.disconnectedCallback = function () {
+      if (this.__lazyObserver) {
+        this.__lazyObserver.disconnect();
+        this.__lazyObserver = null;
+      }
+      origDisconnected?.call(this);
+    };
+
     ctor.prototype.connectedCallback = async function () {
       // Set up .ready promise — resolves when impl is fully mounted
       let readyResolve: (el: any) => void;
@@ -121,7 +146,7 @@ export function lazy(
         readyReject = rej;
       });
       // Suppress unhandled rejection if nobody awaits .ready on error
-      this.ready.catch(() => {});
+      this.ready.catch(() => { });
 
       // Already loaded — mount the impl for this (possibly new) instance
       if (ctor[LAZY_LOADED.key]) {
@@ -131,6 +156,46 @@ export function lazy(
           ctor.__mountLazyImpl.call(this);
         }
         readyResolve!(this);
+        return;
+      }
+
+      // ── Viewport trigger: defer loading until element is near-visible ──
+      if (opts?.trigger === 'viewport') {
+        const doViewportLoad = () => {
+          // Clean up observer — done with it
+          if (this.__lazyObserver) {
+            this.__lazyObserver.disconnect();
+            this.__lazyObserver = null;
+          }
+          // Re-enter connectedCallback without viewport guard
+          // (LAZY_LOADED will still be false so it falls through to the load path)
+          const savedTrigger = opts.trigger;
+          opts.trigger = 'mount';
+          this.connectedCallback();
+          opts.trigger = savedTrigger;
+        };
+
+        // If chunk was prefetched, skip the observer — load immediately
+        if (ctor.__prefetchPromise) {
+          doViewportLoad();
+          return;
+        }
+
+        const observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) {
+            doViewportLoad();
+          }
+        }, { rootMargin: opts.rootMargin ?? '200px' });
+        observer.observe(this);
+        this.__lazyObserver = observer;
+
+        // Show loading placeholder (if any) while waiting for viewport
+        if (opts?.loading) {
+          const loadingEl = typeof opts.loading === 'function'
+            ? opts.loading()
+            : document.createElement(opts.loading);
+          this.shadow.appendChild(loadingEl);
+        }
         return;
       }
 
@@ -192,7 +257,8 @@ export function lazy(
       bus.emit(new LazyLoadStart(tag));
 
       try {
-        const mod = await loader();
+        // Use prefetched module if available, otherwise load now
+        const mod = await (ctor.__prefetchPromise ?? loader());
         const RealClass = (mod as { default?: Function }).default ?? mod;
 
         // Register the real class under an internal impl tag

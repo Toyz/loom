@@ -187,6 +187,70 @@ onLazyEnd(e: LazyLoadEnd) {
 
         <section>
           <div class="group-header">
+            <loom-icon name="eye" size={20} color="var(--cyan)"></loom-icon>
+            <h2>Viewport Trigger</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              By default, <span class="ic">@lazy</span> loads the module as soon as the element is
+              connected to the DOM. With <span class="ic">trigger: 'viewport'</span>, loading is
+              deferred until the element scrolls near the viewport — powered by
+              <code>IntersectionObserver</code>.
+            </div>
+            <code-block lang="ts" code={`@component("heavy-chart")
+@lazy(() => import("./components/heavy-chart"), {
+  trigger: 'viewport',       // load when near-visible
+  rootMargin: '300px',       // start 300px before visible (default: 200px)
+  loading: 'chart-skeleton'  // show skeleton while off-screen
+})
+class HeavyChart extends LoomElement {}`}></code-block>
+          </div>
+          <doc-notification type="note">
+            The observer is automatically cleaned up — disconnected and nulled — both after the
+            load fires <strong>and</strong> if the element is removed from the DOM before loading.
+            No manual cleanup needed.
+          </doc-notification>
+        </section>
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="download" size={20} color="var(--amber)"></loom-icon>
+            <h2>Prefetch</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Every <span class="ic">@lazy</span> class exposes a static
+              <span class="ic">.prefetch()</span> method that warms the import cache before mount.
+              Pairs naturally with hover states, route predictions, or idle callbacks.
+            </div>
+            <code-block lang="ts" code={`// Warm the cache on hover — instant mount when user navigates
+navLink.addEventListener('mouseenter', () => {
+  SettingsPage.prefetch();
+});
+
+// Or prefetch during idle time
+requestIdleCallback(() => {
+  DashboardPage.prefetch();
+  AnalyticsPage.prefetch();
+});`}></code-block>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">.prefetch()</span> is idempotent — calling it multiple times returns the
+              same cached promise. When the element mounts, it reuses the prefetched module instead of
+              calling the loader again.
+            </div>
+          </div>
+          <doc-notification type="tip">
+            Combine <span class="ic">prefetch</span> with <span class="ic">trigger: 'viewport'</span>
+            for the best of both worlds: start downloading the chunk early, then mount instantly when
+            the element scrolls into view. The observer is skipped entirely if the chunk is already
+            cached.
+          </doc-notification>
+        </section>
+
+        <section>
+          <div class="group-header">
             <loom-icon name="book" size={20} color="var(--emerald)"></loom-icon>
             <h2>API Reference</h2>
           </div>
@@ -196,6 +260,19 @@ onLazyEnd(e: LazyLoadEnd) {
               <tr><td><code>loader</code></td><td><code>() =&gt; Promise</code></td><td>Dynamic import returning {`{ default: Class }`}</td></tr>
               <tr><td><code>opts.loading</code></td><td><code>string | (() =&gt; Node)</code></td><td>Tag name or JSX factory for a loading indicator</td></tr>
               <tr><td><code>opts.error</code></td><td><code>string | (() =&gt; Node)</code></td><td>Tag name or JSX factory for an error fallback</td></tr>
+              <tr><td><code>opts.trigger</code></td><td><code>'mount' | 'viewport'</code></td><td>When to load — on DOM connect (default) or viewport intersection</td></tr>
+              <tr><td><code>opts.rootMargin</code></td><td><code>string</code></td><td>IntersectionObserver margin for viewport trigger (default: <code>'200px'</code>)</td></tr>
+            </tbody>
+          </table>
+
+          <div class="group-header" style="margin-top: 24px">
+            <loom-icon name="zap" size={18} color="var(--text-muted)"></loom-icon>
+            <h3>Static Methods</h3>
+          </div>
+          <table class="api-table">
+            <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>MyClass.prefetch()</code></td><td><code>Promise</code></td><td>Pre-warm the import cache. Idempotent — multiple calls return the same promise.</td></tr>
             </tbody>
           </table>
         </section>
