@@ -306,7 +306,7 @@ describe("@store prev snapshot", () => {
 // ── 5. PERSISTENCE WITH FACTORY FORM ──
 
 describe("@store persistence (still works)", () => {
-    it("persists and hydrates with factory form", () => {
+    it("persists and hydrates with factory form", async () => {
         const storage = new MemoryStorage();
 
         class MyEl {
@@ -316,6 +316,9 @@ describe("@store persistence (still works)", () => {
 
         const el = createMockElement(MyEl.prototype);
         el.state.filter = "active";
+
+        // Persistence is debounced — flush microtask
+        await new Promise<void>(r => queueMicrotask(() => r()));
 
         const stored = storage.get("test:v2");
         expect(stored).not.toBeNull();

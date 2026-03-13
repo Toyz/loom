@@ -182,6 +182,12 @@ class LazyStoreStorage extends LoomElement { }
 @searchable({ title: "Patterns", section: "Store", icon: "layers", to: "/store/patterns", keywords: ["patterns", "best practices", "architecture", "derived", "computed"], summary: "Common patterns for wiring stores into components and services." })
 class LazyStorePatterns extends LoomElement { }
 
+@route("/signals", { group: StoreGroup })
+@component("page-store-signals")
+@lazy(() => import("./store/signals"))
+@searchable({ title: "Signals", section: "Store", icon: "radio", to: "/store/signals", keywords: ["signal", "tc39", "Signal.State", "Signal.Computed", "@signal", "interop", "future"], summary: "TC39 Signals interop with real-DOM trace engine." })
+class LazyStoreSignals extends LoomElement { }
+
 @route("/api", { group: StoreGroup })
 @component("page-store-api")
 @lazy(() => import("./store/api"))

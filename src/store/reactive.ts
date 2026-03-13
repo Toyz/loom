@@ -34,6 +34,12 @@ export class Reactive<T> {
   private _persists = false;
   /** Monotonic version counter — bumps on every set() and notify() */
   private _version = 0;
+  /** Debounced persistence — coalesces N mutations into 1 storage write per microtask */
+  private _persistScheduled = false;
+  private _flushPersist = (): void => {
+    this._persistScheduled = false;
+    this._storage!.set(this._key!, JSON.stringify(this._value));
+  };
 
   constructor(initial: T, persist?: PersistOptions) {
     this._key = persist?.key;
@@ -79,9 +85,9 @@ export class Reactive<T> {
       typeof next === "function" ? (next as (prev: T) => T)(prev) : next;
     if (this._value !== prev) {
       this._version++;
-      // Persist
-      if (this._persists) {
-        this._storage!.set(this._key!, JSON.stringify(this._value));
+      if (this._persists && !this._persistScheduled) {
+        this._persistScheduled = true;
+        queueMicrotask(this._flushPersist);
       }
       for (let i = 0; i < this._subs.length; i++) this._subs[i](this._value, prev);
     }
@@ -109,8 +115,9 @@ export class Reactive<T> {
    */
   notify(): void {
     this._version++;
-    if (this._persists) {
-      this._storage!.set(this._key!, JSON.stringify(this._value));
+    if (this._persists && !this._persistScheduled) {
+      this._persistScheduled = true;
+      queueMicrotask(this._flushPersist);
     }
     for (let i = 0; i < this._subs.length; i++) this._subs[i](this._value, this._value);
   }
@@ -164,26 +171,29 @@ export class CollectionStore<
   /** Add an item. If no `id` provided, one is auto-generated. */
   add(item: Omit<T, "id"> & { id?: string }): T {
     const full = { ...item, id: item.id ?? crypto.randomUUID() } as T;
-    this.set((prev) => [...prev, full]);
+    this.peek().push(full);
+    this.notify();
     return full;
   }
 
   /** Remove an item by id */
   remove(id: string): void {
-    this.set((prev) => prev.filter((i) => i.id !== id));
+    const arr = this.peek();
+    const idx = arr.findIndex((i) => i.id === id);
+    if (idx >= 0) {
+      arr.splice(idx, 1);
+      this.notify();
+    }
   }
 
   /** Patch an item by id */
   update(id: string, patch: Partial<T>): T {
-    let updated!: T;
-    this.set((prev) =>
-      prev.map((i) => {
-        if (i.id !== id) return i;
-        updated = { ...i, ...patch, id };
-        return updated;
-      }),
-    );
-    return updated;
+    const arr = this.peek();
+    const item = arr.find((i) => i.id === id);
+    if (!item) return undefined as unknown as T;
+    Object.assign(item, patch, { id });
+    this.notify();
+    return item;
   }
 
   /** Clear all items (and persisted data if any) */

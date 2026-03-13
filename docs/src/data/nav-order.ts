@@ -55,6 +55,7 @@ export const navOrder: NavEntry[] = [
   { label: "Decorator", to: "/store/store-decorator", section: "Store", icon: "package" },
   { label: "Storage", to: "/store/storage", section: "Store", icon: "database" },
   { label: "Patterns", to: "/store/patterns", section: "Store", icon: "layers" },
+  { label: "Signals", to: "/store/signals", section: "Store", icon: "radio" },
 
   // Router
   { label: "Overview", to: "/router/overview", section: "Router", icon: "compass" },

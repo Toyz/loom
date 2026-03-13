@@ -132,7 +132,7 @@ describe("@store full replacement", () => {
 });
 
 describe("@store persistence", () => {
-  it("persists state changes", () => {
+  it("persists state changes", async () => {
     const storage = new MemoryStorage();
 
     class MyEl {
@@ -142,6 +142,9 @@ describe("@store persistence", () => {
 
     const el = createMockElement(MyEl.prototype);
     el.state.filter = "active";
+
+    // Persistence is debounced — flush microtask
+    await new Promise<void>(r => queueMicrotask(() => r()));
 
     const stored = storage.get("test:store");
     expect(stored).not.toBeNull();

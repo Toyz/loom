@@ -311,8 +311,10 @@ function buildStoreAccessor<This extends object, T extends object>(
       }
     }
 
-    // Snapshot callback — called by deep proxy before mutation
-    const onBeforeMutate = () => {
+    // Snapshot callback — only needed when watchers exist for this field.
+    // Without watchers, skip the structuredClone on every mutation.
+    const hasWatchers = watchers?.some(w => w.field === key) ?? false;
+    const onBeforeMutate = hasWatchers ? () => {
       if (self[prev_.key] === undefined) {
         try {
           self[prev_.key] = structuredClone(r.peek());
@@ -321,7 +323,7 @@ function buildStoreAccessor<This extends object, T extends object>(
           self[prev_.key] = r.peek();
         }
       }
-    };
+    } : undefined;
 
     self[proxy_.key] = createDeepProxy(r.value, r, onBeforeMutate);
 
@@ -479,12 +481,13 @@ export function store<This extends object, T extends object>(
             }
           }
 
-          const onBeforeMutate = () => {
+          const hasWatchers = watchers?.some(w => w.field === key) ?? false;
+          const onBeforeMutate = hasWatchers ? () => {
             if (self[prev_.key] === undefined) {
               try { self[prev_.key] = structuredClone(r.peek()); }
               catch { self[prev_.key] = r.peek(); }
             }
-          };
+          } : undefined;
 
           self[proxy_.key] = createDeepProxy(r.value, r, onBeforeMutate);
 
@@ -509,12 +512,14 @@ export function store<This extends object, T extends object>(
           void (this as unknown as Record<string, T>)[key];
         }
         (self[reactive_.key] as Reactive<T>).set(val);
-        const onBeforeMutate = () => {
+        const watchers = WATCHERS.from(self) as Array<{ field: string; key: string }> | undefined;
+        const hasWatchers = watchers?.some(w => w.field === key) ?? false;
+        const onBeforeMutate = hasWatchers ? () => {
           if (self[prev_.key] === undefined) {
             try { self[prev_.key] = structuredClone((self[reactive_.key] as Reactive<T>).peek()); }
             catch { self[prev_.key] = (self[reactive_.key] as Reactive<T>).peek(); }
           }
-        };
+        } : undefined;
         self[proxy_.key] = createDeepProxy(
           (self[reactive_.key] as Reactive<T>).value,
           self[reactive_.key] as Reactive<T>,
