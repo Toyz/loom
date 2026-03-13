@@ -142,7 +142,81 @@ class Boot {
 }`}></code-block>
           </div>
         </section>
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="activity" size={20} color="var(--emerald)"></loom-icon>
+            <h2>LoomLifecycle</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">{'LoomLifecycle<"start" | "stop">'}</div>
+            <div class="dec-desc">
+              Services that implement <span class="ic">LoomLifecycle</span> have their{" "}
+              <span class="ic">start()</span> and <span class="ic">stop()</span> methods called
+              automatically by <span class="ic">app.start()</span> and <span class="ic">app.stop()</span>.
+              No manual wiring needed in <span class="ic">main.ts</span>.
+            </div>
+            <code-block lang="ts" code={`import type { LoomLifecycle } from "@toyz/loom";
+
+@service("ws")
+class WebSocketService implements LoomLifecycle<"start" | "stop"> {
+  private ws!: WebSocket;
+
+  start() {
+    this.ws = new WebSocket("/ws");
+  }
+
+  stop() {
+    this.ws.close();
+  }
+}`}></code-block>
+            <div class="dec-desc" style="margin-top: 1rem;">
+              The generic parameter enforces which hooks are declared. Hooks not in{" "}
+              <span class="ic">T</span> become <span class="ic">never</span> — calling them is a
+              compile-time error.
+            </div>
+            <code-block lang="ts" code={`// Only declares "start" — stop() does not exist in the type
+@service
+class AnalyticsService implements LoomLifecycle<"start"> {
+  start() { this.track("app_boot"); }
+}
+
+// Async start() is awaited before app.start() continues
+@service
+class DatabaseService implements LoomLifecycle<"start" | "stop"> {
+  async start() {
+    await this.pool.connect();
+  }
+  stop() {
+    this.pool.end();
+  }
+}`}></code-block>
+            <div class="dec-desc" style="margin-top: 1rem;">
+              <span class="ic">LoomRouter</span> implements{" "}
+              {'LoomLifecycle<"start" | "stop">'}
+              {" "}— registering it via <span class="ic">app.use(router)</span> is enough.
+              The explicit <span class="ic">router.start()</span> call in <span class="ic">main.ts</span> is no longer needed.
+            </div>
+            <code-block lang="ts" code={`// Before
+app.use(new LoomRouter({ mode: "history" }));
+app.start();
+router.start(); // ← no longer needed
+
+// After
+app.use(new LoomRouter({ mode: "history" }));
+app.start(); // router.start() called automatically`}></code-block>
+          </div>
+
+          <table class="api-table">
+            <thead><tr><th>Hook</th><th>Called by</th><th>Order</th></tr></thead>
+            <tbody>
+              <tr><td><span class="ic">start()</span></td><td><span class="ic">app.start()</span></td><td>Registration order</td></tr>
+              <tr><td><span class="ic">stop()</span></td><td><span class="ic">app.stop()</span></td><td>Reverse registration order</td></tr>
+            </tbody>
+          </table>
+        </section>
         <doc-nav></doc-nav>
+
       </div>
     );
   }

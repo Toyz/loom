@@ -33,4 +33,3 @@ if (import.meta.env.DEV) {
 const router = new LoomRouter({ mode: "hash" });
 app.use(router);
 app.start();
-router.start();

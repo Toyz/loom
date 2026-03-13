@@ -54,3 +54,7 @@ export { on, emit, createDecorator, createSymbol, LoomSymbol, SYMBOL_REGISTRY } 
 
 // Result type
 export { LoomResult } from "./result";
+
+// Lifecycle interface for DI services
+export type { LoomLifecycle } from "./lifecycle";
+

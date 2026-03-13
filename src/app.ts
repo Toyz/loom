@@ -19,6 +19,7 @@ import { INJECT_PARAMS, ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols";
 import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
 import { LoomResult } from "./result";
+import { hasStart, hasStop } from "./lifecycle";
 
 interface FactoryMeta {
   fn: Function;
@@ -168,6 +169,8 @@ class LoomApp {
           bus.on(handler.type, (e: any) => instance[handler.key](e));
         }
       }
+      // LoomLifecycle — auto-call start() if the service implements it
+      if (hasStart(instance)) await instance.start();
     }
 
     // 2. Run @factory methods on instantiated services
@@ -191,8 +194,13 @@ class LoomApp {
     this._started = true;
   }
 
-  /** Tear down — stop render loop */
+  /** Tear down — call stop() on lifecycle-aware services (reverse order), then stop render loop */
   stop(): void {
+    // LoomLifecycle — call stop() in reverse registration order
+    for (const Svc of [...this.services].reverse()) {
+      const instance = this.providers.get(Svc);
+      if (instance && hasStop(instance)) instance.stop();
+    }
     renderLoop.stop();
     this._started = false;
   }

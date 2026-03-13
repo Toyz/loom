@@ -13,6 +13,7 @@ import { GUARD_HANDLERS } from "./decorators";
 import { RouteChanged } from "./events";
 import { INJECT_PARAMS, ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
 import { app } from "../app";
+import type { LoomLifecycle } from "../lifecycle";
 
 export interface RouterOptions {
   mode?: "hash" | "history";
@@ -28,10 +29,11 @@ export interface RouteInfo {
   meta: Record<string, unknown>;
 }
 
-export class LoomRouter {
+export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   readonly mode: RouterMode;
   private _current: RouteInfo = { path: "/", params: {}, tag: null, meta: {} };
   private _previousTag: string | null = null;
+  private _cleanup: (() => void) | null = null;
   /** Optional outlet reference for lifecycle dispatch */
   private _outlet: HTMLElement | null = null;
 
@@ -50,10 +52,16 @@ export class LoomRouter {
   }
 
   /** Start listening for URL changes and resolve the initial route */
-  start(): () => void {
-    const cleanup = this.mode.listen(() => this._resolve());
+  start(): void {
+    if (this._cleanup) return; // already started
+    this._cleanup = this.mode.listen(() => this._resolve());
     this._resolve();
-    return cleanup;
+  }
+
+  /** Stop listening for URL changes (called automatically by app.stop()) */
+  stop(): void {
+    this._cleanup?.();
+    this._cleanup = null;
   }
 
   /** Navigate to a path or named route */
