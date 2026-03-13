@@ -110,4 +110,5 @@ export const navOrder: NavEntry[] = [
   { label: "Stress Test", to: "/examples/stress-test", section: "Examples", icon: "zap" },
   { label: "Canvas Game", to: "/examples/canvas-game", section: "Examples", icon: "canvas" },
   { label: "Image Gallery", to: "/examples/image-gallery", section: "Examples", icon: "image" },
+  { label: "EventBus", to: "/examples/eventbus", section: "Examples", icon: "broadcast" },
 ];

@@ -1,7 +1,7 @@
 /**
  * Events — /decorators/events
  *
- * LoomEvent, EventBus, @on, @emit
+ * LoomEvent, EventBus, @on, @on.once, @emit, once, waitFor, cancel, inheritance
  */
 import { LoomElement } from "@toyz/loom";
 
@@ -171,6 +171,115 @@ const testBus = new EventBus();
 useBus(testBus);
 
 // All @on decorators and bus.emit() now use testBus`}></code-block>
+          </div>
+        </section>
+
+        {/* ═══════════ once() & @on.once ═══════════ */}
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="target" size={20} color="var(--amber)"></loom-icon>
+            <h2>once() &amp; @on.once</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Fire-and-forget listeners — auto-unsubscribe after the first event fires.
+            </div>
+            <code-block lang="ts" code={`// Imperative — on the bus
+const unsub = bus.once(AuthComplete, (e) => {
+  console.log("Authenticated!", e.userId);
+});
+// handler fires once, then auto-removes. unsub() cancels before fire.
+
+// Declarative — as a decorator
+@on.once(AuthComplete)
+handleAuth(e: AuthComplete) {
+  this.userId = e.userId;
+  // never fires again — auto-removed after first call
+}`}></code-block>
+          </div>
+        </section>
+
+        {/* ═══════════ waitFor() ═══════════ */}
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="clock" size={20} color="var(--cyan)"></loom-icon>
+            <h2>waitFor()</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Promise-based listener — <span class="ic">await</span> the next event of a type. Optional timeout.
+            </div>
+            <code-block lang="ts" code={`// Wait for auth to complete
+const auth = await bus.waitFor(AuthComplete);
+console.log(auth.userId);
+
+// With timeout — rejects if not received in 5s
+try {
+  const event = await bus.waitFor(AuthComplete, { timeout: 5000 });
+} catch {
+  console.error("Auth timed out");
+}`}></code-block>
+          </div>
+        </section>
+
+        {/* ═══════════ Cancellable Events ═══════════ */}
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="x-circle" size={20} color="var(--rose)"></loom-icon>
+            <h2>Cancellable Events</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Call <span class="ic">event.cancel()</span> to stop dispatching to subsequent handlers and parent event types.
+            </div>
+            <code-block lang="ts" code={`bus.on(FormSubmit, (e) => {
+  if (!isValid(e.data)) {
+    e.cancel(); // stops all subsequent handlers
+    showError("Invalid form");
+  }
+});
+
+bus.on(FormSubmit, (e) => {
+  // This handler never runs if cancel() was called above
+  saveToDB(e.data);
+});`}></code-block>
+          </div>
+        </section>
+
+        {/* ═══════════ Event Inheritance ═══════════ */}
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="git-branch" size={20} color="var(--accent)"></loom-icon>
+            <h2>Event Inheritance</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Child events automatically fire handlers registered for parent types.
+              The emit walks the prototype chain: <span class="ic">ChildEvent → ParentEvent → LoomEvent</span>.
+            </div>
+            <code-block lang="ts" code={`class UIEvent extends LoomEvent {
+  constructor(public source: string) { super(); }
+}
+
+class ClickEvent extends UIEvent {
+  constructor(source: string, public x: number, public y: number) {
+    super(source);
+  }
+}
+
+// Catches ALL UI events — clicks, hovers, keypresses, etc.
+bus.on(UIEvent, (e) => analytics.track(e.source));
+
+// Also fires the UIEvent handler above!
+bus.emit(new ClickEvent("button", 10, 20));`}></code-block>
+            <doc-notification type="note">
+              <span class="ic">cancel()</span> stops both handler iteration and parent propagation.
+              Parent-only listeners are never fired for child events they didn't subscribe to.
+            </doc-notification>
           </div>
         </section>
 

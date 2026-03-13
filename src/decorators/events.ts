@@ -116,3 +116,45 @@ export function emit<T extends LoomEvent>(
     return accessorDecorator(value as ClassAccessorDecoratorTarget<any, any>, context as ClassAccessorDecoratorContext<any, any>);
   };
 }
+
+// ── @on.once() — fire-and-forget decorator ──
+
+/**
+ * Fire-and-forget variant of \@on. Auto-unsubscribes after first fire.
+ *
+ * Bus event: `\@on.once(AuthComplete)`
+ * DOM event: `\@on.once(window, "load")` — uses `{ once: true }`
+ */
+function onOnce<T extends LoomEvent>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
+function onOnce(target: EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
+function onOnce(resolver: (el: any) => EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
+function onOnce(typeOrTarget: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget), event?: string) {
+  return (method: Function, context: ClassMethodDecoratorContext) => {
+    context.addInitializer(function (this: any) {
+      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
+      this[CONNECT_HOOKS.key].push((el: any) => {
+        if (event !== undefined) {
+          // DOM event — use { once: true } for native auto-removal
+          const target = typeof typeOrTarget === "function" && !(typeOrTarget as any).prototype
+            ? (typeOrTarget as (el: any) => EventTarget)(el)
+            : typeOrTarget as EventTarget;
+          const fn = (e: Event) => method.call(el, e);
+          target.addEventListener(event!, fn, { once: true });
+          return () => target.removeEventListener(event!, fn);
+        } else {
+          // Bus event — use bus.once() for auto-unsubscribe
+          return bus.once(typeOrTarget as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
+        }
+      });
+    });
+  };
+}
+
+// Attach @on.once via namespace merging
+(on as any).once = onOnce;
+
+/** @internal — type declaration for on.once */
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export declare namespace on {
+  export const once: typeof onOnce;
+}

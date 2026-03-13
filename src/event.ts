@@ -17,6 +17,12 @@ export abstract class LoomEvent {
   /** Auto-stamped on creation */
   readonly timestamp = Date.now();
 
+  /** Set to true by cancel() — stops subsequent handlers and parent propagation */
+  cancelled = false;
+
+  /** Stop dispatching to remaining handlers and parent event types */
+  cancel(): void { this.cancelled = true; }
+
   /** Construct and emit this event through the global bus */
   static dispatch<T extends LoomEvent>(
     this: new (...args: unknown[]) => T,

@@ -127,6 +127,7 @@ const sections: NavSection[] = [
       { label: "Stress Test", to: "/examples/stress-test", icon: "zap" },
       { label: "Canvas Game", to: "/examples/canvas-game", icon: "canvas" },
       { label: "Image Gallery", to: "/examples/image-gallery", icon: "image" },
+      { label: "EventBus", to: "/examples/eventbus", icon: "broadcast" },
     ],
   },
 ];

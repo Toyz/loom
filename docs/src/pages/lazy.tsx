@@ -406,6 +406,12 @@ class LazyExampleCanvasGame extends LoomElement { }
 @searchable({ title: "Image Gallery", section: "Examples", icon: "image", to: "/examples/image-gallery", keywords: ["image", "gallery", "photo", "example", "demo"], summary: "Responsive image grid with lazy-loaded loom-image components." })
 class LazyExampleImageGallery extends LoomElement { }
 
+@route("/eventbus", { group: ExamplesGroup })
+@component("page-example-eventbus")
+@lazy(() => import("./examples/eventbus"))
+@searchable({ title: "EventBus", section: "Examples", icon: "broadcast", to: "/examples/eventbus", keywords: ["event", "bus", "once", "waitfor", "cancel", "inheritance", "emit", "example"], summary: "Interactive EventBus playground — once(), waitFor(), cancel(), and inheritance." })
+class LazyExampleEventBus extends LoomElement { }
+
 // ── Packages ──
 
 @route("/rpc-overview", { group: PackagesGroup })
