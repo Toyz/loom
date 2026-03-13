@@ -39,6 +39,72 @@ export class ThemeChanged extends LoomEvent {
           </div>
         </section>
 
+        {/* ═══════════ LoomEvent Static API ═══════════ */}
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <h2>LoomEvent Static API</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Every <span class="ic">LoomEvent</span> subclass inherits a set of static helpers for constructing,
+              emitting, and inspecting events without boilerplate.
+            </div>
+            <code-block lang="ts" code={`// Create an instance (typed as the subclass — no cast needed)
+const e = UserLoggedIn.create("123", "Alice");
+
+// Create AND emit in one call
+UserLoggedIn.dispatch("123", "Alice");
+
+// Type guard — narrows unknown → UserLoggedIn
+if (UserLoggedIn.is(someEvent)) {
+  console.log(someEvent.name); // fully typed
+}
+
+// Shallow clone with overrides — useful before re-emitting
+const e2 = e.clone({ name: "Bob" });
+bus.emit(e2);
+
+// Serialize to plain object (strips methods, keeps data fields)
+const json = e.toJSON(); // { userId: "123", name: "Alice", timestamp: ... }
+
+// Auto-stamped timestamp on every event
+console.log(e.timestamp); // Date.now() at construction`}></code-block>
+          </div>
+        </section>
+
+        {/* ═══════════ Frame-Scoped Dedup ═══════════ */}
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="filter" size={20} color="var(--amber)"></loom-icon>
+            <h2>Frame-Scoped Deduplication</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              Override <span class="ic">get dedupeKey()</span> to enable frame-scoped dedup. If multiple emissions with the same key
+              occur in the same synchronous flush, only the first reaches handlers. The seen set is cleared after the current microtask drains.
+            </div>
+            <code-block lang="ts" code={`class ThemeChanged extends LoomEvent {
+  constructor(public theme: "light" | "dark") { super(); }
+
+  // Return a stable string key to opt into dedup
+  override get dedupeKey() { return \`theme:\${this.theme}\`; }
+}
+
+// Even if 10 components all emit this in the same flush...
+ThemeChanged.dispatch("dark");
+ThemeChanged.dispatch("dark");
+ThemeChanged.dispatch("dark");
+// → handlers fire exactly ONCE`}></code-block>
+            <doc-notification type="note">
+              Events that return <span class="ic">undefined</span> from <span class="ic">dedupeKey</span> (the default)
+              are never deduplicated — this is opt-in only. Dedup is per-key, per-bus-instance, and resets after each microtask.
+            </doc-notification>
+          </div>
+        </section>
+
         {/* ═══════════ Listen & Emit ═══════════ */}
 
         <section>
@@ -61,6 +127,7 @@ bus.emit(new UserLoggedIn("123", "Alice"));
 unsub();`}></code-block>
           </div>
         </section>
+
 
         {/* ═══════════ @on ═══════════ */}
 

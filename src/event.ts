@@ -23,12 +23,36 @@ export abstract class LoomEvent {
   /** Stop dispatching to remaining handlers and parent event types */
   cancel(): void { this.cancelled = true; }
 
+  /**
+   * Optional dedup key — override in a subclass to enable frame-scoped deduplication.
+   * If two events with the same dedupeKey are emitted in the same synchronous flush,
+   * only the first reaches handlers. Cleared after the current microtask drains.
+   *
+   * ```ts
+   * class ThemeChanged extends LoomEvent {
+   *   constructor(public theme: string) { super(); }
+   *   override get dedupeKey() { return `theme:${this.theme}`; }
+   * }
+   * ```
+   *
+   * Return `undefined` (default) to disable dedup for this event.
+   */
+  get dedupeKey(): string | undefined { return undefined; }
+
   /** Construct and emit this event through the global bus */
   static dispatch<T extends LoomEvent>(
     this: new (...args: unknown[]) => T,
     ...args: ConstructorParameters<typeof this>
   ): void {
     bus.emit(new this(...args));
+  }
+
+  /** Construct this event without emitting — useful for building, inspecting, or cloning before dispatch */
+  static create<T extends LoomEvent>(
+    this: new (...args: unknown[]) => T,
+    ...args: ConstructorParameters<typeof this>
+  ): T {
+    return new this(...args);
   }
 
   /** Shallow clone with optional overrides */

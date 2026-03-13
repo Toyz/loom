@@ -20,6 +20,12 @@ export type Handler<T> = (data: T) => void;
 export class EventBus {
   private listeners = new Map<Constructor, Set<Handler<any>>>();
 
+  /**
+   * Frame-scoped dedup cache — cleared after the current synchronous flush drains.
+   * Only populated when an event returns a non-undefined dedupeKey.
+   */
+  private _seen: Set<string> | null = null;
+
   /** Subscribe to a typed event. Returns unsubscribe function. */
   on<T>(type: Constructor<T>, handler: Handler<T>): () => void {
     if (!this.listeners.has(type)) this.listeners.set(type, new Set());
@@ -58,8 +64,23 @@ export class EventBus {
    * Emit a typed event — dispatches to all handlers of that class,
    * then walks the prototype chain to dispatch to parent event handlers.
    * Respects event.cancelled — stops both handler iteration and parent walk.
+   *
+   * Frame-scoped dedup: if event.dedupeKey is non-undefined, only the first
+   * emission with that key per synchronous flush reaches handlers.
    */
   emit<T extends LoomEvent>(event: T): void {
+    // Frame-scoped dedup — opt-in via dedupeKey on the event
+    const key = event.dedupeKey;
+    if (key !== undefined) {
+      if (!this._seen) {
+        this._seen = new Set();
+        // Clear after the current synchronous flush drains
+        queueMicrotask(() => { this._seen = null; });
+      }
+      if (this._seen.has(key)) return;
+      this._seen.add(key);
+    }
+
     let ctor: Constructor | null = (event as object).constructor as Constructor;
     while (ctor && ctor !== Object) {
       const handlers = this.listeners.get(ctor);
