@@ -240,8 +240,11 @@ function createDeepProxy<T extends object>(
 
     const proxy = new Proxy(target as object, {
       get(t, p, receiver) {
+        // Skip symbol properties (internal) — fast path
+        if (typeof p === "symbol") return Reflect.get(t, p, receiver);
         const value = Reflect.get(t, p, receiver);
-        if (value !== null && typeof value === "object" && typeof p !== "symbol") {
+        // Only wrap objects/arrays — primitives (the common case) skip proxy overhead
+        if (value !== null && typeof value === "object") {
           return wrap(value);
         }
         return value;

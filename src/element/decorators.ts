@@ -94,6 +94,16 @@ export type LoomHtmlQueryAll<TArgs extends any[], TEl extends Element = HTMLElem
 export function query<V = any>(selector: string) {
   const dynamic = /\$\d/.test(selector);
 
+  // Pre-split at decoration time: ".add-input-$0" → ["add-input-", ""] + [0]
+  let parts: string[] | null = null;
+  let indices: number[] | null = null;
+  if (dynamic) {
+    parts = selector.split(/\$\d/);
+    indices = [];
+    const matches = selector.matchAll(/\$(\d)/g);
+    for (const m of matches) indices.push(Number(m[1]));
+  }
+
   return <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, any>,
     _context: ClassAccessorDecoratorContext<This, any>,
@@ -101,7 +111,11 @@ export function query<V = any>(selector: string) {
     get(this: This) {
       if (!dynamic) return (this as any).shadow.querySelector(selector);
       return (...args: any[]) => {
-        const sel = selector.replace(/\$(\d)/g, (_, i) => String(args[Number(i)] ?? ""));
+        // Build selector from pre-split template — no regex at call time
+        let sel = parts![0];
+        for (let i = 0; i < indices!.length; i++) {
+          sel += String(args[indices![i]] ?? "") + parts![i + 1];
+        }
         return (this as any).shadow.querySelector(sel);
       };
     },
@@ -125,6 +139,15 @@ export function query<V = any>(selector: string) {
 export function queryAll<V = any>(selector: string) {
   const dynamic = /\$\d/.test(selector);
 
+  let parts: string[] | null = null;
+  let indices: number[] | null = null;
+  if (dynamic) {
+    parts = selector.split(/\$\d/);
+    indices = [];
+    const matches = selector.matchAll(/\$(\d)/g);
+    for (const m of matches) indices.push(Number(m[1]));
+  }
+
   return <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, any>,
     _context: ClassAccessorDecoratorContext<This, any>,
@@ -132,7 +155,10 @@ export function queryAll<V = any>(selector: string) {
     get(this: This) {
       if (!dynamic) return Array.from((this as any).shadow.querySelectorAll(selector));
       return (...args: any[]) => {
-        const sel = selector.replace(/\$(\d)/g, (_, i) => String(args[Number(i)] ?? ""));
+        let sel = parts![0];
+        for (let i = 0; i < indices!.length; i++) {
+          sel += String(args[indices![i]] ?? "") + parts![i + 1];
+        }
         return Array.from((this as any).shadow.querySelectorAll(sel));
       };
     },
@@ -234,7 +260,9 @@ export function dynamicCss(
         root.adoptedStyleSheets = root.adoptedStyleSheets.concat(sheet);
       }
 
-      // Subscribe to reactive changes — re-evaluate when deps fire
+      // Subscribe to reactive changes — re-evaluate when deps fire.
+      // Instead of scanning all symbols, subscribe directly to each known
+      // Reactive backing store discovered during init.
       const unsubs: (() => void)[] = [];
 
       // Use a flag to debounce rapid changes into one replaceSync
@@ -251,19 +279,30 @@ export function dynamicCss(
         });
       };
 
-      // Discover all backing Reactive instances on the element.
-      // localSymbol creates Symbol() with description "loom:reactive:<field>",
-      // "loom:store:<field>", or "loom:signal:<field>".
-      const allSymbols = Object.getOwnPropertySymbols(el);
-      for (const sym of allSymbols) {
-        const desc = sym.description ?? "";
-        if (desc.startsWith("loom:reactive:") ||
-            desc.startsWith("loom:store:") ||
-            desc.startsWith("loom:signal:")) {
-          const reactive = el[sym];
-          if (reactive && typeof reactive.subscribe === "function") {
-            unsubs.push(reactive.subscribe(refreshCSS));
+      // Discover reactive backing stores. We check only the symbols
+      // that exist at connect time (all @reactive/@store/@signal fields
+      // are initialized by now). Cache the list on the constructor to
+      // avoid re-scanning on reconnect.
+      const ctor = el.constructor as any;
+      let reactiveSymbols: symbol[] = ctor.__loom_reactive_syms;
+      if (!reactiveSymbols) {
+        reactiveSymbols = [];
+        const allSymbols = Object.getOwnPropertySymbols(el);
+        for (let i = 0; i < allSymbols.length; i++) {
+          const desc = allSymbols[i].description ?? "";
+          if (desc.startsWith("loom:reactive:") ||
+              desc.startsWith("loom:store:") ||
+              desc.startsWith("loom:signal:")) {
+            reactiveSymbols.push(allSymbols[i]);
           }
+        }
+        ctor.__loom_reactive_syms = reactiveSymbols;
+      }
+
+      for (let i = 0; i < reactiveSymbols.length; i++) {
+        const reactive = el[reactiveSymbols[i]];
+        if (reactive && typeof reactive.subscribe === "function") {
+          unsubs.push(reactive.subscribe(refreshCSS));
         }
       }
 

@@ -105,8 +105,17 @@ export function draggable(opts?: DraggableOptions) {
         };
         markDraggable();
 
-        // Re-mark after DOM updates (morph may add/remove elements)
-        const observer = new MutationObserver(markDraggable);
+        // Re-mark after DOM updates — debounce so morph cycles coalesce
+        let markScheduled = false;
+        const debouncedMark = () => {
+          if (markScheduled) return;
+          markScheduled = true;
+          queueMicrotask(() => {
+            markScheduled = false;
+            markDraggable();
+          });
+        };
+        const observer = new MutationObserver(debouncedMark);
         observer.observe(root, { childList: true, subtree: true });
 
         const onStart = (e: DragEvent) => {
