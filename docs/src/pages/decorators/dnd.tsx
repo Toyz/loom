@@ -36,6 +36,7 @@ export default class PageDecoratorDnd extends LoomElement {
                             <tbody>
                                 <tr><td><code>type</code></td><td>string</td><td>"text/plain"</td><td>MIME type key for dataTransfer</td></tr>
                                 <tr><td><code>effect</code></td><td>string</td><td>"move"</td><td>effectAllowed value</td></tr>
+                                <tr><td><code>selector</code></td><td>string</td><td>—</td><td>CSS selector for child elements — enables event delegation. Matched element passed as first arg to method.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -54,6 +55,7 @@ export default class PageDecoratorDnd extends LoomElement {
                                 <tr><td><code>accept</code></td><td>string</td><td>"text/plain"</td><td>MIME type key to read from dataTransfer</td></tr>
                                 <tr><td><code>effect</code></td><td>string</td><td>"move"</td><td>dropEffect value</td></tr>
                                 <tr><td><code>overClass</code></td><td>string</td><td>"drag-over"</td><td>CSS class applied during dragover</td></tr>
+                                <tr><td><code>selector</code></td><td>string</td><td>—</td><td>CSS selector for child drop targets — enables event delegation. Matched element passed as third arg to method.</td></tr>
                                 <tr><td><code>over</code></td><td>{"() => Node | string"}</td><td>—</td><td>JSX overlay rendered during dragover, removed on leave/drop</td></tr>
                             </tbody>
                         </table>
@@ -110,6 +112,19 @@ onCardDrop(data: string, event: DragEvent) {
   const card = JSON.parse(data);
   this.cards.push(card);
   this.scheduleUpdate();
+}
+
+// ── Selector-based: per-card drag (no sub-components) ──
+@draggable({ type: "application/x-kanban", selector: ".card" })
+getCardData(el: HTMLElement) {
+  return el.dataset.id; // matched child passed as first arg
+}
+
+@dropzone({ accept: "application/x-kanban", selector: ".column" })
+onDrop(data: string, e: DragEvent, target: HTMLElement) {
+  // target = the matched .column child
+  const columnId = target.dataset.col;
+  this.moveCard(Number(data), columnId);
 }
 
 // ── File-like reorder ──

@@ -67,42 +67,76 @@ export const component = createDecorator<[tag: string, opts?: { shadow?: boolean
 }, { class: true });
 
 
+/** Callable query — accessor type for dynamic `@query` with `$0`/`$1` placeholders. */
+export type LoomHtmlQuery<TArgs extends any[], TEl extends Element = HTMLElement> =
+  (...args: TArgs) => TEl | null;
+
+/** Callable queryAll — accessor type for dynamic `@queryAll` with `$0`/`$1` placeholders. */
+export type LoomHtmlQueryAll<TArgs extends any[], TEl extends Element = HTMLElement> =
+  (...args: TArgs) => TEl[];
+
 /**
- * Lazy shadow DOM querySelector (auto-accessor).
+ * Lazy shadow DOM querySelector.
+ *
+ * **Static** — accessor returns the element:
  * ```ts
  * @query(".submit-btn") accessor submitBtn!: HTMLButtonElement;
  * ```
+ *
+ * **Dynamic** — `$0`/`$1` placeholders, accessor typed as `Query`:
+ * ```ts
+ * @query(".add-input-$0")
+ * accessor inputFor!: LoomHtmlQuery<[string], HTMLInputElement>;
+ *
+ * // this.inputFor("todo") → querySelector(".add-input-todo")
+ * ```
  */
-export function query<V>(selector: string) {
+export function query<V = any>(selector: string) {
+  const dynamic = /\$\d/.test(selector);
+
   return <This extends object>(
-    _target: ClassAccessorDecoratorTarget<This, V>,
-    _context: ClassAccessorDecoratorContext<This, V>,
-  ): ClassAccessorDecoratorResult<This, V> => {
-    return {
-      get(this: This) {
-        return (this as any).shadow.querySelector(selector) as V;
-      },
-    };
-  };
+    _target: ClassAccessorDecoratorTarget<This, any>,
+    _context: ClassAccessorDecoratorContext<This, any>,
+  ) => ({
+    get(this: This) {
+      if (!dynamic) return (this as any).shadow.querySelector(selector);
+      return (...args: any[]) => {
+        const sel = selector.replace(/\$(\d)/g, (_, i) => String(args[Number(i)] ?? ""));
+        return (this as any).shadow.querySelector(sel);
+      };
+    },
+  });
 }
 
 /**
- * Lazy shadow DOM querySelectorAll (auto-accessor).
+ * Lazy shadow DOM querySelectorAll.
+ *
+ * **Static** — accessor returns the element array:
  * ```ts
  * @queryAll("input") accessor inputs!: HTMLInputElement[];
  * ```
+ *
+ * **Dynamic** — `$0`/`$1` placeholders, accessor typed as `QueryAll`:
+ * ```ts
+ * @queryAll(".card-$0")
+ * accessor cardsIn!: LoomHtmlQueryAll<[string]>;
+ * ```
  */
-export function queryAll<V>(selector: string) {
+export function queryAll<V = any>(selector: string) {
+  const dynamic = /\$\d/.test(selector);
+
   return <This extends object>(
-    _target: ClassAccessorDecoratorTarget<This, V>,
-    _context: ClassAccessorDecoratorContext<This, V>,
-  ): ClassAccessorDecoratorResult<This, V> => {
-    return {
-      get(this: This) {
-        return Array.from((this as any).shadow.querySelectorAll(selector)) as V;
-      },
-    };
-  };
+    _target: ClassAccessorDecoratorTarget<This, any>,
+    _context: ClassAccessorDecoratorContext<This, any>,
+  ) => ({
+    get(this: This) {
+      if (!dynamic) return Array.from((this as any).shadow.querySelectorAll(selector));
+      return (...args: any[]) => {
+        const sel = selector.replace(/\$(\d)/g, (_, i) => String(args[Number(i)] ?? ""));
+        return Array.from((this as any).shadow.querySelectorAll(sel));
+      };
+    },
+  });
 }
 
 /**

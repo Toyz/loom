@@ -42,6 +42,7 @@ export { reactive, prop, computed, watch, store } from "./store";
 export {
   LoomElement,
   component, query, queryAll, styles, dynamicCss,
+  type LoomHtmlQuery, type LoomHtmlQueryAll,
   catch_, suspend, mount, unmount,
   event, observer,
   interval, timeout, debounce, throttle, animationFrame,

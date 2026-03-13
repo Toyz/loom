@@ -14,7 +14,7 @@ export { LoomElement } from "./element";
 // e.g. import { LoomImage } from "@toyz/loom/element/image"
 
 // Element decorators
-export { component, query, queryAll, styles, dynamicCss } from "./decorators";
+export { component, query, queryAll, styles, dynamicCss, type LoomHtmlQuery, type LoomHtmlQueryAll } from "./decorators";
 
 // Lifecycle decorators
 export { catch_, suspend, mount, unmount } from "./lifecycle";

@@ -7,7 +7,7 @@
  */
 import {
   LoomElement, component, computed, query, css, styles, store,
-  watch, dynamicCss,
+  watch, dynamicCss, type LoomHtmlQuery,
 } from "@toyz/loom";
 import { draggable, dropzone, hotkey } from "@toyz/loom/element";
 import { LocalAdapter } from "@toyz/loom/store";
@@ -243,15 +243,20 @@ export class KanbanBoard extends LoomElement {
     else if (delta < 0) console.log(`[kanban] ${delta} card(s)`);
   }
 
+  // ── Dynamic query ──
+
+  @query(".add-input-$0")
+  accessor inputFor!: LoomHtmlQuery<[string], HTMLInputElement>;
+
   // ── Actions ──
 
   addCard(column: ColumnId) {
-    const input = this.shadow.querySelector(`.add-input-${column}`) as HTMLInputElement;
+    const input = this.inputFor(column);
     const text = input?.value.trim();
     if (!text) return;
     this.data.cards.push({ id: this.data.nextId++, text, column });
-    input.value = "";
-    input.focus();
+    input!.value = "";
+    input!.focus();
   }
 
   deleteCard(id: number) {

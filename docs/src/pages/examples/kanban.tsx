@@ -37,6 +37,7 @@ export default class ExampleKanban extends LoomElement {
             <li><span class="ic">@dynamicCss</span> — Column accent colors generated from data</li>
             <li><span class="ic">@watch</span> — Console logging on card add/remove</li>
             <li><span class="ic">@hotkey</span> — Press N to focus the To Do input</li>
+            <li><span class="ic">@query</span> + <span class="ic">LoomHtmlQuery</span> — Dynamic <span class="ic">$0</span> placeholder for parameterized element lookup</li>
             <li><span class="ic">@styles</span> + <span class="ic">css</span> — Static grid layout with scoped shadow DOM styles</li>
             <li><span class="ic">$reset</span> — One-call restore to empty board</li>
             <li><span class="ic">loom-icon</span> — SVG icons for column headers and card actions</li>
