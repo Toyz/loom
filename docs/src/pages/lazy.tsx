@@ -332,6 +332,12 @@ class LazyDecoratorClipboard extends LoomElement { }
 @searchable({ title: "Drag & Drop", section: "Decorators", icon: "move", to: "/decorators/dnd", keywords: ["drag", "drop", "draggable", "dropzone", "dnd", "kanban", "reorder", "sortable"], summary: "Declarative HTML5 Drag and Drop." })
 class LazyDecoratorDnd extends LoomElement { }
 
+@route("/css", { group: DecoratorsGroup })
+@component("page-decorator-css")
+@lazy(() => import("./decorators/css"))
+@searchable({ title: "Dynamic CSS", section: "Decorators", icon: "palette", to: "/decorators/css", keywords: ["css", "dynamic", "styles", "theme", "reactive", "stylesheet", "scoped"], summary: "Reactive scoped styles from a method." })
+class LazyDecoratorCSS extends LoomElement { }
+
 // ── Examples ──
 
 @route("/clock", { group: ExamplesGroup })

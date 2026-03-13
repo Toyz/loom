@@ -48,6 +48,7 @@ export const navOrder: NavEntry[] = [
   { label: "Fullscreen", to: "/decorators/fullscreen", section: "Decorators", icon: "maximize" },
   { label: "Clipboard", to: "/decorators/clipboard", section: "Decorators", icon: "clipboard" },
   { label: "Drag & Drop", to: "/decorators/dnd", section: "Decorators", icon: "move" },
+  { label: "Dynamic CSS", to: "/decorators/css", section: "Decorators", icon: "palette" },
 
   // Store
   { label: "Overview", to: "/store/overview", section: "Store", icon: "archive" },

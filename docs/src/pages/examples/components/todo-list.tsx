@@ -1,9 +1,9 @@
 /**
  * Todo List — A reactive todo with add, toggle, delete, and filter.
  *
- * Demonstrates: @component, @store, @computed, @query, @watch, @styles, css, loom-icon, $reset
+ * Demonstrates: @component, @store, @computed, @query, @watch, @styles, @css, css, loom-icon, $reset
  */
-import { LoomElement, component, computed, query, css, styles, store, watch } from "@toyz/loom";
+import { LoomElement, component, computed, query, css, styles, store, watch, dynamicCss } from "@toyz/loom";
 import { LocalAdapter } from "@toyz/loom/store";
 
 interface Todo { id: number; text: string; done: boolean; }
@@ -166,6 +166,26 @@ export class TodoList extends LoomElement {
     return todos;
   }
 
+  /** @css — dynamic styles that react to filter/completion state */
+  @dynamicCss
+  dynamicStyles() {
+    const total = this.data.todos.length;
+    const done = this.data.todos.filter(t => t.done).length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    return `
+      .progress-bar {
+        height: 3px; border-radius: 2px;
+        background: var(--border, #333);
+        margin-bottom: 1rem; overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%; width: ${pct}%;
+        background: var(--accent, #a78bfa);
+        transition: width 0.3s ease;
+      }
+    `;
+  }
+
   /** @watch — fires whenever the store mutates (deep or full replacement) */
   @watch("data")
   onDataChange(current: TodoData, prev: TodoData) {
@@ -218,6 +238,8 @@ export class TodoList extends LoomElement {
             Add
           </button>
         </div>
+
+        <div class="progress-bar"><div class="progress-fill"></div></div>
 
         <div class="filters">
           {(["all", "active", "done"] as const).map(f => (
