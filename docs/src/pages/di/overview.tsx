@@ -149,26 +149,24 @@ class Boot {
             <h2>LoomLifecycle</h2>
           </div>
           <div class="feature-entry">
-            <div class="dec-sig">{'LoomLifecycle<"start" | "stop">'}</div>
+            <div class="dec-sig">{'LoomLifecycle<"start" | "stop" | "suspend" | "resume">'}</div>
             <div class="dec-desc">
               Services that implement <span class="ic">LoomLifecycle</span> have their{" "}
-              <span class="ic">start()</span> and <span class="ic">stop()</span> methods called
-              automatically by <span class="ic">app.start()</span> and <span class="ic">app.stop()</span>.
-              No manual wiring needed in <span class="ic">main.ts</span>.
+              <span class="ic">start()</span> / <span class="ic">stop()</span> methods called
+              automatically by <span class="ic">app.start()</span> / <span class="ic">app.stop()</span>,
+              and <span class="ic">suspend()</span> / <span class="ic">resume()</span> fired
+              automatically on <span class="ic">visibilitychange</span> (tab hidden / visible).
             </div>
             <code-block lang="ts" code={`import type { LoomLifecycle } from "@toyz/loom";
 
 @service("ws")
-class WebSocketService implements LoomLifecycle<"start" | "stop"> {
+class WebSocketService implements LoomLifecycle<"start" | "stop" | "suspend" | "resume"> {
   private ws!: WebSocket;
 
-  start() {
-    this.ws = new WebSocket("/ws");
-  }
-
-  stop() {
-    this.ws.close();
-  }
+  start()   { this.ws = new WebSocket("/ws"); }
+  stop()    { this.ws.close(); }
+  suspend() { this.ws.close(); }        // tab hidden
+  resume()  { this.ws = new WebSocket("/ws"); } // tab visible
 }`}></code-block>
             <div class="dec-desc" style="margin-top: 1rem;">
               The generic parameter enforces which hooks are declared. Hooks not in{" "}
@@ -212,6 +210,8 @@ app.start(); // router.start() called automatically`}></code-block>
             <tbody>
               <tr><td><span class="ic">start()</span></td><td><span class="ic">app.start()</span></td><td>Registration order</td></tr>
               <tr><td><span class="ic">stop()</span></td><td><span class="ic">app.stop()</span></td><td>Reverse registration order</td></tr>
+              <tr><td><span class="ic">suspend()</span></td><td><span class="ic">visibilitychange</span> (hidden)</td><td>Registration order</td></tr>
+              <tr><td><span class="ic">resume()</span></td><td><span class="ic">visibilitychange</span> (visible)</td><td>Registration order</td></tr>
             </tbody>
           </table>
         </section>
