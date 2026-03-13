@@ -33,10 +33,9 @@ export type LifecycleHook = "start" | "stop";
  *
  * @template T - The lifecycle hooks this service supports ("start" | "stop" or either alone).
  */
-export type LoomLifecycle<T extends LifecycleHook> = {
-  start: "start" extends T ? () => void | Promise<void> : never;
-  stop:  "stop"  extends T ? () => void | Promise<void> : never;
-};
+export type LoomLifecycle<T extends LifecycleHook> =
+  ("start" extends T ? { start(): void | Promise<void> } : {}) &
+  ("stop"  extends T ? { stop():  void | Promise<void> } : {});
 
 /** Type guard — returns true if the value has a callable `start` method */
 export function hasStart(v: unknown): v is { start: () => void | Promise<void> } {
