@@ -101,6 +101,25 @@ LoomIcon.registerAll({
 
         <section>
           <div class="group-header">
+            <loom-icon name="puzzle" size={20} color="var(--cyan)"></loom-icon>
+            <h2>IconResolver</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              For external icon packs (Heroicons, Lucide, etc.), register an <span class="ic">IconResolver</span> via DI.
+              The resolver is tried <strong>first</strong> — if it returns <span class="ic">null</span>, the static registry is used as fallback.
+              If no resolver is registered, only the static registry is used (backward compatible).
+            </div>
+          </div>
+          <code-block lang="ts" code={RESOLVER_EXAMPLE}></code-block>
+          <doc-notification type="note">
+            <span class="ic">IconResolver</span> is optional. Existing apps using <span class="ic">LoomIcon.register()</span> continue
+            to work without any changes.
+          </doc-notification>
+        </section>
+
+        <section>
+          <div class="group-header">
             <loom-icon name="layers" size={20} color="var(--rose)"></loom-icon>
             <h2>Styling</h2>
           </div>
@@ -122,3 +141,35 @@ LoomIcon.registerAll({
     );
   }
 }
+
+const RESOLVER_EXAMPLE = `import { IconResolver } from "@toyz/loom/element/icon";
+import { app } from "@toyz/loom";
+
+// Import heroicons SVG content (e.g. via vite ?raw imports)
+import ArrowRight from "@heroicons/24/outline/arrow-right.svg?raw";
+import Check from "@heroicons/24/outline/check.svg?raw";
+
+// Build a map of icon name → SVG inner content
+const heroicons: Record<string, string> = {
+  "arrow-right": ArrowRight,
+  "check": Check,
+};
+
+// Create a resolver that extracts SVG inner content
+class HeroIconResolver extends IconResolver {
+  resolve(name: string): string | null {
+    const raw = heroicons[name];
+    if (!raw) return null; // fall back to static registry
+
+    // Extract content between <svg> tags
+    const match = raw.match(/<svg[^>]*>(.*)<\\/svg>/s);
+    return match?.[1] ?? null;
+  }
+}
+
+// Register before app.start()
+app.use(IconResolver, new HeroIconResolver());
+
+// Now both work:
+// <loom-icon name="arrow-right" />   → resolved by HeroIconResolver
+// <loom-icon name="home" />          → resolver returns null → static registry`;

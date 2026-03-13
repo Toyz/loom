@@ -1,8 +1,7 @@
 /**
  * Loom — Icon Component
  *
- * Reusable SVG icon wrapper with a static registry.
- * Ships with zero built-in icons — register your own.
+ * Reusable SVG icon wrapper with a static registry and optional DI resolver.
  *
  * Usage:
  *   // Register icons (once, at boot)
@@ -10,6 +9,9 @@
  *
  *   // Use anywhere in JSX
  *   <loom-icon name="bolt" size={20} color="var(--accent)" />
+ *
+ *   // Optional: plug in an icon pack via DI
+ *   app.use(IconResolver, myHeroIconResolver);
  */
 
 import { LoomElement } from "./element";
@@ -17,6 +19,7 @@ import { component, styles } from "./decorators";
 import { prop } from "../store/decorators";
 import { watch } from "../store/watch";
 import { css } from "../css";
+import { app } from "../app";
 
 const baseStyles = css`
   loom-icon {
@@ -42,11 +45,29 @@ const baseStyles = css`
 /** Icon path data registry (name → SVG inner content) */
 const registry = new Map<string, string>();
 
+/**
+ * Abstract resolver for external icon packs.
+ * Register via `app.use(IconResolver, myResolver)`.
+ *
+ * ```ts
+ * class HeroIconResolver extends IconResolver {
+ *   resolve(name: string) {
+ *     return heroicons[name] ?? null;
+ *   }
+ * }
+ * app.use(IconResolver, new HeroIconResolver());
+ * ```
+ */
+export abstract class IconResolver {
+  /** Return SVG inner content for `name`, or `null` to fall back to static registry. */
+  abstract resolve(name: string): string | null;
+}
+
 @component("loom-icon", { shadow: false })
 @styles(baseStyles)
 export class LoomIcon extends LoomElement {
 
-  /** Icon name (must be registered via LoomIcon.register) */
+  /** Icon name (must be registered via LoomIcon.register or resolved via IconResolver) */
   @prop accessor name = "";
 
   /** Size in pixels */
@@ -88,7 +109,11 @@ export class LoomIcon extends LoomElement {
     this.style.setProperty("--_s", `${this.size}px`);
     this.style.setProperty("--_c", this.color);
 
-    const inner = registry.get(this.name);
+    // Resolver first → static registry fallback
+    const resolver = app.maybe<IconResolver>(IconResolver);
+    const inner = (resolver.ok ? resolver.unwrap().resolve(this.name) : null)
+      ?? registry.get(this.name);
+
     if (!inner) return document.createElement("span");
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
