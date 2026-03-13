@@ -101,6 +101,7 @@ export const navOrder: NavEntry[] = [
   // Examples
   { label: "Clock", to: "/examples/clock", section: "Examples", icon: "zap" },
   { label: "Todo List", to: "/examples/todo", section: "Examples", icon: "check" },
+  { label: "Kanban Board", to: "/examples/kanban", section: "Examples", icon: "columns" },
   { label: "Theme Switcher", to: "/examples/theme-switcher", section: "Examples", icon: "eye" },
   { label: "Contact Form", to: "/examples/form", section: "Examples", icon: "edit" },
   { label: "Fetch", to: "/examples/api", section: "Examples", icon: "download" },

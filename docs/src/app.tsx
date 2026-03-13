@@ -118,6 +118,7 @@ const sections: NavSection[] = [
     items: [
       { label: "Clock", to: "/examples/clock", icon: "zap" },
       { label: "Todo List", to: "/examples/todo", icon: "check" },
+      { label: "Kanban Board", to: "/examples/kanban", icon: "columns" },
       { label: "Theme Switcher", to: "/examples/theme-switcher", icon: "eye" },
       { label: "Contact Form", to: "/examples/form", icon: "edit" },
       { label: "Fetch", to: "/examples/api", icon: "download" },

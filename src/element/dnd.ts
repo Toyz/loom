@@ -25,6 +25,12 @@ export interface DraggableOptions {
   type?: string;
   /** Drag effect, default "move" */
   effect?: DataTransfer["effectAllowed"];
+  /**
+   * CSS selector for child elements to make draggable.
+   * Enables event delegation — the matched element is passed
+   * as the first argument to the decorated method.
+   */
+  selector?: string;
 }
 
 export interface DropzoneOptions {
@@ -34,6 +40,12 @@ export interface DropzoneOptions {
   effect?: DataTransfer["dropEffect"];
   /** CSS class to add when dragging over, default "drag-over" */
   overClass?: string;
+  /**
+   * CSS selector for child drop targets.
+   * Enables event delegation — the matched element is passed
+   * as the third argument to the decorated method.
+   */
+  selector?: string;
   /**
    * Optional JSX overlay rendered into the element's shadow DOM (or light DOM)
    * during dragover. Removed on dragleave/drop. Accepts a function that returns
@@ -51,32 +63,73 @@ export interface DropzoneOptions {
 export function draggable(opts?: DraggableOptions) {
   const mimeType = opts?.type ?? "text/plain";
   const effect = opts?.effect ?? "move";
+  const selector = opts?.selector;
 
   return function (method: Function, context: ClassMethodDecoratorContext) {
     context.addInitializer(function (this: any) {
       if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
       this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
-        el.draggable = true;
+        if (!selector) {
+          // Host-level draggable (original behavior)
+          el.draggable = true;
+
+          const onStart = (e: DragEvent) => {
+            const data = method.call(el);
+            e.dataTransfer?.setData(mimeType, String(data ?? ""));
+            if (e.dataTransfer) e.dataTransfer.effectAllowed = effect;
+            el.classList.add("dragging");
+          };
+
+          const onEnd = () => {
+            el.classList.remove("dragging");
+          };
+
+          el.addEventListener("dragstart", onStart);
+          el.addEventListener("dragend", onEnd);
+
+          return () => {
+            el.removeEventListener("dragstart", onStart);
+            el.removeEventListener("dragend", onEnd);
+            el.draggable = false;
+          };
+        }
+
+        // Selector-based: event delegation on child elements
+        const root = el.shadowRoot ?? el;
+
+        // Mark matching children as draggable
+        const markDraggable = () => {
+          const targets = root.querySelectorAll(selector);
+          for (const t of targets) (t as HTMLElement).draggable = true;
+        };
+        markDraggable();
+
+        // Re-mark after DOM updates (morph may add/remove elements)
+        const observer = new MutationObserver(markDraggable);
+        observer.observe(root, { childList: true, subtree: true });
 
         const onStart = (e: DragEvent) => {
-          const data = method.call(el);
+          const target = (e.target as HTMLElement)?.closest?.(selector);
+          if (!target) return;
+          const data = method.call(el, target);
           e.dataTransfer?.setData(mimeType, String(data ?? ""));
           if (e.dataTransfer) e.dataTransfer.effectAllowed = effect;
-          el.classList.add("dragging");
+          target.classList.add("dragging");
         };
 
-        const onEnd = () => {
-          el.classList.remove("dragging");
+        const onEnd = (e: DragEvent) => {
+          const target = (e.target as HTMLElement)?.closest?.(selector);
+          if (target) target.classList.remove("dragging");
         };
 
-        el.addEventListener("dragstart", onStart);
-        el.addEventListener("dragend", onEnd);
+        root.addEventListener("dragstart", onStart as EventListener);
+        root.addEventListener("dragend", onEnd as EventListener);
 
         return () => {
-          el.removeEventListener("dragstart", onStart);
-          el.removeEventListener("dragend", onEnd);
-          el.draggable = false;
+          root.removeEventListener("dragstart", onStart as EventListener);
+          root.removeEventListener("dragend", onEnd as EventListener);
+          observer.disconnect();
         };
       });
     });
@@ -98,6 +151,7 @@ export function dropzone(opts?: DropzoneOptions) {
   const dropEffect = opts?.effect ?? "move";
   const overClass = opts?.overClass ?? "drag-over";
   const overFn = opts?.over;
+  const selector = opts?.selector;
 
   return function (method: Function, context: ClassMethodDecoratorContext) {
     context.addInitializer(function (this: any) {
@@ -129,34 +183,80 @@ export function dropzone(opts?: DropzoneOptions) {
           }
         };
 
+        if (!selector) {
+          // Host-level dropzone (original behavior)
+          const onOver = (e: DragEvent) => {
+            e.preventDefault();
+            if (e.dataTransfer) e.dataTransfer.dropEffect = dropEffect;
+            el.classList.add(overClass);
+            showOverlay();
+          };
+
+          const onLeave = () => {
+            el.classList.remove(overClass);
+            hideOverlay();
+          };
+
+          const onDrop = (e: DragEvent) => {
+            e.preventDefault();
+            el.classList.remove(overClass);
+            hideOverlay();
+            const data = e.dataTransfer?.getData(mimeType) ?? "";
+            method.call(el, data, e);
+          };
+
+          el.addEventListener("dragover", onOver);
+          el.addEventListener("dragleave", onLeave);
+          el.addEventListener("drop", onDrop);
+
+          return () => {
+            el.removeEventListener("dragover", onOver);
+            el.removeEventListener("dragleave", onLeave);
+            el.removeEventListener("drop", onDrop);
+            hideOverlay();
+          };
+        }
+
+        // Selector-based: event delegation on child elements
+        const root = el.shadowRoot ?? el;
+        let currentOverTarget: HTMLElement | null = null;
+
         const onOver = (e: DragEvent) => {
           e.preventDefault();
           if (e.dataTransfer) e.dataTransfer.dropEffect = dropEffect;
-          el.classList.add(overClass);
-          showOverlay();
+          const target = (e.target as HTMLElement)?.closest?.(selector) as HTMLElement | null;
+          if (target && target !== currentOverTarget) {
+            currentOverTarget?.classList.remove(overClass);
+            target.classList.add(overClass);
+            currentOverTarget = target;
+          }
         };
 
-        const onLeave = () => {
-          el.classList.remove(overClass);
-          hideOverlay();
+        const onLeave = (e: DragEvent) => {
+          const target = (e.target as HTMLElement)?.closest?.(selector) as HTMLElement | null;
+          if (target) {
+            target.classList.remove(overClass);
+            if (target === currentOverTarget) currentOverTarget = null;
+          }
         };
 
         const onDrop = (e: DragEvent) => {
           e.preventDefault();
-          el.classList.remove(overClass);
-          hideOverlay();
+          const target = (e.target as HTMLElement)?.closest?.(selector) as HTMLElement | null;
+          if (currentOverTarget) currentOverTarget.classList.remove(overClass);
+          currentOverTarget = null;
           const data = e.dataTransfer?.getData(mimeType) ?? "";
-          method.call(el, data, e);
+          method.call(el, data, e, target);
         };
 
-        el.addEventListener("dragover", onOver);
-        el.addEventListener("dragleave", onLeave);
-        el.addEventListener("drop", onDrop);
+        root.addEventListener("dragover", onOver as EventListener);
+        root.addEventListener("dragleave", onLeave as EventListener);
+        root.addEventListener("drop", onDrop as EventListener);
 
         return () => {
-          el.removeEventListener("dragover", onOver);
-          el.removeEventListener("dragleave", onLeave);
-          el.removeEventListener("drop", onDrop);
+          root.removeEventListener("dragover", onOver as EventListener);
+          root.removeEventListener("dragleave", onLeave as EventListener);
+          root.removeEventListener("drop", onDrop as EventListener);
           hideOverlay();
         };
       });

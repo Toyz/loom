@@ -352,6 +352,12 @@ class LazyExampleClock extends LoomElement { }
 @searchable({ title: "Todo List", section: "Examples", icon: "check", to: "/examples/todo", keywords: ["todo", "list", "crud", "example", "demo"], summary: "Persistent todo list with CollectionStore and localStorage." })
 class LazyExampleTodo extends LoomElement { }
 
+@route("/kanban", { group: ExamplesGroup })
+@component("page-example-kanban")
+@lazy(() => import("./examples/kanban"))
+@searchable({ title: "Kanban Board", section: "Examples", icon: "columns", to: "/examples/kanban", keywords: ["kanban", "drag", "drop", "board", "task", "column", "dnd"], summary: "Drag & drop task management with @draggable/@dropzone selectors." })
+class LazyExampleKanban extends LoomElement { }
+
 @route("/theme-switcher", { group: ExamplesGroup })
 @component("page-example-theme")
 @lazy(() => import("./examples/theme-switcher"))
