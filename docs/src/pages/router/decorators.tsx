@@ -136,6 +136,45 @@ class UserSettings extends LoomElement { }
 
         <section>
           <div class="group-header">
+            <loom-icon name="compass" size={20} color="var(--violet)"></loom-icon>
+            <h2>URL Part Decorators</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-desc">
+              <span class="ic">@subdomain</span>, <span class="ic">@domain</span>, and{" "}
+              <span class="ic">@tld</span> are set-and-forget auto-accessor decorators that
+              parse <span class="ic">window.location.hostname</span> once at construction time.
+              No reactive backing, no connect hooks — ideal for multi-tenant apps that branch
+              on the subdomain.
+            </div>
+            <code-block lang="ts" code={`import { subdomain, domain, tld } from "@toyz/loom/router";
+
+@component("my-app")
+class MyApp extends LoomElement {
+  @subdomain         accessor tenant   = ""; // "tenant.app.com" → "tenant"
+  @domain            accessor host     = ""; // "tenant.app.com" → "app"
+  @domain("full")    accessor hostFull = ""; // "tenant.app.com" → "app.com"
+  @tld               accessor ext      = ""; // "tenant.app.com" → "com"
+
+  update() {
+    if (this.tenant === "admin") return <admin-shell />;
+    return <user-shell tenant={this.tenant} />;
+  }
+}`}></code-block>
+            <table class="api-table" style="margin-top: 1rem;">
+              <thead><tr><th>Hostname</th><th>@subdomain</th><th>@domain</th><th>@domain("full")</th><th>@tld</th></tr></thead>
+              <tbody>
+                <tr><td><code>tenant.app.com</code></td><td><code>"tenant"</code></td><td><code>"app"</code></td><td><code>"app.com"</code></td><td><code>"com"</code></td></tr>
+                <tr><td><code>a.b.app.co.uk</code></td><td><code>"a.b"</code></td><td><code>"app"</code></td><td><code>"app.co.uk"</code></td><td><code>"co.uk"</code></td></tr>
+                <tr><td><code>app.com</code></td><td><code>""</code></td><td><code>"app"</code></td><td><code>"app.com"</code></td><td><code>"com"</code></td></tr>
+                <tr><td><code>localhost</code></td><td><code>""</code></td><td><code>"localhost"</code></td><td><code>"localhost"</code></td><td><code>""</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <div class="group-header">
             <loom-icon name="book" size={20} color="var(--rose)"></loom-icon>
             <h2>API Reference</h2>
           </div>
@@ -149,6 +188,10 @@ class UserSettings extends LoomElement { }
               <tr><td><code>@prop({`{params}`})</code></td><td>Field</td><td>Decompose all path params into typed object</td></tr>
               <tr><td><code>@prop({`{ query }`})</code></td><td>Field</td><td>Inject a single query parameter</td></tr>
               <tr><td><code>@prop({`{ query: routeQuery }`})</code></td><td>Field</td><td>Decompose all query params into typed object</td></tr>
+              <tr><td><code>@subdomain</code></td><td>Accessor</td><td>Initialised to the subdomain from hostname</td></tr>
+              <tr><td><code>@domain</code></td><td>Accessor</td><td>Domain label only (e.g. <code>"app"</code> from <code>tenant.app.com</code>)</td></tr>
+              <tr><td><code>@domain("full")</code></td><td>Accessor</td><td>Domain + TLD (e.g. <code>"app.com"</code> from <code>tenant.app.com</code>)</td></tr>
+              <tr><td><code>@tld</code></td><td>Accessor</td><td>Effective TLD — handles compound TLDs like <code>.co.uk</code></td></tr>
             </tbody>
           </table>
         </section>

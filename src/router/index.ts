@@ -30,3 +30,6 @@ export { LoomLink } from "./link";
 
 // Route lifecycle
 export { onRouteEnter, onRouteLeave } from "./route-lifecycle";
+
+// URL part decorators
+export { subdomain, domain, tld } from "./url";
