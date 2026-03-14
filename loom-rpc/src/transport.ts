@@ -18,6 +18,14 @@ import type { RpcRequest, RpcResponse } from "./types";
  */
 export abstract class RpcTransport {
   abstract call<T>(router: string, method: string, args: any[], signal?: AbortSignal): Promise<T>;
+
+  /**
+   * Optional — implement to support @stream / RpcStream.
+   * Returns an AsyncIterable the consumer drives via `for await`.
+   * The transport controls the connection (WebSocket, SSE, etc.).
+   * Teardown happens automatically when the iterator is returned/thrown.
+   */
+  stream?<T>(router: string, method: string, args: any[]): AsyncIterable<T>;
 }
 
 /**

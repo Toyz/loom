@@ -35,8 +35,10 @@ export default class ExampleRpc extends LoomElement {
             <li><span class="ic">@rpc(Router, method)</span> — Auto-fetching query decorator with <span class="ic">ApiState</span></li>
             <li><span class="ic">@rpc + fn</span> — Reactive arg extraction that re-fetches when element state changes</li>
             <li><span class="ic">@mutate(Router, method)</span> — Manual <code>.call()</code> with loading/error tracking</li>
+            <li><span class="ic">@stream(Router, method)</span> — Server-push events via <code>AsyncIterable</code>, opens on connect</li>
+            <li><span class="ic">@onStream("accessor")</span> — Lifecycle-aware callback handler wired to the stream pump</li>
             <li><span class="ic">.match()</span> — Exhaustive pattern matching for loading, ok, and error states</li>
-            <li><span class="ic">MockTransport</span> — Drop-in test transport with delay simulation</li>
+            <li><span class="ic">MockTransport</span> — Drop-in test transport with delay simulation + stream support</li>
             <li><span class="ic">app.use(RpcTransport, ...)</span> — DI-based transport swap, zero component changes</li>
           </ul>
         </section>

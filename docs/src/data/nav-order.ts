@@ -73,12 +73,13 @@ export const navOrder: NavEntry[] = [
   { label: "Decorators", to: "/di/decorators", section: "DI & Services", icon: "hash" },
 
   // Packages — RPC
-  { label: "RPC Overview", to: "/packages/rpc-overview", section: "Packages", icon: "package" },
-  { label: "RPC Queries", to: "/packages/rpc-queries", section: "Packages", icon: "download" },
-  { label: "RPC Mutations", to: "/packages/rpc-mutations", section: "Packages", icon: "edit" },
-  { label: "RPC Transports", to: "/packages/rpc-transports", section: "Packages", icon: "layers" },
-  { label: "RPC Testing", to: "/packages/rpc-testing", section: "Packages", icon: "check" },
-  { label: "RPC Demo", to: "/packages/rpc-demo", section: "Packages", icon: "zap" },
+  { label: "RPC Overview",    to: "/packages/rpc-overview",   section: "Packages", icon: "package"  },
+  { label: "RPC Queries",     to: "/packages/rpc-queries",    section: "Packages", icon: "download" },
+  { label: "RPC Mutations",   to: "/packages/rpc-mutations",  section: "Packages", icon: "edit"     },
+  { label: "RPC Transports",  to: "/packages/rpc-transports", section: "Packages", icon: "layers"   },
+  { label: "RPC Streams",     to: "/packages/rpc-streams",    section: "Packages", icon: "radio"    },
+  { label: "RPC Testing",     to: "/packages/rpc-testing",    section: "Packages", icon: "check"    },
+  { label: "RPC Demo",        to: "/packages/rpc-demo",       section: "Packages", icon: "zap"      },
 
   // Packages — Analytics
   { label: "Analytics Overview", to: "/packages/analytics-overview", section: "Packages", icon: "package" },

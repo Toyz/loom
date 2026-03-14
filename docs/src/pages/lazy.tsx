@@ -447,11 +447,18 @@ class LazyPackagesRpcTransports extends LoomElement { }
 @searchable({ title: "RPC Testing", section: "Packages", icon: "check", to: "/packages/rpc-testing", keywords: ["rpc", "test", "mock", "MockTransport", "assert"], summary: "MockTransport — drop-in test transport with mocks, delays, and assertions." })
 class LazyPackagesRpcTesting extends LoomElement { }
 
+@route("/rpc-streams", { group: PackagesGroup })
+@component("page-packages-rpc-streams")
+@lazy(() => import("./packages/rpc-streams"))
+@searchable({ title: "RPC Streams", section: "Packages", icon: "radio", to: "/packages/rpc-streams", keywords: ["rpc", "stream", "@stream", "@onStream", "RpcStream", "AsyncIterable", "push", "SSE", "websocket"], summary: "Server-push streams via WebSocket or SSE — decorator-driven and lifecycle-aware." })
+class LazyPackagesRpcStreams extends LoomElement { }
+
 @route("/rpc-demo", { group: PackagesGroup })
 @component("page-packages-rpc-demo")
 @lazy(() => import("./examples/rpc"))
 @searchable({ title: "RPC Demo", section: "Packages", icon: "zap", to: "/packages/rpc-demo", keywords: ["rpc", "demo", "live", "example", "interactive"], summary: "Interactive live demo of @rpc queries and @mutate mutations." })
 class LazyPackagesRpcDemo extends LoomElement { }
+
 
 @route("/create-loom", { group: PackagesGroup })
 @component("page-packages-create-loom")

@@ -28,16 +28,26 @@ export default class PageRpcOverview extends LoomElement {
             <h2>How It Works</h2>
           </div>
           <p>
-            LoomRPC adds two decorators — <span class="ic">@rpc</span> for queries and{" "}
-            <span class="ic">@mutate</span> for mutations. Both are type-safe, auto-accessor decorators
-            that talk to the server through a swappable <span class="ic">RpcTransport</span>.
+            LoomRPC adds three decorator pairs — <span class="ic">@rpc</span> for queries,{" "}
+            <span class="ic">@mutate</span> for mutations, and{" "}
+            <span class="ic">@stream</span> / <span class="ic">@onStream</span> for server-push
+            streams. All are type-safe auto-accessor decorators that talk to the server through a
+            swappable <span class="ic">RpcTransport</span>.
           </p>
           <p>
-            You define a <strong>contract class</strong> — a plain TypeScript class with method signatures
-            that describe your server API. The class is never instantiated; it exists purely for
-            TypeScript to extract parameter and return types. Nothing ships to the client except
-            the router name string.
+            You define a <strong>contract class</strong> — a plain TypeScript class with method
+            signatures that describe your server API. The class is never instantiated; it exists
+            purely for TypeScript to extract parameter and return types. Nothing ships to the client
+            except the router name string.
           </p>
+          <table class="api-table">
+            <thead><tr><th>Decorator</th><th>Purpose</th><th>Page</th></tr></thead>
+            <tbody>
+              <tr><td><code>@rpc</code></td><td>Auto-fetching query with <code>ApiState&lt;T&gt;</code></td><td><a href="#/packages/rpc-queries">RPC Queries →</a></td></tr>
+              <tr><td><code>@mutate</code></td><td>Manual <code>.call()</code> mutation with loading/error state</td><td><a href="#/packages/rpc-mutations">RPC Mutations →</a></td></tr>
+              <tr><td><code>@stream</code> / <code>@onStream</code></td><td>Server-push <code>AsyncIterable</code> streams — WebSocket, SSE, etc.</td><td><a href="#/packages/rpc-streams">RPC Streams →</a></td></tr>
+            </tbody>
+          </table>
         </section>
 
         <section>

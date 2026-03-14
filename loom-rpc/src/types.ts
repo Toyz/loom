@@ -4,7 +4,6 @@
  * Extract method names, parameter types, and return types from contract classes.
  * Powers the type-safe @rpc and @mutate decorators.
  */
-
 import type { ApiState } from "@toyz/loom/query";
 
 /**
@@ -68,6 +67,53 @@ export interface RpcMutator<TArgs extends any[], TReturn> {
 }
 
 /**
+ * Configuration for @stream decorator.
+ */
+export interface RpcStreamOptions<TRouter, TMethod extends RpcMethods<TRouter>> {
+  /** Extract procedure args from element/service state. Called once when the stream opens. */
+  fn?: (el: any) => InferArgs<TRouter, TMethod>;
+  /**
+   * Whether to open the stream automatically when the element connects.
+   * When false, call `stream.open()` manually to start receiving events.
+   * Default: true
+   */
+  eager?: boolean;
+}
+
+/**
+ * State container for a server-push stream.
+ *
+ * Implements `AsyncIterable<T>` so you can iterate directly:
+ * ```ts
+ * for await (const msg of this.chatMessages) { ... }
+ * ```
+ * Or use `.events` for the same iterable, or `.open()` + `@onStream` for
+ * component-level callback wiring.
+ */
+export interface RpcStream<T> extends AsyncIterable<T> {
+  /** Current state of the stream connection */
+  readonly status: "idle" | "streaming" | "error" | "closed";
+  /** Error if status === "error", otherwise null */
+  readonly error: Error | null;
+  /**
+   * Open the stream and start pumping events to `@onStream` callbacks.
+   * Called automatically on connect when `eager: true` (the default).
+   * Call manually when `eager: false`.
+   */
+  open(): void;
+  /** Close the stream and release the connection */
+  close(): void;
+  /**
+   * Named alias for `[Symbol.asyncIterator]()` — same iterable, explicit name.
+   * Prefer iterating the stream directly (`for await (const x of stream)`)
+   * unless you need to hold a reference to the iterable separately.
+   */
+  readonly events: AsyncIterable<T>;
+  /** Required by AsyncIterable — delegates to .events */
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+}
+
+/**
  * State container for a query — auto-fetched, reactive, with SWR.
  * Extends ApiState for backwards compatibility.
  *
@@ -77,10 +123,7 @@ export interface RpcMutator<TArgs extends any[], TReturn> {
  * ```
  */
 export interface RpcQuery<TArgs extends any[], TReturn> extends ApiState<TReturn> {
-  // Inherits from ApiState<TReturn>:
-  //   ok, data, error, loading, stale
-  //   refetch(), invalidate()
-  //   unwrap(), unwrap_or(), map(), map_err(), and_then(), match()
+  // Resolved by the RpcTransport via .call() — see rpc.ts for state shape
 }
 
 /**

@@ -2,16 +2,16 @@
  * RPC Demo — Live interactive component
  *
  * Dogfoods @toyz/loom-rpc with MockTransport — no server needed.
- * Shows @rpc queries, @mutate mutations, loading states, and error handling.
+ * Shows @rpc queries, @mutate mutations, @stream events, loading states, and error handling.
  */
 import { LoomElement, component, css, reactive, styles, app } from "@toyz/loom";
 import type { ApiState } from "@toyz/loom/query";
-import { rpc, mutate, RpcTransport, service } from "@toyz/loom-rpc";
+import { rpc, mutate, stream, onStream, RpcTransport, service } from "@toyz/loom-rpc";
+import type { RpcMutator, RpcStream } from "@toyz/loom-rpc";
 import { MockTransport } from "@toyz/loom-rpc/testing";
-import type { RpcMutator } from "@toyz/loom-rpc";
 import { scrollbar } from "../../../shared/scrollbar";
 
-// ── Contract ──
+// ── Contracts ──
 
 interface User {
   id: string;
@@ -27,6 +27,13 @@ class UserRouter {
   updateRole(id: string, role: "admin" | "member"): User { return null!; }
 }
 
+interface ChatMsg { id: number; user: string; text: string; }
+
+@service("ChatService")
+class ChatRouter {
+  events(room: string): AsyncIterable<ChatMsg> { return null!; }
+}
+
 // ── Mock setup ──
 
 const MOCK_USERS: User[] = [
@@ -36,7 +43,45 @@ const MOCK_USERS: User[] = [
   { id: "4", name: "Diana Osei", email: "diana@loom.dev", role: "admin" },
 ];
 
-const transport = new MockTransport();
+const STREAM_MSGS: Pick<ChatMsg, "user" | "text">[] = [
+  { user: "alice",   text: "Hey team 👋" },
+  { user: "bob",     text: "What's shipping?" },
+  { user: "charlie", text: "Just merged the stream PR!" },
+  { user: "diana",   text: "All green 🟢" },
+  { user: "alice",   text: "Let's ship it 🚀" },
+  { user: "bob",     text: "Ping!" },
+  { user: "charlie", text: "Pong!" },
+  { user: "diana",   text: "Stream keeps going 📡" },
+];
+
+// Extends MockTransport so @rpc/.call() still works, adds stream() for @stream
+class DemoTransport extends MockTransport {
+  stream<T>(router: string, _method: string, _args: any[]): AsyncIterable<T> {
+    if (router !== "ChatService") throw new Error("No stream for " + router);
+    return {
+      [Symbol.asyncIterator](): AsyncIterator<T> {
+        let i = 0;
+        let stopped = false;
+        return {
+          async next() {
+            if (stopped || i >= STREAM_MSGS.length)
+              return { value: undefined as any, done: true };
+            await new Promise(r => setTimeout(r, 900 + Math.random() * 600));
+            if (stopped) return { value: undefined as any, done: true };
+            const m = STREAM_MSGS[i++];
+            return { value: { id: i, ...m } as any, done: false };
+          },
+          return() {
+            stopped = true;
+            return Promise.resolve({ value: undefined as any, done: true });
+          },
+        };
+      },
+    };
+  }
+}
+
+const transport = new DemoTransport();
 transport
   .mock(UserRouter, "listUsers", () => [...MOCK_USERS])
   .mock(UserRouter, "getUser", (id: string) => {
@@ -274,6 +319,16 @@ const demoStyles = css`
     border-color: rgba(167,139,250,0.35);
   }
 
+  button.danger {
+    background: rgba(239,68,68,0.1);
+    color: #f87171;
+    border-color: rgba(239,68,68,0.2);
+  }
+
+  button.danger:hover:not(:disabled) {
+    background: rgba(239,68,68,0.18);
+  }
+
   .status-bar {
     margin-top: 1rem;
     font-size: 0.75rem;
@@ -315,6 +370,48 @@ const demoStyles = css`
   .log-entry .method { color: #a78bfa; }
   .log-entry .args { color: #34d399; }
   .log-entry .time { color: #475569; }
+
+  /* ── Stream panel ── */
+  .stream-panel { grid-column: 1 / -1; }
+
+  .stream-feed {
+    max-height: 160px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.75rem;
+    background: rgba(0,0,0,0.25);
+    border-radius: 8px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .stream-msg { display: flex; gap: 0.5rem; animation: msg-in 0.2s ease; }
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateX(-4px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .stream-user { color: #a78bfa; font-weight: 600; min-width: 70px; }
+  .stream-text { color: #94a3b8; }
+
+  .stream-status {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.7rem; padding: 0.15rem 0.55rem;
+    border-radius: 999px; font-weight: 600;
+  }
+  .stream-status.idle      { background: rgba(100,116,139,0.15); color: #64748b; }
+  .stream-status.streaming { background: rgba(52,211,153,0.15);  color: #34d399; }
+  .stream-status.closed    { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+  .stream-status.error     { background: rgba(239,68,68,0.15);   color: #f87171; }
+
+  .s-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; animation: sdot 1.4s ease-in-out infinite;
+  }
+  @keyframes sdot { 0%,100%{opacity:1} 50%{opacity:0.3} }
 `;
 
 const COLORS = ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444"];
@@ -324,6 +421,7 @@ const COLORS = ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444"
 class RpcDemo extends LoomElement {
   @reactive accessor selectedId: string | null = null;
   @reactive accessor logs: string[] = [];
+  @reactive accessor streamMsgs: ChatMsg[] = [];
 
   @rpc(UserRouter, "listUsers")
   accessor users!: ApiState<User[]>;
@@ -336,6 +434,18 @@ class RpcDemo extends LoomElement {
 
   @mutate(UserRouter, "updateRole")
   accessor toggleRole!: RpcMutator<[string, "admin" | "member"], User>;
+
+  @stream(ChatRouter, "events", { fn: (): [string] => ["general"] })
+  accessor chatFeed!: RpcStream<ChatMsg>;
+
+  @onStream("chatFeed")
+  onChatEvent(msg: ChatMsg) {
+    this.streamMsgs = [...this.streamMsgs.slice(-50), msg];
+    requestAnimationFrame(() => {
+      const el = this.shadowRoot?.querySelector(".stream-feed");
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  }
 
   private log(msg: string) {
     const time = new Date().toLocaleTimeString("en", { hour12: false });
@@ -481,6 +591,47 @@ class RpcDemo extends LoomElement {
               ) : (
                 this.logs.map(l => <div class="log-entry">{l}</div>)
               )}
+            </div>
+          </div>
+
+          {/* Stream Feed */}
+          <div class="panel stream-panel">
+            <h3>
+              Live Stream{" "}
+              <span class="badge">@stream + @onStream</span>
+              {" "}
+              <span class={`stream-status ${this.chatFeed?.status ?? "idle"}`}>
+                {this.chatFeed?.status === "streaming" && <span class="s-dot"></span>}
+                {this.chatFeed?.status ?? "idle"}
+              </span>
+            </h3>
+            <div class="stream-feed">
+              {this.streamMsgs.length === 0 ? (
+                <span style={{ color: "#475569", fontStyle: "italic" }}>Waiting for events…</span>
+              ) : (
+                this.streamMsgs.map(m => (
+                  <div class="stream-msg">
+                    <span class="stream-user">{m.user}</span>
+                    <span class="stream-text">{m.text}</span>
+                  </div>
+                ))
+              )}
+            </div>
+            <div class="btn-row">
+              <button
+                onClick={() => this.chatFeed.open()}
+                disabled={this.chatFeed?.status === "streaming"}
+              >
+                Open
+              </button>
+              <button
+                class="danger"
+                onClick={() => this.chatFeed.close()}
+                disabled={this.chatFeed?.status !== "streaming"}
+              >
+                Close
+              </button>
+              <button onClick={() => { this.streamMsgs = []; }}>Clear</button>
             </div>
           </div>
         </div>

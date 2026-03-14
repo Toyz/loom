@@ -8,6 +8,7 @@
 // Decorators
 export { rpc } from "./rpc";
 export { mutate } from "./mutate";
+export { stream, onStream, RPC_STREAMS } from "./stream";
 export { service, SERVICE_NAME } from "./service";
 
 // Transport
@@ -19,8 +20,11 @@ export type {
   InferArgs,
   InferReturn,
   RpcQueryOptions,
+  RpcStreamOptions,
   RpcMutator,
   RpcQuery,
+  RpcStream,
   RpcRequest,
   RpcResponse,
 } from "./types";
+
