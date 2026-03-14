@@ -1,11 +1,12 @@
 /**
- * Loom — Application entry point
+ * Loom — Application entry point + DI container
  *
  * Boots the render loop, instantiates @service singletons,
  * runs @factory methods, and registers @component custom elements.
+ * Also exports DI decorators: @service, @inject, @maybe, @factory.
  *
  * ```ts
- * import { app } from "loom";
+ * import { app, service, inject } from "loom";
  *
  * app
  *   .use(natsConnection)
@@ -16,6 +17,7 @@
 
 import { renderLoop } from "./render-loop";
 import { INJECT_PARAMS, ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols";
+import { createDecorator } from "./decorators/create";
 import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
 import { LoomResult } from "./result";
@@ -90,7 +92,9 @@ class LoomApp {
 
   /** Queue a @service class for auto-instantiation on start() */
   registerService(ctor: any): void {
-    this.services.push(ctor);
+    if (!this.services.includes(ctor)) {
+      this.services.push(ctor);
+    }
   }
 
   /** Queue a @factory method for invocation on start() */
@@ -124,6 +128,35 @@ class LoomApp {
     const v = this.providers.get(key);
     if (v !== undefined) return LoomResult.ok(v as T);
     return LoomResult.err(new Error(`[loom] no provider for ${key?.name ?? key}`));
+  }
+
+  /** Check if a provider is registered. */
+  has(key: any): boolean {
+    return this.providers.has(key);
+  }
+
+  /** Replace an existing provider. Useful for testing / hot-swap. */
+  replace<T = any>(key: any, value: T): this {
+    this.providers.set(key, value);
+    return this;
+  }
+
+  /** Full container reset — providers, services, factories, components. */
+  reset(): void {
+    this.providers.clear();
+    this.services.length = 0;
+    this.factories.length = 0;
+    this.components.length = 0;
+    this._started = false;
+    if (this._visibilityCleanup) {
+      this._visibilityCleanup();
+      this._visibilityCleanup = null;
+    }
+  }
+
+  /** List all registered provider keys (debug / inspection). */
+  keys(): any[] {
+    return [...this.providers.keys()];
   }
 
   /** Resolve @inject parameter metadata for a constructor or method. */
@@ -256,3 +289,105 @@ class LoomApp {
 /** Module-level singleton — the Loom app instance */
 export const app = new LoomApp();
 export type { LoomApp };
+
+// ── DI decorators (merged from di/decorators.ts) ──
+
+/**
+ * Auto-instantiated singleton. Registered on app.start().
+ * Optionally accepts a minification-safe name.
+ *
+ * ```ts
+ * @service
+ * class BookmarkStore extends CollectionStore<Bookmark> { ... }
+ *
+ * @service("UserService")
+ * class UserService { ... }
+ * ```
+ */
+export const service = createDecorator<[name?: string]>((ctor, name?) => {
+  if (name) (ctor as any)[SERVICE_NAME.key] = name;
+  // Duplicate guard — skip if already queued
+  if (!(app as any).services.includes(ctor)) {
+    app.registerService(ctor);
+  }
+}, { class: true });
+
+/**
+ * Resolve the display name for a service class.
+ * Returns the @service("name") value if present, otherwise class.name.
+ */
+export function resolveServiceName(cls: new (...args: any[]) => any): string {
+  return (cls as any)[SERVICE_NAME.key] ?? cls.name;
+}
+
+/**
+ * Property-mode dependency injection via auto-accessor.
+ * Resolves lazily from the DI container on first access.
+ * Throws if the provider is not registered — use @maybe for optional.
+ *
+ * ```ts
+ * @inject(AuthService) accessor auth!: AuthService;
+ * @inject("AuthService") accessor auth!: AuthService;
+ * ```
+ */
+export function inject<T = unknown>(key: (new (...args: unknown[]) => T) | string) {
+  return <This extends object>(
+    _target: ClassAccessorDecoratorTarget<This, T>,
+    _context: ClassAccessorDecoratorContext<This, T>,
+  ): ClassAccessorDecoratorResult<This, T> => {
+    return {
+      get(): T {
+        return app.get<T>(key);
+      },
+      set(_val: T) {
+        if (typeof console !== "undefined") {
+          console.warn(`[loom] Cannot set @inject property — injection is read-only.`);
+        }
+      },
+    };
+  };
+}
+
+/**
+ * Optional dependency injection. Returns `undefined` if the provider
+ * is not registered, instead of throwing.
+ *
+ * ```ts
+ * @maybe(AnalyticsService) accessor analytics?: AnalyticsService;
+ * ```
+ */
+export function maybe<T = unknown>(key: (new (...args: unknown[]) => T) | string) {
+  return <This extends object>(
+    _target: ClassAccessorDecoratorTarget<This, T | undefined>,
+    _context: ClassAccessorDecoratorContext<This, T | undefined>,
+  ): ClassAccessorDecoratorResult<This, T | undefined> => {
+    return {
+      get(): T | undefined {
+        return app.has(key) ? app.get<T>(key) : undefined;
+      },
+      set(_val: T | undefined) {
+        if (typeof console !== "undefined") {
+          console.warn(`[loom] Cannot set @maybe property — injection is read-only.`);
+        }
+      },
+    };
+  };
+}
+
+/**
+ * Method decorator on @service classes.
+ * Return value is registered as a provider on app.start().
+ *
+ * ```ts
+ * @service
+ * class Boot {
+ *   @factory(ChatServiceNatsClient)
+ *   createChat() {
+ *     return new ChatServiceNatsClient(app.get(NatsConnection));
+ *   }
+ * }
+ * ```
+ */
+export const factory = createDecorator<[key?: unknown]>((method, methodName, key) => {
+  app.registerFactory(key, { method: methodName, fn: method });
+});

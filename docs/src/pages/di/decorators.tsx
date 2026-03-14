@@ -1,7 +1,7 @@
 /**
  * DI — Decorators  /di/decorators
  *
- * @service, @inject, @factory reference page.
+ * @service, @inject, @maybe, @factory reference page.
  */
 import { LoomElement } from "@toyz/loom";
 
@@ -9,7 +9,7 @@ export default class PageDIDecorators extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Decorators" subtitle="DI-specific decorators for services, injection, and provider factories."></doc-header>
+        <doc-header title="Decorators" subtitle="DI-specific decorators for services, injection, optional injection, and provider factories."></doc-header>
 
         <section>
           <div class="group-header">
@@ -22,7 +22,7 @@ export default class PageDIDecorators extends LoomElement {
               Auto-instantiated singleton registered on <span class="ic">app.start()</span>.
               Constructor <span class="ic">@inject</span> params are resolved automatically.
             </div>
-            <code-block lang="ts" code={`import { service } from "@toyz/loom/di";
+            <code-block lang="ts" code={`import { service } from "@toyz/loom";
 
 @service
 class BookmarkStore extends CollectionStore<Bookmark> {
@@ -45,19 +45,48 @@ class BookmarkStore extends CollectionStore<Bookmark> {
               a lazy getter, or as a <strong>parameter decorator</strong> on constructors and
               factory methods.
             </div>
-            <code-block lang="ts" code={`// Property — lazy getter
-@inject(AuthService) auth!: AuthService;
+            <code-block lang="ts" code={`import { inject } from "@toyz/loom";
 
-// Constructor parameter
-constructor(@inject(Config) cfg: Config) { ... }
+// Auto-accessor — lazy getter (throws if missing)
+@inject(AuthService) accessor auth!: AuthService;
+
+// String key (minification-safe)
+@inject("AuthService") accessor auth!: AuthService;
 
 // In a component
 @component("user-profile")
 class UserProfile extends LoomElement {
-  @inject(AuthService) auth!: AuthService;
+  @inject(AuthService) accessor auth!: AuthService;
 
   update() {
     return <p>Logged in as {this.auth.currentUser.name}</p>;
+  }
+}`}></code-block>
+          </div>
+        </section>
+
+        <section>
+          <div class="group-header">
+            <loom-icon name="help-circle" size={20} color="var(--emerald)"></loom-icon>
+            <h2>@maybe</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@maybe(Key)</div>
+            <div class="dec-desc">
+              Optional dependency injection. Returns <span class="ic">undefined</span> if the
+              provider is not registered, instead of throwing. Use when a dependency
+              is genuinely optional.
+            </div>
+            <code-block lang="ts" code={`import { maybe } from "@toyz/loom";
+
+@component("analytics-tracker")
+class AnalyticsTracker extends LoomElement {
+  // Won't throw if AnalyticsService isn't registered
+  @maybe(AnalyticsService) accessor analytics?: AnalyticsService;
+
+  track(event: string) {
+    // Only tracks if the service is available
+    this.analytics?.track(event);
   }
 }`}></code-block>
           </div>
@@ -139,7 +168,8 @@ class TodoPage extends LoomElement {
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>@service</code></td><td>Class</td><td>Auto-instantiated singleton, registered on <code>app.start()</code></td></tr>
-              <tr><td><code>@inject(Key)</code></td><td>Property / Parameter</td><td>Lazy getter or constructor param resolution</td></tr>
+              <tr><td><code>@inject(Key)</code></td><td>Accessor</td><td>Lazy getter — throws if not found</td></tr>
+              <tr><td><code>@maybe(Key)</code></td><td>Accessor</td><td>Lazy getter — returns <code>undefined</code> if not found</td></tr>
               <tr><td><code>@factory(Key?)</code></td><td>Method</td><td>Return value registered as provider</td></tr>
               <tr><td><code>@watch(Svc, prop?)</code></td><td>Method</td><td>Subscribe to DI-resolved Reactive service changes</td></tr>
             </tbody>

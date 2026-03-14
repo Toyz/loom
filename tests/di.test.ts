@@ -1,5 +1,5 @@
 /**
- * Tests: @service, @inject, @factory, app.get()
+ * Tests: DI container — @service, @inject, @maybe, @factory, app.get/has/replace/reset/keys
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { app } from "../src/app";
@@ -15,13 +15,10 @@ class ApiClient {
 }
 
 beforeEach(() => {
-  // Reset app providers
-  (app as any).providers = new Map();
-  (app as any).services = [];
-  (app as any).factories = [];
-  (app as any).components = [];
-  (app as any)._started = false;
+  app.reset();
 });
+
+// ── app.use() ──
 
 describe("app.use()", () => {
   it("registers a provider by class", () => {
@@ -37,6 +34,8 @@ describe("app.use()", () => {
   });
 });
 
+// ── app.get() ──
+
 describe("app.get()", () => {
   it("returns registered provider", () => {
     const logger = new Logger();
@@ -48,6 +47,8 @@ describe("app.get()", () => {
     expect(() => app.get(Logger)).toThrow();
   });
 });
+
+// ── app.maybe() ──
 
 describe("app.maybe()", () => {
   it("returns Err result for missing provider", () => {
@@ -65,6 +66,79 @@ describe("app.maybe()", () => {
   });
 });
 
+// ── app.has() ──
+
+describe("app.has()", () => {
+  it("returns false for unregistered provider", () => {
+    expect(app.has(Logger)).toBe(false);
+  });
+
+  it("returns true after registration", () => {
+    app.use(new Logger());
+    expect(app.has(Logger)).toBe(true);
+  });
+
+  it("returns true for string key", () => {
+    app.use("config", { debug: true });
+    expect(app.has("config")).toBe(true);
+  });
+});
+
+// ── app.replace() ──
+
+describe("app.replace()", () => {
+  it("replaces an existing provider", () => {
+    const original = new Logger();
+    app.use(original);
+    const mock = new Logger();
+    app.replace(Logger, mock);
+    expect(app.get(Logger)).toBe(mock);
+    expect(app.get(Logger)).not.toBe(original);
+  });
+
+  it("is chainable", () => {
+    const result = app.replace("a", 1).replace("b", 2);
+    expect(result).toBe(app);
+  });
+});
+
+// ── app.reset() ──
+
+describe("app.reset()", () => {
+  it("clears all providers", () => {
+    app.use(new Logger());
+    app.reset();
+    expect(app.has(Logger)).toBe(false);
+    expect(() => app.get(Logger)).toThrow();
+  });
+
+  it("resets started state", () => {
+    // Simulate started state
+    app.use(new Logger());
+    app.reset();
+    expect(app.started).toBe(false);
+  });
+});
+
+// ── app.keys() ──
+
+describe("app.keys()", () => {
+  it("returns empty array when no providers", () => {
+    expect(app.keys()).toEqual([]);
+  });
+
+  it("returns all registered keys", () => {
+    app.use(new Logger());
+    app.use(ApiClient, new ApiClient("http://x"));
+    const keys = app.keys();
+    expect(keys).toContain(Logger);
+    expect(keys).toContain(ApiClient);
+    expect(keys).toHaveLength(2);
+  });
+});
+
+// ── app event bus delegation ──
+
 describe("app event bus delegation", () => {
   it("app.on/emit routes through global bus", () => {
     class Ping extends LoomEvent {}
@@ -77,9 +151,10 @@ describe("app event bus delegation", () => {
   });
 });
 
+// ── named service resolution ──
+
 describe("named service resolution", () => {
   it("app.get() resolves a named service by string after start()", async () => {
-    const { service } = await import("../src/di/decorators");
     const { SERVICE_NAME } = await import("../src/decorators/symbols");
 
     class MyApi {
@@ -97,7 +172,7 @@ describe("named service resolution", () => {
   });
 
   it("@inject('name') accessor resolves by string name", async () => {
-    const { service, inject } = await import("../src/di/decorators");
+    const { inject } = await import("../src/app");
     const { SERVICE_NAME } = await import("../src/decorators/symbols");
 
     class ConfigService {
@@ -116,5 +191,83 @@ describe("named service resolution", () => {
     const instance = result.get!.call({});
     expect(instance).toBeInstanceOf(ConfigService);
     expect(instance.value).toBe(42);
+  });
+});
+
+// ── @maybe decorator ──
+
+describe("@maybe — optional inject", () => {
+  it("returns undefined when provider is not registered", async () => {
+    const { maybe } = await import("../src/app");
+
+    class Analytics { track(_e: string) {} }
+
+    const descriptor = maybe<Analytics>(Analytics);
+    const result = descriptor(
+      {} as any,
+      { kind: "accessor", name: "analytics" } as any,
+    );
+    const value = result.get!.call({});
+    expect(value).toBeUndefined();
+  });
+
+  it("returns the instance when provider is registered", async () => {
+    const { maybe } = await import("../src/app");
+
+    class Analytics { track(_e: string) {} }
+    const instance = new Analytics();
+    app.use(instance);
+
+    const descriptor = maybe<Analytics>(Analytics);
+    const result = descriptor(
+      {} as any,
+      { kind: "accessor", name: "analytics" } as any,
+    );
+    const value = result.get!.call({});
+    expect(value).toBe(instance);
+  });
+
+  it("returns undefined for string key when not registered", async () => {
+    const { maybe } = await import("../src/app");
+
+    const descriptor = maybe<string>("OptionalConfig");
+    const result = descriptor(
+      {} as any,
+      { kind: "accessor", name: "cfg" } as any,
+    );
+    expect(result.get!.call({})).toBeUndefined();
+  });
+});
+
+// ── @inject set warning ──
+
+describe("@inject — set warning", () => {
+  it("warns on set instead of silently ignoring", async () => {
+    const { inject } = await import("../src/app");
+    const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    class Svc {}
+    app.use(new Svc());
+
+    const descriptor = inject<Svc>(Svc);
+    const result = descriptor(
+      {} as any,
+      { kind: "accessor", name: "svc" } as any,
+    );
+    result.set!.call({}, new Svc());
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining("read-only"));
+    spy.mockRestore();
+  });
+});
+
+// ── Duplicate service guard ──
+
+describe("duplicate service guard", () => {
+  it("registerService does not add the same class twice", () => {
+    class Svc {}
+    app.registerService(Svc);
+    app.registerService(Svc);
+    // Access private services array to verify
+    expect((app as any).services.filter((s: any) => s === Svc)).toHaveLength(1);
   });
 });

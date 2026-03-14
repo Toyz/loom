@@ -10,8 +10,8 @@
  *   @toyz/loom/query     — api, intercept, createApiState
  */
 
-// App entry point
-export { app } from "./app";
+// App entry point + DI
+export { app, service, inject, maybe, factory, resolveServiceName } from "./app";
 export type { LoomApp } from "./app";
 
 // Event system

@@ -205,7 +205,7 @@ class LazyDIOverview extends LoomElement { }
 @route("/decorators", { group: DIGroup })
 @component("page-di-decorators")
 @lazy(() => import("./di/decorators"))
-@searchable({ title: "Decorators", section: "DI & Services", icon: "hash", to: "/di/decorators", keywords: ["@service", "@factory", "@inject", "use", "provider", "singleton"], summary: "DI-specific decorators for services, injection, and provider factories." })
+@searchable({ title: "Decorators", section: "DI & Services", icon: "hash", to: "/di/decorators", keywords: ["@service", "@factory", "@inject", "@maybe", "use", "provider", "singleton", "optional"], summary: "DI-specific decorators for services, injection, optional injection, and provider factories." })
 class LazyDIDecorators extends LoomElement { }
 
 @searchable({ title: "LoomLifecycle", section: "DI & Services", icon: "activity", to: "/di/overview", keywords: ["LoomLifecycle", "lifecycle", "start", "stop", "auto-start", "auto-stop", "service lifecycle", "router.start", "app.start", "app.stop"], summary: "Auto-call start()/stop() on DI services — no manual wiring needed." })
