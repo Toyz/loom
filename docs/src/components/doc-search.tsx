@@ -5,8 +5,9 @@
  * Reads from the @searchable registry populated by lazy.ts.
  */
 
-import { LoomElement, component, reactive, css, mount, styles, animationFrame, query } from "@toyz/loom";
+import { LoomElement, component, reactive, css, mount, styles, animationFrame, query, app } from "@toyz/loom";
 import { hotkey } from "@toyz/loom/element";
+import { LoomRouter } from "@toyz/loom/router";
 import { getSearchEntries, type SearchEntry } from "../search-registry";
 
 const style = css`
@@ -278,7 +279,7 @@ export class DocSearch extends LoomElement {
 
   navigate(entry: SearchEntry) {
     this.close();
-    location.hash = "#" + entry.to;
+    app.get(LoomRouter).navigate(entry.to);
   }
 
   getFiltered(): SearchEntry[] {

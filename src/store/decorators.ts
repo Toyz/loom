@@ -5,12 +5,14 @@
  * @prop     — External attribute with optional route binding (auto-accessor)
  * @computed — Cached derived getter
  * @store    — Component-scoped reactive store (auto-accessor)
+ * @persist  — Single-value persistent accessor (auto-accessor)
  */
 
 import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, TRANSFORMS, localSymbol } from "../decorators/symbols";
 import { Reactive } from "./reactive";
 import { bus } from "../bus";
-import type { PersistOptions } from "./storage";
+import type { PersistOptions, StorageAdapter } from "./storage";
+import { LocalAdapter } from "./storage";
 import type { Schedulable } from "../element/element";
 
 /**
@@ -544,3 +546,146 @@ export function store<This extends object, T extends object>(
     return buildStoreAccessor<This2, T>(defaults, persist, key);
   };
 }
+
+// ── @persist decorator ──
+
+/** Lazy singleton — only allocated when @persist is actually used */
+let _defaultStorage: StorageAdapter | null = null;
+function getDefaultStorage(): StorageAdapter {
+  return _defaultStorage ??= new LocalAdapter();
+}
+
+interface PersistDecoratorOpts {
+  key?: string;
+  storage?: StorageAdapter;
+}
+
+/**
+ * Single-value persistent auto-accessor.
+ *
+ * Backed by `Reactive<T>` with `PersistOptions` — same hydration,
+ * JSON round-trip, and debounced write-through as `@store`.
+ *
+ * ```ts
+ * // localStorage key = "theme"
+ * @persist accessor theme = "dark";
+ *
+ * // Explicit key
+ * @persist("user-theme") accessor theme = "dark";
+ *
+ * // Custom adapter
+ * @persist({ storage: new SessionAdapter() }) accessor theme = "dark";
+ *
+ * // Custom key + adapter
+ * @persist({ key: "user-theme", storage: new SessionAdapter() }) accessor theme = "dark";
+ * ```
+ */
+
+// Bare — @persist accessor x = val
+export function persist<This extends object, V>(
+  target: ClassAccessorDecoratorTarget<This, V>,
+  context: ClassAccessorDecoratorContext<This, V>,
+): ClassAccessorDecoratorResult<This, V>;
+
+// String key — @persist("key") accessor x = val
+export function persist(key: string): <This extends object, V>(
+  target: ClassAccessorDecoratorTarget<This, V>,
+  context: ClassAccessorDecoratorContext<This, V>,
+) => ClassAccessorDecoratorResult<This, V>;
+
+// Options — @persist({ key?, storage? }) accessor x = val
+export function persist(opts: PersistDecoratorOpts): <This extends object, V>(
+  target: ClassAccessorDecoratorTarget<This, V>,
+  context: ClassAccessorDecoratorContext<This, V>,
+) => ClassAccessorDecoratorResult<This, V>;
+
+export function persist<This extends object, V>(
+  targetOrKeyOrOpts: ClassAccessorDecoratorTarget<This, V> | string | PersistDecoratorOpts,
+  context?: ClassAccessorDecoratorContext<This, V>,
+): ClassAccessorDecoratorResult<This, V> | (<T2 extends object, V2>(
+  target: ClassAccessorDecoratorTarget<T2, V2>,
+  context: ClassAccessorDecoratorContext<T2, V2>,
+) => ClassAccessorDecoratorResult<T2, V2>) {
+
+  // Bare @persist — context is present
+  if (context) {
+    return buildPersistAccessor<This, V>(String(context.name), getDefaultStorage(), context);
+  }
+
+  // @persist("key") — string
+  if (typeof targetOrKeyOrOpts === "string") {
+    const explicitKey = targetOrKeyOrOpts;
+    return <T2 extends object, V2>(
+      _target: ClassAccessorDecoratorTarget<T2, V2>,
+      ctx: ClassAccessorDecoratorContext<T2, V2>,
+    ): ClassAccessorDecoratorResult<T2, V2> => {
+      return buildPersistAccessor<T2, V2>(explicitKey, getDefaultStorage(), ctx);
+    };
+  }
+
+  // @persist({ key?, storage? }) — options object
+  const opts = targetOrKeyOrOpts as PersistDecoratorOpts;
+  return <T2 extends object, V2>(
+    _target: ClassAccessorDecoratorTarget<T2, V2>,
+    ctx: ClassAccessorDecoratorContext<T2, V2>,
+  ): ClassAccessorDecoratorResult<T2, V2> => {
+    const storageKey = opts.key ?? String(ctx.name);
+    const adapter = opts.storage ?? getDefaultStorage();
+    return buildPersistAccessor<T2, V2>(storageKey, adapter, ctx);
+  };
+}
+
+/** @internal — builds the accessor descriptor for @persist */
+function buildPersistAccessor<This extends object, V>(
+  storageKey: string,
+  adapter: StorageAdapter,
+  context: ClassAccessorDecoratorContext<This, V>,
+): ClassAccessorDecoratorResult<This, V> {
+  const fieldName = String(context.name);
+  const sym = localSymbol<Reactive<V>>(`persist:${fieldName}`);
+  const persistOpts: PersistOptions = { key: storageKey, storage: adapter };
+
+  return {
+    get(this: This): V {
+      const self = this as unknown as Record<symbol | string, unknown>;
+      if (!self[sym.key]) {
+        // First access — create Reactive with persistence.
+        // If storage has a value, Reactive hydrates from it; otherwise uses init.
+        const initial = (self as any)[`__persist_init_${fieldName}`] as V;
+        const r = new Reactive<V>(initial, persistOpts);
+        self[sym.key] = r;
+        r.subscribe(() => (self as unknown as Schedulable).scheduleUpdate?.());
+
+        // Wire @watch handlers
+        const watchers = WATCHERS.from(self) as Array<{ field: string; key: string }> | undefined;
+        if (watchers) {
+          for (let i = 0; i < watchers.length; i++) {
+            const w = watchers[i];
+            if (w.field === fieldName) r.subscribe((v: V, prev: V) => (self[w.key] as Function)(v, prev));
+          }
+        }
+
+        // Wire @emit handlers
+        const emitters = EMITTERS.from(self) as Array<{ field: string; factory: (v: V) => object }> | undefined;
+        if (emitters) {
+          for (let i = 0; i < emitters.length; i++) {
+            const e = emitters[i];
+            if (e.field === fieldName) r.subscribe((v: V) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+          }
+        }
+      }
+      return (self[sym.key] as Reactive<V>).value;
+    },
+    set(this: This, val: V) {
+      const self = this as unknown as Record<symbol | string, unknown>;
+      if (!self[sym.key]) void (self as unknown as Record<string, V>)[fieldName];
+      (self[sym.key] as Reactive<V>).set(val);
+    },
+    init(this: This, val: V): V {
+      // Stash the init value so the getter can use it as fallback
+      (this as any)[`__persist_init_${fieldName}`] = val;
+      return val;
+    },
+  };
+}
+

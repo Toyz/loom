@@ -35,7 +35,7 @@ export type { RenderLoop } from "./render-loop";
 
 // ── Store (core only — adapters & route sentinels via @toyz/loom/store) ──
 
-export { reactive, prop, computed, watch, store } from "./store";
+export { reactive, prop, computed, watch, store, persist } from "./store";
 
 // ── Element: base class + core decorators ──
 

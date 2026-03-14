@@ -57,6 +57,61 @@ const draft = new Reactive("", {
 
         <section>
           <div class="group-header">
+            <loom-icon name="save" size={20} color="var(--rose)"></loom-icon>
+            <h2>@persist</h2>
+          </div>
+          <div class="feature-entry">
+            <div class="dec-sig">@persist</div>
+            <div class="dec-desc">
+              Single-value auto-accessor backed by <span class="ic">Reactive{"<T>"}</span>{" "}
+              with automatic persistence. Uses the same <span class="ic">StorageAdapter</span>{" "}
+              interface as <span class="ic">@store</span> — same hydration, JSON round-trip,{" "}
+              and debounced write-through.
+            </div>
+            <code-block lang="ts" code={`import { persist } from "@toyz/loom";
+
+// Key = accessor name, persists to localStorage
+@persist accessor theme = "dark";
+
+// Explicit storage key
+@persist("user-theme") accessor theme = "dark";
+
+// Custom adapter (SessionAdapter, MemoryStorage, etc.)
+@persist({ storage: new SessionAdapter() }) accessor theme = "dark";
+
+// Custom key + adapter
+@persist({ key: "user-theme", storage: new SessionAdapter() })
+accessor theme = "dark";`}></code-block>
+          </div>
+
+          <table class="api-table">
+            <thead><tr><th>Form</th><th>Key</th><th>Storage</th></tr></thead>
+            <tbody>
+              <tr><td><span class="ic">@persist</span></td><td>Accessor name</td><td>localStorage</td></tr>
+              <tr><td><span class="ic">@persist("key")</span></td><td>Explicit</td><td>localStorage</td></tr>
+              <tr><td><span class="ic">{"@persist({ storage })"}</span></td><td>Accessor name</td><td>Custom adapter</td></tr>
+              <tr><td><span class="ic">{"@persist({ key, storage })"}</span></td><td>Explicit</td><td>Custom adapter</td></tr>
+            </tbody>
+          </table>
+
+          <div class="feature-entry">
+            <div class="dec-desc" style="margin-top: 1rem;">
+              Values are hydrated from storage on first access — if a stored value exists,{" "}
+              it takes precedence over the initializer. Changes are debounced and flushed{" "}
+              via microtask so rapid writes result in a single storage write.
+            </div>
+            <code-block lang="ts" code={`// Persisted counter — survives page reloads
+@persist accessor visitCount = 0;
+
+connectedCallback() {
+  super.connectedCallback();
+  this.visitCount++;  // hydrate → increment → auto-persist
+}`}></code-block>
+          </div>
+        </section>
+
+        <section>
+          <div class="group-header">
             <loom-icon name="code" size={20} color="var(--amber)"></loom-icon>
             <h2>Custom Adapter</h2>
           </div>

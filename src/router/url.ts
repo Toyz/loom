@@ -14,42 +14,50 @@
  * @domain    accessor host   = "";  // "tenant.app.co.uk" → "app"
  * @tld       accessor ext    = "";  // "tenant.app.co.uk" → "co.uk"
  * ```
+ *
+ * Optimisations:
+ *  - TWO_PART_TLDS is lazy-initialised (no alloc if decorators are unused)
+ *  - Parsed hostname is cached globally (hostname never changes in a SPA)
+ *  - Per-instance overrides share a single WeakMap across all URL decorators
  */
 
-// ── Known 2-part TLDs ─────────────────────────────────────────────────────────
+// ── Known 2-part TLDs (lazy) ──────────────────────────────────────────────────
 // Covers the most common compound TLDs without shipping the full PSL (~100 kb).
 // Source: IANA + real-world frequency. Add entries as needed.
 
-const TWO_PART_TLDS = new Set([
-  // UK
-  "co.uk","org.uk","me.uk","net.uk","ltd.uk","plc.uk","gov.uk","sch.uk","ac.uk","mod.uk",
-  // Australia
-  "com.au","net.au","org.au","edu.au","gov.au","id.au","asn.au",
-  // New Zealand
-  "co.nz","net.nz","org.nz","govt.nz","school.nz","ac.nz",
-  // Japan
-  "co.jp","ne.jp","or.jp","ed.jp","ac.jp","go.jp","ad.jp",
-  // Brazil
-  "com.br","net.br","org.br","gov.br","edu.br","ind.br",
-  // India
-  "co.in","net.in","org.in","gen.in","firm.in","gov.in",
-  // South Africa
-  "co.za","net.za","org.za","gov.za","edu.za",
-  // South Korea
-  "co.kr","or.kr","go.kr","ne.kr","ac.kr",
-  // China
-  "com.cn","net.cn","org.cn","gov.cn","edu.cn","ac.cn",
-  // Hong Kong
-  "com.hk","net.hk","org.hk","edu.hk","gov.hk",
-  // Singapore
-  "com.sg","net.sg","org.sg","edu.sg","gov.sg",
-  // Malaysia
-  "com.my","net.my","org.my","edu.my","gov.my",
-  // Others
-  "co.id","co.th","com.ph","com.ar","net.ar","com.mx","com.co",
-  "co.ie","com.cy","com.pk","net.pk","com.sg","co.tt","co.ke",
-  "com.ng","com.eg","com.tr","com.tw","com.vn","com.ua",
-]);
+let _tlds: Set<string> | null = null;
+function getTlds(): Set<string> {
+  return _tlds ??= new Set([
+    // UK
+    "co.uk","org.uk","me.uk","net.uk","ltd.uk","plc.uk","gov.uk","sch.uk","ac.uk","mod.uk",
+    // Australia
+    "com.au","net.au","org.au","edu.au","gov.au","id.au","asn.au",
+    // New Zealand
+    "co.nz","net.nz","org.nz","govt.nz","school.nz","ac.nz",
+    // Japan
+    "co.jp","ne.jp","or.jp","ed.jp","ac.jp","go.jp","ad.jp",
+    // Brazil
+    "com.br","net.br","org.br","gov.br","edu.br","ind.br",
+    // India
+    "co.in","net.in","org.in","gen.in","firm.in","gov.in",
+    // South Africa
+    "co.za","net.za","org.za","gov.za","edu.za",
+    // South Korea
+    "co.kr","or.kr","go.kr","ne.kr","ac.kr",
+    // China
+    "com.cn","net.cn","org.cn","gov.cn","edu.cn","ac.cn",
+    // Hong Kong
+    "com.hk","net.hk","org.hk","edu.hk","gov.hk",
+    // Singapore
+    "com.sg","net.sg","org.sg","edu.sg","gov.sg",
+    // Malaysia
+    "com.my","net.my","org.my","edu.my","gov.my",
+    // Others
+    "co.id","co.th","com.ph","com.ar","net.ar","com.mx","com.co",
+    "co.ie","com.cy","com.pk","net.pk","com.sg","co.tt","co.ke",
+    "com.ng","com.eg","com.tr","com.tw","com.vn","com.ua",
+  ]);
+}
 
 // ── Parser ────────────────────────────────────────────────────────────────────
 
@@ -75,7 +83,7 @@ export function parseHostname(hostname?: string): ParsedHostname {
 
   // Check if the last two labels form a known compound TLD (e.g. "co.uk")
   const lastTwo = `${parts[parts.length - 2]}.${parts[parts.length - 1]}`;
-  const tldLen  = TWO_PART_TLDS.has(lastTwo) ? 2 : 1;
+  const tldLen  = getTlds().has(lastTwo) ? 2 : 1;
 
   return {
     tld:       parts.slice(-tldLen).join("."),
@@ -84,27 +92,42 @@ export function parseHostname(hostname?: string): ParsedHostname {
   };
 }
 
-// ── Factory & helpers ────────────────────────────────────────────────────────
+// ── Cached parse result ──────────────────────────────────────────────────────
+// Hostname never changes in a SPA — parse once for the entire app lifetime.
+
+let _cached: ParsedHostname | null = null;
+function getCached(): ParsedHostname {
+  return _cached ??= parseHostname();
+}
+
+/** @internal — exported so tests can reset the cache between runs */
+export function _resetCache(): void { _cached = null; }
+
+// ── Shared per-instance override storage ─────────────────────────────────────
+// A single WeakMap for all URL decorators. Each instance maps to an object
+// with optional per-field overrides set via the setter.
+
+const overrides = new WeakMap<object, Partial<ParsedHostname & { domainFull: string }>>();
+function getOverrides(instance: object) {
+  let o = overrides.get(instance);
+  if (!o) { o = {}; overrides.set(instance, o); }
+  return o;
+}
+
+// ── Factory ──────────────────────────────────────────────────────────────────
 
 function urlPart(part: keyof ParsedHostname) {
   return function <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, string>,
     _context: ClassAccessorDecoratorContext<This, string>,
   ): ClassAccessorDecoratorResult<This, string> {
-    // Per-instance WeakMap — same lazy-init pattern as @store.
-    // hostname is read on the FIRST property access and cached; subsequent
-    // reads and any set() calls use the cache directly.
-    const storage = new WeakMap<object, string>();
-
     return {
       get(this: This): string {
-        if (!storage.has(this)) {
-          storage.set(this, parseHostname()[part]);
-        }
-        return storage.get(this)!;
+        const o = overrides.get(this);
+        return o?.[part] ?? getCached()[part];
       },
       set(this: This, value: string): void {
-        storage.set(this, value);
+        getOverrides(this)[part] = value;
       },
     };
   };
@@ -134,21 +157,20 @@ type DomainDecorator = <This extends object>(
 ) => ClassAccessorDecoratorResult<This, string>;
 
 function makeDomainDecorator(full: boolean): DomainDecorator {
-  const storage = new WeakMap<object, string>();
   return function <This extends object>(
     _target: ClassAccessorDecoratorTarget<This, string>,
     _context: ClassAccessorDecoratorContext<This, string>,
   ): ClassAccessorDecoratorResult<This, string> {
+    const overrideKey = full ? "domainFull" as const : "domain" as const;
     return {
       get(this: This): string {
-        if (!storage.has(this)) {
-          const { domain: d, tld: t } = parseHostname();
-          storage.set(this, full && t ? `${d}.${t}` : d);
-        }
-        return storage.get(this)!;
+        const o = overrides.get(this);
+        if (o?.[overrideKey] !== undefined) return o[overrideKey]!;
+        const { domain: d, tld: t } = getCached();
+        return full && t ? `${d}.${t}` : d;
       },
       set(this: This, value: string): void {
-        storage.set(this, value);
+        getOverrides(this)[overrideKey] = value;
       },
     };
   };
@@ -201,3 +223,4 @@ export function domain<This extends object>(
  * ```
  */
 export const tld = urlPart("tld");
+
