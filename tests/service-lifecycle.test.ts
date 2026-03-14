@@ -15,16 +15,19 @@
  *  - LoomRouter lifecycle: idempotent start(), stop() removes listener, restart after stop
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { hasStart, hasStop } from "../src/lifecycle";
+import { hasStart, hasStop, hasSuspend, hasResume } from "../src/lifecycle";
 import { app } from "../src/app";
 import { LoomRouter } from "../src/router/router";
 
 beforeEach(() => {
+  // Clean up any existing visibility listener before resetting
+  if ((app as any)._visibilityCleanup) (app as any)._visibilityCleanup();
   (app as any).providers = new Map();
   (app as any).services = [];
   (app as any).factories = [];
   (app as any).components = [];
   (app as any)._started = false;
+  (app as any)._visibilityCleanup = null;
 });
 
 // ─────────────────────────────────────────────
@@ -375,3 +378,246 @@ describe("LoomRouter lifecycle", () => {
   });
 });
 
+// ─────────────────────────────────────────────
+// Type guards: hasSuspend / hasResume
+// ─────────────────────────────────────────────
+
+describe("hasSuspend", () => {
+  it("true for object with function suspend()", () => {
+    expect(hasSuspend({ suspend: () => {} })).toBe(true);
+  });
+  it("false when suspend is a string", () => {
+    expect(hasSuspend({ suspend: "yes" })).toBe(false);
+  });
+  it("false for empty object", () => {
+    expect(hasSuspend({})).toBe(false);
+  });
+  it("false for null", () => {
+    expect(hasSuspend(null)).toBe(false);
+  });
+  it("false for primitive", () => {
+    expect(hasSuspend(42)).toBe(false);
+  });
+});
+
+describe("hasResume", () => {
+  it("true for object with function resume()", () => {
+    expect(hasResume({ resume: () => {} })).toBe(true);
+  });
+  it("false when resume is a number", () => {
+    expect(hasResume({ resume: 0 })).toBe(false);
+  });
+  it("false for empty object", () => {
+    expect(hasResume({})).toBe(false);
+  });
+  it("false for null", () => {
+    expect(hasResume(null)).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────────
+// app.suspend() / app.resume()
+// ─────────────────────────────────────────────
+
+describe("app.suspend()", () => {
+  it("calls suspend() on a service that implements it", async () => {
+    const suspendFn = vi.fn();
+    class Svc { suspend() { suspendFn(); } }
+    app.registerService(Svc);
+    await app.start();
+    app.suspend();
+    expect(suspendFn).toHaveBeenCalledOnce();
+  });
+
+  it("does not throw for a service without suspend()", async () => {
+    class PlainSvc {}
+    app.registerService(PlainSvc);
+    await app.start();
+    expect(() => app.suspend()).not.toThrow();
+  });
+
+  it("calls suspend() in registration order", async () => {
+    const order: string[] = [];
+    class A { suspend() { order.push("A"); } }
+    class B { suspend() { order.push("B"); } }
+    class C { suspend() { order.push("C"); } }
+    app.registerService(A);
+    app.registerService(B);
+    app.registerService(C);
+    await app.start();
+    app.suspend();
+    expect(order).toEqual(["A", "B", "C"]);
+  });
+
+  it("handles mixed lifecycle/plain services", async () => {
+    const order: string[] = [];
+    class Plain {}
+    class WithSuspend { suspend() { order.push("ws"); } }
+    app.registerService(Plain);
+    app.registerService(WithSuspend);
+    await app.start();
+    app.suspend();
+    expect(order).toEqual(["ws"]);
+  });
+});
+
+describe("app.resume()", () => {
+  it("calls resume() on a service that implements it", async () => {
+    const resumeFn = vi.fn();
+    class Svc { resume() { resumeFn(); } }
+    app.registerService(Svc);
+    await app.start();
+    app.resume();
+    expect(resumeFn).toHaveBeenCalledOnce();
+  });
+
+  it("does not throw for a service without resume()", async () => {
+    class PlainSvc {}
+    app.registerService(PlainSvc);
+    await app.start();
+    expect(() => app.resume()).not.toThrow();
+  });
+
+  it("calls resume() in registration order", async () => {
+    const order: string[] = [];
+    class A { resume() { order.push("A"); } }
+    class B { resume() { order.push("B"); } }
+    app.registerService(A);
+    app.registerService(B);
+    await app.start();
+    app.resume();
+    expect(order).toEqual(["A", "B"]);
+  });
+});
+
+// ─────────────────────────────────────────────
+// suspend / resume — full lifecycle integration
+// ─────────────────────────────────────────────
+
+describe("suspend/resume — full lifecycle", () => {
+  it("full cycle: start → suspend → resume → stop", async () => {
+    const events: string[] = [];
+    class Svc {
+      start()   { events.push("start");   }
+      stop()    { events.push("stop");    }
+      suspend() { events.push("suspend"); }
+      resume()  { events.push("resume");  }
+    }
+    app.registerService(Svc);
+    await app.start();
+    app.suspend();
+    app.resume();
+    app.stop();
+    expect(events).toEqual(["start", "suspend", "resume", "stop"]);
+  });
+
+  it("multiple suspend/resume cycles work", async () => {
+    const suspendFn = vi.fn();
+    const resumeFn = vi.fn();
+    class Svc {
+      suspend() { suspendFn(); }
+      resume()  { resumeFn(); }
+    }
+    app.registerService(Svc);
+    await app.start();
+    app.suspend();
+    app.resume();
+    app.suspend();
+    app.resume();
+    expect(suspendFn).toHaveBeenCalledTimes(2);
+    expect(resumeFn).toHaveBeenCalledTimes(2);
+  });
+
+  it("service with only suspend (no resume) works", async () => {
+    const suspendFn = vi.fn();
+    class SuspendOnly { suspend() { suspendFn(); } }
+    app.registerService(SuspendOnly);
+    await app.start();
+    app.suspend();
+    expect(suspendFn).toHaveBeenCalledOnce();
+    expect(() => app.resume()).not.toThrow(); // no resume — should not throw
+  });
+
+  it("service with only resume (no suspend) works", async () => {
+    const resumeFn = vi.fn();
+    class ResumeOnly { resume() { resumeFn(); } }
+    app.registerService(ResumeOnly);
+    await app.start();
+    expect(() => app.suspend()).not.toThrow(); // no suspend — should not throw
+    app.resume();
+    expect(resumeFn).toHaveBeenCalledOnce();
+  });
+
+  it("app.use() instances are NOT affected by suspend/resume", async () => {
+    const suspendFn = vi.fn();
+    const resumeFn = vi.fn();
+    class ManualSvc {
+      suspend() { suspendFn(); }
+      resume()  { resumeFn(); }
+    }
+    app.use(new ManualSvc());
+    await app.start();
+    app.suspend();
+    app.resume();
+    expect(suspendFn).not.toHaveBeenCalled();
+    expect(resumeFn).not.toHaveBeenCalled();
+  });
+});
+
+// ─────────────────────────────────────────────
+// visibilitychange auto-wiring
+// ─────────────────────────────────────────────
+
+describe("visibilitychange auto-wiring", () => {
+  it("app.start() registers a visibilitychange listener", async () => {
+    const addSpy = vi.spyOn(document, "addEventListener");
+    await app.start();
+    expect(addSpy).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
+    app.stop();
+    addSpy.mockRestore();
+  });
+
+  it("app.stop() removes the visibilitychange listener", async () => {
+    const removeSpy = vi.spyOn(document, "removeEventListener");
+    await app.start();
+    app.stop();
+    expect(removeSpy).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
+    removeSpy.mockRestore();
+  });
+
+  it("visibilitychange fires suspend/resume on services", async () => {
+    const suspendFn = vi.fn();
+    const resumeFn = vi.fn();
+    class Svc {
+      suspend() { suspendFn(); }
+      resume()  { resumeFn(); }
+    }
+    app.registerService(Svc);
+    await app.start();
+
+    // Simulate tab hidden
+    Object.defineProperty(document, "hidden", { value: true, configurable: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(suspendFn).toHaveBeenCalledOnce();
+
+    // Simulate tab visible
+    Object.defineProperty(document, "hidden", { value: false, configurable: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(resumeFn).toHaveBeenCalledOnce();
+
+    app.stop();
+  });
+
+  it("no visibility events after stop()", async () => {
+    const suspendFn = vi.fn();
+    class Svc { suspend() { suspendFn(); } }
+    app.registerService(Svc);
+    await app.start();
+    app.stop();
+
+    // Simulate tab hidden after stop — should not fire
+    Object.defineProperty(document, "hidden", { value: true, configurable: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(suspendFn).not.toHaveBeenCalled();
+  });
+});

@@ -19,7 +19,7 @@ import { INJECT_PARAMS, ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols";
 import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
 import { LoomResult } from "./result";
-import { hasStart, hasStop } from "./lifecycle";
+import { hasStart, hasStop, hasSuspend, hasResume } from "./lifecycle";
 
 interface FactoryMeta {
   fn: Function;
@@ -33,6 +33,7 @@ class LoomApp {
   private factories: FactoryMeta[] = [];
   private components: { tag: string; ctor: CustomElementConstructor }[] = [];
   private _started = false;
+  private _visibilityCleanup: (() => void) | null = null;
 
   // ── Event bus (delegates to the module-level bus singleton) ──
 
@@ -191,11 +192,19 @@ class LoomApp {
       }
     }
 
+    // 5. Wire visibilitychange for suspend/resume lifecycle
+    this._wireVisibility();
+
     this._started = true;
   }
 
   /** Tear down — call stop() on lifecycle-aware services (reverse order), then stop render loop */
   stop(): void {
+    // Remove visibilitychange listener
+    if (this._visibilityCleanup) {
+      this._visibilityCleanup();
+      this._visibilityCleanup = null;
+    }
     // LoomLifecycle — call stop() in reverse registration order
     for (const Svc of [...this.services].reverse()) {
       const instance = this.providers.get(Svc);
@@ -203,6 +212,39 @@ class LoomApp {
     }
     renderLoop.stop();
     this._started = false;
+  }
+
+  /**
+   * Call suspend() on all lifecycle-aware services.
+   * Invoked automatically on `visibilitychange` (tab hidden), or manually.
+   */
+  suspend(): void {
+    for (const Svc of this.services) {
+      const instance = this.providers.get(Svc);
+      if (instance && hasSuspend(instance)) instance.suspend();
+    }
+  }
+
+  /**
+   * Call resume() on all lifecycle-aware services.
+   * Invoked automatically on `visibilitychange` (tab visible), or manually.
+   */
+  resume(): void {
+    for (const Svc of this.services) {
+      const instance = this.providers.get(Svc);
+      if (instance && hasResume(instance)) instance.resume();
+    }
+  }
+
+  /** Wire document.visibilitychange to auto-call suspend/resume on services */
+  private _wireVisibility(): void {
+    if (typeof document === "undefined") return; // SSR guard
+    const handler = () => {
+      if (document.hidden) this.suspend();
+      else this.resume();
+    };
+    document.addEventListener("visibilitychange", handler);
+    this._visibilityCleanup = () => document.removeEventListener("visibilitychange", handler);
   }
 
   /** Whether the app has been started */
