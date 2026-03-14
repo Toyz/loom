@@ -215,6 +215,15 @@ class LoomApp {
       }
     }
 
+    // 2b. Call start() on app.use() providers that implement LoomLifecycle
+    //     (skip @service instances — already started in step 1)
+    const serviceInstances = new Set(this.services.map((s: any) => this.providers.get(s)));
+    for (const instance of this.providers.values()) {
+      if (!serviceInstances.has(instance) && hasStart(instance)) {
+        await instance.start();
+      }
+    }
+
     // 3. Start render loop
     renderLoop.start();
 
@@ -231,7 +240,7 @@ class LoomApp {
     this._started = true;
   }
 
-  /** Tear down — call stop() on lifecycle-aware services (reverse order), then stop render loop */
+  /** Tear down — call stop() on lifecycle-aware providers (reverse order), then stop render loop */
   stop(): void {
     // Remove visibilitychange listener
     if (this._visibilityCleanup) {
@@ -239,33 +248,36 @@ class LoomApp {
       this._visibilityCleanup = null;
     }
     // LoomLifecycle — call stop() in reverse registration order
+    const serviceInstances = new Set(this.services.map((s: any) => this.providers.get(s)));
     for (const Svc of [...this.services].reverse()) {
       const instance = this.providers.get(Svc);
       if (instance && hasStop(instance)) instance.stop();
+    }
+    // Also call stop() on app.use() providers
+    for (const instance of this.providers.values()) {
+      if (!serviceInstances.has(instance) && hasStop(instance)) instance.stop();
     }
     renderLoop.stop();
     this._started = false;
   }
 
   /**
-   * Call suspend() on all lifecycle-aware services.
+   * Call suspend() on all lifecycle-aware providers.
    * Invoked automatically on `visibilitychange` (tab hidden), or manually.
    */
   suspend(): void {
-    for (const Svc of this.services) {
-      const instance = this.providers.get(Svc);
-      if (instance && hasSuspend(instance)) instance.suspend();
+    for (const instance of this.providers.values()) {
+      if (hasSuspend(instance)) instance.suspend();
     }
   }
 
   /**
-   * Call resume() on all lifecycle-aware services.
+   * Call resume() on all lifecycle-aware providers.
    * Invoked automatically on `visibilitychange` (tab visible), or manually.
    */
   resume(): void {
-    for (const Svc of this.services) {
-      const instance = this.providers.get(Svc);
-      if (instance && hasResume(instance)) instance.resume();
+    for (const instance of this.providers.values()) {
+      if (hasResume(instance)) instance.resume();
     }
   }
 

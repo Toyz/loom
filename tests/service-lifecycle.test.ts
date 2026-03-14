@@ -302,25 +302,25 @@ describe("LoomLifecycle — full lifecycle (start + stop)", () => {
 });
 
 // ─────────────────────────────────────────────
-// app.use() instances — excluded from lifecycle
+// app.use() instances — lifecycle-managed (v0.20.1+)
 // ─────────────────────────────────────────────
 
-describe("LoomLifecycle — app.use() instances are not lifecycle-managed", () => {
-  it("does NOT call start() on a manually registered instance", async () => {
+describe("LoomLifecycle — app.use() instances are lifecycle-managed", () => {
+  it("calls start() on a manually registered instance", async () => {
     const startFn = vi.fn();
     class ManualSvc { start() { startFn(); } }
     app.use(new ManualSvc());
     await app.start();
-    expect(startFn).not.toHaveBeenCalled();
+    expect(startFn).toHaveBeenCalledOnce();
   });
 
-  it("does NOT call stop() on a manually registered instance", async () => {
+  it("calls stop() on a manually registered instance", async () => {
     const stopFn = vi.fn();
     class ManualSvc { stop() { stopFn(); } }
     app.use(new ManualSvc());
     await app.start();
     app.stop();
-    expect(stopFn).not.toHaveBeenCalled();
+    expect(stopFn).toHaveBeenCalledOnce();
   });
 });
 
@@ -548,7 +548,7 @@ describe("suspend/resume — full lifecycle", () => {
     expect(resumeFn).toHaveBeenCalledOnce();
   });
 
-  it("app.use() instances are NOT affected by suspend/resume", async () => {
+  it("app.use() instances ARE affected by suspend/resume", async () => {
     const suspendFn = vi.fn();
     const resumeFn = vi.fn();
     class ManualSvc {
@@ -559,8 +559,8 @@ describe("suspend/resume — full lifecycle", () => {
     await app.start();
     app.suspend();
     app.resume();
-    expect(suspendFn).not.toHaveBeenCalled();
-    expect(resumeFn).not.toHaveBeenCalled();
+    expect(suspendFn).toHaveBeenCalledOnce();
+    expect(resumeFn).toHaveBeenCalledOnce();
   });
 });
 

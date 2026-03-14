@@ -38,8 +38,14 @@ export class HashMode implements RouterMode {
   }
 
   listen(cb: () => void): () => void {
+    // hashchange: handles direct hash assignment (e.g. location.hash = "#/foo")
+    // popstate: handles back/forward from pushState-based navigation
     window.addEventListener("hashchange", cb);
-    return () => window.removeEventListener("hashchange", cb);
+    window.addEventListener("popstate", cb);
+    return () => {
+      window.removeEventListener("hashchange", cb);
+      window.removeEventListener("popstate", cb);
+    };
   }
 
   href(path: string): string {
