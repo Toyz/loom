@@ -68,10 +68,14 @@ class RenderLoop {
     const dt = this.prevTime ? (timestamp - this.prevTime) / 1000 : 0;
     this.prevTime = timestamp;
 
-    // Dispatch in layer order (already sorted)
+    // Snapshot the array — mid-tick unsubscribe via splice won't skip callbacks
     const sorted = this.sorted;
-    for (let i = 0; i < sorted.length; i++) {
-      sorted[i].fn(dt, timestamp);
+    const len = sorted.length;
+    for (let i = 0; i < len; i++) {
+      // Guard: callback may have been spliced out by an earlier callback's unsubscribe
+      if (i < sorted.length && sorted[i]) {
+        sorted[i].fn(dt, timestamp);
+      }
     }
 
     this.rafId = requestAnimationFrame(this.tick);
