@@ -59,8 +59,8 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   /** Start listening for URL changes and resolve the initial route */
   start(): void {
     if (this._cleanup) return; // already started
-    this._cleanup = this.mode.listen(() => this._resolve());
-    this._resolve();
+    this._cleanup = this.mode.listen(() => this._resolveWithGuards());
+    this._resolveWithGuards();
   }
 
   /** Stop listening for URL changes (called automatically by app.stop()) */
@@ -84,7 +84,7 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       return this.go(allowed, _depth + 1);
     }
     this.mode.write(path);
-    this._resolve();
+    this._doRender(); // guards already ran — skip re-check
   }
 
   /** Alias for go() */
@@ -107,7 +107,7 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       return this.replace(allowed, _depth + 1);
     }
     this.mode.replace(path);
-    this._resolve();
+    this._doRender(); // guards already ran — skip re-check
   }
 
   /** Go back in history */
@@ -148,7 +148,39 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
     return path;
   }
 
-  /** Resolve the current URL against the route table and emit RouteChanged */
+  /**
+   * Async entry point for URL listener and initial load.
+   * Runs guards before rendering — handles direct URL entry,
+   * page refresh, and browser back/forward.
+   */
+  private async _resolveWithGuards(_depth = 0): Promise<void> {
+    if (_depth >= MAX_GUARD_REDIRECTS) {
+      console.error(`[LoomRouter] Guard redirect loop on URL change (>${MAX_GUARD_REDIRECTS} hops). Aborting.`);
+      return;
+    }
+    const id = ++this._navId;
+    const path = this._normalizePath(this.mode.read());
+    const allowed = await this._checkGuards(path);
+    if (id !== this._navId) return; // superseded by a newer navigation
+    if (allowed === false) {
+      // Blocked with no redirect — bounce back to previous path or root
+      const prev = this._current.path;
+      this.mode.replace(prev !== path ? prev : "/");
+      this._doRender();
+      return;
+    }
+    if (typeof allowed === "string") {
+      this.mode.replace(this._normalizePath(allowed));
+      return this._resolveWithGuards(_depth + 1);
+    }
+    this._doRender();
+  }
+
+  /** Pure render — called after guards have already passed. */
+  private _doRender(): void {
+    this._resolve();
+  }
+
   private _resolve(): void {
     const path = this._normalizePath(this.mode.read());
 
