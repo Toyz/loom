@@ -160,19 +160,16 @@ export function lazy(
       }
 
       // ── Viewport trigger: defer loading until element is near-visible ──
-      if (opts?.trigger === 'viewport') {
+      if (opts?.trigger === 'viewport' && !this.__lazyViewportTriggered) {
         const doViewportLoad = () => {
           // Clean up observer — done with it
           if (this.__lazyObserver) {
             this.__lazyObserver.disconnect();
             this.__lazyObserver = null;
           }
-          // Re-enter connectedCallback without viewport guard
-          // (LAZY_LOADED will still be false so it falls through to the load path)
-          const savedTrigger = opts.trigger;
-          opts.trigger = 'mount';
+          // Mark this instance as ready to load — don't mutate shared opts
+          this.__lazyViewportTriggered = true;
           this.connectedCallback();
-          opts.trigger = savedTrigger;
         };
 
         // If chunk was prefetched, skip the observer — load immediately

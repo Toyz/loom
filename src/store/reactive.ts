@@ -89,7 +89,9 @@ export class Reactive<T> {
         this._persistScheduled = true;
         queueMicrotask(this._flushPersist);
       }
-      for (let i = 0; i < this._subs.length; i++) this._subs[i](this._value, prev);
+      // Snapshot — unsubscribe during notify does splice, shifting indices
+      const snapshot = Array.from(this._subs);
+      for (let i = 0; i < snapshot.length; i++) snapshot[i](this._value, prev);
     }
   }
 
@@ -119,7 +121,8 @@ export class Reactive<T> {
       this._persistScheduled = true;
       queueMicrotask(this._flushPersist);
     }
-    for (let i = 0; i < this._subs.length; i++) this._subs[i](this._value, this._value);
+    const snapshot = Array.from(this._subs);
+    for (let i = 0; i < snapshot.length; i++) snapshot[i](this._value, this._value);
   }
 
   /** Clear persisted data and reset to a value */
