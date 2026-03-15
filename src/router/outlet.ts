@@ -50,6 +50,12 @@ class LoomOutlet extends LoomElement {
       // Fallback: try both hash and pathname
       path = location.hash.slice(1) || location.pathname || "/";
     }
+    // Normalize: strip query strings and trailing slashes
+    const qIdx = path.indexOf("?");
+    if (qIdx !== -1) path = path.slice(0, qIdx);
+    if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
+    if (!path.startsWith("/")) path = "/" + path;
+
     const match = matchRoute(path);
     if (match) {
       this._show(path, match.params, match.entry.meta);
