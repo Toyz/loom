@@ -29,6 +29,9 @@ export interface RouteInfo {
   meta: Record<string, unknown>;
 }
 
+/** Max guard redirect hops before aborting (prevents infinite loops) */
+const MAX_GUARD_REDIRECTS = 10;
+
 export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   readonly mode: RouterMode;
   private _current: RouteInfo = { path: "/", params: {}, tag: null, meta: {} };
@@ -36,6 +39,8 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   private _cleanup: (() => void) | null = null;
   /** Optional outlet reference for lifecycle dispatch */
   private _outlet: HTMLElement | null = null;
+  /** Monotonic navigation ID — used to discard stale async navigations */
+  private _navId = 0;
 
   /** Register the outlet so lifecycle hooks can find rendered elements */
   setOutlet(el: HTMLElement): void {
@@ -65,12 +70,18 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   }
 
   /** Navigate to a path or named route */
-  async go(target: RouteTarget): Promise<void> {
+  async go(target: RouteTarget, _depth = 0): Promise<void> {
+    if (_depth >= MAX_GUARD_REDIRECTS) {
+      console.error(`[LoomRouter] Guard redirect loop detected (>${MAX_GUARD_REDIRECTS} hops). Aborting navigation.`);
+      return;
+    }
+    const id = ++this._navId;
     const path = this._resolvePath(target);
     const allowed = await this._checkGuards(path);
+    if (id !== this._navId) return; // stale — a newer navigation started
     if (allowed === false) return;
     if (typeof allowed === "string") {
-      return this.go(allowed);
+      return this.go(allowed, _depth + 1);
     }
     this.mode.write(path);
     this._resolve();
@@ -82,12 +93,18 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   }
 
   /** Navigate without creating a history entry */
-  async replace(target: RouteTarget): Promise<void> {
+  async replace(target: RouteTarget, _depth = 0): Promise<void> {
+    if (_depth >= MAX_GUARD_REDIRECTS) {
+      console.error(`[LoomRouter] Guard redirect loop detected (>${MAX_GUARD_REDIRECTS} hops). Aborting navigation.`);
+      return;
+    }
+    const id = ++this._navId;
     const path = this._resolvePath(target);
     const allowed = await this._checkGuards(path);
+    if (id !== this._navId) return; // stale — a newer navigation started
     if (allowed === false) return;
     if (typeof allowed === "string") {
-      return this.replace(allowed);
+      return this.replace(allowed, _depth + 1);
     }
     this.mode.replace(path);
     this._resolve();
@@ -110,13 +127,30 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
 
   /** Resolve a RouteTarget to a path string */
   private _resolvePath(target: RouteTarget): string {
-    if (typeof target === "string") return target;
-    return buildPath(target.name, target.params);
+    if (typeof target === "string") return this._normalizePath(target);
+    return this._normalizePath(buildPath(target.name, target.params));
+  }
+
+  /**
+   * Normalize a path:
+   * - Strip query strings (`/store?tab=2` → `/store`)
+   * - Strip trailing slashes (`/store/` → `/store`)
+   * - Ensure leading slash
+   */
+  private _normalizePath(path: string): string {
+    // Strip query string
+    const qIdx = path.indexOf("?");
+    if (qIdx !== -1) path = path.slice(0, qIdx);
+    // Strip trailing slash (but keep root "/")
+    if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
+    // Ensure leading slash
+    if (!path.startsWith("/")) path = "/" + path;
+    return path;
   }
 
   /** Resolve the current URL against the route table and emit RouteChanged */
   private _resolve(): void {
-    const path = this.mode.read();
+    const path = this._normalizePath(this.mode.read());
 
     const match = matchRoute(path);
     const previous = this._current.path;
