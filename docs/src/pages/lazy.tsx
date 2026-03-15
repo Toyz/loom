@@ -55,6 +55,12 @@ class LazyHydration extends LoomElement { }
 @searchable({ title: "LoomResult", section: "Core", icon: "sparkles", to: "/result", keywords: ["result", "error", "ok", "match", "pattern matching", "monadic"], summary: "Rust-inspired Result type for explicit, composable error handling." })
 class LazyResult extends LoomElement { }
 
+@route("/text")
+@component("page-text")
+@lazy(() => import("./text"))
+@searchable({ title: "text()", section: "Core", icon: "type", to: "/text", keywords: ["text", "unescape", "decode", "html entities", "entity", "&lt;", "&amp;", "server", "escape"], summary: "Zero-allocation HTML entity decoder for safe JSX rendering." })
+class LazyText extends LoomElement { }
+
 // ── Element ──
 
 @route("/overview", { group: ElementGroup })

@@ -14,6 +14,9 @@
 export { app, service, inject, maybe, factory, resolveServiceName } from "./app";
 export type { LoomApp } from "./app";
 
+// HTML entity decoder
+export { text } from "./text";
+
 // Event system
 export { LoomEvent } from "./event";
 export { EventBus, bus, useBus } from "./bus";
