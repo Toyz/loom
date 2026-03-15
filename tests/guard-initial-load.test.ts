@@ -42,15 +42,10 @@ class MockMode implements RouterMode {
 
   read(): string { return this.path; }
 
-  write(p: string): void {
-    this.path = p;
-    this._listener?.();
-  }
-
-  replace(p: string): void {
-    this.path = p;
-    this._listener?.();
-  }
+  // write() and replace() mirror pushState/replaceState — they update the URL
+  // but do NOT fire the listener (popstate is only fired by browser back/forward).
+  write(p: string): void   { this.path = p; }
+  replace(p: string): void { this.path = p; }
 
   listen(cb: () => void): () => void {
     this._listener = cb;
