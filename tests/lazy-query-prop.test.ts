@@ -533,3 +533,133 @@ describe("@lazy + @prop({ query }) — edge cases", () => {
   });
 
 });
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// URL FALLBACK (bare stub — outlet never writes query to shell)
+//
+// When the stub is `class StubPage extends LoomElement {}` with no
+// @prop({ query }) binding, the outlet's _injectRouteData loop skips query
+// entirely — nothing lands on shell[propKey]. The lazy shell must read from
+// window.location.search / hash fragment as last resort.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+describe("@lazy + @prop({ query }) — URL fallback when stub has no binding", () => {
+
+  function setLocation(search: string, hash = "") {
+    Object.defineProperty(window, "location", {
+      value: { ...window.location, search, hash },
+      writable: true, configurable: true,
+    });
+  }
+
+  afterEach(() => setLocation("", ""));
+
+  it("reads named query param from location.search when stub is bare", async () => {
+    setLocation("?tab=settings");
+    const tag = nextTag(); const implTag = `${tag}-impl`;
+
+    class RealPage extends LoomElement {
+      @prop({ query: "tab" }) accessor tab = "";
+    }
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealPage }))
+    class StubPage extends LoomElement {}
+    customElements.define(tag, StubPage);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    await tick();
+
+    const impl = el.shadowRoot!.querySelector(implTag) as any;
+    expect(impl.tab).toBe("settings");
+  });
+
+  it("reads named query param from hash fragment (hash-mode router)", async () => {
+    setLocation("", "#/page?tab=comments");
+    const tag = nextTag(); const implTag = `${tag}-impl`;
+
+    class RealPage extends LoomElement {
+      @prop({ query: "tab" }) accessor tab = "";
+    }
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealPage }))
+    class StubPage extends LoomElement {}
+    customElements.define(tag, StubPage);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    await tick();
+
+    const impl = el.shadowRoot!.querySelector(implTag) as any;
+    expect(impl.tab).toBe("comments");
+  });
+
+  it("routeQuery sentinel produces full object from location.search on bare stub", async () => {
+    setLocation("?tab=settings&sort=desc&page=2");
+    const tag = nextTag(); const implTag = `${tag}-impl`;
+
+    class RealPage extends LoomElement {
+      @prop({ query: routeQuery }) accessor q: Record<string, string> = {};
+    }
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealPage }))
+    class StubPage extends LoomElement {}
+    customElements.define(tag, StubPage);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    await tick();
+
+    const impl = el.shadowRoot!.querySelector(implTag) as any;
+    expect(impl.q).toEqual({ tab: "settings", sort: "desc", page: "2" });
+  });
+
+  it("bare stub + scheduleUpdate: re-reads URL after location changes", async () => {
+    setLocation("?tab=overview");
+    const tag = nextTag(); const implTag = `${tag}-impl`;
+
+    class RealPage extends LoomElement {
+      @prop({ query: "tab" }) accessor tab = "";
+    }
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealPage }))
+    class StubPage extends LoomElement {}
+    customElements.define(tag, StubPage);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    await tick();
+
+    const impl = el.shadowRoot!.querySelector(implTag) as any;
+    expect(impl.tab).toBe("overview");
+
+    // Simulate outlet calling scheduleUpdate after URL change
+    setLocation("?tab=analytics");
+    el.scheduleUpdate?.();
+    await tick();
+
+    expect(impl.tab).toBe("analytics");
+  });
+
+  it("absent query key in URL on bare stub: impl keeps its own default", async () => {
+    setLocation("?unrelated=x");
+    const tag = nextTag(); const implTag = `${tag}-impl`;
+
+    class RealPage extends LoomElement {
+      @prop({ query: "tab" }) accessor tab = "my-default";
+    }
+    @component(tag)
+    @lazy(() => Promise.resolve({ default: RealPage }))
+    class StubPage extends LoomElement {}
+    customElements.define(tag, StubPage);
+
+    const el = document.createElement(tag) as any;
+    document.body.appendChild(el);
+    await tick();
+
+    const impl = el.shadowRoot!.querySelector(implTag) as any;
+    // "tab" not in URL → val stays null, guard prevents clobber
+    expect(impl.tab).toBe("my-default");
+  });
+
+});

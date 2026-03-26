@@ -100,7 +100,23 @@ export function lazy(
             // Query bindings: find the stub's propKey for the same query key/sentinel
             const stubBinding = stubBindings.find((b: any) => b.query === binding.query);
             if (stubBinding) val = (this as any)[stubBinding.propKey];
-            // No getAttribute fallback — query params are never HTML attributes
+            // Fallback: read from URL — same logic as outlet._parseQuery()
+            // Needed when stub has no @prop({ query }) binding so the outlet
+            // never wrote the value to the shell property.
+            if (val === undefined) {
+              const hash = location.hash;
+              const hashQ = hash.indexOf("?");
+              const qp = hashQ >= 0
+                ? new URLSearchParams(hash.slice(hashQ + 1))
+                : new URLSearchParams(location.search);
+              if (typeof binding.query === "string") {
+                const v = qp.get(binding.query);
+                if (v !== null) val = v;
+              } else if (typeof binding.query === "symbol") {
+                // routeQuery sentinel — decompose full query as object
+                val = Object.fromEntries(qp);
+              }
+            }
           }
           if (val !== undefined) {
             if (transforms?.has(binding.propKey)) {
@@ -333,7 +349,23 @@ export function lazy(
               // Query bindings: find the stub's propKey for the same query key/sentinel
               const stubBinding = stubBindings.find((b: any) => b.query === binding.query);
               if (stubBinding) val = (this as any)[stubBinding.propKey];
-              // No getAttribute fallback — query params are never HTML attributes
+              // Fallback: read from URL — same logic as outlet._parseQuery()
+              // Needed when stub has no @prop({ query }) binding so the outlet
+              // never wrote the value to the shell property.
+              if (val === undefined) {
+                const hash = location.hash;
+                const hashQ = hash.indexOf("?");
+                const qp = hashQ >= 0
+                  ? new URLSearchParams(hash.slice(hashQ + 1))
+                  : new URLSearchParams(location.search);
+                if (typeof binding.query === "string") {
+                  const v = qp.get(binding.query);
+                  if (v !== null) val = v;
+                } else if (typeof binding.query === "symbol") {
+                  // routeQuery sentinel — decompose full query as object
+                  val = Object.fromEntries(qp);
+                }
+              }
             }
 
             if (val !== undefined) {
