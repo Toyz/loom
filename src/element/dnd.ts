@@ -243,7 +243,9 @@ export function dropzone(opts?: DropzoneOptions) {
 
         const onLeave = (e: DragEvent) => {
           const target = (e.target as HTMLElement)?.closest?.(selector) as HTMLElement | null;
-          if (target) {
+          // Only clear when actually leaving the matched element, not moving to a child.
+          // dragleave fires on every child crossing — relatedTarget is still inside target in that case.
+          if (target && !target.contains(e.relatedTarget as Node | null)) {
             target.classList.remove(overClass);
             if (target === currentOverTarget) currentOverTarget = null;
           }
