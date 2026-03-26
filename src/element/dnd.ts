@@ -101,7 +101,9 @@ export function draggable(opts?: DraggableOptions) {
         // Mark matching children as draggable
         const markDraggable = () => {
           const targets = root.querySelectorAll(selector);
-          for (const t of targets) (t as HTMLElement).draggable = true;
+          for (const t of targets) {
+            if (!(t as HTMLElement).draggable) (t as HTMLElement).draggable = true;
+          }
         };
         markDraggable();
 
@@ -116,7 +118,14 @@ export function draggable(opts?: DraggableOptions) {
           });
         };
         const observer = new MutationObserver(debouncedMark);
-        observer.observe(root, { childList: true, subtree: true });
+        observer.observe(root, {
+          childList: true,
+          subtree: true,
+          // Morph patches keyed elements in-place — when it removes the
+          // `draggable` attribute, the observer must fire to re-mark.
+          attributes: true,
+          attributeFilter: ["draggable"],
+        });
 
         const onStart = (e: DragEvent) => {
           const target = (e.target as HTMLElement)?.closest?.(selector);

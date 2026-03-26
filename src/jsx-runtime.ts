@@ -115,7 +115,13 @@ export function jsx(
     } else if (PROP_KEYS.has(key)) {
       (el as unknown as Record<string, unknown>)[key] = val;
     } else if (typeof val === "boolean") {
-      val ? el.setAttribute(key, "") : el.removeAttribute(key);
+      // Enumerated attrs (draggable, contentEditable, spellcheck) need "true"/"false" strings.
+      // Empty string means "auto" for these, not "true".
+      if (key === "draggable" || key === "contentEditable" || key === "spellcheck") {
+        el.setAttribute(key, val ? "true" : "false");
+      } else {
+        val ? el.setAttribute(key, "") : el.removeAttribute(key);
+      }
     } else if (typeof val === "object" || typeof val === "function") {
       // Non-primitive values (arrays, objects) — set as JS property
       (el as unknown as Record<string, unknown>)[key] = val;
