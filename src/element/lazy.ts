@@ -96,6 +96,11 @@ export function lazy(
             const stubBinding = stubBindings.find((b: any) => b.param === binding.param);
             if (stubBinding) val = (this as any)[stubBinding.propKey];
             if (val === undefined) val = this.getAttribute(binding.param) ?? undefined;
+          } else if (val === undefined && binding.query !== undefined) {
+            // Query bindings: find the stub's propKey for the same query key/sentinel
+            const stubBinding = stubBindings.find((b: any) => b.query === binding.query);
+            if (stubBinding) val = (this as any)[stubBinding.propKey];
+            // No getAttribute fallback — query params are never HTML attributes
           }
           if (val !== undefined) {
             if (transforms?.has(binding.propKey)) {
@@ -327,6 +332,11 @@ export function lazy(
               if (stubBinding) val = (this as any)[stubBinding.propKey];
               // Last resort: read from attribute
               if (val === undefined) val = this.getAttribute(binding.param) ?? undefined;
+            } else if (val === undefined && binding.query !== undefined) {
+              // Query bindings: find the stub's propKey for the same query key/sentinel
+              const stubBinding = stubBindings.find((b: any) => b.query === binding.query);
+              if (stubBinding) val = (this as any)[stubBinding.propKey];
+              // No getAttribute fallback — query params are never HTML attributes
             }
 
             if (val !== undefined) {
