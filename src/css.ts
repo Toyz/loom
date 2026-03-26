@@ -69,7 +69,7 @@ export function adoptCSS(
       cssCache.set(text, s);
       return s;
     })();
-  if (!shadow.adoptedStyleSheets.includes(sheet)) {
+  if (shadow.adoptedStyleSheets.indexOf(sheet) === -1) {
     shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(sheet);
   }
 }

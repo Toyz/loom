@@ -43,6 +43,8 @@ export interface LoomNode {
 export function morph(root: ShadowRoot | HTMLElement, newTree: Node | Node[]): void {
   const newChildren = normalizeChildren(newTree);
   morphChildren(root, newChildren);
+  // Release single-wrap reference to avoid retaining the last-morphed node
+  _singleWrap[0] = null!;
 }
 
 // ── Core algorithm ──
@@ -58,7 +60,7 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
       const el = current as Element;
       const key = el.getAttribute("loom-key");
       if (key) {
-        if (!oldKeyed) oldKeyed = new Map();
+        if (!oldKeyed) { oldKeyed = _keyedPool.pop() ?? new Map(); }
         oldKeyed.set(key, el);
       }
       if (el.hasAttribute("loom-keep")) {
@@ -136,6 +138,9 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
         parent.removeChild(old);
       }
     }
+    // Return pooled keyed map
+    oldKeyed.clear();
+    _keyedPool.push(oldKeyed);
   }
 }
 
@@ -207,15 +212,40 @@ function morphNode(old: Node, next: Node): void {
     const snapshot = { length: len } as ArrayLike<Node>;
     for (let i = 0; i < len; i++) (snapshot as any)[i] = _snapshotBuf[i];
     morphChildren(oldEl, snapshot);
+    // Shrink buffer if it grew past cap (from a one-off large list)
+    if (_snapshotBuf.length > _SNAPSHOT_CAP) {
+      _snapshotBuf.length = _SNAPSHOT_CAP;
+    }
   }
 }
 
 // ── Attribute diffing ──
 
 function patchAttributes(old: Element, next: Element): void {
-  // Add/update attributes from next
   const nextAttrs = next.attributes;
-  for (let i = 0; i < nextAttrs.length; i++) {
+  const oldAttrs = old.attributes;
+  const nextLen = nextAttrs.length;
+  const oldLen = oldAttrs.length;
+
+  // Fast path: next has attrs, old has none — bulk add
+  if (oldLen === 0 && nextLen > 0) {
+    for (let i = 0; i < nextLen; i++) {
+      const { name, value } = nextAttrs[i];
+      old.setAttribute(name, value);
+    }
+    return;
+  }
+
+  // Fast path: old has attrs, next has none — bulk remove
+  if (nextLen === 0 && oldLen > 0) {
+    while (old.attributes.length > 0) {
+      old.removeAttribute(old.attributes[0].name);
+    }
+    return;
+  }
+
+  // Add/update attributes from next
+  for (let i = 0; i < nextLen; i++) {
     const { name, value } = nextAttrs[i];
     if (old.getAttribute(name) !== value) {
       old.setAttribute(name, value);
@@ -223,7 +253,6 @@ function patchAttributes(old: Element, next: Element): void {
   }
 
   // Remove attributes not in next
-  const oldAttrs = old.attributes;
   for (let i = oldAttrs.length - 1; i >= 0; i--) {
     const { name } = oldAttrs[i];
     if (!next.hasAttribute(name)) {
@@ -345,6 +374,11 @@ function canMorph(old: Node, next: Node): boolean {
 
 /** Pooled snapshot buffer — grows to match the largest childNodes list, avoids per-element allocation */
 let _snapshotBuf: Node[] = [];
+/** Cap for snapshot buffer — prevents unbounded growth from one-off large lists */
+const _SNAPSHOT_CAP = 256;
+
+/** Pooled keyed Map — avoids allocation per keyed morph */
+const _keyedPool: Map<string, Element>[] = [];
 
 /** Reusable single-element wrapper to avoid allocating [tree] on every call */
 const _singleWrap: Node[] = [null!];

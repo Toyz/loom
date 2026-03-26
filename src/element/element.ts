@@ -119,6 +119,11 @@ export abstract class LoomElement extends HTMLElement {
     // Run all track() cleanups (includes decorator-registered cleanups)
     for (let i = 0; i < this.cleanups.length; i++) this.cleanups[i]();
     this.cleanups.length = 0;
+    // Release trace deps back to pool
+    if (this.__traceDeps) {
+      releaseTrace(this.__traceDeps);
+      this.__traceDeps = null;
+    }
   }
 
   // ── Lifecycle hooks (override in subclass) ──
@@ -245,15 +250,15 @@ export abstract class LoomElement extends HTMLElement {
     // Trace reactive reads during update()
     startTrace();
     const result = this.update();
+    // Capture trace BEFORE morph — morph triggers child connectedCallback
+    // which would call startTrace() and clobber our module-level trace state.
+    if (this.__traceDeps) releaseTrace(this.__traceDeps);
+    this.__traceDeps = endTrace();
 
     // Auto-morph if update() returned DOM nodes
     if (result != null) {
       morph(this.shadow, result);
     }
-
-    // Capture/refresh dependency tracking + bindings
-    if (this.__traceDeps) releaseTrace(this.__traceDeps);
-    this.__traceDeps = endTrace();
 
     if (!this._hasUpdated) {
       this._hasUpdated = true;

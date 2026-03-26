@@ -85,8 +85,11 @@ export class EventBus {
     while (ctor && ctor !== Object) {
       const handlers = this.listeners.get(ctor);
       if (handlers) {
-        for (const h of handlers) {
-          h(event);
+        // Snapshot to array to avoid Set mutation during iteration
+        // (once() auto-unsubs, handlers calling off(), etc.)
+        const snapshot = Array.from(handlers);
+        for (let i = 0; i < snapshot.length; i++) {
+          snapshot[i](event);
           if (event.cancelled) return;
         }
       }

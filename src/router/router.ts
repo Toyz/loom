@@ -84,7 +84,7 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       return this.go(allowed, _depth + 1);
     }
     this.mode.write(path);
-    this._doRender(); // guards already ran — skip re-check
+    this._doRender(path); // guards already ran — skip re-check
   }
 
   /** Alias for go() */
@@ -107,7 +107,7 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       return this.replace(allowed, _depth + 1);
     }
     this.mode.replace(path);
-    this._doRender(); // guards already ran — skip re-check
+    this._doRender(path); // guards already ran — skip re-check
   }
 
   /** Go back in history */
@@ -165,24 +165,29 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
     if (allowed === false) {
       // Blocked with no redirect — bounce back to previous path or root
       const prev = this._current.path;
-      this.mode.replace(prev !== path ? prev : "/");
-      this._doRender();
+      const bounceTo = prev !== path ? prev : "/";
+      this.mode.replace(bounceTo);
+      this._doRender(bounceTo);
       return;
     }
     if (typeof allowed === "string") {
-      this.mode.replace(this._normalizePath(allowed));
+      const redirectPath = this._normalizePath(allowed);
+      this.mode.replace(redirectPath);
       return this._resolveWithGuards(_depth + 1);
     }
-    this._doRender();
+    this._doRender(path);
   }
 
-  /** Pure render — called after guards have already passed. */
-  private _doRender(): void {
-    this._resolve();
+  /**
+   * Pure render — called after guards have already passed.
+   * Accepts the resolved path directly to avoid re-reading mode
+   * (which could have changed during async guard checks).
+   */
+  private _doRender(path: string): void {
+    this._resolve(path);
   }
 
-  private _resolve(): void {
-    const path = this._normalizePath(this.mode.read());
+  private _resolve(path: string): void {
 
     const match = matchRoute(path);
     const previous = this._current.path;
@@ -295,26 +300,6 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
     }
 
     return true;
-  }
-
-  /**
-   * Resolve @inject parameters for a method.
-   * Uses the same INJECT_PARAMS metadata as @factory.
-   */
-  private _resolveInjectParams(proto: object, method: string): unknown[] {
-    const injectMeta: Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }> =
-      (INJECT_PARAMS.from(proto) as Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }>) ?? [];
-    const methodParams = injectMeta
-      .filter((m) => m.method === method)
-      .sort((a, b) => a.index - b.index);
-
-    if (methodParams.length === 0) return [];
-
-    const args: unknown[] = [];
-    for (const param of methodParams) {
-      args[param.index] = app.get(param.key);
-    }
-    return args;
   }
 
   /**
