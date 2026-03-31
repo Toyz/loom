@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "filepath": "/mnt/data/source/repos/loom/tests/virtual.bench.ts",
+      "groups": [
+        {
+          "fullName": "tests/virtual.bench.ts > loom-virtual",
+          "benchmarks": [
+            {
+              "id": "-881875794_0_0",
+              "name": "rebuildOffsets (10000 items, cold height cache)",
+              "rank": 1,
+              "rme": 0,
+              "samples": []
+            },
+            {
+              "id": "-881875794_0_1",
+              "name": "renderWindow (10000 items, jump scroll)",
+              "rank": 2,
+              "rme": 0,
+              "samples": []
+            },
+            {
+              "id": "-881875794_0_2",
+              "name": "measureVisible + rebuildOffsets (visible rows)",
+              "rank": 3,
+              "rme": 0,
+              "samples": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

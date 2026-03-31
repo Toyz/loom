@@ -27,7 +27,7 @@ export { css } from "./css";
 export type { CSSValue } from "./css";
 
 // DOM morphing
-export { morph } from "./morph";
+export { morph, LOOM_KEY_ATTR } from "./morph";
 
 // JSX runtime (re-exported so jsxImportSource resolves)
 export { jsx, jsxs, Fragment } from "./jsx-runtime";

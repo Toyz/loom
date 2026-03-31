@@ -28,6 +28,8 @@ export type Updater<T> = T | ((prev: T) => T);
 export class Reactive<T> {
   private _value: T;
   private _subs: Subscriber<T>[] = [];
+  /** Reused snapshot for notify — avoids Array.from allocation per set()/notify() */
+  private _notifyScratch: Subscriber<T>[] = [];
   private _key?: string;
   private _storage?: StorageAdapter;
   /** Pre-computed persist flag — avoids double property check on every set() */
@@ -89,9 +91,7 @@ export class Reactive<T> {
         this._persistScheduled = true;
         queueMicrotask(this._flushPersist);
       }
-      // Snapshot — unsubscribe during notify does splice, shifting indices
-      const snapshot = Array.from(this._subs);
-      for (let i = 0; i < snapshot.length; i++) snapshot[i](this._value, prev);
+      this._notifySubscribers(prev);
     }
   }
 
@@ -121,8 +121,19 @@ export class Reactive<T> {
       this._persistScheduled = true;
       queueMicrotask(this._flushPersist);
     }
-    const snapshot = Array.from(this._subs);
-    for (let i = 0; i < snapshot.length; i++) snapshot[i](this._value, this._value);
+    this._notifySubscribers(this._value);
+  }
+
+  /** Copy subscriber refs into scratch then invoke — safe if a handler unsubscribes mid-loop */
+  private _notifySubscribers(prev: T): void {
+    const subs = this._subs;
+    const n = subs.length;
+    if (n === 0) return;
+    let buf = this._notifyScratch;
+    if (buf.length < n) buf = this._notifyScratch = new Array(n);
+    for (let i = 0; i < n; i++) buf[i] = subs[i]!;
+    const v = this._value;
+    for (let i = 0; i < n; i++) buf[i]!(v, prev);
   }
 
   /** Clear persisted data and reset to a value */

@@ -5,7 +5,15 @@
  * Configure via tsconfig: "jsxImportSource": "loom"
  */
 
-import { LOOM_EVENTS, LOOM_PROPS, loomEventProxy, type LoomEventMap, type LoomPropMap, type LoomNode } from "./morph";
+import {
+  LOOM_EVENTS,
+  LOOM_PROPS,
+  LOOM_KEY_ATTR,
+  loomEventProxy,
+  type LoomEventMap,
+  type LoomPropMap,
+  type LoomNode,
+} from "./morph";
 import { startSubTrace, endSubTrace, addBinding } from "./trace";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -135,7 +143,9 @@ export function jsx(
         startSubTrace();
         try {
           const res = val();
-          el.setAttribute(key, '' + res);
+          const s = '' + res;
+          el.setAttribute(key, s);
+          if (key === LOOM_KEY_ATTR) (el as unknown as LoomNode).__loomKey = s;
           const deps = endSubTrace();
           if (deps.size > 0) {
             addBinding(deps, el, () => el.setAttribute(key, '' + val()));
@@ -147,7 +157,9 @@ export function jsx(
           endSubTrace(); // Ensure trace stack is popped
         }
       } else {
-        el.setAttribute(key, '' + val);
+        const s = '' + val;
+        el.setAttribute(key, s);
+        if (key === LOOM_KEY_ATTR) (el as unknown as LoomNode).__loomKey = s;
       }
     }
   }

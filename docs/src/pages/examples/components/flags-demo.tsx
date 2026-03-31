@@ -4,7 +4,17 @@
  * Interactive demo of @flag and <loom-flag> with MockFlags.
  * Toggle flags on/off, see @flag-gated methods and <loom-flag> slots react in real time.
  */
-import { LoomElement, component, reactive, css, styles, app, on } from "@toyz/loom";
+import {
+  LoomElement,
+  component,
+  reactive,
+  css,
+  styles,
+  app,
+  bus,
+  type Constructor,
+  type LoomEvent,
+} from "@toyz/loom";
 import { FlagProvider, flag, FlagChanged } from "@toyz/loom-flags";
 import { MockFlags } from "@toyz/loom-flags/testing";
 import { scrollbar } from "../../../shared/scrollbar";
@@ -200,12 +210,8 @@ class FlagsDemo extends LoomElement {
   connectedCallback() {
     super.connectedCallback();
     this._syncSnapshot();
-  }
-
-  // Listen for flag changes on the bus — re-sync reactive snapshot
-  @on(FlagChanged)
-  private _onFlagChanged() {
-    this._syncSnapshot();
+    // Cast: docs + loom-flags can see distinct @toyz/loom type identities; runtime bus is shared.
+    this.track(bus.on(FlagChanged as unknown as Constructor<LoomEvent>, () => this._syncSnapshot()));
   }
 
   private _syncSnapshot() {

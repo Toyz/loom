@@ -5,6 +5,9 @@ export default defineConfig({
   test: {
     environment: "happy-dom",
     include: ["tests/**/*.test.{ts,tsx}"],
+    benchmark: {
+      include: ["tests/**/*.bench.{ts,tsx}"],
+    },
     globals: true,
   },
   esbuild: {

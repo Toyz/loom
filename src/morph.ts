@@ -20,6 +20,9 @@ export const LOOM_EVENTS = "__loomEvents";
 /** Expando key for tracked JS properties (non-attribute, non-event) */
 export const LOOM_PROPS = "__loomProps";
 
+/** Attribute name for keyed reconciliation — expando `__loomKey` mirrors it to skip getAttribute in hot paths */
+export const LOOM_KEY_ATTR = "loom-key";
+
 /** Type for tracked events on an element */
 export type LoomEventMap = Record<string, EventListener>;
 
@@ -32,6 +35,8 @@ export interface LoomNode {
   __loomProps?: LoomPropMap;
   __loomRawHTML?: boolean;
   __childTemplate?: Node | Node[];
+  /** Mirrors `loom-key` when set via JSX or patchAttributes — undefined means fall back to getAttribute */
+  __loomKey?: string;
 }
 
 // ── Public API ──
@@ -42,14 +47,14 @@ export interface LoomNode {
  */
 export function morph(root: ShadowRoot | HTMLElement, newTree: Node | Node[]): void {
   const newChildren = normalizeChildren(newTree);
-  morphChildren(root, newChildren);
+  morphChildren(root, newChildren, newChildren.length);
   // Release single-wrap reference to avoid retaining the last-morphed node
   _singleWrap[0] = null!;
 }
 
 // ── Core algorithm ──
 
-function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
+function morphChildren(parent: Node, newChildren: ArrayLike<Node>, childCount = newChildren.length): void {
   // Build keyed index & collect keep set in a single scan
   let oldKeyed: Map<string, Element> | null = null;
   let keepSet: Set<Node> | null = null;
@@ -58,7 +63,7 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
   while (current) {
     if (current.nodeType === 1) {
       const el = current as Element;
-      const key = el.getAttribute("loom-key");
+      const key = readLoomKey(el);
       if (key) {
         if (!oldKeyed) { oldKeyed = _keyedPool.pop() ?? new Map(); }
         oldKeyed.set(key, el);
@@ -73,7 +78,7 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
 
   let oldChild = parent.firstChild;
 
-  for (let i = 0; i < newChildren.length; i++) {
+  for (let i = 0; i < childCount; i++) {
     const newChild = newChildren[i];
     const newKey = getKey(newChild);
 
@@ -95,7 +100,7 @@ function morphChildren(parent: Node, newChildren: ArrayLike<Node>): void {
     // Skip unconsumed keyed nodes or kept nodes
     while (oldChild) {
       if (oldKeyed && oldChild.nodeType === 1) {
-        const ock = (oldChild as Element).getAttribute("loom-key");
+        const ock = readLoomKey(oldChild as Element);
         if (ock && oldKeyed.has(ock)) { oldChild = oldChild.nextSibling; continue; }
       }
       if (keepSet && keepSet.has(oldChild)) {
@@ -207,11 +212,12 @@ function morphNode(old: Node, next: Node): void {
     const nextChildren = nextEl.childNodes;
     const len = nextChildren.length;
     if (len > _snapshotBuf.length) _snapshotBuf.length = len;
-    for (let i = 0; i < len; i++) _snapshotBuf[i] = nextChildren[i];
-    // Create a fixed-length view so morphChildren sees exactly `len` items
+    for (let i = 0; i < len; i++) _snapshotBuf[i] = nextChildren[i]!;
+    // Copy into a fixed ArrayLike — nested morphNode() reuses _snapshotBuf; parent morphChildren
+    // must not read live buffer slots that children overwrite mid-loop.
     const snapshot = { length: len } as ArrayLike<Node>;
-    for (let i = 0; i < len; i++) (snapshot as any)[i] = _snapshotBuf[i];
-    morphChildren(oldEl, snapshot);
+    for (let i = 0; i < len; i++) (snapshot as unknown as Record<number, Node>)[i] = _snapshotBuf[i]!;
+    morphChildren(oldEl, snapshot, len);
     // Shrink buffer if it grew past cap (from a one-off large list)
     if (_snapshotBuf.length > _SNAPSHOT_CAP) {
       _snapshotBuf.length = _SNAPSHOT_CAP;
@@ -232,6 +238,7 @@ function patchAttributes(old: Element, next: Element): void {
     for (let i = 0; i < nextLen; i++) {
       const { name, value } = nextAttrs[i];
       old.setAttribute(name, value);
+      if (name === LOOM_KEY_ATTR) (old as unknown as LoomNode).__loomKey = value;
     }
     return;
   }
@@ -241,6 +248,7 @@ function patchAttributes(old: Element, next: Element): void {
     while (old.attributes.length > 0) {
       old.removeAttribute(old.attributes[0].name);
     }
+    delete (old as unknown as LoomNode).__loomKey;
     return;
   }
 
@@ -249,6 +257,7 @@ function patchAttributes(old: Element, next: Element): void {
     const { name, value } = nextAttrs[i];
     if (old.getAttribute(name) !== value) {
       old.setAttribute(name, value);
+      if (name === LOOM_KEY_ATTR) (old as unknown as LoomNode).__loomKey = value;
     }
   }
 
@@ -257,6 +266,7 @@ function patchAttributes(old: Element, next: Element): void {
     const { name } = oldAttrs[i];
     if (!next.hasAttribute(name)) {
       old.removeAttribute(name);
+      if (name === LOOM_KEY_ATTR) delete (old as unknown as LoomNode).__loomKey;
     }
   }
 }
@@ -350,9 +360,16 @@ function patchJSProps(old: HTMLElement, next: HTMLElement): void {
 
 // ── Helpers ──
 
-function getKey(node: Node): string | null {
-  if (node.nodeType !== Node.ELEMENT_NODE) return null;
-  return (node as Element).getAttribute("loom-key");
+/** Read keyed reconcile id — prefers `__loomKey` expando (JSX / patchAttributes) over getAttribute */
+function readLoomKey(el: Element): string | null {
+  const n = el as unknown as LoomNode;
+  if (n.__loomKey !== undefined) return n.__loomKey;
+  return el.getAttribute(LOOM_KEY_ATTR);
+}
+
+function getKey(node: Node | undefined | null): string | null {
+  if (!node || node.nodeType !== Node.ELEMENT_NODE) return null;
+  return readLoomKey(node as Element);
 }
 
 function isKeep(node: Node): boolean {

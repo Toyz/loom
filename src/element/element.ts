@@ -55,9 +55,14 @@ export abstract class LoomElement extends HTMLElement {
    */
   adoptStyles(sheets: CSSStyleSheet[]): void {
     const existing = this.shadow.adoptedStyleSheets;
+    const have = new Set(existing);
     const toAdd: CSSStyleSheet[] = [];
     for (let i = 0; i < sheets.length; i++) {
-      if (!existing.includes(sheets[i])) toAdd.push(sheets[i]);
+      const s = sheets[i];
+      if (!have.has(s)) {
+        have.add(s);
+        toAdd.push(s);
+      }
     }
     if (toAdd.length > 0) {
       this.shadow.adoptedStyleSheets = existing.concat(toAdd);

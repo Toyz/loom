@@ -5,7 +5,8 @@
  *   text updates, attribute diffing, keyed reconciliation,
  *   wide/deep trees, event/property patching, no-ops, tag mismatches.
  *
- * Run:  npm run bench
+ * Run:  npm run bench -- tests/morph.bench.ts
+ *        (see also tests/trace.bench.ts, tests/virtual.bench.ts)
  */
 import { describe, bench } from "vitest";
 import { morph, LOOM_EVENTS, LOOM_PROPS } from "../src/morph";
@@ -95,6 +96,13 @@ describe("morph engine", () => {
         morph(shadow, buildDeep(4, 0));
     });
 
+    /** depth=5 → 364 nodes (audit: deep-tree morph cost) */
+    bench("deep tree (depth=5, branching=3 → 364 nodes)", () => {
+        const shadow = freshShadow();
+        shadow.appendChild(buildDeep(5, 0));
+        morph(shadow, buildDeep(5, 0));
+    });
+
     bench("wide flat list (200 keyed <li>)", () => {
         const N = 200;
         const shadow = freshShadow();
@@ -108,17 +116,30 @@ describe("morph engine", () => {
         morph(shadow, ul2);
     });
 
+    /** Large keyed list — audit baseline for shadow-root list morph */
+    bench("wide flat list (500 keyed <li>)", () => {
+        const N = 500;
+        const shadow = freshShadow();
+        const ul = document.createElement("ul");
+        for (let i = 0; i < N; i++) ul.appendChild(el("li", { "loom-key": `w${i}` }, `item-${i}`));
+        shadow.appendChild(ul);
+        const ul2 = document.createElement("ul");
+        for (let i = 1; i < N; i++) ul2.appendChild(el("li", { "loom-key": `w${i}` }, `item-${i}`));
+        ul2.appendChild(el("li", { "loom-key": "w0" }, "item-0"));
+        morph(shadow, ul2);
+    });
+
     bench("swap click handler", () => {
         const shadow = freshShadow();
         const d = document.createElement("div");
         const h1 = () => { };
         d.addEventListener("click", h1);
-        (d as any)[LOOM_EVENTS] = new Map([["click", h1]]);
+        (d as any)[LOOM_EVENTS] = Object.assign(Object.create(null), { click: h1 });
         shadow.appendChild(d);
         const d2 = document.createElement("div");
         const h2 = () => { };
         d2.addEventListener("click", h2);
-        (d2 as any)[LOOM_EVENTS] = new Map([["click", h2]]);
+        (d2 as any)[LOOM_EVENTS] = Object.assign(Object.create(null), { click: h2 });
         morph(shadow, d2);
     });
 
@@ -128,14 +149,14 @@ describe("morph engine", () => {
         (input as HTMLInputElement).value = "old";
         const d = document.createElement("div");
         (d as any).items = [1, 2, 3];
-        (d as any)[LOOM_PROPS] = new Map([["items", [1, 2, 3]]]);
+        (d as any)[LOOM_PROPS] = Object.assign(Object.create(null), { items: [1, 2, 3] });
         shadow.appendChild(input);
         shadow.appendChild(d);
         const input2 = document.createElement("input");
         (input2 as HTMLInputElement).value = "new";
         const d2 = document.createElement("div");
         (d2 as any).items = [4, 5, 6];
-        (d2 as any)[LOOM_PROPS] = new Map([["items", [4, 5, 6]]]);
+        (d2 as any)[LOOM_PROPS] = Object.assign(Object.create(null), { items: [4, 5, 6] });
         morph(shadow, [input2, d2]);
     });
 

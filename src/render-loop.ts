@@ -14,6 +14,8 @@
 interface FrameCallback {
   layer: number;
   fn: (dt: number, t: number) => void;
+  /** Lazy removal — O(1) unsub; purged during tick */
+  dead?: boolean;
 }
 
 class RenderLoop {
@@ -38,14 +40,28 @@ class RenderLoop {
     }
     this.sorted.splice(lo, 0, entry);
     return () => {
-      const idx = this.sorted.indexOf(entry);
-      if (idx >= 0) this.sorted.splice(idx, 1);
+      entry.dead = true;
+      if (!this.running) this.compactDead();
     };
   }
 
-  /** Number of active callbacks */
+  /** Drop tombstoned entries — O(n); runs during tick via splice, or immediately when unsubbing while stopped */
+  private compactDead(): void {
+    let w = 0;
+    for (let r = 0; r < this.sorted.length; r++) {
+      const e = this.sorted[r]!;
+      if (!e.dead) this.sorted[w++] = e;
+    }
+    this.sorted.length = w;
+  }
+
+  /** Number of active callbacks (tombstoned entries waiting for next tick purge are excluded) */
   get size(): number {
-    return this.sorted.length;
+    let n = 0;
+    for (let i = 0; i < this.sorted.length; i++) {
+      if (!this.sorted[i]!.dead) n++;
+    }
+    return n;
   }
 
   start(): void {
@@ -59,6 +75,7 @@ class RenderLoop {
     if (!this.running) return;
     this.running = false;
     cancelAnimationFrame(this.rafId);
+    this.compactDead();
   }
 
   private tick = (timestamp: number): void => {
@@ -68,14 +85,19 @@ class RenderLoop {
     const dt = this.prevTime ? (timestamp - this.prevTime) / 1000 : 0;
     this.prevTime = timestamp;
 
-    // Snapshot the array — mid-tick unsubscribe via splice won't skip callbacks
     const sorted = this.sorted;
-    const len = sorted.length;
-    for (let i = 0; i < len; i++) {
-      // Guard: callback may have been spliced out by an earlier callback's unsubscribe
-      if (i < sorted.length && sorted[i]) {
-        sorted[i].fn(dt, timestamp);
+    for (let i = 0; i < sorted.length; ) {
+      const e = sorted[i];
+      if (e.dead) {
+        sorted.splice(i, 1);
+        continue;
       }
+      e.fn(dt, timestamp);
+      if (e.dead) {
+        sorted.splice(i, 1);
+        continue;
+      }
+      i++;
     }
 
     this.rafId = requestAnimationFrame(this.tick);
