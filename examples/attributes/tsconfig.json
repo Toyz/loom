@@ -1,0 +1,47 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "skipLibCheck": true,
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "@toyz/loom",
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "useUnknownInCatchVariables": false,
+        "paths": {
+            "@toyz/loom": [
+                "../../src/index.ts"
+            ],
+            "@toyz/loom/jsx-runtime": [
+                "../../src/jsx-runtime.ts"
+            ],
+            "@toyz/loom/jsx-dev-runtime": [
+                "../../src/jsx-dev-runtime.ts"
+            ],
+            "@toyz/loom/*": [
+                "../../src/*"
+            ]
+        }
+    },
+    "include": [
+        "src"
+    ],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
+}

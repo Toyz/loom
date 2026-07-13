@@ -78,5 +78,19 @@ export const TRANSFORMS = createSymbol("transforms");
 export const ROUTE_ENTER = createSymbol("route:enter");
 export const ROUTE_LEAVE = createSymbol("route:leave");
 export const CONNECT_HOOKS = createSymbol("connect:hooks");
+
+/**
+ * Resolve the DOM element a connect-hook host operates on.
+ *
+ * A `LoomElement` *is* its element, so it resolves to itself. A
+ * `LoomAttribute` controller wraps a foreign element exposed as `.el`, so it
+ * resolves to that. This lets DOM-targeting decorators (@observer, @hotkey, …)
+ * work on both without importing either class. Method binding still uses the
+ * raw host — only the DOM target is redirected.
+ */
+export function hostElement(host: unknown): HTMLElement {
+  const el = (host as { el?: unknown })?.el;
+  return (el instanceof Element ? el : host) as HTMLElement;
+}
 export const FIRST_UPDATED_HOOKS = createSymbol("first-updated:hooks");
 export const SERVICE_NAME = createSymbol<string>("service:name");

@@ -25,6 +25,7 @@ export const navOrder: NavEntry[] = [
   { label: "DOM Queries", to: "/element/queries", section: "Element", icon: "search" },
   { label: "JSX & Morphing", to: "/element/jsx", section: "Element", icon: "code" },
   { label: "Decorators", to: "/element/decorators", section: "Element", icon: "hash" },
+  { label: "Attributes", to: "/element/attributes", section: "Element", icon: "plug" },
   { label: "Light DOM", to: "/element/light-dom", section: "Element", icon: "sun" },
   { label: "Lazy Loading", to: "/element/lazy", section: "Element", icon: "download" },
   { label: "Observer", to: "/element/observer", section: "Element", icon: "eye" },
@@ -101,6 +102,7 @@ export const navOrder: NavEntry[] = [
 
   // Examples
   { label: "Clock", to: "/examples/clock", section: "Examples", icon: "zap" },
+  { label: "Attributes", to: "/examples/attributes", section: "Examples", icon: "plug" },
   { label: "Todo List", to: "/examples/todo", section: "Examples", icon: "check" },
   { label: "Kanban Board", to: "/examples/kanban", section: "Examples", icon: "columns" },
   { label: "Theme Switcher", to: "/examples/theme-switcher", section: "Examples", icon: "eye" },

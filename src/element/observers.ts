@@ -29,7 +29,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { CONNECT_HOOKS, hostElement } from "../decorators/symbols";
 
 /** Resolver that selects the observe target from the component instance. */
 type TargetResolver = (el: HTMLElement) => Node | Element | null | undefined;
@@ -72,13 +72,17 @@ export function observer<T extends keyof ObserverOptionsMap>(
     context.addInitializer(function (this: any) {
       if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-      this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
-        const observeTarget = target ? target(el) : el;
+      this[CONNECT_HOOKS.key].push((host: HTMLElement) => {
+        // DOM target: the host's element (a LoomAttribute wraps `this.el`).
+        // Method binding stays on the raw host so `this` is correct for both
+        // LoomElement and LoomAttribute controllers.
+        const dom = hostElement(host);
+        const observeTarget = target ? target(dom) : dom;
         if (!observeTarget) return;
 
         const callback = (entries: any[]) => {
           for (const entry of entries) {
-            method.call(el, entry);
+            method.call(host, entry);
           }
         };
 

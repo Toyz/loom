@@ -5,6 +5,7 @@ import { COMPUTED_DIRTY, REACTIVES, CONNECT_HOOKS, FIRST_UPDATED_HOOKS } from ".
 import { morph } from "../morph";
 import { app } from "../app";
 import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, releaseTrace, type TraceDeps } from "../trace";
+import { hasRegisteredAttributes, observeAttributes } from "./attribute";
 
 /** Structural type for objects that support Loom's render scheduling */
 export interface Schedulable {
@@ -118,6 +119,12 @@ export abstract class LoomElement extends HTMLElement {
     const hasReactives = ((REACTIVES.from(this.constructor as object) as string[] | undefined)?.length ?? 0) > 0;
     const overridesUpdate = this.update !== LoomElement.prototype.update;
     if (hasReactives || overridesUpdate) this.scheduleUpdate();
+
+    // Wire @attribute controllers within this component's shadow root.
+    // Gated on the global flag so unused-feature cost is a single boolean.
+    if (hasRegisteredAttributes) {
+      this.cleanups.push(observeAttributes(this.shadow));
+    }
   }
 
   disconnectedCallback(): void {

@@ -16,7 +16,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { CONNECT_HOOKS, hostElement } from "../decorators/symbols";
 
 // ── Types ──
 
@@ -198,23 +198,26 @@ export function hotkey(
         context.addInitializer(function (this: any) {
             if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-            this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
-                const target: EventTarget = global ? document : el;
+            this[CONNECT_HOOKS.key].push((host: HTMLElement) => {
+                // DOM target: the host's element (a LoomAttribute wraps `this.el`).
+                // Method binding stays on the raw host for correct `this`.
+                const dom = hostElement(host);
+                const target: EventTarget = global ? document : dom;
 
                 const handler = (e: Event) => {
                     const ke = e as KeyboardEvent;
                     for (const combo of combos) {
                         if (matchesCombo(ke, combo)) {
                             if (preventDefault) ke.preventDefault();
-                            method.call(el, ke);
+                            method.call(host, ke);
                             return;
                         }
                     }
                 };
 
                 // Elements need tabindex to receive keyboard events
-                if (!global && !el.hasAttribute("tabindex")) {
-                    el.setAttribute("tabindex", "0");
+                if (!global && !dom.hasAttribute("tabindex")) {
+                    dom.setAttribute("tabindex", "0");
                 }
 
                 target.addEventListener("keydown", handler);

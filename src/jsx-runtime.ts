@@ -15,6 +15,7 @@ import {
   type LoomNode,
 } from "./morph";
 import { startSubTrace, endSubTrace, addBinding } from "./trace";
+import { hasRegisteredAttributes, isRegisteredAttr, setAttrArg } from "./element/attribute";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const SVG_TAGS = new Set([
@@ -73,6 +74,12 @@ export function jsx(
   if (props) for (const key in props) {
     const val = props[key];
     if (key === "children") continue;
+    // Custom attribute controllers (@attribute): `<div sticky intersect={load}>`.
+    // Gated on the global flag so unused-feature cost is one boolean per jsx().
+    if (hasRegisteredAttributes && isRegisteredAttr(key)) {
+      setAttrArg(el, key, val);
+      continue;
+    }
     if (key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && typeof val === "function") {  // 'o','n'
       let eventType = _eventTypeCache[key];
       if (!eventType) { eventType = key.slice(2).toLowerCase(); _eventTypeCache[key] = eventType; }
@@ -223,7 +230,26 @@ type EventHandler<E extends Event = Event> = (event: E) => void;
 type MaybeReactive<T> = T | (() => T);
 type ClassValue = MaybeReactive<string>;
 
-export interface LoomHTMLAttributes {
+/**
+ * Custom attribute controllers (`@attribute`) — augment this interface to type
+ * your directives on every intrinsic element. Empty by default.
+ *
+ * ```ts
+ * declare module "@toyz/loom/jsx-runtime" {
+ *   interface LoomCustomAttributes {
+ *     sticky?: boolean;
+ *     shortcut?: string;
+ *     intersect?: () => void;
+ *   }
+ * }
+ *
+ * // now type-checks on any element:
+ * <div sticky intersect={load} shortcut="j" />
+ * ```
+ */
+export interface LoomCustomAttributes {}
+
+export interface LoomHTMLAttributes extends LoomCustomAttributes {
   id?: string;
   className?: ClassValue;
   class?: ClassValue;

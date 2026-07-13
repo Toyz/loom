@@ -32,6 +32,7 @@ const sections: NavSection[] = [
       { label: "DOM Queries", to: "/element/queries", icon: "search" },
       { label: "JSX & Morphing", to: "/element/jsx", icon: "code" },
       { label: "Decorators", to: "/element/decorators", icon: "hash" },
+      { label: "Attributes", to: "/element/attributes", icon: "plug" },
       { label: "Light DOM", to: "/element/light-dom", icon: "sun" },
       { label: "Lazy Loading", to: "/element/lazy", icon: "download" },
       { label: "Observer", to: "/element/observer", icon: "eye" },
@@ -118,6 +119,7 @@ const sections: NavSection[] = [
     title: "Examples",
     items: [
       { label: "Clock", to: "/examples/clock", icon: "zap" },
+      { label: "Attributes", to: "/examples/attributes", icon: "plug" },
       { label: "Todo List", to: "/examples/todo", icon: "check" },
       { label: "Kanban Board", to: "/examples/kanban", icon: "columns" },
       { label: "Theme Switcher", to: "/examples/theme-switcher", icon: "eye" },

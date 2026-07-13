@@ -7,6 +7,10 @@
 // Base element
 export { LoomElement } from "./element";
 
+// Base attribute controller — custom attributes (directives)
+export { LoomAttribute, attribute, observeAttributes } from "./attribute";
+export type { AttributeOptions, PortalTarget } from "./attribute";
+
 // Built-in elements — import explicitly to opt-in to side effects
 // e.g. import { LoomVirtual } from "@toyz/loom/element/virtual"
 // e.g. import { LoomIcon } from "@toyz/loom/element/icon"

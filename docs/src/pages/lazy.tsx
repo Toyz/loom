@@ -130,6 +130,12 @@ class LazyElementImage extends LoomElement { }
 @searchable({ title: "Decorators", section: "Element", icon: "hash", to: "/element/decorators", keywords: ["decorator", "prop", "reactive", "query", "watch", "observe", "readonly"], summary: "Element-specific decorators for registration, state, lifecycle, and DOM queries." })
 class LazyElementDecorators extends LoomElement { }
 
+@route("/attributes", { group: ElementGroup })
+@component("page-element-attributes")
+@lazy(() => import("./element/attributes"))
+@searchable({ title: "Attributes", section: "Element", icon: "plug", to: "/element/attributes", keywords: ["attribute", "directive", "LoomAttribute", "custom attribute", "sticky", "intersect", "shortcut", "data-", "observeAttributes", "behavior"], summary: "Custom attribute controllers — attach behavior to any element, not a tag." })
+class LazyElementAttributes extends LoomElement { }
+
 @route("/lazy", { group: ElementGroup })
 @component("page-element-lazy")
 @lazy(() => import("./element/lazy"), {
@@ -354,6 +360,12 @@ class LazyDecoratorCSS extends LoomElement { }
 @lazy(() => import("./examples/clock"))
 @searchable({ title: "Clock", section: "Examples", icon: "zap", to: "/examples/clock", keywords: ["clock", "time", "interval", "example", "demo"], summary: "Live clock using @interval for automatic re-rendering." })
 class LazyExampleClock extends LoomElement { }
+
+@route("/attributes", { group: ExamplesGroup })
+@component("page-example-attributes")
+@lazy(() => import("./examples/attributes-demo"))
+@searchable({ title: "Attributes", section: "Examples", icon: "plug", to: "/examples/attributes", keywords: ["attribute", "directive", "LoomAttribute", "tooltip", "portal", "observer", "example", "demo"], summary: "Custom attribute controllers: behavior, @prop args, @observer, and portal rendering." })
+class LazyExampleAttributes extends LoomElement { }
 
 @route("/todo", { group: ExamplesGroup })
 @component("page-example-todo")

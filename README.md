@@ -36,6 +36,7 @@ Most frameworks make you choose: **lightweight or batteries-included.** Loom doe
 ## Features
 
 - **`@component` / `@styles`** — register custom elements and scoped styles in one line
+- **`LoomAttribute` / `@attribute`** — custom attribute controllers (directives): attach behavior to any element, e.g. `<div sticky intersect={load} shortcut="j">`
 - **`@reactive` / `@prop`** — fine-grained reactivity that only re-renders what changed
 - **`@computed` / `@watch`** — derived state and side effects
 - **`@on` / `@emit`** — declarative event handling via typed event bus
