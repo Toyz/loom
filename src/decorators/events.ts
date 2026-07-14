@@ -5,7 +5,7 @@
  * @emit — Auto-broadcast to the bus (field or method form)
  */
 
-import { EMITTERS, ON_HANDLERS, CONNECT_HOOKS } from "./symbols";
+import { EMITTERS, ON_HANDLERS, CONNECT_HOOKS, hostElement } from "./symbols";
 import { LoomEvent } from "../event";
 import { bus, type Constructor } from "../bus";
 
@@ -29,36 +29,55 @@ import { bus, type Constructor } from "../bus";
  * @on(el => el.shadow, "scroll")
  * onShadowScroll(e: Event) { ... }
  * ```
+ *
+ * Host element — bare event name listens on the host itself. On a LoomElement
+ * that is the element; on a LoomAttribute controller it is `this.el`:
+ * ```ts
+ * @on("click")
+ * onClick(e: MouseEvent) { ... }
+ * ```
  */
 export function on<T extends LoomEvent>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
+export function on(event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function on(target: EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function on(resolver: (el: any) => EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
-export function on(typeOrTarget: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget), event?: string) {
+export function on(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget) | string, event?: string) {
   return (method: Function, context: ClassMethodDecoratorContext) => {
     const key = String(context.name);
 
+    // Bare `@on("click")` — first arg is the event name, target is the host element.
+    const selfHost = typeof typeOrTargetOrEvent === "string";
+    const evName = selfHost ? (typeOrTargetOrEvent as string) : event;
+
     context.addInitializer(function (this: any) {
-      // Store metadata for service wiring by app.start()
+      // Store metadata for service wiring by app.start() (not for self-host DOM form).
       if (!this[ON_HANDLERS.key]) this[ON_HANDLERS.key] = [];
-      if (event !== undefined) {
-        this[ON_HANDLERS.key].push({ key, domTarget: typeOrTarget, event });
+      if (selfHost) {
+        // handled purely via CONNECT_HOOKS below
+      } else if (event !== undefined) {
+        this[ON_HANDLERS.key].push({ key, domTarget: typeOrTargetOrEvent, event });
       } else {
-        this[ON_HANDLERS.key].push({ key, type: typeOrTarget });
+        this[ON_HANDLERS.key].push({ key, type: typeOrTargetOrEvent });
       }
 
       // Wire lifecycle via CONNECT_HOOKS
       if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
       this[CONNECT_HOOKS.key].push((el: any) => {
-        if (event !== undefined) {
-          // Resolve target: arrow/function resolver has no .prototype, class constructors do
-          const target = typeof typeOrTarget === "function" && !(typeOrTarget as any).prototype
-            ? (typeOrTarget as (el: any) => EventTarget)(el)
-            : typeOrTarget as EventTarget;
+        if (selfHost) {
+          const target = hostElement(el);
           const fn = (e: Event) => method.call(el, e);
-          target.addEventListener(event!, fn);
-          return () => target.removeEventListener(event!, fn);
+          target.addEventListener(evName!, fn);
+          return () => target.removeEventListener(evName!, fn);
+        } else if (evName !== undefined) {
+          // Resolve target: arrow/function resolver has no .prototype, class constructors do
+          const target = typeof typeOrTargetOrEvent === "function" && !(typeOrTargetOrEvent as any).prototype
+            ? (typeOrTargetOrEvent as (el: any) => EventTarget)(el)
+            : typeOrTargetOrEvent as EventTarget;
+          const fn = (e: Event) => method.call(el, e);
+          target.addEventListener(evName!, fn);
+          return () => target.removeEventListener(evName!, fn);
         } else {
-          return bus.on(typeOrTarget as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
+          return bus.on(typeOrTargetOrEvent as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
         }
       });
     });
@@ -126,24 +145,29 @@ export function emit<T extends LoomEvent>(
  * DOM event: `\@on.once(window, "load")` — uses `{ once: true }`
  */
 function onOnce<T extends LoomEvent>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
+function onOnce(event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 function onOnce(target: EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 function onOnce(resolver: (el: any) => EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
-function onOnce(typeOrTarget: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget), event?: string) {
+function onOnce(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget) | string, event?: string) {
   return (method: Function, context: ClassMethodDecoratorContext) => {
+    const selfHost = typeof typeOrTargetOrEvent === "string";
+    const evName = selfHost ? (typeOrTargetOrEvent as string) : event;
     context.addInitializer(function (this: any) {
       if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
       this[CONNECT_HOOKS.key].push((el: any) => {
-        if (event !== undefined) {
+        if (evName !== undefined) {
           // DOM event — use { once: true } for native auto-removal
-          const target = typeof typeOrTarget === "function" && !(typeOrTarget as any).prototype
-            ? (typeOrTarget as (el: any) => EventTarget)(el)
-            : typeOrTarget as EventTarget;
+          const target = selfHost
+            ? hostElement(el)
+            : typeof typeOrTargetOrEvent === "function" && !(typeOrTargetOrEvent as any).prototype
+              ? (typeOrTargetOrEvent as (el: any) => EventTarget)(el)
+              : typeOrTargetOrEvent as EventTarget;
           const fn = (e: Event) => method.call(el, e);
-          target.addEventListener(event!, fn, { once: true });
-          return () => target.removeEventListener(event!, fn);
+          target.addEventListener(evName!, fn, { once: true });
+          return () => target.removeEventListener(evName!, fn);
         } else {
           // Bus event — use bus.once() for auto-unsubscribe
-          return bus.once(typeOrTarget as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
+          return bus.once(typeOrTargetOrEvent as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
         }
       });
     });

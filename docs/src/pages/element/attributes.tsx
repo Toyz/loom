@@ -204,11 +204,14 @@ observeAttributes(document.body);`}></code-block>
           <div class="feature-entry">
             <div class="dec-desc">
               Decorators that route through connect hooks work on controllers.
-              DOM-targeting ones (<span class="ic">@observer</span>, <span class="ic">@hotkey</span>)
-              automatically target <span class="ic">this.el</span>; the rest are element-agnostic:
+              DOM-targeting ones auto-target <span class="ic">this.el</span>:
+              <span class="ic">@observer</span>, <span class="ic">@hotkey</span>, and
+              <span class="ic">@on("click")</span> (bare event name binds to the host element).
+              <span class="ic">@mount</span> / <span class="ic">@unmount</span> fire on connect / removal.
+              The rest are element-agnostic:
               <span class="ic">@interval</span>, <span class="ic">@timeout</span>,
               <span class="ic">@debounce</span>, <span class="ic">@throttle</span>,
-              <span class="ic">@watch</span>, <span class="ic">@on</span>, <span class="ic">@log</span>,
+              <span class="ic">@watch</span>, <span class="ic">@on(BusEvent)</span>, <span class="ic">@log</span>,
               <span class="ic">@prop</span> / <span class="ic">@reactive</span> (drive
               <span class="ic">update()</span> re-renders).
             </div>

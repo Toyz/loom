@@ -2,9 +2,10 @@
  * Tests: LoomAttribute — custom attribute controllers (directives)
  */
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { LoomAttribute, attribute, observeAttributes, LoomElement, component, interval, observer, styles, query } from "../src/element";
+import { LoomAttribute, attribute, observeAttributes, LoomElement, component, interval, observer, styles, query, mount, unmount } from "../src/element";
 import { css } from "../src/css";
 import { prop } from "../src/store";
+import { on } from "../src/decorators";
 import { app } from "../src/app";
 import { cleanup, fixture } from "../src/testing";
 
@@ -348,6 +349,78 @@ describe("LoomAttribute", () => {
     // @styles adopted the sheet into the render shadow root.
     expect(shadow?.adoptedStyleSheets).toContain(sheet);
     document.body.removeChild(host);
+  });
+
+  it("@mount and @unmount fire on connect / removal", async () => {
+    const log: string[] = [];
+
+    @attribute("mounty")
+    class Mounty extends LoomAttribute {
+      @mount onMount() { log.push("mount"); }
+      @unmount onUnmount() { log.push("unmount"); }
+    }
+    void Mounty;
+
+    const host = document.createElement("div");
+    document.body.appendChild(host);
+    observeAttributes(host);
+
+    const el = document.createElement("div");
+    el.setAttribute("mounty", "");
+    host.appendChild(el);
+    await flush();
+    expect(log).toEqual(["mount"]);
+
+    host.removeChild(el);
+    await flush();
+    expect(log).toEqual(["mount", "unmount"]);
+    document.body.removeChild(host);
+  });
+
+  it("@on('click') listens on the host element of a controller", async () => {
+    const hits: string[] = [];
+
+    @attribute("clicky")
+    class Clicky extends LoomAttribute {
+      @on("click") onClick() { hits.push("click"); }
+    }
+    void Clicky;
+
+    const host = document.createElement("div");
+    document.body.appendChild(host);
+    observeAttributes(host);
+
+    const btn = document.createElement("button");
+    btn.setAttribute("clicky", "");
+    host.appendChild(btn);
+    await flush();
+
+    btn.dispatchEvent(new Event("click"));
+    expect(hits).toEqual(["click"]);
+
+    // Cleanup on removal — no further hits.
+    host.removeChild(btn);
+    await flush();
+    btn.dispatchEvent(new Event("click"));
+    expect(hits).toEqual(["click"]);
+    document.body.removeChild(host);
+  });
+
+  it("@on('click') still binds to self on a LoomElement (no regression)", async () => {
+    const hits: string[] = [];
+
+    @component("on-self-host")
+    class OnSelf extends LoomElement {
+      @on("click") onClick() { hits.push("self"); }
+      update() { return document.createElement("div"); }
+    }
+    void OnSelf;
+
+    await app.start();
+    const el = await fixture<OnSelf>("on-self-host");
+    await flush();
+    el.dispatchEvent(new Event("click"));
+    expect(hits).toEqual(["self"]);
   });
 
   it("wires controllers inside a component's shadow root", async () => {
