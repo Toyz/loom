@@ -46,17 +46,28 @@ export const component = createDecorator<[tag: string, opts?: { shadow?: boolean
     val: string | null,
   ) {
     const field = propMap.get(name);
-    if (field && val !== null) {
-      const transforms: Map<string, Function> | undefined = (ctor as any)[TRANSFORMS.key];
-      const transform = transforms?.get(field);
-      if (transform) {
-        (this as any)[field] = transform(val);
+    if (field) {
+      const current = (this as any)[field];
+      if (val === null) {
+        // Attribute REMOVED. This is how a boolean @prop goes true -> false:
+        // JSX renders `false` as an absent attribute, so morph removes it. We
+        // MUST still update the field, or the @prop getter freezes at the old
+        // value while the DOM attribute reflects the new (absent) state —
+        // notably for slotted children re-rendered via morph.
+        if (typeof current === "boolean") (this as any)[field] = false;
+        else if (typeof current === "number") (this as any)[field] = 0;
+        else (this as any)[field] = "";
       } else {
-        const current = (this as any)[field];
-        if (typeof current === "number") (this as any)[field] = Number(val);
-        else if (typeof current === "boolean")
-          (this as any)[field] = val !== null && val !== "false";
-        else (this as any)[field] = val;
+        const transforms: Map<string, Function> | undefined = (ctor as any)[TRANSFORMS.key];
+        const transform = transforms?.get(field);
+        if (transform) {
+          (this as any)[field] = transform(val);
+        } else {
+          if (typeof current === "number") (this as any)[field] = Number(val);
+          else if (typeof current === "boolean")
+            (this as any)[field] = val !== "false";
+          else (this as any)[field] = val;
+        }
       }
     }
     origCallback?.call(this, name, _old, val);

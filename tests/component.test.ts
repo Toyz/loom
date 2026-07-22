@@ -69,6 +69,40 @@ describe("@component", () => {
     expect(el.disabled).toBe(false);
   });
 
+  it("resets @prop when its attribute is removed (boolean true -> false)", async () => {
+    // Regression: JSX renders boolean `false` as an ABSENT attribute, so morph
+    // removes it (attributeChangedCallback val === null). The old guard skipped
+    // null, freezing the @prop getter at the stale `true` while the DOM attribute
+    // was already gone — visible on slotted children re-rendered via morph.
+    const tag = nextTag();
+
+    @component(tag)
+    class El extends LoomElement {
+      @prop accessor disabled = false;
+      @prop accessor count = 3;
+      @prop accessor label = "hi";
+    }
+    customElements.define(tag, El);
+
+    const el = await fixture<El>(tag);
+    el.setAttribute("disabled", "");
+    expect(el.disabled).toBe(true);
+
+    el.removeAttribute("disabled");
+    expect(el.disabled).toBe(false); // was frozen at true before the fix
+
+    // Non-boolean props reset to their type's empty on removal.
+    el.setAttribute("count", "9");
+    expect(el.count).toBe(9);
+    el.removeAttribute("count");
+    expect(el.count).toBe(0);
+
+    el.setAttribute("label", "yo");
+    expect(el.label).toBe("yo");
+    el.removeAttribute("label");
+    expect(el.label).toBe("");
+  });
+
   it("auto-parses string attributes via attributeChangedCallback", async () => {
     const tag = nextTag();
 
