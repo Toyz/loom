@@ -393,13 +393,29 @@ export const attribute = createDecorator<[name: string, opts?: AttributeOptions]
   // wired by the accessor itself; here we just consume the @component staging
   // queue so these keys don't leak into the next @component-decorated class.
   pendingProps.length = 0;
-  // Re-scan any roots already being observed so a late-registered attribute
-  // (e.g. from a lazily loaded module) picks up elements already in the DOM.
-  // Roots register themselves in `observedRoots`; we can't enumerate a
-  // WeakMap, so late registration only affects elements observed *after*
-  // this point plus the next mutation on existing roots. Callers needing
-  // immediate coverage can re-run `observeAttributes(root)`.
+  // Auto-observe the document so controllers work on elements OUTSIDE any Loom
+  // shadow root — top-level HTML, and modals / toasts / portals appended to
+  // document.body. Component shadow roots are observed separately by
+  // LoomElement.connectedCallback; a document-level observer never crosses a
+  // shadow boundary, so there is no double coverage. Idempotent + re-scans on
+  // each registration, which also covers late (lazy-loaded) @attributes.
+  ensureDocumentObserved();
 }, { class: true });
+
+/** Observe document.body for registered attributes (deferred until body exists). */
+function ensureDocumentObserved(): void {
+  if (typeof document === "undefined") return; // SSR guard
+  if (document.body) {
+    observeAttributes(document.body);
+  } else if (typeof document.addEventListener === "function") {
+    // Script ran before <body> parsed — wait for the DOM.
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => { if (document.body) observeAttributes(document.body); },
+      { once: true },
+    );
+  }
+}
 
 // ── Instance management ──
 

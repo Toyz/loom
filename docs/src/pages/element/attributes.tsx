@@ -183,16 +183,15 @@ get target() { return this.el; }`}></code-block>
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              Controllers inside a component's shadow root are wired automatically. For light-DOM
-              or top-level HTML mount points, observe a root yourself:
+              Two roots are observed automatically: every component's shadow root
+              (via <span class="ic">LoomElement</span>) and <span class="ic">document.body</span> —
+              so controllers work on top-level HTML and on modals / toasts / portals appended to
+              the body, with no setup. You only call <span class="ic">observeAttributes</span> for a
+              root Loom doesn't reach (e.g. a shadow root you created by hand):
             </div>
             <code-block lang="ts" code={`import { observeAttributes } from "@toyz/loom";
 
-observeAttributes(document.body);`}></code-block>
-            <div class="dec-desc">
-              It scans immediately, then reacts to attribute and child-list changes. Returns an
-              unobserve function.
-            </div>
+observeAttributes(myCustomRoot); // scans now, reacts to changes, returns an unobserve fn`}></code-block>
           </div>
         </section>
 

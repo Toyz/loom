@@ -97,6 +97,32 @@ describe("LoomAttribute", () => {
     document.body.removeChild(host);
   });
 
+  it("auto-observes document.body — controllers work outside any Loom shadow", async () => {
+    // Regression: modals / toasts / portals / top-level HTML live under
+    // document.body, not inside a component shadow root. Registering an
+    // @attribute must auto-observe the document so these attach without a
+    // manual observeAttributes() call.
+    const spy = vi.fn();
+
+    @attribute("auto-body")
+    class AutoBody extends LoomAttribute {
+      connect() { spy("connect"); }
+      disconnect() { spy("disconnect"); }
+    }
+    void AutoBody;
+
+    // No observeAttributes() call — appended straight to body, like a portal.
+    const modal = document.createElement("div");
+    modal.setAttribute("auto-body", "x");
+    document.body.appendChild(modal);
+    await flush();
+    expect(spy).toHaveBeenCalledWith("connect");
+
+    modal.remove();
+    await flush();
+    expect(spy).toHaveBeenCalledWith("disconnect");
+  });
+
   it("scans elements already present when observation starts", async () => {
     const connectSpy = vi.fn();
 
