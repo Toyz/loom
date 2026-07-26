@@ -112,7 +112,9 @@ export const docStyles = css`
     border: none;
     padding: 0;
     border-bottom: 1px solid var(--thread-dim, #8f3423);
-    white-space: nowrap;
+    /* Not nowrap: an unbreakable identifier mid-sentence shoves the whole
+       phrase to the next line and leaves a ragged hole above it. */
+    overflow-wrap: break-word;
   }
 
   /* ── Tables ── */
@@ -331,7 +333,7 @@ export const docStyles = css`
     border-radius: 0;
     color: var(--text-primary, #e6e1d3);
     font-weight: 400;
-    white-space: nowrap;
+    overflow-wrap: break-word;
   }
 
   /* ── Links ── */
@@ -351,7 +353,6 @@ export const docStyles = css`
     h1 { font-size: 2rem; }
     h2 { font-size: 1.1875rem; }
     .subtitle { font-size: 1rem; }
-    .ic { white-space: normal; word-break: break-word; }
     .api-table {
       display: block;
       overflow-x: auto;

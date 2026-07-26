@@ -33,10 +33,13 @@
   --ground-sunk:   #100f0b;
   --ground-hover:  #24241b;
 
-  /* Card stock — real punch cards were an olive-tinted buff, not warm cream */
-  --card:          #ded6c0;
-  --card-edge:     #c9c0a6;
-  --card-ink:      #1a1913;
+  /* Card stock — olive-tinted buff, not warm cream.
+     Deliberately dimmer than real paper: this is a dark UI, and a bright panel
+     of any size is a flashbang. Stock is for SMALL artifacts only — a few rows
+     at a time. Anything page-sized uses --ground-sunk instead. */
+  --card:          #b9b099;
+  --card-edge:     #a1977e;
+  --card-ink:      #16150f;
 
   /* Warp — hairline rules; the fixed threads content is woven across */
   --warp:          #33322a;

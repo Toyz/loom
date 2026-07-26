@@ -275,193 +275,200 @@ const styles = css`
     border-right: 1px solid var(--border-subtle, #1e1e2a);
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     z-index: 100;
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.06) transparent;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* ── Brand ── */
+  /* ── Brand ──
+     Was a rounded gradient tile with a drop shadow — the same mark every
+     framework site ships. Now a stamped wordmark over a punch row, which is
+     the identity this design is actually built on. */
 
   .brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 32px 28px 28px;
-  }
-  .brand-mark {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent, #818cf8), var(--rose, #f472b6));
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    padding: 26px 22px 18px;
+    border-bottom: 1px solid var(--warp, #33322a);
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(129, 140, 248, 0.25);
   }
-  .brand-mark svg {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: #fff;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+  .brand-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
   }
+  /* The old .brand-mark SVG tile is hidden rather than removed, so the
+     pre-paint DSD shell in index.html keeps its markup valid. */
+  .brand-mark { display: none; }
   .brand h1 {
-    font-size: 1.35rem;
+    font-family: var(--font-display, sans-serif);
+    font-size: 1.5rem;
     font-weight: 700;
-    letter-spacing: -0.025em;
-    color: var(--text-primary, #e8e8f0);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--text-primary, #e6e1d3);
     margin: 0;
+    line-height: 1;
   }
   .brand-version {
     margin-left: auto;
     font-size: 0.625rem;
-    font-family: var(--font-mono, "IBM Plex Mono", monospace);
-    color: var(--text-muted, #5e5e74);
-    border: 1px solid var(--border-subtle, #1e1e2a);
-    padding: 2px 8px;
-    border-radius: 5px;
+    font-family: var(--font-mono, monospace);
+    color: var(--text-muted, #6d6858);
+    border: none;
+    padding: 0;
+    border-radius: 0;
     white-space: nowrap;
+    letter-spacing: 0.06em;
+  }
+  /* A row of punch positions under the wordmark. Fixed pattern, used as a
+     maker's mark rather than as data. */
+  .brand-punches {
+    display: flex;
+    gap: 4px;
+    margin-top: 10px;
+  }
+  .brand-punches i {
+    width: 5px;
+    height: 8px;
+    border: 1px solid var(--warp-lit, #4a4839);
+  }
+  /* Punched reads as a hole everywhere else in the system, so it reads as a
+     hole here too — a dimmed thread fill, not five alarm-red blocks. */
+  .brand-punches i.on {
+    background: var(--thread-dim, #8f3423);
+    border-color: var(--thread-dim, #8f3423);
   }
 
-  /* ── Search Bar ── */
+  /* ── Search ──
+     Was a rounded pill with a ⌘K chip. Now a ruled field, like the index line
+     on a card sleeve. */
 
   .search-trigger {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 0 16px 8px;
-    padding: 8px 12px;
-    border: 1px solid var(--border-subtle, #1e1e2a);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.02);
+    gap: 8px;
+    margin: 0;
+    flex-shrink: 0;
+    padding: 11px 22px;
+    border: none;
+    border-bottom: 1px solid var(--warp, #33322a);
+    border-radius: 0;
+    background: transparent;
     cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    width: 100%;
+    text-align: left;
+    transition: background 0.15s ease;
   }
   .search-trigger:hover {
-    background: var(--bg-hover, #22222e);
-    border-color: rgba(129, 140, 248, 0.3);
+    background: var(--ground-hover, #24241b);
   }
   .search-trigger loom-icon {
     flex-shrink: 0;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, #6d6858);
   }
   .search-trigger-text {
     flex: 1;
-    font-size: 0.8rem;
-    color: var(--text-muted, #5e5e74);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted, #6d6858);
   }
   .search-trigger-kbd {
-    font-size: 0.6rem;
-    font-family: var(--font-mono, "IBM Plex Mono", monospace);
-    color: var(--text-muted, #5e5e74);
-    border: 1px solid var(--border-subtle, #1e1e2a);
-    padding: 2px 5px;
-    border-radius: 4px;
-    opacity: 0.7;
+    font-size: 0.625rem;
+    font-family: var(--font-mono, monospace);
+    color: var(--text-muted, #6d6858);
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    opacity: 1;
   }
 
   /* ── Navigation ── */
 
   nav {
     flex: 1;
-    padding: 12px 0 40px;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 0 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--warp-lit, #4a4839) transparent;
   }
 
-  /* Home link */
-  .home-item {
-    margin: 0 16px 4px;
-  }
+  .home-item { margin: 0; }
 
-  /* Standalone top-level nav links (outside collapsible sections) */
-  .nav-link.standalone {
-    margin: 0 16px 12px;
-  }
+  .nav-link.standalone { margin: 0; }
   .nav-link.standalone loom-link::part(anchor) {
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 0.8125rem;
   }
   .home-item loom-link::part(anchor) {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-secondary, #9898ad);
+    gap: 10px;
+    padding: 8px 22px;
+    border-radius: 0;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    color: var(--text-secondary, #a09a88);
     text-decoration: none;
-    transition: background 0.18s ease, color 0.18s ease;
+    transition: color 0.15s ease, background 0.15s ease;
   }
   .home-item loom-link::part(anchor):hover {
-    background: var(--bg-hover, #22222e);
-    color: var(--text-primary, #e8e8f0);
+    background: var(--ground-hover, #24241b);
+    color: var(--text-primary, #e6e1d3);
   }
 
-  /* Section */
+  /* Section — a printed field label on the sleeve, not a collapsible widget
+     with a chevron. It still toggles; the affordance is the hover, not an arrow. */
   .section {
-    margin-top: 12px;
+    margin-top: 4px;
   }
   .section-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 28px 8px;
+    padding: 14px 22px 6px;
     cursor: pointer;
     user-select: none;
   }
   .section-title {
-    font-size: 0.6875rem;
-    font-weight: 600;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.625rem;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted, #5e5e74);
+    letter-spacing: 0.16em;
+    color: var(--text-muted, #6d6858);
     transition: color 0.15s;
   }
   .section-header:hover .section-title {
-    color: var(--text-secondary, #9898ad);
+    color: var(--text-secondary, #a09a88);
   }
-  .section-chevron {
-    width: 14px;
-    height: 14px;
-    fill: none;
-    stroke: var(--text-muted, #5e5e74);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: transform 0.2s ease;
-    flex-shrink: 0;
-  }
-  .section.open .section-chevron {
-    transform: rotate(90deg);
-  }
+  /* The chevron restated what the open/closed state already showed. */
+  .section-chevron { display: none; }
 
-  /* Links container */
   .section-links {
     overflow: hidden;
     max-height: 0;
     transition: max-height 0.25s ease;
-    padding: 0 12px;
+    padding: 0;
   }
   .section.open .section-links {
-    max-height: 800px;
-    padding-top: 4px;
+    max-height: 900px;
+    padding-top: 0;
   }
 
-  /* Nav sub-group divider (e.g. "Built-ins") */
   .nav-divider {
+    font-family: var(--font-mono, monospace);
     font-size: 0.5625rem;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted, #5e5e74);
-    opacity: 0.6;
-    padding: 6px 18px 2px;
+    letter-spacing: 0.14em;
+    color: var(--text-muted, #6d6858);
+    opacity: 0.75;
+    padding: 12px 22px 4px;
     margin-top: 2px;
     display: flex;
     align-items: center;
@@ -469,81 +476,68 @@ const styles = css`
   }
   .divider-version {
     font-size: 0.5rem;
-    font-family: var(--font-mono, "IBM Plex Mono", monospace);
-    color: var(--text-muted, #5e5e74);
-    border: 1px solid var(--border-subtle, #1e1e2a);
-    padding: 1px 5px;
-    border-radius: 4px;
+    font-family: var(--font-mono, monospace);
+    color: var(--text-muted, #6d6858);
+    border: 1px solid var(--warp, #33322a);
+    padding: 1px 4px;
+    border-radius: 0;
     text-transform: none;
     letter-spacing: 0;
     opacity: 1;
   }
 
-  /* Individual nav link */
+  /* Individual nav link — a row on the index card. Mono, tight, square. */
   .nav-link {
     display: block;
-    margin: 2px 0;
-    border-radius: 10px;
+    margin: 0;
+    border-radius: 0;
     position: relative;
   }
   .nav-link loom-link::part(anchor) {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 7px 16px;
-    border-radius: 10px;
-    font-size: 0.8125rem;
-    font-weight: 450;
-    color: var(--text-secondary, #9898ad);
+    gap: 0;
+    padding: 5px 22px 5px 34px;
+    border-radius: 0;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--text-secondary, #a09a88);
     text-decoration: none;
-    transition: background 0.18s ease, color 0.18s ease;
+    transition: color 0.12s ease, background 0.12s ease;
   }
   .nav-link loom-link::part(anchor):hover {
-    background: var(--bg-hover, #22222e);
-    color: var(--text-primary, #e8e8f0);
+    background: var(--ground-hover, #24241b);
+    color: var(--text-primary, #e6e1d3);
   }
   .nav-link.active loom-link::part(anchor) {
-    background: rgba(129, 140, 248, 0.08);
-    color: var(--accent, #818cf8);
-    font-weight: 550;
+    background: transparent;
+    color: var(--text-primary, #e6e1d3);
+    font-weight: 500;
   }
-  .nav-link.active {
-    position: relative;
-  }
+  /* Active is a punched position in the rail, matching the motif exactly —
+     not a tinted rounded pill. */
   .nav-link.active::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 6px;
-    bottom: 6px;
-    width: 3px;
-    border-radius: 0 3px 3px 0;
-    background: var(--accent, #818cf8);
+    left: 20px;
+    top: 50%;
+    width: 6px;
+    height: 9px;
+    transform: translateY(-50%);
+    background: var(--thread, #c4472f);
+    border-radius: 0;
   }
 
-  /* Icon inside link — rainbow cycle via nth-child */
+  /* Icons are gone from the nav entirely.
+     They were coloured by nth-child through a ten-hue cycle, so the colour of
+     any given row depended on its position in the list — it encoded nothing,
+     and it was the loudest generated-looking thing on the page. */
   .nav-link loom-icon,
   .home-item loom-icon {
-    flex-shrink: 0;
-    transition: opacity 0.18s ease, filter 0.18s ease;
+    display: none;
   }
-
-  /* 10-color palette cycling through golden-angle hue steps */
-  .nav-link:nth-child(10n+1) loom-icon { color: hsl(260, 70%, 70%); }
-  .nav-link:nth-child(10n+2) loom-icon { color: hsl(330, 65%, 68%); }
-  .nav-link:nth-child(10n+3) loom-icon { color: hsl(170, 60%, 60%); }
-  .nav-link:nth-child(10n+4) loom-icon { color: hsl(35,  70%, 65%); }
-  .nav-link:nth-child(10n+5) loom-icon { color: hsl(200, 65%, 65%); }
-  .nav-link:nth-child(10n+6) loom-icon { color: hsl(290, 55%, 68%); }
-  .nav-link:nth-child(10n+7) loom-icon { color: hsl(140, 55%, 60%); }
-  .nav-link:nth-child(10n+8) loom-icon { color: hsl(15,  70%, 65%); }
-  .nav-link:nth-child(10n+9) loom-icon { color: hsl(55,  65%, 60%); }
-  .nav-link:nth-child(10n+10) loom-icon { color: hsl(220, 65%, 70%); }
-
-  /* Dim when inactive, full when active */
-  .nav-link loom-icon { opacity: 0.55; }
-  .nav-link.active loom-icon { opacity: 1; filter: brightness(1.2); }
-  .nav-link:hover loom-icon { opacity: 0.85; }
 
   /* ─────────── Main Content ─────────── */
 
@@ -552,10 +546,18 @@ const styles = css`
     flex: 1;
     min-height: 100vh;
   }
+  /* The content sits against a warp edge rather than floating centred in
+     empty space. The rule is the loom's selvedge — the finished edge the
+     weave is anchored to — and it gives every page the same left datum. */
+  /* Anchored to the sidebar rather than centred in the viewport: centring a
+     narrow column inside a 2000px main leaves ~570px dead on each side and the
+     text ends up floating unattached to the nav it belongs to. */
   .page {
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 56px 48px 80px;
+    max-width: 1040px;
+    margin: 0;
+    margin-left: min(6vw, 88px);
+    padding: 56px 56px 96px 56px;
+    position: relative;
   }
   loom-outlet {
     display: block;
@@ -684,18 +686,20 @@ export class DocsApp extends LoomElement {
         <div class={`backdrop ${this.sidebarOpen ? 'visible' : ''}`} onClick={() => { this.sidebarOpen = false; this.scheduleUpdate(); }}></div>
         <aside class={this.sidebarOpen ? 'open' : ''}>
           <div class="brand">
-            <div class="brand-mark">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
+            <div class="brand-row">
+              <h1>Loom</h1>
+              <span class="brand-version">{`v${__LOOM_VERSION__}`}</span>
+              <button class="sidebar-close" onClick={() => { this.sidebarOpen = false; this.scheduleUpdate(); }}>
+                <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </button>
             </div>
-            <h1>Loom</h1>
-            <span class="brand-version">{`v${__LOOM_VERSION__}`}</span>
-            <button class="sidebar-close" onClick={() => { this.sidebarOpen = false; this.scheduleUpdate(); }}>
-              <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
-            </button>
+            {/* Maker's mark: a fixed punch pattern, the same on every page.
+                Decorative by intent — it identifies the site, it does not
+                encode anything, which is why it never changes. */}
+            <div class="brand-punches" aria-hidden="true">
+              <i></i><i class="on"></i><i></i><i></i><i class="on"></i>
+              <i></i><i></i><i class="on"></i><i></i>
+            </div>
           </div>
 
           <button class="search-trigger" onClick={() => this.openSearch()}>

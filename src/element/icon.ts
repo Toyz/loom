@@ -34,9 +34,12 @@ const baseStyles = css`
   loom-icon svg {
     width: 100%;
     height: 100%;
-    fill: none;
+    /* Fill was hardcoded to none, so a solid icon was impossible no matter
+       what the caller passed. It is a variable now; the default keeps every
+       existing outline icon rendering exactly as before. */
+    fill: var(--_f, none);
     stroke: var(--_c, currentColor);
-    stroke-width: 1.75;
+    stroke-width: var(--_sw, 1.75);
     stroke-linecap: round;
     stroke-linejoin: round;
   }
@@ -76,6 +79,15 @@ export class LoomIcon extends LoomElement {
   /** Stroke color (CSS value) */
   @prop accessor color = "currentColor";
 
+  /**
+   * Fill color (CSS value). Defaults to "none" so outline icons are unchanged.
+   * Pass "currentColor" for a solid icon, or any CSS colour.
+   */
+  @prop accessor fill = "none";
+
+  /** Stroke width. Set to 0 alongside a fill for a purely solid icon. */
+  @prop accessor strokeWidth = 1.75;
+
   /** Register an icon. `svgInner` is the SVG inner content (paths, circles, etc). */
   static register(name: string, svgInner: string): void {
     registry.set(name, svgInner);
@@ -100,14 +112,21 @@ export class LoomIcon extends LoomElement {
 
   @watch("size")
   @watch("color")
+  @watch("fill")
+  @watch("strokeWidth")
   private syncVars() {
+    this.applyVars();
+  }
+
+  private applyVars(): void {
     this.style.setProperty("--_s", `${this.size}px`);
     this.style.setProperty("--_c", this.color);
+    this.style.setProperty("--_f", this.fill);
+    this.style.setProperty("--_sw", String(this.strokeWidth));
   }
 
   update() {
-    this.style.setProperty("--_s", `${this.size}px`);
-    this.style.setProperty("--_c", this.color);
+    this.applyVars();
 
     // Resolver first → static registry fallback
     const resolver = app.maybe<IconResolver>(IconResolver);

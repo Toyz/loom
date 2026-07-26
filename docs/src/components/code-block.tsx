@@ -4,7 +4,7 @@
  * Usage:
  *   <code-block lang="ts" code={`const x = 1;`}></code-block>
  */
-import { LoomElement, component, prop, css, mount } from "@toyz/loom";
+import { LoomElement, component, prop, reactive, debounce, css, mount } from "@toyz/loom";
 
 /* ── Per-language tokenizer rules ── */
 
@@ -144,44 +144,99 @@ const styles = css`
     margin-bottom: var(--space-4, 1rem);
   }
 
-  /* The code block is the card feed: a sunken well with a punched left edge,
-     the way stock sits in the reader. Square corners — card stock is die-cut. */
+  /* Every code block is a punched card: the same treatment the landing page
+     uses, so the motif is one thing used everywhere rather than a one-off. */
   .block {
     position: relative;
     background: var(--ground-sunk, #100f0b);
-    border: 1px solid var(--warp, #33322a);
+    border: 1px solid var(--warp-lit, #4a4839);
     border-radius: 0;
     overflow: hidden;
     font-size: 13px;
-    line-height: 1.7;
+    /* Explicit px, not a multiplier: the gutter and the code must resolve to
+       exactly the same line box or the holes walk off their lines. */
+    line-height: 22px;
+  }
+  /* The clipped corner is how a card is oriented in the reader. */
+  .block.as-card {
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
   }
 
-  /* Sprocket margin: the feed holes down the left edge of the stock. Purely
-     an edge treatment, so it is hidden from assistive tech by being a border
-     image rather than content. */
-  .block::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 14px;
-    background-image: radial-gradient(
-      circle at 7px center,
-      var(--warp-lit, #4a4839) 0 1.5px,
-      transparent 1.6px
-    );
-    background-size: 14px 13px;
-    background-repeat: repeat-y;
+  .caption {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted, #6d6858);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
+  /* Printed spec strip along the card's foot. */
+  .foot {
+    display: flex;
+    gap: var(--space-6, 1.5rem);
+    flex-wrap: wrap;
+    padding: 11px 20px 11px 16px;
+    border-top: 1px solid var(--warp, #33322a);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted, #6d6858);
+  }
+
+  /* The punch gutter — one position per line of code, punched where that line
+     carries a decorator. Same rule as the hero card, so the motif means the
+     same thing everywhere: a punch marks a line that instructs the machine.
+     Decorative only in the sense that it is redundant with the code itself, so
+     it is hidden from assistive tech. */
+  /* Code and gutter are laid out side by side and share one line grid.
+     The holes are GLYPHS in a <pre> with the same font and line-height as the
+     code, which is the only way they stay aligned: an absolutely positioned
+     column with a hard-coded line box drifted about 1px per line and was ~10px
+     out by the bottom of a short snippet. */
+  .body {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .gutter {
+    /* The gutter is a <pre> as well, so it must be excluded from the code
+       column's flex rule or it grows to fill half the block. */
+    flex: 0 0 auto;
+    width: auto;
+    margin: 0;
+    padding: 14px 9px;
+    border: none;
     border-right: 1px solid var(--warp, #33322a);
-    pointer-events: none;
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.22);
+    color: var(--warp-lit, #4a4839);
+    font-family: var(--font-mono, monospace);
+    font-size: 13px;
+    line-height: 22px;
+    user-select: none;
+    overflow: visible;
+  }
+  .gutter b {
+    display: block;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 22px;
+  }
+  .gutter b.on { color: var(--thread, #c4472f); }
+
+  /* Only the code column flexes; min-width lets it shrink so long lines
+     scroll inside the block instead of widening the page. */
+  .body > pre:not(.gutter) {
+    flex: 1;
+    min-width: 0;
   }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 12px 5px 26px;
+    padding: 5px 12px 5px 16px;
     background: transparent;
     border-bottom: 1px solid var(--warp, #33322a);
   }
@@ -196,6 +251,10 @@ const styles = css`
   }
 
   .copy-btn {
+    /* Reserve the widest label so Copy -> Copied -> Failed does not resize the
+       button and shove the header around. */
+    min-width: 58px;
+    text-align: center;
     background: none;
     border: 1px solid transparent;
     border-radius: 0;
@@ -212,14 +271,25 @@ const styles = css`
     color: var(--text-primary, #e6e1d3);
     border-color: var(--warp-lit, #4a4839);
   }
-  .copy-btn.copied {
+  .copy-btn.ok {
     color: var(--ok, #7f9c5a);
     border-color: var(--ok, #7f9c5a);
+  }
+  .copy-btn.fail {
+    color: var(--thread, #c4472f);
+    border-color: var(--thread, #c4472f);
   }
 
   pre {
     margin: 0;
-    padding: 14px 20px 14px 26px;
+    /* Same font as the gutter. When this fell back to the generic monospace
+       the two columns built different line-box struts — 23px here against
+       22px there — and the holes walked one pixel further off their line with
+       every row. */
+    font-family: var(--font-mono, monospace);
+    font-size: 13px;
+    line-height: 22px;
+    padding: 14px 20px;
     overflow-x: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--warp-lit, #4a4839) transparent;
@@ -228,8 +298,11 @@ const styles = css`
   code {
     font-family: var(--font-mono, monospace);
     font-size: 13px;
+    line-height: 22px;
     color: var(--text-primary, #e6e1d3);
   }
+  /* No token may alter the line box. */
+  code [class^="tok-"] { font-size: inherit; line-height: inherit; }
 
   /* ── Token colours ──
      Tuned for the olive ground and kept to one warm/one cool family plus
@@ -255,6 +328,15 @@ const styles = css`
 export class CodeBlock extends LoomElement {
   @prop accessor lang = "ts";
   @prop accessor code = "";
+  /** Render as a punched card: clipped corner and a printed caption. */
+  @prop accessor card = false;
+  /** Caption printed above a card, e.g. "Card 01". */
+  @prop accessor caption = "";
+  /** Comma-separated spec items printed along the card's foot. */
+  @prop accessor foot = "";
+
+  /** "idle" | "ok" | "fail" — drives the copy button label. */
+  @reactive accessor copyState: "idle" | "ok" | "fail" = "idle";
 
   @mount
   setup() {
@@ -262,31 +344,58 @@ export class CodeBlock extends LoomElement {
   }
 
   private async copyCode() {
+    // Reactive state rather than poking textContent: the old version wrote
+    // straight into the button, so any re-render wiped the confirmation, and
+    // a rejected clipboard write was swallowed with no feedback at all.
     try {
       await navigator.clipboard.writeText(this.code);
-      const btn = this.shadow.querySelector(".copy-btn") as HTMLElement;
-      if (btn) {
-        btn.textContent = "Copied!";
-        btn.classList.add("copied");
-        setTimeout(() => {
-          btn.textContent = "Copy";
-          btn.classList.remove("copied");
-        }, 1500);
-      }
-    } catch {}
+      this.copyState = "ok";
+    } catch {
+      this.copyState = "fail";
+    }
+    this.resetCopy();
+  }
+
+  /** @debounce defers the reset and is cancelled if the block unmounts. */
+  @debounce(1600)
+  private resetCopy() {
+    this.copyState = "idle";
   }
 
   update() {
     const trimmed = this.code.replace(/^\n+|\n+$/g, "");
     const html = highlight(trimmed, this.lang);
+    // A line is punched when it carries a decorator, matching the hero card.
+    const punched = trimmed.split("\n").map((l) => /^\s*@[A-Za-z_$]/.test(l));
+
+    const label =
+      this.copyState === "ok" ? "Copied" :
+      this.copyState === "fail" ? "Failed" : "Copy";
+    const foots = this.foot.split(",").map((f) => f.trim()).filter(Boolean);
 
     return (
-      <div class="block">
+      <div>
+        {this.caption ? <div class="caption">{this.caption}</div> : null}
+        <div class={`block ${this.card ? "as-card" : ""}`}>
         <div class="header">
           <span class="lang-label">{this.lang}</span>
-          <button class="copy-btn" onClick={() => this.copyCode()}>Copy</button>
+          <button
+            class={`copy-btn ${this.copyState !== "idle" ? this.copyState : ""}`}
+            onClick={() => this.copyCode()}
+          >{() => label}</button>
         </div>
-        <pre><code rawHTML={html}></code></pre>
+        <div class="body">
+          <pre class="gutter" aria-hidden="true">
+            {punched.map((on) => <b class={on ? "on" : ""}>{on ? "\u25A0" : "\u25A1"}</b>)}
+          </pre>
+          <pre><code rawHTML={html}></code></pre>
+        </div>
+        {foots.length ? (
+          <div class="foot">
+            {foots.map((f) => <span>{f}</span>)}
+          </div>
+        ) : null}
+        </div>
       </div>
     );
   }
