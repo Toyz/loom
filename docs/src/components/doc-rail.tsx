@@ -91,6 +91,14 @@ const railStyles = css`
   li.on a { color: var(--text-primary, #e6e1d3); }
   li.on a loom-icon { color: var(--thread, #c4472f); }
 
+  /* A heading inside a section. Indented and set a step smaller, so the rail
+     reads as an outline of the page rather than one flat list. */
+  li.sub a {
+    padding-left: 20px;
+    font-size: 0.6875rem;
+  }
+  li.sub a loom-icon { transform: scale(0.82); }
+
   a:focus-visible {
     outline: 1px solid var(--thread, #c4472f);
     outline-offset: 2px;
@@ -138,7 +146,7 @@ export class DocRail extends LoomElement {
           {this.entries.map((e) => {
             const on = e.id === this.activeId;
             return (
-              <li class={on ? "on" : ""}>
+              <li class={`${e.level === 2 ? "sub" : ""}${on ? " on" : ""}`.trim()}>
                 <a
                   href="javascript:void(0)"
                   aria-current={on ? "true" : undefined}

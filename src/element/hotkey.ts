@@ -128,6 +128,82 @@ function comboFromObject(obj: HotkeyCombo): ParsedCombo {
     };
 }
 
+// ── Display ──
+
+/** Keys whose printed name is not just the key uppercased. */
+const KEY_LABELS: Record<string, string> = {
+    escape: "Esc",
+    arrowup: "↑",
+    arrowdown: "↓",
+    arrowleft: "←",
+    arrowright: "→",
+    enter: "↵",
+    backspace: "⌫",
+    delete: "Del",
+    tab: "Tab",
+    " ": "Space",
+    space: "Space",
+};
+
+function keyLabel(key: string): string {
+    return KEY_LABELS[key] ?? (key.length === 1 ? key.toUpperCase() : key.charAt(0).toUpperCase() + key.slice(1));
+}
+
+/**
+ * Printed form of a combo, in the convention of the platform it is running on.
+ *
+ * The parser already resolves `mod` to Meta on Mac and Ctrl elsewhere, so this
+ * is the same answer the matcher uses — which is the point. Writing the label
+ * out by hand means maintaining a second, silently divergent copy of it.
+ */
+function formatCombo(c: ParsedCombo): string {
+    const key = keyLabel(c.key);
+    if (isMac) {
+        // Apple's documented modifier order, and no separators.
+        return `${c.ctrl ? "⌃" : ""}${c.alt ? "⌥" : ""}${c.shift ? "⇧" : ""}${c.meta ? "⌘" : ""}${key}`;
+    }
+    const parts: string[] = [];
+    if (c.ctrl) parts.push("Ctrl");
+    if (c.alt) parts.push("Alt");
+    if (c.shift) parts.push("Shift");
+    if (c.meta) parts.push("Win");
+    parts.push(key);
+    return parts.join("+");
+}
+
+/**
+ * A method decorated with `@hotkey` carries its own printed label.
+ *
+ * ```ts
+ * @hotkey("mod+k")
+ * openSearch() { ... }
+ *
+ * // in the template — no hand-typed shortcut hint to keep in sync
+ * <kbd>{hotkeyLabel(this.openSearch)}</kbd>
+ * ```
+ */
+export interface HotkeyLabelled {
+    /** The first combo, printed for this platform, e.g. "⌘K" or "Ctrl+K". */
+    readonly hotkey: string;
+    /** Every combo the method is bound to, in declaration order. */
+    readonly hotkeys: readonly string[];
+}
+
+/**
+ * The printed shortcut for a `@hotkey` method, or `""` if it has none.
+ *
+ * Typed accessor for the label the decorator attaches, so callers do not have
+ * to cast the method to reach it.
+ */
+export function hotkeyLabel(method: unknown): string {
+    return (method as Partial<HotkeyLabelled> | undefined)?.hotkey ?? "";
+}
+
+/** Every printed shortcut for a `@hotkey` method. */
+export function hotkeyLabels(method: unknown): readonly string[] {
+    return (method as Partial<HotkeyLabelled> | undefined)?.hotkeys ?? [];
+}
+
 function matchesCombo(e: KeyboardEvent, combo: ParsedCombo): boolean {
     return (
         e.ctrlKey === combo.ctrl &&
@@ -194,7 +270,15 @@ export function hotkey(
     const preventDefault = options.preventDefault ?? comboPreventDefault ?? true;
     const global = options.global ?? comboGlobal ?? false;
 
+    // Printed once per declaration, not per instance: the combo belongs to the
+    // method, so the label lives on the method object. Non-enumerable so it
+    // cannot show up in anything that walks the prototype.
+    const labels = Object.freeze(combos.map(formatCombo));
+
     return (method: Function, context: ClassMethodDecoratorContext) => {
+        Object.defineProperty(method, "hotkeys", { value: labels, configurable: true });
+        Object.defineProperty(method, "hotkey", { value: labels[0] ?? "", configurable: true });
+
         context.addInitializer(function (this: any) {
 
             addConnectHook(this, (host: HTMLElement) => {

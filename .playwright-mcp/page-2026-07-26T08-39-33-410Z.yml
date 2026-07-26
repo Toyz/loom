@@ -1,0 +1,645 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Loom" [level=1] [ref=e7]
+        - generic [ref=e8]: v0.22.0
+      - generic [ref=e9]:
+        - img [ref=e12]
+        - img [ref=e16]
+        - img [ref=e20]
+        - img [ref=e24]
+        - img [ref=e28]
+        - img [ref=e32]
+        - img [ref=e36]
+        - img [ref=e40]
+        - img [ref=e44]
+    - button "Search... ⌘K" [ref=e46] [cursor=pointer]:
+      - img [ref=e48]
+      - generic [ref=e51]: Search...
+      - generic [ref=e52]: ⌘K
+    - navigation [ref=e53]:
+      - link "Home" [ref=e56] [cursor=pointer]:
+        - /url: "#/"
+        - generic: Home
+      - generic [ref=e57]:
+        - generic [ref=e59] [cursor=pointer]: Guides
+        - generic [ref=e60]:
+          - link "Getting Started" [ref=e63] [cursor=pointer]:
+            - /url: "#/guides/getting-started"
+            - generic: Getting Started
+          - link "Your First App" [ref=e66] [cursor=pointer]:
+            - /url: "#/guides/your-first-app"
+            - generic: Your First App
+          - link "Debugging" [ref=e69] [cursor=pointer]:
+            - /url: "#/guides/debugging"
+            - generic: Debugging
+          - link "LoomResult" [ref=e72] [cursor=pointer]:
+            - /url: "#/result"
+            - generic: LoomResult
+          - link "Hydration" [ref=e75] [cursor=pointer]:
+            - /url: "#/guides/hydration"
+            - generic: Hydration
+      - generic [ref=e76]:
+        - generic [ref=e78] [cursor=pointer]: Element
+        - generic [ref=e79]:
+          - link "Overview" [ref=e82] [cursor=pointer]:
+            - /url: "#/element/overview"
+            - generic: Overview
+          - link "Lifecycle" [ref=e85] [cursor=pointer]:
+            - /url: "#/element/lifecycle"
+            - generic: Lifecycle
+          - link "Timing" [ref=e88] [cursor=pointer]:
+            - /url: "#/element/timing"
+            - generic: Timing
+          - link "CSS" [ref=e91] [cursor=pointer]:
+            - /url: "#/element/css"
+            - generic: CSS
+          - link "DOM Queries" [ref=e94] [cursor=pointer]:
+            - /url: "#/element/queries"
+            - generic: DOM Queries
+          - link "JSX & Morphing" [ref=e97] [cursor=pointer]:
+            - /url: "#/element/jsx"
+            - generic: JSX & Morphing
+          - link "Decorators" [ref=e100] [cursor=pointer]:
+            - /url: "#/element/decorators"
+            - generic: Decorators
+          - link "Attributes" [ref=e103] [cursor=pointer]:
+            - /url: "#/element/attributes"
+            - generic: Attributes
+          - link "Light DOM" [ref=e106] [cursor=pointer]:
+            - /url: "#/element/light-dom"
+            - generic: Light DOM
+          - link "Lazy Loading" [ref=e109] [cursor=pointer]:
+            - /url: "#/element/lazy"
+            - generic: Lazy Loading
+          - link "Observer" [ref=e112] [cursor=pointer]:
+            - /url: "#/element/observer"
+            - generic: Observer
+          - link "Forms" [ref=e115] [cursor=pointer]:
+            - /url: "#/element/forms"
+            - generic: Forms
+          - generic [ref=e116]: Data Fetching
+          - link "Fetch" [ref=e119] [cursor=pointer]:
+            - /url: "#/store/api"
+            - generic: Fetch
+          - generic [ref=e120]: Built-ins
+          - link "Virtual List" [ref=e123] [cursor=pointer]:
+            - /url: "#/element/virtual-list"
+            - generic: Virtual List
+          - link "Icon" [ref=e126] [cursor=pointer]:
+            - /url: "#/element/icon"
+            - generic: Icon
+          - link "Canvas" [ref=e129] [cursor=pointer]:
+            - /url: "#/element/canvas"
+            - generic: Canvas
+          - link "Image" [ref=e132] [cursor=pointer]:
+            - /url: "#/element/image"
+            - generic: Image
+      - generic [ref=e133]:
+        - generic [ref=e135] [cursor=pointer]: Decorators
+        - generic [ref=e136]:
+          - link "Overview" [ref=e139] [cursor=pointer]:
+            - /url: "#/decorators/overview"
+            - generic: Overview
+          - link "Events" [ref=e142] [cursor=pointer]:
+            - /url: "#/decorators/events"
+            - generic: Events
+          - link "Transform" [ref=e145] [cursor=pointer]:
+            - /url: "#/decorators/transform"
+            - generic: Transform
+          - link "Hotkey" [ref=e148] [cursor=pointer]:
+            - /url: "#/decorators/hotkey"
+            - generic: Hotkey
+          - link "Log" [ref=e151] [cursor=pointer]:
+            - /url: "#/decorators/log"
+            - generic: Log
+          - link "Context" [ref=e154] [cursor=pointer]:
+            - /url: "#/decorators/context"
+            - generic: Context
+          - link "Portal" [ref=e157] [cursor=pointer]:
+            - /url: "#/decorators/portal"
+            - generic: Portal
+          - link "Typed Symbols" [ref=e160] [cursor=pointer]:
+            - /url: "#/decorators/symbols"
+            - generic: Typed Symbols
+          - link "Media" [ref=e163] [cursor=pointer]:
+            - /url: "#/decorators/media"
+            - generic: Media
+          - link "Fullscreen" [ref=e166] [cursor=pointer]:
+            - /url: "#/decorators/fullscreen"
+            - generic: Fullscreen
+          - link "Clipboard" [ref=e169] [cursor=pointer]:
+            - /url: "#/decorators/clipboard"
+            - generic: Clipboard
+          - link "Drag & Drop" [ref=e172] [cursor=pointer]:
+            - /url: "#/decorators/dnd"
+            - generic: Drag & Drop
+          - link "Dynamic CSS" [ref=e175] [cursor=pointer]:
+            - /url: "#/decorators/css"
+            - generic: Dynamic CSS
+      - generic [ref=e176]:
+        - generic [ref=e178] [cursor=pointer]: Store
+        - generic [ref=e179]:
+          - link "Overview" [ref=e182] [cursor=pointer]:
+            - /url: "#/store/overview"
+            - generic: Overview
+          - link "Reactive" [ref=e185] [cursor=pointer]:
+            - /url: "#/store/reactive"
+            - generic: Reactive
+          - link "Decorator" [ref=e188] [cursor=pointer]:
+            - /url: "#/store/store-decorator"
+            - generic: Decorator
+          - link "Storage" [ref=e191] [cursor=pointer]:
+            - /url: "#/store/storage"
+            - generic: Storage
+          - link "Patterns" [ref=e194] [cursor=pointer]:
+            - /url: "#/store/patterns"
+            - generic: Patterns
+          - link "Signals" [ref=e197] [cursor=pointer]:
+            - /url: "#/store/signals"
+            - generic: Signals
+      - generic [ref=e198]:
+        - generic [ref=e200] [cursor=pointer]: Router
+        - generic [ref=e201]:
+          - link "Overview" [ref=e204] [cursor=pointer]:
+            - /url: "#/router/overview"
+            - generic: Overview
+          - link "Routes" [ref=e207] [cursor=pointer]:
+            - /url: "#/router/routes"
+            - generic: Routes
+          - link "Route Data" [ref=e210] [cursor=pointer]:
+            - /url: "#/router/route-data"
+            - generic: Route Data
+          - link "Groups" [ref=e213] [cursor=pointer]:
+            - /url: "#/router/groups"
+            - generic: Groups
+          - link "Guards" [ref=e216] [cursor=pointer]:
+            - /url: "#/router/guards"
+            - generic: Guards
+          - link "Navigation" [ref=e219] [cursor=pointer]:
+            - /url: "#/router/navigation"
+            - generic: Navigation
+          - link "Lifecycle" [ref=e222] [cursor=pointer]:
+            - /url: "#/router/route-lifecycle"
+            - generic: Lifecycle
+          - link "Decorators" [ref=e225] [cursor=pointer]:
+            - /url: "#/router/decorators"
+            - generic: Decorators
+      - generic [ref=e226]:
+        - generic [ref=e228] [cursor=pointer]: DI & Services
+        - generic [ref=e229]:
+          - link "Overview" [ref=e232] [cursor=pointer]:
+            - /url: "#/di/overview"
+            - generic: Overview
+          - link "Decorators" [ref=e235] [cursor=pointer]:
+            - /url: "#/di/decorators"
+            - generic: Decorators
+      - generic [ref=e236]:
+        - generic [ref=e238] [cursor=pointer]: Packages
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - text: RPC
+            - generic [ref=e241]: v0.5.0
+          - link "Overview" [ref=e244] [cursor=pointer]:
+            - /url: "#/packages/rpc-overview"
+            - generic: Overview
+          - link "Queries" [ref=e247] [cursor=pointer]:
+            - /url: "#/packages/rpc-queries"
+            - generic: Queries
+          - link "Mutations" [ref=e250] [cursor=pointer]:
+            - /url: "#/packages/rpc-mutations"
+            - generic: Mutations
+          - link "Transports" [ref=e253] [cursor=pointer]:
+            - /url: "#/packages/rpc-transports"
+            - generic: Transports
+          - link "Streams" [ref=e256] [cursor=pointer]:
+            - /url: "#/packages/rpc-streams"
+            - generic: Streams
+          - link "Testing" [ref=e259] [cursor=pointer]:
+            - /url: "#/packages/rpc-testing"
+            - generic: Testing
+          - link "Demo" [ref=e262] [cursor=pointer]:
+            - /url: "#/packages/rpc-demo"
+            - generic: Demo
+          - generic [ref=e263]:
+            - text: Analytics
+            - generic [ref=e264]: v0.1.3
+          - link "Overview" [ref=e267] [cursor=pointer]:
+            - /url: "#/packages/analytics-overview"
+            - generic: Overview
+          - link "Testing" [ref=e270] [cursor=pointer]:
+            - /url: "#/packages/analytics-testing"
+            - generic: Testing
+          - link "Demo" [ref=e273] [cursor=pointer]:
+            - /url: "#/packages/analytics-demo"
+            - generic: Demo
+          - generic [ref=e274]:
+            - text: Flags
+            - generic [ref=e275]: v0.1.3
+          - link "Overview" [ref=e278] [cursor=pointer]:
+            - /url: "#/packages/flags-overview"
+            - generic: Overview
+          - link "Testing" [ref=e281] [cursor=pointer]:
+            - /url: "#/packages/flags-testing"
+            - generic: Testing
+          - link "Demo" [ref=e284] [cursor=pointer]:
+            - /url: "#/packages/flags-demo"
+            - generic: Demo
+          - generic [ref=e285]:
+            - text: Placeholder
+            - generic [ref=e286]: v0.1.0
+          - link "Overview" [ref=e289] [cursor=pointer]:
+            - /url: "#/packages/placeholder-overview"
+            - generic: Overview
+          - link "Testing" [ref=e292] [cursor=pointer]:
+            - /url: "#/packages/placeholder-testing"
+            - generic: Testing
+          - link "Demo" [ref=e295] [cursor=pointer]:
+            - /url: "#/packages/placeholder-demo"
+            - generic: Demo
+          - generic [ref=e296]:
+            - text: Create Loom
+            - generic [ref=e297]: v0.2.2
+          - link "Overview" [ref=e300] [cursor=pointer]:
+            - /url: "#/packages/create-loom"
+            - generic: Overview
+      - generic [ref=e301]:
+        - generic [ref=e303] [cursor=pointer]: Examples
+        - generic [ref=e304]:
+          - link "Clock" [ref=e307] [cursor=pointer]:
+            - /url: "#/examples/clock"
+            - generic: Clock
+          - link "Attributes" [ref=e310] [cursor=pointer]:
+            - /url: "#/examples/attributes"
+            - generic: Attributes
+          - link "Todo List" [ref=e313] [cursor=pointer]:
+            - /url: "#/examples/todo"
+            - generic: Todo List
+          - link "Kanban Board" [ref=e316] [cursor=pointer]:
+            - /url: "#/examples/kanban"
+            - generic: Kanban Board
+          - link "Theme Switcher" [ref=e319] [cursor=pointer]:
+            - /url: "#/examples/theme-switcher"
+            - generic: Theme Switcher
+          - link "Contact Form" [ref=e322] [cursor=pointer]:
+            - /url: "#/examples/form"
+            - generic: Contact Form
+          - link "Fetch" [ref=e325] [cursor=pointer]:
+            - /url: "#/examples/api"
+            - generic: Fetch
+          - link "Virtual List" [ref=e328] [cursor=pointer]:
+            - /url: "#/examples/virtual-list-demo"
+            - generic: Virtual List
+          - link "Timing" [ref=e331] [cursor=pointer]:
+            - /url: "#/examples/timing-demo"
+            - generic: Timing
+          - link "Stress Test" [ref=e334] [cursor=pointer]:
+            - /url: "#/examples/stress-test"
+            - generic: Stress Test
+          - link "Canvas Game" [ref=e337] [cursor=pointer]:
+            - /url: "#/examples/canvas-game"
+            - generic: Canvas Game
+          - link "Image Gallery" [ref=e340] [cursor=pointer]:
+            - /url: "#/examples/image-gallery"
+            - generic: Image Gallery
+          - link "EventBus" [ref=e343] [cursor=pointer]:
+            - /url: "#/examples/eventbus"
+            - generic: EventBus
+  - main [ref=e344]:
+    - generic [ref=e349]:
+      - generic "Lifecycle" [ref=e350]:
+        - generic [ref=e351]:
+          - heading "Lifecycle" [level=1] [ref=e353]
+          - paragraph [ref=e354]: Hooks for setup, teardown, errors and async loading -- and which of them run once per element rather than once per connect.
+          - generic [ref=e356]:
+            - button "On this page 8 ▼" [ref=e357] [cursor=pointer]:
+              - generic [ref=e358]:
+                - generic [ref=e359]: On this page
+                - generic [ref=e360]: "8"
+              - generic [ref=e361]: ▼
+            - list [ref=e364]:
+              - listitem [ref=e365]:
+                - link "@mount" [ref=e366] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e367]:
+                - link "@unmount" [ref=e368] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e369]:
+                - link "@catch_" [ref=e370] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e371]:
+                - link "@suspend" [ref=e372] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e373]:
+                - link "Combined Example" [ref=e374] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e375]:
+                - link "firstUpdated()" [ref=e376] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e377]:
+                - link "shouldUpdate()" [ref=e378] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e379]:
+                - link "Full Lifecycle Order" [ref=e380] [cursor=pointer]:
+                  - /url: javascript:void(0)
+      - generic [ref=e381]:
+        - paragraph [ref=e382]: The single most common lifecycle bug in web components is assuming connectedCallback runs once. It runs every time the element enters the DOM, and moving an element — appendChild to a new parent, a reorder inside a morph — disconnects and reconnects it. Setup written as "run once" silently runs three times.
+        - paragraph [ref=e383]: Loom's hooks are explicit about which side of that line they sit on. @mount and @unmount pair up per connection. firstUpdated runs after the first render only. @suspend and @catch wrap async work and errors so a failed load renders a state instead of a blank element.
+        - table [ref=e386]:
+          - rowgroup [ref=e387]:
+            - row "PER CONNECT ONCE PER ELEMENT ASYNC-AWARE RUNS ON ERROR" [ref=e388]:
+              - columnheader [ref=e389]
+              - columnheader "PER CONNECT" [ref=e390]
+              - columnheader "ONCE PER ELEMENT" [ref=e391]
+              - columnheader "ASYNC-AWARE" [ref=e392]
+              - columnheader "RUNS ON ERROR" [ref=e393]
+          - rowgroup [ref=e394]:
+            - 'row "@mount After the element connects PER CONNECT: yes ONCE PER ELEMENT: no ASYNC-AWARE: no RUNS ON ERROR: no" [ref=e395]':
+              - cell "@mount After the element connects" [ref=e396]:
+                - text: "@mount"
+                - generic [ref=e397]: After the element connects
+              - 'cell "PER CONNECT: yes" [ref=e398]':
+                - img [ref=e401]
+              - 'cell "ONCE PER ELEMENT: no" [ref=e403]':
+                - img [ref=e406]
+              - 'cell "ASYNC-AWARE: no" [ref=e408]':
+                - img [ref=e411]
+              - 'cell "RUNS ON ERROR: no" [ref=e413]':
+                - img [ref=e416]
+            - 'row "@unmount When it disconnects PER CONNECT: yes ONCE PER ELEMENT: no ASYNC-AWARE: no RUNS ON ERROR: no" [ref=e418]':
+              - cell "@unmount When it disconnects" [ref=e419]:
+                - text: "@unmount"
+                - generic [ref=e420]: When it disconnects
+              - 'cell "PER CONNECT: yes" [ref=e421]':
+                - img [ref=e424]
+              - 'cell "ONCE PER ELEMENT: no" [ref=e426]':
+                - img [ref=e429]
+              - 'cell "ASYNC-AWARE: no" [ref=e431]':
+                - img [ref=e434]
+              - 'cell "RUNS ON ERROR: no" [ref=e436]':
+                - img [ref=e439]
+            - 'row "firstUpdated After the first render only PER CONNECT: no ONCE PER ELEMENT: yes ASYNC-AWARE: no RUNS ON ERROR: no" [ref=e441]':
+              - cell "firstUpdated After the first render only" [ref=e442]:
+                - text: firstUpdated
+                - generic [ref=e443]: After the first render only
+              - 'cell "PER CONNECT: no" [ref=e444]':
+                - img [ref=e447]
+              - 'cell "ONCE PER ELEMENT: yes" [ref=e449]':
+                - img [ref=e452]
+              - 'cell "ASYNC-AWARE: no" [ref=e454]':
+                - img [ref=e457]
+              - 'cell "RUNS ON ERROR: no" [ref=e459]':
+                - img [ref=e462]
+            - 'row "@suspend Renders loading and error states PER CONNECT: yes ONCE PER ELEMENT: no ASYNC-AWARE: yes RUNS ON ERROR: no" [ref=e464]':
+              - cell "@suspend Renders loading and error states" [ref=e465]:
+                - text: "@suspend"
+                - generic [ref=e466]: Renders loading and error states
+              - 'cell "PER CONNECT: yes" [ref=e467]':
+                - img [ref=e470]
+              - 'cell "ONCE PER ELEMENT: no" [ref=e472]':
+                - img [ref=e475]
+              - 'cell "ASYNC-AWARE: yes" [ref=e477]':
+                - img [ref=e480]
+              - 'cell "RUNS ON ERROR: no" [ref=e482]':
+                - img [ref=e485]
+            - 'row "@catch Catches a throw from render or @api PER CONNECT: no ONCE PER ELEMENT: no ASYNC-AWARE: no RUNS ON ERROR: yes" [ref=e487]':
+              - cell "@catch Catches a throw from render or @api" [ref=e488]:
+                - text: "@catch"
+                - generic [ref=e489]: Catches a throw from render or @api
+              - 'cell "PER CONNECT: no" [ref=e490]':
+                - img [ref=e493]
+              - 'cell "ONCE PER ELEMENT: no" [ref=e495]':
+                - img [ref=e498]
+              - 'cell "ASYNC-AWARE: no" [ref=e500]':
+                - img [ref=e503]
+              - 'cell "RUNS ON ERROR: yes" [ref=e505]':
+                - img [ref=e508]
+      - generic [ref=e510]:
+        - heading "@mount" [level=2] [ref=e512]
+        - generic [ref=e513]:
+          - generic [ref=e514]: "@mount"
+          - generic [ref=e515]: Runs when the element connects to the DOM. Multiple @mount methods allowed per class.
+          - generic [ref=e518]:
+            - generic [ref=e519]:
+              - generic [ref=e520]: ts
+              - button "Copy" [ref=e521] [cursor=pointer]
+            - generic [ref=e522]:
+              - generic [ref=e523]:
+                - img [ref=e526]
+                - img [ref=e530]
+                - img [ref=e534]
+                - img [ref=e538]
+                - img [ref=e542]
+              - code [ref=e545]: "@mount setup() { this.shadow.adoptedStyleSheets = [styles]; this.ctx = this.canvas.getContext(\"2d\"); }"
+      - generic [ref=e546]:
+        - heading "@unmount" [level=2] [ref=e548]
+        - generic [ref=e549]:
+          - generic [ref=e550]: "@unmount"
+          - generic [ref=e551]: Runs when the element disconnects. Use for manual cleanup — cancelling timers, closing connections.
+          - generic [ref=e554]:
+            - generic [ref=e555]:
+              - generic [ref=e556]: ts
+              - button "Copy" [ref=e557] [cursor=pointer]
+            - generic [ref=e558]:
+              - generic [ref=e559]:
+                - img [ref=e562]
+                - img [ref=e566]
+                - img [ref=e570]
+                - img [ref=e574]
+                - img [ref=e578]
+              - code [ref=e581]: "@unmount teardown() { cancelAnimationFrame(this.rafId); localStorage.setItem(\"state\", JSON.stringify(this.state)); }"
+      - generic [ref=e582]:
+        - heading "@catch_" [level=2] [ref=e584]
+        - generic [ref=e585]:
+          - generic [ref=e586]: "@catch_(handler)"
+          - generic [ref=e587]: Error boundary. Class decorator that wraps update() andconnectedCallback() with try/catch.
+          - generic [ref=e590]:
+            - generic [ref=e591]:
+              - generic [ref=e592]: ts
+              - button "Copy" [ref=e593] [cursor=pointer]
+            - generic [ref=e594]:
+              - generic [ref=e595]:
+                - img [ref=e598]
+                - img [ref=e602]
+                - img [ref=e606]
+                - img [ref=e610]
+                - img [ref=e614]
+              - code [ref=e617]: "@component(\"my-widget\") @catch_((err, el) => { el.shadow.replaceChildren(<div>{err.message}</div>); }) class MyWidget extends LoomElement { ... }"
+      - generic [ref=e618]:
+        - heading "@suspend" [level=2] [ref=e620]
+        - generic [ref=e621]:
+          - generic [ref=e622]: "@suspend()"
+          - generic [ref=e623]: Async suspense. Wraps async methods to set loading/error state automatically.
+          - generic [ref=e626]:
+            - generic [ref=e627]:
+              - generic [ref=e628]: ts
+              - button "Copy" [ref=e629] [cursor=pointer]
+            - generic [ref=e630]:
+              - generic [ref=e631]:
+                - img [ref=e634]
+                - img [ref=e638]
+                - img [ref=e642]
+                - img [ref=e646]
+                - img [ref=e650]
+                - img [ref=e654]
+                - img [ref=e658]
+                - img [ref=e662]
+              - code [ref=e665]: "@reactive accessor loading = false; @reactive accessor error: Error | null = null; @suspend() async fetchUser() { const res = await fetch(`/api/users/${this.userId}`); this.user = await res.json(); }"
+      - generic [ref=e666]:
+        - heading "Combined Example" [level=2] [ref=e668]
+        - paragraph [ref=e669]: "A component with error boundary, async loading, and cleanup:"
+        - generic [ref=e672]:
+          - generic [ref=e673]:
+            - generic [ref=e674]: ts
+            - button "Copy" [ref=e675] [cursor=pointer]
+          - generic [ref=e676]:
+            - generic [ref=e677]:
+              - img [ref=e680]
+              - img [ref=e684]
+              - img [ref=e688]
+              - img [ref=e692]
+              - img [ref=e696]
+              - img [ref=e700]
+              - img [ref=e704]
+              - img [ref=e708]
+              - img [ref=e712]
+              - img [ref=e716]
+              - img [ref=e720]
+              - img [ref=e724]
+              - img [ref=e728]
+              - img [ref=e732]
+              - img [ref=e736]
+              - img [ref=e740]
+              - img [ref=e744]
+              - img [ref=e748]
+              - img [ref=e752]
+              - img [ref=e756]
+              - img [ref=e760]
+              - img [ref=e764]
+              - img [ref=e768]
+              - img [ref=e772]
+              - img [ref=e776]
+              - img [ref=e780]
+              - img [ref=e784]
+              - img [ref=e788]
+              - img [ref=e792]
+              - img [ref=e796]
+              - img [ref=e800]
+              - img [ref=e804]
+              - img [ref=e808]
+              - img [ref=e812]
+              - img [ref=e816]
+              - img [ref=e820]
+              - img [ref=e824]
+              - img [ref=e828]
+              - img [ref=e832]
+              - img [ref=e836]
+              - img [ref=e840]
+              - img [ref=e844]
+            - code [ref=e847]: "@component(\"user-card\") @catch_((err, el) => { el.shadow.replaceChildren( <div class=\"error\"> <p>Failed to load user</p> <button onClick={() => el.fetchUser()}>Retry</button> </div> ); }) class UserCard extends LoomElement { @prop accessor userId!: string; @reactive accessor user: User | null = null; @reactive accessor loading = false; @mount setup() { this.fetchUser(); } @suspend() async fetchUser() { const res = await fetch(`/api/users/${this.userId}`); if (!res.ok) throw new Error(`HTTP ${res.status}`); this.user = await res.json(); } @unmount cleanup() { this.user = null; } update() { if (this.loading) return <div class=\"skeleton\" />; if (!this.user) return <div>No user</div>; return ( <div class=\"card\"> <h3>{this.user.name}</h3> <p>{this.user.email}</p> </div> ); } }"
+      - generic [ref=e848]:
+        - heading "firstUpdated()" [level=2] [ref=e850]
+        - paragraph [ref=e851]: Override firstUpdated() for one-time setup after the first render completes. The shadow DOM is fully populated at this point.
+        - generic [ref=e854]:
+          - generic [ref=e855]:
+            - generic [ref=e856]: ts
+            - button "Copy" [ref=e857] [cursor=pointer]
+          - generic [ref=e858]:
+            - generic [ref=e859]:
+              - img [ref=e862]
+              - img [ref=e866]
+              - img [ref=e870]
+              - img [ref=e874]
+              - img [ref=e878]
+              - img [ref=e882]
+              - img [ref=e886]
+              - img [ref=e890]
+              - img [ref=e894]
+              - img [ref=e898]
+              - img [ref=e902]
+              - img [ref=e906]
+            - code [ref=e909]: "@component(\"my-el\") class MyEl extends LoomElement { @mount setup() { console.log(\"connected\"); } // Runs once after the first update() render firstUpdated() { this.shadow.querySelector(\"input\")?.focus(); } }"
+      - generic [ref=e910]:
+        - heading "shouldUpdate()" [level=2] [ref=e912]
+        - paragraph [ref=e913]: Override shouldUpdate() to skip render cycles. Called before each update() — return false to prevent the morph. Useful for imperative components like canvas or virtual lists that manage their own DOM after the initial skeleton.
+        - generic [ref=e916]:
+          - generic [ref=e917]:
+            - generic [ref=e918]: ts
+            - button "Copy" [ref=e919] [cursor=pointer]
+          - generic [ref=e920]:
+            - generic [ref=e921]:
+              - img [ref=e924]
+              - img [ref=e928]
+              - img [ref=e932]
+              - img [ref=e936]
+              - img [ref=e940]
+              - img [ref=e944]
+              - img [ref=e948]
+              - img [ref=e952]
+              - img [ref=e956]
+              - img [ref=e960]
+              - img [ref=e964]
+              - img [ref=e968]
+              - img [ref=e972]
+              - img [ref=e976]
+              - img [ref=e980]
+              - img [ref=e984]
+              - img [ref=e988]
+              - img [ref=e992]
+              - img [ref=e996]
+              - img [ref=e1000]
+            - code [ref=e1003]: "@component(\"my-canvas-wrapper\") class CanvasWrapper extends LoomElement { private initialized = false; update() { const canvas = document.createElement(\"canvas\"); canvas.setAttribute(\"loom-keep\", \"\"); return canvas; } firstUpdated() { this.initialized = true; this.startDrawLoop(); } // After the skeleton is built, skip all future morphs shouldUpdate(): boolean { return !this.initialized; } }"
+        - generic [ref=e1005]:
+          - generic [ref=e1006]: NOTE
+          - generic: Default is true — all components render normally unless you override this. Built-in elements like <loom-canvas> and <loom-virtual> use this to block re-morphing.
+      - generic [ref=e1007]:
+        - heading "Full Lifecycle Order" [level=2] [ref=e1009]
+        - generic [ref=e1010]:
+          - generic [ref=e1011]:
+            - generic [ref=e1012]: "1"
+            - generic [ref=e1013]: constructor()
+            - generic [ref=e1014]: Element created — shadow root attached, no DOM yet
+          - generic [ref=e1015]:
+            - generic [ref=e1016]: "2"
+            - generic [ref=e1017]: "@mount"
+            - generic [ref=e1018]: Connected to DOM — setup subscriptions, adopt styles
+          - generic [ref=e1019]:
+            - generic [ref=e1020]: "3"
+            - generic [ref=e1021]: shouldUpdate()
+            - generic [ref=e1022]: Gate check — return false to skip render
+          - generic [ref=e1023]:
+            - generic [ref=e1024]: "4"
+            - generic [ref=e1025]: update()
+            - generic [ref=e1026]: First render — return JSX, DOM is morphed
+          - generic [ref=e1027]:
+            - generic [ref=e1028]: "5"
+            - generic [ref=e1029]: firstUpdated()
+            - generic [ref=e1030]: One-time — shadow DOM is fully populated
+          - generic [ref=e1032]: re-render loop
+          - generic [ref=e1033]:
+            - generic [ref=e1034]: "6"
+            - generic [ref=e1035]: shouldUpdate() → update()
+            - generic [ref=e1036]: On each @reactive change — morphs only what changed
+          - generic [ref=e1038]: disconnect
+          - generic [ref=e1039]:
+            - generic [ref=e1040]: "7"
+            - generic [ref=e1041]: "@unmount"
+            - generic [ref=e1042]: Disconnected from DOM — cleanup timers, close connections
+      - generic [ref=e1044]:
+        - link "← Previous Overview Element" [ref=e1046] [cursor=pointer]:
+          - /url: "#/element/overview"
+          - generic:
+            - generic [ref=e1047]: ←
+            - generic [ref=e1048]:
+              - generic [ref=e1049]: Previous
+              - generic [ref=e1050]: Overview
+              - generic [ref=e1051]: Element
+        - link "Next Timing Element →" [ref=e1053] [cursor=pointer]:
+          - /url: "#/element/timing"
+          - generic:
+            - generic [ref=e1054]:
+              - generic [ref=e1055]: Next
+              - generic [ref=e1056]: Timing
+              - generic [ref=e1057]: Element
+            - generic [ref=e1058]: →

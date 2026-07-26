@@ -264,7 +264,19 @@ export class DocHeader extends LoomElement {
       const iconColor = iconEl?.getAttribute("color") || "var(--text-muted)";
 
       entries.push({ id, label: text, icon, iconColor });
-      sections.push({ id, label: text, el: node as HTMLElement });
+      sections.push({ id, label: text, el: node as HTMLElement, level: 1 });
+
+      // Headings inside the section become child entries, in document order.
+      // A <doc-section> slots its children, so they are in this root's light
+      // DOM and findable from here.
+      for (const sub of Array.from(node.querySelectorAll("h3"))) {
+        const subText = sub.textContent?.trim();
+        if (!subText) continue;
+        if (!sub.id) {
+          sub.id = `${id}--${subText.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`;
+        }
+        sections.push({ id: sub.id, label: subText, el: sub as HTMLElement, level: 2 });
+      }
     });
 
     this.tocEntries = entries;

@@ -82,15 +82,53 @@ export default class PageElementHotkey extends LoomElement {
                 <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>
                 </doc-section>
+                <doc-section heading="Printing the shortcut">
+                    <p>
+                        A shortcut usually has to appear somewhere in the UI, and typing that
+                        hint out by hand creates a second copy of the binding that nothing keeps
+                        in step. It also cannot be right on both platforms at once —
+                        <span class="ic"> mod+k</span> is Cmd on a Mac and Ctrl everywhere else, and a hardcoded
+                        hint has to pick one.
+                    </p>
+                    <p>
+                        So the decorator attaches the printed form to the method it decorates.
+                        It comes from the same parse the matcher uses, which is what makes it
+                        impossible for the label and the binding to disagree.
+                    </p>
+                    <code-block lang="tsx" code={LABELS}></code-block>
+                    <table class="api-table">
+                        <thead>
+                            <tr><th>Helper</th><th>Returns</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>hotkeyLabel(method)</code></td>
+                                <td>The first combo, printed for this platform. <code>""</code> if the method has no hotkey.</td>
+                            </tr>
+                            <tr>
+                                <td><code>hotkeyLabels(method)</code></td>
+                                <td>Every combo, in declaration order.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <doc-notification type="note">
+                        On a Mac the label uses Apple's modifier order and no separators
+                        (<span class="ic">\u2303\u2325\u21e7\u2318K</span>); everywhere else it is joined with
+                        <span class="ic"> +</span>. Named keys are printed rather than passed through, so
+                        <span class="ic"> escape</span> becomes <span class="ic">Esc</span> and
+                        <span class="ic"> arrowup</span> becomes <span class="ic">\u2191</span>.
+                    </doc-notification>
+                </doc-section>
                 <doc-section heading="Live Demo">
                         <p>
-                            Try pressing <span class="ic">⌘K</span> or <span class="ic">Ctrl+K</span> right now — the
-                            docs search is powered by <span class="ic">@hotkey</span>:
+                            Press the shortcut shown in the sidebar search field right now — this
+                            site's palette is bound with <span class="ic">@hotkey</span>, and that hint is
+                            <span class="ic"> hotkeyLabel()</span> reading the binding rather than a string
+                            somebody typed:
                         </p>
                         <code-block lang="ts" code={LIVE_DEMO}></code-block>
                         <doc-notification type="note">
-                            This is the actual code running in this docs site. The search palette
-                            you see when pressing ⌘K uses <span class="ic">@hotkey</span> for its keyboard shortcut.
+                            This is the actual code running in this docs site.
                         </doc-notification>
                 </doc-section>
                 <doc-section heading="How It Works">
@@ -99,7 +137,7 @@ export default class PageElementHotkey extends LoomElement {
                         <li>Built on <span class="ic">CONNECT_HOOKS</span> — listeners auto-removed on disconnect</li>
                         <li>Non-global hotkeys auto-add <span class="ic">tabindex="0"</span> so the element can receive focus</li>
                         <li>Existing <span class="ic">tabindex</span> attributes are preserved</li>
-                        <li>The <span class="ic">mod</span> modifier detects macOS via <span class="ic">navigator.platform</span></li>
+                        <li>The <span class="ic">mod</span> modifier detects macOS via <span class="ic">navigator.platform</span>, and the printed label uses that same detection</li>
                     </ul>
                 </doc-section>
               <doc-nav></doc-nav>
@@ -165,6 +203,30 @@ closeModal() { this.open = false; }
 // Mix string + object — both work together
 @hotkey("ctrl+s", { key: "s", meta: true })
 save() { this.persist(); }`;
+
+const LABELS = `import { hotkey, hotkeyLabel, hotkeyLabels } from "@toyz/loom/element";
+
+@component("command-bar")
+class CommandBar extends LoomElement {
+  @hotkey("mod+k", { global: true })
+  open() { this.visible = true; }
+
+  @hotkey("ctrl+s", "meta+s")
+  save() { /* ... */ }
+
+  update() {
+    return (
+      <button onClick={() => this.open()}>
+        Search
+        {/* "Ctrl+K" on Windows and Linux, "\u2318K" on a Mac */}
+        <kbd>{hotkeyLabel(this.open)}</kbd>
+      </button>
+    );
+  }
+}
+
+// Every combo a method is bound to, in declaration order
+hotkeyLabels(CommandBar.prototype.save);  // ["Ctrl+S", "\u2318S"]`;
 
 const LIVE_DEMO = `// From docs/src/components/doc-search.tsx — the actual code!
 @component("doc-search")

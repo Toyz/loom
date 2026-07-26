@@ -6,7 +6,7 @@
  */
 
 import { LoomElement, component, reactive, css, mount, styles, animationFrame, query, app } from "@toyz/loom";
-import { hotkey } from "@toyz/loom/element";
+import { hotkey, hotkeyLabel } from "@toyz/loom/element";
 import { LoomRouter } from "@toyz/loom/router";
 import { getSearchEntries, type SearchEntry } from "../search-registry";
 
@@ -213,7 +213,9 @@ export class DocSearch extends LoomElement {
   private filteredResults: SearchEntry[] = [];
   private needsFocus = false;
 
-  @hotkey("ctrl+k", "meta+k", { global: true })
+  // "mod" is Cmd on Mac and Ctrl everywhere else, so the binding and the
+  // hint printed in the sidebar come from one declaration.
+  @hotkey("mod+k", { global: true })
   openViaHotkey() {
     this.open();
   }
@@ -369,3 +371,10 @@ export class DocSearch extends LoomElement {
     );
   }
 }
+
+/**
+ * The shortcut this palette listens for, printed for the current platform.
+ * Read off the decorated method so the sidebar hint cannot drift from the
+ * binding — it used to be a hardcoded "⌘K", which was wrong on Windows.
+ */
+export const SEARCH_HOTKEY = hotkeyLabel(DocSearch.prototype.openViaHotkey);

@@ -1,0 +1,554 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Loom" [level=1] [ref=e7]
+        - generic [ref=e8]: v0.22.0
+      - generic [ref=e9]:
+        - img [ref=e12]
+        - img [ref=e16]
+        - img [ref=e20]
+        - img [ref=e24]
+        - img [ref=e28]
+        - img [ref=e32]
+        - img [ref=e36]
+        - img [ref=e40]
+        - img [ref=e44]
+    - button "Search... ⌘K" [ref=e46] [cursor=pointer]:
+      - img [ref=e48]
+      - generic [ref=e51]: Search...
+      - generic [ref=e52]: ⌘K
+    - navigation [ref=e53]:
+      - link "Home" [ref=e56] [cursor=pointer]:
+        - /url: "#/"
+        - generic: Home
+      - generic [ref=e57]:
+        - generic [ref=e59] [cursor=pointer]: Guides
+        - generic [ref=e60]:
+          - link "Getting Started" [ref=e63] [cursor=pointer]:
+            - /url: "#/guides/getting-started"
+            - generic: Getting Started
+          - link "Your First App" [ref=e66] [cursor=pointer]:
+            - /url: "#/guides/your-first-app"
+            - generic: Your First App
+          - link "Debugging" [ref=e69] [cursor=pointer]:
+            - /url: "#/guides/debugging"
+            - generic: Debugging
+          - link "LoomResult" [ref=e72] [cursor=pointer]:
+            - /url: "#/result"
+            - generic: LoomResult
+          - link "Hydration" [ref=e75] [cursor=pointer]:
+            - /url: "#/guides/hydration"
+            - generic: Hydration
+      - generic [ref=e76]:
+        - generic [ref=e78] [cursor=pointer]: Element
+        - generic [ref=e79]:
+          - link "Overview" [ref=e82] [cursor=pointer]:
+            - /url: "#/element/overview"
+            - generic: Overview
+          - link "Lifecycle" [ref=e85] [cursor=pointer]:
+            - /url: "#/element/lifecycle"
+            - generic: Lifecycle
+          - link "Timing" [ref=e88] [cursor=pointer]:
+            - /url: "#/element/timing"
+            - generic: Timing
+          - link "CSS" [ref=e91] [cursor=pointer]:
+            - /url: "#/element/css"
+            - generic: CSS
+          - link "DOM Queries" [ref=e94] [cursor=pointer]:
+            - /url: "#/element/queries"
+            - generic: DOM Queries
+          - link "JSX & Morphing" [ref=e97] [cursor=pointer]:
+            - /url: "#/element/jsx"
+            - generic: JSX & Morphing
+          - link "Decorators" [ref=e100] [cursor=pointer]:
+            - /url: "#/element/decorators"
+            - generic: Decorators
+          - link "Attributes" [ref=e103] [cursor=pointer]:
+            - /url: "#/element/attributes"
+            - generic: Attributes
+          - link "Light DOM" [ref=e106] [cursor=pointer]:
+            - /url: "#/element/light-dom"
+            - generic: Light DOM
+          - link "Lazy Loading" [ref=e109] [cursor=pointer]:
+            - /url: "#/element/lazy"
+            - generic: Lazy Loading
+          - link "Observer" [ref=e112] [cursor=pointer]:
+            - /url: "#/element/observer"
+            - generic: Observer
+          - link "Forms" [ref=e115] [cursor=pointer]:
+            - /url: "#/element/forms"
+            - generic: Forms
+          - generic [ref=e116]: Data Fetching
+          - link "Fetch" [ref=e119] [cursor=pointer]:
+            - /url: "#/store/api"
+            - generic: Fetch
+          - generic [ref=e120]: Built-ins
+          - link "Virtual List" [ref=e123] [cursor=pointer]:
+            - /url: "#/element/virtual-list"
+            - generic: Virtual List
+          - link "Icon" [ref=e126] [cursor=pointer]:
+            - /url: "#/element/icon"
+            - generic: Icon
+          - link "Canvas" [ref=e129] [cursor=pointer]:
+            - /url: "#/element/canvas"
+            - generic: Canvas
+          - link "Image" [ref=e132] [cursor=pointer]:
+            - /url: "#/element/image"
+            - generic: Image
+      - generic [ref=e133]:
+        - generic [ref=e135] [cursor=pointer]: Decorators
+        - generic [ref=e136]:
+          - link "Overview" [ref=e139] [cursor=pointer]:
+            - /url: "#/decorators/overview"
+            - generic: Overview
+          - link "Events" [ref=e142] [cursor=pointer]:
+            - /url: "#/decorators/events"
+            - generic: Events
+          - link "Transform" [ref=e145] [cursor=pointer]:
+            - /url: "#/decorators/transform"
+            - generic: Transform
+          - link "Hotkey" [ref=e148] [cursor=pointer]:
+            - /url: "#/decorators/hotkey"
+            - generic: Hotkey
+          - link "Log" [ref=e151] [cursor=pointer]:
+            - /url: "#/decorators/log"
+            - generic: Log
+          - link "Context" [ref=e154] [cursor=pointer]:
+            - /url: "#/decorators/context"
+            - generic: Context
+          - link "Portal" [ref=e157] [cursor=pointer]:
+            - /url: "#/decorators/portal"
+            - generic: Portal
+          - link "Typed Symbols" [ref=e160] [cursor=pointer]:
+            - /url: "#/decorators/symbols"
+            - generic: Typed Symbols
+          - link "Media" [ref=e163] [cursor=pointer]:
+            - /url: "#/decorators/media"
+            - generic: Media
+          - link "Fullscreen" [ref=e166] [cursor=pointer]:
+            - /url: "#/decorators/fullscreen"
+            - generic: Fullscreen
+          - link "Clipboard" [ref=e169] [cursor=pointer]:
+            - /url: "#/decorators/clipboard"
+            - generic: Clipboard
+          - link "Drag & Drop" [ref=e172] [cursor=pointer]:
+            - /url: "#/decorators/dnd"
+            - generic: Drag & Drop
+          - link "Dynamic CSS" [ref=e175] [cursor=pointer]:
+            - /url: "#/decorators/css"
+            - generic: Dynamic CSS
+      - generic [ref=e176]:
+        - generic [ref=e178] [cursor=pointer]: Store
+        - generic [ref=e179]:
+          - link "Overview" [ref=e182] [cursor=pointer]:
+            - /url: "#/store/overview"
+            - generic: Overview
+          - link "Reactive" [ref=e185] [cursor=pointer]:
+            - /url: "#/store/reactive"
+            - generic: Reactive
+          - link "Decorator" [ref=e188] [cursor=pointer]:
+            - /url: "#/store/store-decorator"
+            - generic: Decorator
+          - link "Storage" [ref=e191] [cursor=pointer]:
+            - /url: "#/store/storage"
+            - generic: Storage
+          - link "Patterns" [ref=e194] [cursor=pointer]:
+            - /url: "#/store/patterns"
+            - generic: Patterns
+          - link "Signals" [ref=e197] [cursor=pointer]:
+            - /url: "#/store/signals"
+            - generic: Signals
+      - generic [ref=e198]:
+        - generic [ref=e200] [cursor=pointer]: Router
+        - generic [ref=e201]:
+          - link "Overview" [ref=e204] [cursor=pointer]:
+            - /url: "#/router/overview"
+            - generic: Overview
+          - link "Routes" [ref=e207] [cursor=pointer]:
+            - /url: "#/router/routes"
+            - generic: Routes
+          - link "Route Data" [ref=e210] [cursor=pointer]:
+            - /url: "#/router/route-data"
+            - generic: Route Data
+          - link "Groups" [ref=e213] [cursor=pointer]:
+            - /url: "#/router/groups"
+            - generic: Groups
+          - link "Guards" [ref=e216] [cursor=pointer]:
+            - /url: "#/router/guards"
+            - generic: Guards
+          - link "Navigation" [ref=e219] [cursor=pointer]:
+            - /url: "#/router/navigation"
+            - generic: Navigation
+          - link "Lifecycle" [ref=e222] [cursor=pointer]:
+            - /url: "#/router/route-lifecycle"
+            - generic: Lifecycle
+          - link "Decorators" [ref=e225] [cursor=pointer]:
+            - /url: "#/router/decorators"
+            - generic: Decorators
+      - generic [ref=e226]:
+        - generic [ref=e228] [cursor=pointer]: DI & Services
+        - generic [ref=e229]:
+          - link "Overview" [ref=e232] [cursor=pointer]:
+            - /url: "#/di/overview"
+            - generic: Overview
+          - link "Decorators" [ref=e235] [cursor=pointer]:
+            - /url: "#/di/decorators"
+            - generic: Decorators
+      - generic [ref=e236]:
+        - generic [ref=e238] [cursor=pointer]: Packages
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - text: RPC
+            - generic [ref=e241]: v0.5.0
+          - link "Overview" [ref=e244] [cursor=pointer]:
+            - /url: "#/packages/rpc-overview"
+            - generic: Overview
+          - link "Queries" [ref=e247] [cursor=pointer]:
+            - /url: "#/packages/rpc-queries"
+            - generic: Queries
+          - link "Mutations" [ref=e250] [cursor=pointer]:
+            - /url: "#/packages/rpc-mutations"
+            - generic: Mutations
+          - link "Transports" [ref=e253] [cursor=pointer]:
+            - /url: "#/packages/rpc-transports"
+            - generic: Transports
+          - link "Streams" [ref=e256] [cursor=pointer]:
+            - /url: "#/packages/rpc-streams"
+            - generic: Streams
+          - link "Testing" [ref=e259] [cursor=pointer]:
+            - /url: "#/packages/rpc-testing"
+            - generic: Testing
+          - link "Demo" [ref=e262] [cursor=pointer]:
+            - /url: "#/packages/rpc-demo"
+            - generic: Demo
+          - generic [ref=e263]:
+            - text: Analytics
+            - generic [ref=e264]: v0.1.3
+          - link "Overview" [ref=e267] [cursor=pointer]:
+            - /url: "#/packages/analytics-overview"
+            - generic: Overview
+          - link "Testing" [ref=e270] [cursor=pointer]:
+            - /url: "#/packages/analytics-testing"
+            - generic: Testing
+          - link "Demo" [ref=e273] [cursor=pointer]:
+            - /url: "#/packages/analytics-demo"
+            - generic: Demo
+          - generic [ref=e274]:
+            - text: Flags
+            - generic [ref=e275]: v0.1.3
+          - link "Overview" [ref=e278] [cursor=pointer]:
+            - /url: "#/packages/flags-overview"
+            - generic: Overview
+          - link "Testing" [ref=e281] [cursor=pointer]:
+            - /url: "#/packages/flags-testing"
+            - generic: Testing
+          - link "Demo" [ref=e284] [cursor=pointer]:
+            - /url: "#/packages/flags-demo"
+            - generic: Demo
+          - generic [ref=e285]:
+            - text: Placeholder
+            - generic [ref=e286]: v0.1.0
+          - link "Overview" [ref=e289] [cursor=pointer]:
+            - /url: "#/packages/placeholder-overview"
+            - generic: Overview
+          - link "Testing" [ref=e292] [cursor=pointer]:
+            - /url: "#/packages/placeholder-testing"
+            - generic: Testing
+          - link "Demo" [ref=e295] [cursor=pointer]:
+            - /url: "#/packages/placeholder-demo"
+            - generic: Demo
+          - generic [ref=e296]:
+            - text: Create Loom
+            - generic [ref=e297]: v0.2.2
+          - link "Overview" [ref=e300] [cursor=pointer]:
+            - /url: "#/packages/create-loom"
+            - generic: Overview
+      - generic [ref=e301]:
+        - generic [ref=e303] [cursor=pointer]: Examples
+        - generic [ref=e304]:
+          - link "Clock" [ref=e307] [cursor=pointer]:
+            - /url: "#/examples/clock"
+            - generic: Clock
+          - link "Attributes" [ref=e310] [cursor=pointer]:
+            - /url: "#/examples/attributes"
+            - generic: Attributes
+          - link "Todo List" [ref=e313] [cursor=pointer]:
+            - /url: "#/examples/todo"
+            - generic: Todo List
+          - link "Kanban Board" [ref=e316] [cursor=pointer]:
+            - /url: "#/examples/kanban"
+            - generic: Kanban Board
+          - link "Theme Switcher" [ref=e319] [cursor=pointer]:
+            - /url: "#/examples/theme-switcher"
+            - generic: Theme Switcher
+          - link "Contact Form" [ref=e322] [cursor=pointer]:
+            - /url: "#/examples/form"
+            - generic: Contact Form
+          - link "Fetch" [ref=e325] [cursor=pointer]:
+            - /url: "#/examples/api"
+            - generic: Fetch
+          - link "Virtual List" [ref=e328] [cursor=pointer]:
+            - /url: "#/examples/virtual-list-demo"
+            - generic: Virtual List
+          - link "Timing" [ref=e331] [cursor=pointer]:
+            - /url: "#/examples/timing-demo"
+            - generic: Timing
+          - link "Stress Test" [ref=e334] [cursor=pointer]:
+            - /url: "#/examples/stress-test"
+            - generic: Stress Test
+          - link "Canvas Game" [ref=e337] [cursor=pointer]:
+            - /url: "#/examples/canvas-game"
+            - generic: Canvas Game
+          - link "Image Gallery" [ref=e340] [cursor=pointer]:
+            - /url: "#/examples/image-gallery"
+            - generic: Image Gallery
+          - link "EventBus" [ref=e343] [cursor=pointer]:
+            - /url: "#/examples/eventbus"
+            - generic: EventBus
+  - main [ref=e344]:
+    - generic [ref=e349]:
+      - generic "State Management" [ref=e350]:
+        - generic [ref=e351]:
+          - heading "State Management" [level=1] [ref=e353]
+          - paragraph [ref=e354]: Reactive primitives, component stores, and persistent storage — everything you need to manage state in Loom.
+      - generic [ref=e356]:
+        - paragraph [ref=e357]: Loom has five ways to declare state, which sounds like four too many until you notice they answer different questions. Does a change to a nested field count. Does the value survive a reload. Is it derived from other state. Does anything outside the component need to read it.
+        - paragraph [ref=e358]: Pick by answering those, not by reaching for the most powerful one. @reactive is the default and covers most fields; the others each add one capability and the cost that comes with it.
+        - table [ref=e361]:
+          - rowgroup [ref=e362]:
+            - row "RE-RENDERS DEEP PERSISTS LAZY EXTERNAL API" [ref=e363]:
+              - columnheader [ref=e364]
+              - columnheader "RE-RENDERS" [ref=e365]
+              - columnheader "DEEP" [ref=e366]
+              - columnheader "PERSISTS" [ref=e367]
+              - columnheader "LAZY" [ref=e368]
+              - columnheader "EXTERNAL API" [ref=e369]
+          - rowgroup [ref=e370]:
+            - 'row "@reactive One value; assignment schedules a render RE-RENDERS: yes DEEP: no PERSISTS: no LAZY: no EXTERNAL API: no" [ref=e371]':
+              - cell "@reactive One value; assignment schedules a render" [ref=e372]:
+                - text: "@reactive"
+                - generic [ref=e373]: One value; assignment schedules a render
+              - 'cell "RE-RENDERS: yes" [ref=e374]':
+                - img [ref=e377]
+              - 'cell "DEEP: no" [ref=e379]':
+                - img [ref=e382]
+              - 'cell "PERSISTS: no" [ref=e384]':
+                - img [ref=e387]
+              - 'cell "LAZY: no" [ref=e389]':
+                - img [ref=e392]
+              - 'cell "EXTERNAL API: no" [ref=e394]':
+                - img [ref=e397]
+            - 'row "@store Nested mutation is tracked too RE-RENDERS: yes DEEP: yes PERSISTS: no LAZY: no EXTERNAL API: no" [ref=e399]':
+              - cell "@store Nested mutation is tracked too" [ref=e400]:
+                - text: "@store"
+                - generic [ref=e401]: Nested mutation is tracked too
+              - 'cell "RE-RENDERS: yes" [ref=e402]':
+                - img [ref=e405]
+              - 'cell "DEEP: yes" [ref=e407]':
+                - img [ref=e410]
+              - 'cell "PERSISTS: no" [ref=e412]':
+                - img [ref=e415]
+              - 'cell "LAZY: no" [ref=e417]':
+                - img [ref=e420]
+              - 'cell "EXTERNAL API: no" [ref=e422]':
+                - img [ref=e425]
+            - 'row "@persist Rehydrates on construction RE-RENDERS: yes DEEP: no PERSISTS: yes LAZY: no EXTERNAL API: no" [ref=e427]':
+              - cell "@persist Rehydrates on construction" [ref=e428]:
+                - text: "@persist"
+                - generic [ref=e429]: Rehydrates on construction
+              - 'cell "RE-RENDERS: yes" [ref=e430]':
+                - img [ref=e433]
+              - 'cell "DEEP: no" [ref=e435]':
+                - img [ref=e438]
+              - 'cell "PERSISTS: yes" [ref=e440]':
+                - img [ref=e443]
+              - 'cell "LAZY: no" [ref=e445]':
+                - img [ref=e448]
+              - 'cell "EXTERNAL API: no" [ref=e450]':
+                - img [ref=e453]
+            - 'row "@computed Recomputes only when a dependency changed RE-RENDERS: yes DEEP: no PERSISTS: no LAZY: yes EXTERNAL API: no" [ref=e455]':
+              - cell "@computed Recomputes only when a dependency changed" [ref=e456]:
+                - text: "@computed"
+                - generic [ref=e457]: Recomputes only when a dependency changed
+              - 'cell "RE-RENDERS: yes" [ref=e458]':
+                - img [ref=e461]
+              - 'cell "DEEP: no" [ref=e463]':
+                - img [ref=e466]
+              - 'cell "PERSISTS: no" [ref=e468]':
+                - img [ref=e471]
+              - 'cell "LAZY: yes" [ref=e473]':
+                - img [ref=e476]
+              - 'cell "EXTERNAL API: no" [ref=e478]':
+                - img [ref=e481]
+            - 'row "@signal Readable as a TC39 Signal from outside RE-RENDERS: yes DEEP: no PERSISTS: no LAZY: no EXTERNAL API: yes" [ref=e483]':
+              - cell "@signal Readable as a TC39 Signal from outside" [ref=e484]:
+                - text: "@signal"
+                - generic [ref=e485]: Readable as a TC39 Signal from outside
+              - 'cell "RE-RENDERS: yes" [ref=e486]':
+                - img [ref=e489]
+              - 'cell "DEEP: no" [ref=e491]':
+                - img [ref=e494]
+              - 'cell "PERSISTS: no" [ref=e496]':
+                - img [ref=e499]
+              - 'cell "LAZY: no" [ref=e501]':
+                - img [ref=e504]
+              - 'cell "EXTERNAL API: yes" [ref=e506]':
+                - img [ref=e509]
+      - generic [ref=e512]:
+        - heading "Philosophy" [level=2] [ref=e514]
+        - paragraph [ref=e515]: Loom provides layered state management. Start simple with @reactive fields, scale up to @store for component-scoped deep reactivity, or use Reactive<T> and CollectionStore<T> for shared, service-level state. Every layer supports optional persistence.
+      - generic [ref=e517]:
+        - heading "At a Glance" [level=2] [ref=e519]
+        - table [ref=e520]:
+          - rowgroup [ref=e521]:
+            - row "Primitive Scope Use Case" [ref=e522]:
+              - columnheader "Primitive" [ref=e523]
+              - columnheader "Scope" [ref=e524]
+              - columnheader "Use Case" [ref=e525]
+          - rowgroup [ref=e526]:
+            - row "@reactive Field Single reactive property on a component" [ref=e527]:
+              - cell "@reactive" [ref=e528]:
+                - code [ref=e529]: "@reactive"
+              - cell "Field" [ref=e530]
+              - cell "Single reactive property on a component" [ref=e531]
+            - row "@store Component Deep-reactive object store, isolated per instance" [ref=e532]:
+              - cell "@store" [ref=e533]:
+                - code [ref=e534]: "@store"
+              - cell "Component" [ref=e535]
+              - cell "Deep-reactive object store, isolated per instance" [ref=e536]
+            - row "Reactive<T> Shared Observable value container, usable anywhere" [ref=e537]:
+              - cell "Reactive<T>" [ref=e538]:
+                - code [ref=e539]: Reactive<T>
+              - cell "Shared" [ref=e540]
+              - cell "Observable value container, usable anywhere" [ref=e541]
+            - row "CollectionStore<T> Shared CRUD array store with add/remove/update" [ref=e542]:
+              - cell "CollectionStore<T>" [ref=e543]:
+                - code [ref=e544]: CollectionStore<T>
+              - cell "Shared" [ref=e545]
+              - cell "CRUD array store with add/remove/update" [ref=e546]
+            - row "StorageAdapter Any Pluggable persistence (localStorage, sessionStorage, custom)" [ref=e547]:
+              - cell "StorageAdapter" [ref=e548]:
+                - code [ref=e549]: StorageAdapter
+              - cell "Any" [ref=e550]
+              - cell "Pluggable persistence (localStorage, sessionStorage, custom)" [ref=e551]
+      - generic [ref=e553]:
+        - heading "Quick Example" [level=2] [ref=e555]
+        - generic [ref=e558]:
+          - generic [ref=e559]:
+            - generic [ref=e560]: ts
+            - button "Copy" [ref=e561] [cursor=pointer]
+          - generic [ref=e562]:
+            - generic [ref=e563]:
+              - img [ref=e566]
+              - img [ref=e570]
+              - img [ref=e574]
+              - img [ref=e578]
+              - img [ref=e582]
+              - img [ref=e586]
+              - img [ref=e590]
+              - img [ref=e594]
+              - img [ref=e598]
+              - img [ref=e602]
+              - img [ref=e606]
+              - img [ref=e610]
+              - img [ref=e614]
+              - img [ref=e618]
+              - img [ref=e622]
+              - img [ref=e626]
+              - img [ref=e630]
+              - img [ref=e634]
+              - img [ref=e638]
+              - img [ref=e642]
+              - img [ref=e646]
+              - img [ref=e650]
+              - img [ref=e654]
+              - img [ref=e658]
+              - img [ref=e662]
+              - img [ref=e666]
+              - img [ref=e670]
+              - img [ref=e674]
+              - img [ref=e678]
+            - code [ref=e681]: "import { LoomElement, component, reactive, store } from \"@toyz/loom\"; // Simple: single reactive field @component(\"click-counter\") class ClickCounter extends LoomElement { @reactive accessor count = 0; update() { return <button onclick={() => this.count++}> Clicked {this.count} times </button>; } } // Advanced: component-scoped store with persistence @component(\"todo-app\") class TodoApp extends LoomElement { @store<{ items: string[] }>({ items: [] }, { key: \"todos\", storage: new LocalAdapter(), }) state!: { items: string[] }; update() { return <ul> {this.state.items.map(i => <li>{i}</li>)} </ul>; } }"
+      - generic [ref=e683]:
+        - heading "Choosing the Right Tool" [level=2] [ref=e685]
+        - table [ref=e686]:
+          - rowgroup [ref=e687]:
+            - row "Need Solution Page" [ref=e688]:
+              - columnheader "Need" [ref=e689]
+              - columnheader "Solution" [ref=e690]
+              - columnheader "Page" [ref=e691]
+          - rowgroup [ref=e692]:
+            - row "Observable values & collections Reactive<T>, CollectionStore Reactive" [ref=e693]:
+              - cell "Observable values & collections" [ref=e694]
+              - cell "Reactive<T>, CollectionStore" [ref=e695]:
+                - code [ref=e696]: Reactive<T>
+                - text: ","
+                - code [ref=e697]: CollectionStore
+              - cell "Reactive" [ref=e698]:
+                - link "Reactive" [ref=e699] [cursor=pointer]:
+                  - /url: "#/store/reactive"
+                  - generic: Reactive
+            - row "Component-scoped deep state @store @store" [ref=e700]:
+              - cell "Component-scoped deep state" [ref=e701]
+              - cell "@store" [ref=e702]:
+                - code [ref=e703]: "@store"
+              - cell "@store" [ref=e704]:
+                - link "@store" [ref=e705] [cursor=pointer]:
+                  - /url: "#/store/store-decorator"
+                  - generic: "@store"
+            - row "Persistent data StorageAdapter Storage" [ref=e706]:
+              - cell "Persistent data" [ref=e707]
+              - cell "StorageAdapter" [ref=e708]:
+                - code [ref=e709]: StorageAdapter
+              - cell "Storage" [ref=e710]:
+                - link "Storage" [ref=e711] [cursor=pointer]:
+                  - /url: "#/store/storage"
+                  - generic: Storage
+            - row "Patterns & best practices Combining primitives Patterns" [ref=e712]:
+              - cell "Patterns & best practices" [ref=e713]
+              - cell "Combining primitives" [ref=e714]
+              - cell "Patterns" [ref=e715]:
+                - link "Patterns" [ref=e716] [cursor=pointer]:
+                  - /url: "#/store/patterns"
+                  - generic: Patterns
+      - generic [ref=e718]:
+        - link "← Previous Dynamic CSS Decorators" [ref=e720] [cursor=pointer]:
+          - /url: "#/decorators/css"
+          - generic:
+            - generic [ref=e721]: ←
+            - generic [ref=e722]:
+              - generic [ref=e723]: Previous
+              - generic [ref=e724]: Dynamic CSS
+              - generic [ref=e725]: Decorators
+        - link "Next Reactive Store →" [ref=e727] [cursor=pointer]:
+          - /url: "#/store/reactive"
+          - generic:
+            - generic [ref=e728]:
+              - generic [ref=e729]: Next
+              - generic [ref=e730]: Reactive
+              - generic [ref=e731]: Store
+            - generic [ref=e732]: →
+    - navigation "On this page" [ref=e734]:
+      - generic [ref=e735]: On this page
+      - list [ref=e736]:
+        - listitem [ref=e737]:
+          - link "Philosophy" [ref=e738] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e740]
+            - generic [ref=e742]: Philosophy
+        - listitem [ref=e743]:
+          - link "At a Glance" [ref=e744] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e746]
+            - generic [ref=e748]: At a Glance
+        - listitem [ref=e749]:
+          - link "Quick Example" [ref=e750] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e752]
+            - generic [ref=e754]: Quick Example
+        - listitem [ref=e755]:
+          - link "Choosing the Right Tool" [ref=e756] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e758]
+            - generic [ref=e760]: Choosing the Right Tool

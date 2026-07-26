@@ -1,0 +1,9 @@
+[       2ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/lifecycle @ http://localhost:5174/src/groups.ts:56
+[      11ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/lifecycle @ http://localhost:5174/src/groups.ts:56
+[   42205ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/lifecycle @ http://localhost:5174/src/groups.ts:56
+[   53982ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/lifecycle @ http://localhost:5174/src/groups.ts:56
+[   53998ms] [ERROR] [Loom @lazy] Failed to load module: ReferenceError: lifecycleStyles is not defined
+    at http://localhost:5174/src/pages/element/lifecycle.tsx?t=1785055227150:51:49 @ http://localhost:5174/@fs/mnt/data/source/repos/loom/src/element/lazy.ts:259
+[   66084ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/lifecycle @ http://localhost:5174/src/groups.ts:56
+[   81034ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/lifecycle @ http://localhost:5174/src/groups.ts:56
+[   93695ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/lifecycle @ http://localhost:5174/src/groups.ts:56

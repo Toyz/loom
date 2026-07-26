@@ -1,0 +1,664 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Loom" [level=1] [ref=e7]
+        - generic [ref=e8]: v0.22.0
+      - generic [ref=e9]:
+        - img [ref=e12]
+        - img [ref=e16]
+        - img [ref=e20]
+        - img [ref=e24]
+        - img [ref=e28]
+        - img [ref=e32]
+        - img [ref=e36]
+        - img [ref=e40]
+        - img [ref=e44]
+    - button "Search... Ctrl+K" [ref=e46] [cursor=pointer]:
+      - img [ref=e48]
+      - generic [ref=e51]: Search...
+      - generic [ref=e52]: Ctrl+K
+    - navigation [ref=e53]:
+      - link "Home" [ref=e56] [cursor=pointer]:
+        - /url: "#/"
+        - generic: Home
+      - generic [ref=e57]:
+        - generic [ref=e59] [cursor=pointer]: Guides
+        - generic [ref=e60]:
+          - link "Getting Started" [ref=e63] [cursor=pointer]:
+            - /url: "#/guides/getting-started"
+            - generic: Getting Started
+          - link "Your First App" [ref=e66] [cursor=pointer]:
+            - /url: "#/guides/your-first-app"
+            - generic: Your First App
+          - link "Debugging" [ref=e69] [cursor=pointer]:
+            - /url: "#/guides/debugging"
+            - generic: Debugging
+          - link "LoomResult" [ref=e72] [cursor=pointer]:
+            - /url: "#/result"
+            - generic: LoomResult
+          - link "Hydration" [ref=e75] [cursor=pointer]:
+            - /url: "#/guides/hydration"
+            - generic: Hydration
+      - generic [ref=e76]:
+        - generic [ref=e78] [cursor=pointer]: Element
+        - generic [ref=e79]:
+          - link "Overview" [ref=e82] [cursor=pointer]:
+            - /url: "#/element/overview"
+            - generic: Overview
+          - link "Lifecycle" [ref=e85] [cursor=pointer]:
+            - /url: "#/element/lifecycle"
+            - generic: Lifecycle
+          - link "Timing" [ref=e88] [cursor=pointer]:
+            - /url: "#/element/timing"
+            - generic: Timing
+          - link "CSS" [ref=e91] [cursor=pointer]:
+            - /url: "#/element/css"
+            - generic: CSS
+          - link "DOM Queries" [ref=e94] [cursor=pointer]:
+            - /url: "#/element/queries"
+            - generic: DOM Queries
+          - link "JSX & Morphing" [ref=e97] [cursor=pointer]:
+            - /url: "#/element/jsx"
+            - generic: JSX & Morphing
+          - link "Decorators" [ref=e100] [cursor=pointer]:
+            - /url: "#/element/decorators"
+            - generic: Decorators
+          - link "Attributes" [ref=e103] [cursor=pointer]:
+            - /url: "#/element/attributes"
+            - generic: Attributes
+          - link "Light DOM" [ref=e106] [cursor=pointer]:
+            - /url: "#/element/light-dom"
+            - generic: Light DOM
+          - link "Lazy Loading" [ref=e109] [cursor=pointer]:
+            - /url: "#/element/lazy"
+            - generic: Lazy Loading
+          - link "Observer" [ref=e112] [cursor=pointer]:
+            - /url: "#/element/observer"
+            - generic: Observer
+          - link "Forms" [ref=e115] [cursor=pointer]:
+            - /url: "#/element/forms"
+            - generic: Forms
+          - generic [ref=e116]: Data Fetching
+          - link "Fetch" [ref=e119] [cursor=pointer]:
+            - /url: "#/store/api"
+            - generic: Fetch
+          - generic [ref=e120]: Built-ins
+          - link "Virtual List" [ref=e123] [cursor=pointer]:
+            - /url: "#/element/virtual-list"
+            - generic: Virtual List
+          - link "Icon" [ref=e126] [cursor=pointer]:
+            - /url: "#/element/icon"
+            - generic: Icon
+          - link "Canvas" [ref=e129] [cursor=pointer]:
+            - /url: "#/element/canvas"
+            - generic: Canvas
+          - link "Image" [ref=e132] [cursor=pointer]:
+            - /url: "#/element/image"
+            - generic: Image
+      - generic [ref=e133]:
+        - generic [ref=e135] [cursor=pointer]: Decorators
+        - generic [ref=e136]:
+          - link "Overview" [ref=e139] [cursor=pointer]:
+            - /url: "#/decorators/overview"
+            - generic: Overview
+          - link "Events" [ref=e142] [cursor=pointer]:
+            - /url: "#/decorators/events"
+            - generic: Events
+          - link "Transform" [ref=e145] [cursor=pointer]:
+            - /url: "#/decorators/transform"
+            - generic: Transform
+          - link "Hotkey" [ref=e148] [cursor=pointer]:
+            - /url: "#/decorators/hotkey"
+            - generic: Hotkey
+          - link "Log" [ref=e151] [cursor=pointer]:
+            - /url: "#/decorators/log"
+            - generic: Log
+          - link "Context" [ref=e154] [cursor=pointer]:
+            - /url: "#/decorators/context"
+            - generic: Context
+          - link "Portal" [ref=e157] [cursor=pointer]:
+            - /url: "#/decorators/portal"
+            - generic: Portal
+          - link "Typed Symbols" [ref=e160] [cursor=pointer]:
+            - /url: "#/decorators/symbols"
+            - generic: Typed Symbols
+          - link "Media" [ref=e163] [cursor=pointer]:
+            - /url: "#/decorators/media"
+            - generic: Media
+          - link "Fullscreen" [ref=e166] [cursor=pointer]:
+            - /url: "#/decorators/fullscreen"
+            - generic: Fullscreen
+          - link "Clipboard" [ref=e169] [cursor=pointer]:
+            - /url: "#/decorators/clipboard"
+            - generic: Clipboard
+          - link "Drag & Drop" [ref=e172] [cursor=pointer]:
+            - /url: "#/decorators/dnd"
+            - generic: Drag & Drop
+          - link "Dynamic CSS" [ref=e175] [cursor=pointer]:
+            - /url: "#/decorators/css"
+            - generic: Dynamic CSS
+      - generic [ref=e176]:
+        - generic [ref=e178] [cursor=pointer]: Store
+        - generic [ref=e179]:
+          - link "Overview" [ref=e182] [cursor=pointer]:
+            - /url: "#/store/overview"
+            - generic: Overview
+          - link "Reactive" [ref=e185] [cursor=pointer]:
+            - /url: "#/store/reactive"
+            - generic: Reactive
+          - link "Decorator" [ref=e188] [cursor=pointer]:
+            - /url: "#/store/store-decorator"
+            - generic: Decorator
+          - link "Storage" [ref=e191] [cursor=pointer]:
+            - /url: "#/store/storage"
+            - generic: Storage
+          - link "Patterns" [ref=e194] [cursor=pointer]:
+            - /url: "#/store/patterns"
+            - generic: Patterns
+          - link "Signals" [ref=e197] [cursor=pointer]:
+            - /url: "#/store/signals"
+            - generic: Signals
+      - generic [ref=e198]:
+        - generic [ref=e200] [cursor=pointer]: Router
+        - generic [ref=e201]:
+          - link "Overview" [ref=e204] [cursor=pointer]:
+            - /url: "#/router/overview"
+            - generic: Overview
+          - link "Routes" [ref=e207] [cursor=pointer]:
+            - /url: "#/router/routes"
+            - generic: Routes
+          - link "Route Data" [ref=e210] [cursor=pointer]:
+            - /url: "#/router/route-data"
+            - generic: Route Data
+          - link "Groups" [ref=e213] [cursor=pointer]:
+            - /url: "#/router/groups"
+            - generic: Groups
+          - link "Guards" [ref=e216] [cursor=pointer]:
+            - /url: "#/router/guards"
+            - generic: Guards
+          - link "Navigation" [ref=e219] [cursor=pointer]:
+            - /url: "#/router/navigation"
+            - generic: Navigation
+          - link "Lifecycle" [ref=e222] [cursor=pointer]:
+            - /url: "#/router/route-lifecycle"
+            - generic: Lifecycle
+          - link "Decorators" [ref=e225] [cursor=pointer]:
+            - /url: "#/router/decorators"
+            - generic: Decorators
+      - generic [ref=e226]:
+        - generic [ref=e228] [cursor=pointer]: DI & Services
+        - generic [ref=e229]:
+          - link "Overview" [ref=e232] [cursor=pointer]:
+            - /url: "#/di/overview"
+            - generic: Overview
+          - link "Decorators" [ref=e235] [cursor=pointer]:
+            - /url: "#/di/decorators"
+            - generic: Decorators
+      - generic [ref=e236]:
+        - generic [ref=e238] [cursor=pointer]: Packages
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - text: RPC
+            - generic [ref=e241]: v0.5.0
+          - link "Overview" [ref=e244] [cursor=pointer]:
+            - /url: "#/packages/rpc-overview"
+            - generic: Overview
+          - link "Queries" [ref=e247] [cursor=pointer]:
+            - /url: "#/packages/rpc-queries"
+            - generic: Queries
+          - link "Mutations" [ref=e250] [cursor=pointer]:
+            - /url: "#/packages/rpc-mutations"
+            - generic: Mutations
+          - link "Transports" [ref=e253] [cursor=pointer]:
+            - /url: "#/packages/rpc-transports"
+            - generic: Transports
+          - link "Streams" [ref=e256] [cursor=pointer]:
+            - /url: "#/packages/rpc-streams"
+            - generic: Streams
+          - link "Testing" [ref=e259] [cursor=pointer]:
+            - /url: "#/packages/rpc-testing"
+            - generic: Testing
+          - link "Demo" [ref=e262] [cursor=pointer]:
+            - /url: "#/packages/rpc-demo"
+            - generic: Demo
+          - generic [ref=e263]:
+            - text: Analytics
+            - generic [ref=e264]: v0.1.3
+          - link "Overview" [ref=e267] [cursor=pointer]:
+            - /url: "#/packages/analytics-overview"
+            - generic: Overview
+          - link "Testing" [ref=e270] [cursor=pointer]:
+            - /url: "#/packages/analytics-testing"
+            - generic: Testing
+          - link "Demo" [ref=e273] [cursor=pointer]:
+            - /url: "#/packages/analytics-demo"
+            - generic: Demo
+          - generic [ref=e274]:
+            - text: Flags
+            - generic [ref=e275]: v0.1.3
+          - link "Overview" [ref=e278] [cursor=pointer]:
+            - /url: "#/packages/flags-overview"
+            - generic: Overview
+          - link "Testing" [ref=e281] [cursor=pointer]:
+            - /url: "#/packages/flags-testing"
+            - generic: Testing
+          - link "Demo" [ref=e284] [cursor=pointer]:
+            - /url: "#/packages/flags-demo"
+            - generic: Demo
+          - generic [ref=e285]:
+            - text: Placeholder
+            - generic [ref=e286]: v0.1.0
+          - link "Overview" [ref=e289] [cursor=pointer]:
+            - /url: "#/packages/placeholder-overview"
+            - generic: Overview
+          - link "Testing" [ref=e292] [cursor=pointer]:
+            - /url: "#/packages/placeholder-testing"
+            - generic: Testing
+          - link "Demo" [ref=e295] [cursor=pointer]:
+            - /url: "#/packages/placeholder-demo"
+            - generic: Demo
+          - generic [ref=e296]:
+            - text: Create Loom
+            - generic [ref=e297]: v0.2.2
+          - link "Overview" [ref=e300] [cursor=pointer]:
+            - /url: "#/packages/create-loom"
+            - generic: Overview
+      - generic [ref=e301]:
+        - generic [ref=e303] [cursor=pointer]: Examples
+        - generic [ref=e304]:
+          - link "Clock" [ref=e307] [cursor=pointer]:
+            - /url: "#/examples/clock"
+            - generic: Clock
+          - link "Attributes" [ref=e310] [cursor=pointer]:
+            - /url: "#/examples/attributes"
+            - generic: Attributes
+          - link "Todo List" [ref=e313] [cursor=pointer]:
+            - /url: "#/examples/todo"
+            - generic: Todo List
+          - link "Kanban Board" [ref=e316] [cursor=pointer]:
+            - /url: "#/examples/kanban"
+            - generic: Kanban Board
+          - link "Theme Switcher" [ref=e319] [cursor=pointer]:
+            - /url: "#/examples/theme-switcher"
+            - generic: Theme Switcher
+          - link "Contact Form" [ref=e322] [cursor=pointer]:
+            - /url: "#/examples/form"
+            - generic: Contact Form
+          - link "Fetch" [ref=e325] [cursor=pointer]:
+            - /url: "#/examples/api"
+            - generic: Fetch
+          - link "Virtual List" [ref=e328] [cursor=pointer]:
+            - /url: "#/examples/virtual-list-demo"
+            - generic: Virtual List
+          - link "Timing" [ref=e331] [cursor=pointer]:
+            - /url: "#/examples/timing-demo"
+            - generic: Timing
+          - link "Stress Test" [ref=e334] [cursor=pointer]:
+            - /url: "#/examples/stress-test"
+            - generic: Stress Test
+          - link "Canvas Game" [ref=e337] [cursor=pointer]:
+            - /url: "#/examples/canvas-game"
+            - generic: Canvas Game
+          - link "Image Gallery" [ref=e340] [cursor=pointer]:
+            - /url: "#/examples/image-gallery"
+            - generic: Image Gallery
+          - link "EventBus" [ref=e343] [cursor=pointer]:
+            - /url: "#/examples/eventbus"
+            - generic: EventBus
+  - main [ref=e344]:
+    - generic [ref=e349]:
+      - generic "Your First App" [ref=e350]:
+        - generic [ref=e351]:
+          - heading "Your First App" [level=1] [ref=e353]
+          - paragraph [ref=e354]: A todo list that survives a reload, in four files and no state-management library.
+      - generic [ref=e356]:
+        - paragraph [ref=e357]: "A todo list is the standard first app because it exercises the parts that are genuinely awkward: a list that changes shape, an item edited in place, and state that has to outlive the page. Four files here, and every idea a real app needs."
+        - paragraph [ref=e358]:
+          - text: The thing worth watching is what is
+          - emphasis [ref=e359]: absent
+          - text: . No subscribe call, no unsubscribe, no local copy of the list kept in step with the store, and no re-render you have to ask for. Reading the store during a render is what registers the dependency, and that is the entire mechanism.
+        - table [ref=e362]:
+          - rowgroup [ref=e363]:
+            - row "SURVIVES RELOAD SHARED BETWEEN COMPONENTS NEEDS TEARDOWN RE-RENDERS AUTOMATICALLY" [ref=e364]:
+              - columnheader [ref=e365]
+              - columnheader "SURVIVES RELOAD" [ref=e366]
+              - columnheader "SHARED BETWEEN COMPONENTS" [ref=e367]
+              - columnheader "NEEDS TEARDOWN" [ref=e368]
+              - columnheader "RE-RENDERS AUTOMATICALLY" [ref=e369]
+          - rowgroup [ref=e370]:
+            - 'row "local @reactive Right for the input box SURVIVES RELOAD: no SHARED BETWEEN COMPONENTS: no NEEDS TEARDOWN: no RE-RENDERS AUTOMATICALLY: yes" [ref=e371]':
+              - cell "local @reactive Right for the input box" [ref=e372]:
+                - text: local @reactive
+                - generic [ref=e373]: Right for the input box
+              - 'cell "SURVIVES RELOAD: no" [ref=e374]':
+                - img [ref=e377]
+              - 'cell "SHARED BETWEEN COMPONENTS: no" [ref=e379]':
+                - img [ref=e382]
+              - 'cell "NEEDS TEARDOWN: no" [ref=e384]':
+                - img [ref=e387]
+              - 'cell "RE-RENDERS AUTOMATICALLY: yes" [ref=e389]':
+                - img [ref=e392]
+            - 'row "CollectionStore One list, many readers SURVIVES RELOAD: no SHARED BETWEEN COMPONENTS: yes NEEDS TEARDOWN: no RE-RENDERS AUTOMATICALLY: yes" [ref=e394]':
+              - cell "CollectionStore One list, many readers" [ref=e395]:
+                - text: CollectionStore
+                - generic [ref=e396]: One list, many readers
+              - 'cell "SURVIVES RELOAD: no" [ref=e397]':
+                - img [ref=e400]
+              - 'cell "SHARED BETWEEN COMPONENTS: yes" [ref=e402]':
+                - img [ref=e405]
+              - 'cell "NEEDS TEARDOWN: no" [ref=e407]':
+                - img [ref=e410]
+              - 'cell "RE-RENDERS AUTOMATICALLY: yes" [ref=e412]':
+                - img [ref=e415]
+            - 'row "+ LocalAdapter What this app uses SURVIVES RELOAD: yes SHARED BETWEEN COMPONENTS: yes NEEDS TEARDOWN: no RE-RENDERS AUTOMATICALLY: yes" [ref=e417]':
+              - cell "+ LocalAdapter What this app uses" [ref=e418]:
+                - text: + LocalAdapter
+                - generic [ref=e419]: What this app uses
+              - 'cell "SURVIVES RELOAD: yes" [ref=e420]':
+                - img [ref=e423]
+              - 'cell "SHARED BETWEEN COMPONENTS: yes" [ref=e425]':
+                - img [ref=e428]
+              - 'cell "NEEDS TEARDOWN: no" [ref=e430]':
+                - img [ref=e433]
+              - 'cell "RE-RENDERS AUTOMATICALLY: yes" [ref=e435]':
+                - img [ref=e438]
+        - paragraph [ref=e440]: NOTE The teardown column is empty on purpose. A subscription is owned by the render that made it and released with the component, so there is nothing here to clean up.
+      - generic [ref=e442]:
+        - heading "Step 1 — The store" [level=2] [ref=e444]
+        - generic:
+          - generic [ref=e445]: src/store.ts
+          - paragraph [ref=e446]: CollectionStore is a Reactive<T[]> with the four list operations already on it. The second constructor argument is what makes it persistent; leave it out and everything below still works, just not across a reload.
+          - generic [ref=e449]:
+            - generic [ref=e450]:
+              - generic [ref=e451]: ts
+              - button "Copy" [ref=e452] [cursor=pointer]
+            - generic [ref=e453]:
+              - generic [ref=e454]:
+                - img [ref=e457]
+                - img [ref=e461]
+                - img [ref=e465]
+                - img [ref=e469]
+                - img [ref=e473]
+                - img [ref=e477]
+                - img [ref=e481]
+                - img [ref=e485]
+                - img [ref=e489]
+                - img [ref=e493]
+                - img [ref=e497]
+                - img [ref=e501]
+                - img [ref=e505]
+              - code [ref=e508]: "import { CollectionStore, LocalAdapter } from \"@toyz/loom/store\"; export interface Todo { id: string; text: string; done: boolean; } // The second argument is what makes it persistent. Drop it: in-memory store. export const todos = new CollectionStore<Todo>([], { key: \"app:todos\", storage: new LocalAdapter(), });"
+          - generic [ref=e510]:
+            - generic [ref=e511]: NOTE
+            - generic: add() generates an id when you do not supply one, which is why the interface requires the field but the call site does not pass it. That id is what loom-key uses later to keep list reordering cheap.
+      - generic [ref=e513]:
+        - heading "Step 2 — The stylesheet" [level=2] [ref=e515]
+        - generic:
+          - generic [ref=e516]: src/sheet.ts
+          - paragraph [ref=e517]: Styles live at module scope so the sheet is parsed once and shared by every instance. Building it inside update() rebuilds it on every render, which is the most common performance mistake in a first Loom app.
+          - generic [ref=e520]:
+            - generic [ref=e521]:
+              - generic [ref=e522]: ts
+              - button "Copy" [ref=e523] [cursor=pointer]
+            - generic [ref=e524]:
+              - generic [ref=e525]:
+                - img [ref=e528]
+                - img [ref=e532]
+                - img [ref=e536]
+                - img [ref=e540]
+                - img [ref=e544]
+                - img [ref=e548]
+                - img [ref=e552]
+                - img [ref=e556]
+                - img [ref=e560]
+                - img [ref=e564]
+                - img [ref=e568]
+                - img [ref=e572]
+                - img [ref=e576]
+                - img [ref=e580]
+                - img [ref=e584]
+                - img [ref=e588]
+                - img [ref=e592]
+                - img [ref=e596]
+                - img [ref=e600]
+                - img [ref=e604]
+                - img [ref=e608]
+                - img [ref=e612]
+                - img [ref=e616]
+                - img [ref=e620]
+                - img [ref=e624]
+                - img [ref=e628]
+                - img [ref=e632]
+                - img [ref=e636]
+                - img [ref=e640]
+                - img [ref=e644]
+                - img [ref=e648]
+              - code [ref=e651]: "import { css } from \"@toyz/loom\"; // Module scope, not inside update(): built and parsed once for the whole app // rather than on every render. export const sheet = css` :host { display: block; max-width: 480px; margin: 48px auto; } h1 { font-size: 1.5rem; margin-bottom: 16px; } .row { display: flex; gap: 8px; margin-bottom: 20px; } input { flex: 1; padding: 10px 14px; background: #14140f; color: #e6e1d3; border: 1px solid #33322a; outline: none; } input:focus { border-color: #c4472f; } button { padding: 10px 18px; border: none; background: #c4472f; color: #f5f1e6; font-weight: 600; cursor: pointer; } .todo { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #33322a; } .todo:last-child { border-bottom: none; } .done .label { text-decoration: line-through; opacity: 0.45; } .label { flex: 1; cursor: pointer; } .del { background: none; border: none; color: #6d6858; cursor: pointer; } .empty { color: #6d6858; font-style: italic; padding: 24px 0; text-align: center; } `;"
+      - generic [ref=e653]:
+        - heading "Step 3 — The component" [level=2] [ref=e655]
+        - generic:
+          - generic [ref=e656]: src/todo-app.tsx
+          - paragraph [ref=e657]: One reactive field, for the text being typed. The list is not mirrored into the component at all — it is read from the store during the render.
+          - generic [ref=e660]:
+            - generic [ref=e661]:
+              - generic [ref=e662]: tsx
+              - button "Copy" [ref=e663] [cursor=pointer]
+            - generic [ref=e664]:
+              - generic [ref=e665]:
+                - img [ref=e668]
+                - img [ref=e672]
+                - img [ref=e676]
+                - img [ref=e680]
+                - img [ref=e684]
+                - img [ref=e688]
+                - img [ref=e692]
+                - img [ref=e696]
+                - img [ref=e700]
+                - img [ref=e704]
+                - img [ref=e708]
+                - img [ref=e712]
+                - img [ref=e716]
+                - img [ref=e720]
+                - img [ref=e724]
+                - img [ref=e728]
+                - img [ref=e732]
+                - img [ref=e736]
+                - img [ref=e740]
+                - img [ref=e744]
+                - img [ref=e748]
+                - img [ref=e752]
+                - img [ref=e756]
+                - img [ref=e760]
+                - img [ref=e764]
+                - img [ref=e768]
+                - img [ref=e772]
+                - img [ref=e776]
+                - img [ref=e780]
+                - img [ref=e784]
+                - img [ref=e788]
+                - img [ref=e792]
+                - img [ref=e796]
+                - img [ref=e800]
+                - img [ref=e804]
+                - img [ref=e808]
+                - img [ref=e812]
+                - img [ref=e816]
+                - img [ref=e820]
+                - img [ref=e824]
+                - img [ref=e828]
+                - img [ref=e832]
+                - img [ref=e836]
+                - img [ref=e840]
+                - img [ref=e844]
+                - img [ref=e848]
+                - img [ref=e852]
+                - img [ref=e856]
+                - img [ref=e860]
+                - img [ref=e864]
+                - img [ref=e868]
+              - code [ref=e871]: "import { LoomElement, component, reactive, styles } from \"@toyz/loom\"; import { todos } from \"./store\"; import { sheet } from \"./sheet\"; @component(\"todo-app\") @styles(sheet) export class TodoApp extends LoomElement { @reactive accessor input = \"\"; add() { const text = this.input.trim(); if (!text) return; todos.add({ text, done: false }); this.input = \"\"; } toggle(id: string) { const t = todos.find(id); if (t) todos.update(id, { done: !t.done }); } update() { // Reading .value here IS the subscription. The trace records it, so a // change to the store re-renders this component and nothing else. const items = todos.value; return ( <div> <h1>Todo</h1> <div class=\"row\"> <input value={this.input} onInput={(e) => (this.input = (e.target as HTMLInputElement).value)} onKeydown={(e) => e.key === \"Enter\" && this.add()} placeholder=\"What needs doing?\" /> <button onClick={() => this.add()}>Add</button> </div> {items.length === 0 ? <div class=\"empty\">Nothing yet.</div> : items.map((t) => ( <div class={`todo ${t.done ? \"done\" : \"\"}`} loom-key={t.id}> <span class=\"label\" onClick={() => this.toggle(t.id)}>{t.text}</span> <button class=\"del\" onClick={() => todos.remove(t.id)}>x</button> </div> ))} </div> ); } }"
+          - heading "Why there is no subscribe call" [level=3] [ref=e872]
+          - paragraph [ref=e873]: Reading todos.value inside update() records the store as a dependency of that render. When it changes, Loom re-renders exactly the components that read it. Keeping a local copy in sync by hand is the bug this design removes, not a feature it is missing.
+          - heading "peek() is the one to be careful with" [level=3] [ref=e874]
+          - paragraph [ref=e875]:
+            - text: DO NOT todos.peek() reads the same value
+            - emphasis [ref=e876]: without
+            - text: recording the dependency. That is what you want inside an event handler, and exactly what you do not want inside update() — a component that reads with peek renders once and then never again.
+      - generic [ref=e878]:
+        - heading "Step 4 — Boot and markup" [level=2] [ref=e880]
+        - generic:
+          - generic [ref=e881]: src/main.ts and index.html
+          - paragraph [ref=e882]: Importing the component module is what registers the element. Nothing reads a value from that import, so it is easy to delete by accident and then wonder where the tag went.
+          - generic [ref=e885]:
+            - generic [ref=e886]:
+              - generic [ref=e887]: ts
+              - button "Copy" [ref=e888] [cursor=pointer]
+            - generic [ref=e889]:
+              - generic [ref=e890]:
+                - img [ref=e893]
+                - img [ref=e897]
+                - img [ref=e901]
+                - img [ref=e905]
+              - code [ref=e908]: "import { app } from \"@toyz/loom\"; import \"./todo-app\"; // side effect: registers <todo-app> app.start();"
+          - generic [ref=e911]:
+            - generic [ref=e912]:
+              - generic [ref=e913]: html
+              - button "Copy" [ref=e914] [cursor=pointer]
+            - generic [ref=e915]:
+              - generic [ref=e916]:
+                - img [ref=e919]
+                - img [ref=e923]
+                - img [ref=e927]
+                - img [ref=e931]
+                - img [ref=e935]
+                - img [ref=e939]
+                - img [ref=e943]
+                - img [ref=e947]
+                - img [ref=e951]
+                - img [ref=e955]
+                - img [ref=e959]
+                - img [ref=e963]
+                - img [ref=e967]
+                - img [ref=e971]
+                - img [ref=e975]
+                - img [ref=e979]
+              - code [ref=e982]: "<!doctype html> <html lang=\"en\"> <head> <meta charset=\"UTF-8\" /> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /> <title>Loom Todo</title> <style> body { margin: 0; background: #100f0b; color: #e6e1d3; font-family: system-ui, sans-serif; } </style> </head> <body> <todo-app></todo-app> <script type=\"module\" src=\"/src/main.ts\"></script> </body> </html>"
+      - generic [ref=e984]:
+        - heading "Step 5 — Run it" [level=2] [ref=e986]
+        - generic:
+          - generic [ref=e987]: npx vite
+          - generic [ref=e990]:
+            - generic [ref=e991]:
+              - generic [ref=e992]: bash
+              - button "Copy" [ref=e993] [cursor=pointer]
+            - generic [ref=e994]:
+              - img [ref=e998]
+              - code [ref=e1001]: npx vite
+          - generic [ref=e1002]:
+            - generic [ref=e1003]: What you should see
+            - paragraph [ref=e1004]: Add a few items, tick one off, then reload. The list comes back, because the store wrote every change through to storage as it happened — and nothing in the component knows that, or had to ask for it.
+      - generic [ref=e1006]:
+        - heading "What to change next" [level=2] [ref=e1008]
+        - generic:
+          - paragraph [ref=e1009]: Each of these is a small edit to the code above, and each lands you on a different part of the framework.
+          - table [ref=e1010]:
+            - rowgroup [ref=e1011]:
+              - row "Try Change Leads to" [ref=e1012]:
+                - columnheader "Try" [ref=e1013]
+                - columnheader "Change" [ref=e1014]
+                - columnheader "Leads to" [ref=e1015]
+            - rowgroup [ref=e1016]:
+              - row "Per-tab instead of forever SessionAdapter in place of LocalAdapter Storage" [ref=e1017]:
+                - cell "Per-tab instead of forever" [ref=e1018]
+                - cell "SessionAdapter in place of LocalAdapter" [ref=e1019]:
+                  - code [ref=e1020]: SessionAdapter
+                  - text: in place of
+                  - code [ref=e1021]: LocalAdapter
+                - cell "Storage" [ref=e1022]
+              - row "A second view of the same list Read todos.value in another component Store patterns" [ref=e1023]:
+                - cell "A second view of the same list" [ref=e1024]
+                - cell "Read todos.value in another component" [ref=e1025]:
+                  - text: Read
+                  - code [ref=e1026]: todos.value
+                  - text: in another component
+                - cell "Store patterns" [ref=e1027]
+              - row "A count that maintains itself A @computed getter over the list Reactive" [ref=e1028]:
+                - cell "A count that maintains itself" [ref=e1029]
+                - cell "A @computed getter over the list" [ref=e1030]:
+                  - text: A
+                  - code [ref=e1031]: "@computed"
+                  - text: getter over the list
+                - cell "Reactive" [ref=e1032]
+              - row "Filter as you type @debounce(200) on the filter method Timing" [ref=e1033]:
+                - cell "Filter as you type" [ref=e1034]
+                - cell "@debounce(200) on the filter method" [ref=e1035]:
+                  - code [ref=e1036]: "@debounce(200)"
+                  - text: on the filter method
+                - cell "Timing" [ref=e1037]
+              - row "Ten thousand todos Render the list inside <loom-virtual> Virtual List" [ref=e1038]:
+                - cell "Ten thousand todos" [ref=e1039]
+                - cell "Render the list inside <loom-virtual>" [ref=e1040]:
+                  - text: Render the list inside
+                  - code [ref=e1041]: <loom-virtual>
+                - cell "Virtual List" [ref=e1042]
+      - generic [ref=e1044]:
+        - link "← Previous Getting Started Guides" [ref=e1046] [cursor=pointer]:
+          - /url: "#/guides/getting-started"
+          - generic:
+            - generic [ref=e1047]: ←
+            - generic [ref=e1048]:
+              - generic [ref=e1049]: Previous
+              - generic [ref=e1050]: Getting Started
+              - generic [ref=e1051]: Guides
+        - link "Next Debugging Guides →" [ref=e1053] [cursor=pointer]:
+          - /url: "#/guides/debugging"
+          - generic:
+            - generic [ref=e1054]:
+              - generic [ref=e1055]: Next
+              - generic [ref=e1056]: Debugging
+              - generic [ref=e1057]: Guides
+            - generic [ref=e1058]: →
+    - navigation "On this page" [ref=e1060]:
+      - generic [ref=e1061]: On this page
+      - list [ref=e1062]:
+        - listitem [ref=e1063]:
+          - link "Step 1 — The store" [ref=e1064] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1066]
+            - generic [ref=e1068]: Step 1 — The store
+        - listitem [ref=e1069]:
+          - link "Step 2 — The stylesheet" [ref=e1070] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1072]
+            - generic [ref=e1074]: Step 2 — The stylesheet
+        - listitem [ref=e1075]:
+          - link "Step 3 — The component" [ref=e1076] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1078]
+            - generic [ref=e1080]: Step 3 — The component
+        - listitem [ref=e1081]:
+          - link "Why there is no subscribe call" [ref=e1082] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1084]
+            - generic [ref=e1086]: Why there is no subscribe call
+        - listitem [ref=e1087]:
+          - link "peek() is the one to be careful with" [ref=e1088] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1090]
+            - generic [ref=e1092]: peek() is the one to be careful with
+        - listitem [ref=e1093]:
+          - link "Step 4 — Boot and markup" [ref=e1094] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1096]
+            - generic [ref=e1098]: Step 4 — Boot and markup
+        - listitem [ref=e1099]:
+          - link "Step 5 — Run it" [ref=e1100] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1102]
+            - generic [ref=e1104]: Step 5 — Run it
+        - listitem [ref=e1105]:
+          - link "What to change next" [ref=e1106] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e1108]
+            - generic [ref=e1110]: What to change next

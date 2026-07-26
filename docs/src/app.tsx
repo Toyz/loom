@@ -6,7 +6,7 @@ import { LoomElement, component, reactive, on, css, mount, query } from "@toyz/l
 import { LoomLink, RouteChanged } from "@toyz/loom/router";
 import { docStyles } from "./styles/doc-page";
 import { scrollbar } from "./shared/scrollbar";
-import "./components/doc-search";
+import { SEARCH_HOTKEY } from "./components/doc-search";
 
 interface NavItem { label: string; to: string; icon: string; divider?: string; dividerVersion?: string }
 interface NavSection { title: string; items: NavItem[] }
@@ -340,7 +340,8 @@ const styles = css`
   }
 
   /* ── Search ──
-     Was a rounded pill with a ⌘K chip. Now a ruled field, like the index line
+     Was a rounded pill with a hardcoded shortcut chip. Now a ruled field, like
+     the index line
      on a card sleeve. */
 
   .search-trigger {
@@ -650,17 +651,26 @@ export class DocsApp extends LoomElement {
   @mount
   setup() {
     this.shadow.adoptedStyleSheets = [styles, docStyles];
+
+    // Seed from the URL rather than waiting for RouteChanged. On a cold load
+    // the router resolves the initial route before this shell has subscribed,
+    // so that event never arrives here and the sidebar kept its "/" default —
+    // every refresh landed with nothing highlighted.
+    this.syncPath(location.hash.replace(/^#/, "").split("?")[0] || "/");
+  }
+
+  /** Apply a path to the sidebar: active link, and open the section holding it. */
+  private syncPath(path: string) {
+    this.currentPath = path;
+    for (const s of sections) {
+      if (s.items.some((i) => path.startsWith(i.to))) this.openSections.add(s.title);
+    }
   }
 
   @on(RouteChanged)
   onRoute(e: RouteChanged) {
-    this.currentPath = e.path;
+    this.syncPath(e.path);
     this.sidebarOpen = false; // auto-close on mobile nav
-    for (const s of sections) {
-      if (s.items.some(i => e.path.startsWith(i.to))) {
-        this.openSections.add(s.title);
-      }
-    }
     this.scheduleUpdate();
     // After morph applies .active class, scroll it into view
     queueMicrotask(() => {
@@ -725,7 +735,7 @@ export class DocsApp extends LoomElement {
           <button class="search-trigger" onClick={() => this.openSearch()}>
             <loom-icon name="search" size={15}></loom-icon>
             <span class="search-trigger-text">Search...</span>
-            <span class="search-trigger-kbd">⌘K</span>
+            <span class="search-trigger-kbd">{SEARCH_HOTKEY}</span>
           </button>
 
           <nav>

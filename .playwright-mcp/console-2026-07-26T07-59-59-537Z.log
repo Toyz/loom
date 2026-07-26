@@ -1,0 +1,3 @@
+[     178ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/timing @ http://localhost:5174/src/groups.ts:56
+[     226ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5174/favicon.ico:0
+[   68103ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/timing @ http://localhost:5174/src/groups.ts:56

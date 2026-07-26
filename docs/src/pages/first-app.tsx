@@ -1,164 +1,18 @@
 /**
  * Your First App — /guides/your-first-app
  *
- * End-to-end walkthrough building a todo app.
+ * A todo list in four files. Every API used here was checked against src/:
+ * CollectionStore's constructor is (initial, PersistOptions), a Reactive is
+ * read through `.value` — which is the call that registers the dependency —
+ * and LocalAdapter takes no arguments.
+ *
+ * One <doc-section> per step, so the right rail doubles as the step list.
+ * The page previously taught two out-of-date idioms: building the stylesheet
+ * inside update(), and mirroring the store into a local @reactive via @watch.
  */
-import { LoomElement, css, styles as applyStyles } from "@toyz/loom";
-import { inlineLink } from "../styles/doc-page";
+import { LoomElement } from "@toyz/loom";
 
-const styles = css`
-  /* ── Custom list bullets ── */
-  ul { list-style: none; padding: 0; margin-bottom: var(--space-4); }
-  li {
-    position: relative; padding-left: var(--space-5);
-    color: var(--text-secondary); margin-bottom: var(--space-2);
-    line-height: var(--leading-normal);
-  }
-  li::before {
-    content: ""; position: absolute; left: 0; top: 10px;
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-  }
-
-  /* ── File tree ── */
-  .file-tree {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: var(--space-4) var(--space-5);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    line-height: 1.8;
-    margin-bottom: var(--space-4);
-    color: var(--text-secondary);
-  }
-  .file-tree .dir  { color: var(--accent); }
-  .file-tree .file { color: var(--text-muted); }
-  .file-tree .hl   { color: var(--emerald); font-weight: 600; }
-
-  /* ── Concepts grid ── */
-  .concepts {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: var(--space-3);
-    margin-bottom: var(--space-6);
-  }
-  .concept-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: var(--space-4);
-    text-align: center;
-  }
-  .concept-card .name {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .concept-card .desc {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    margin-top: var(--space-1);
-    line-height: 1.5;
-  }
-
-  /* ── Step numbers ── */
-  .step { margin-bottom: var(--space-10); }
-  .step-header {
-    display: flex; align-items: center;
-    gap: var(--space-3); margin-bottom: var(--space-4);
-  }
-  .step-num {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent-glow); border: 1px solid var(--accent-dim);
-    display: flex; align-items: center; justify-content: center;
-    font-size: var(--text-xs); font-weight: 700;
-    font-family: var(--font-mono); color: var(--accent);
-    flex-shrink: 0;
-  }
-
-  /* ── Callouts ── */
-  .result-card {
-    background: var(--ground-sunk);
-    border: 1px solid var(--warp-lit);
-    border-radius: 0;
-    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
-    padding: var(--space-6);
-    text-align: center;
-    margin-top: var(--space-4);
-  }
-  .result-card h3 {
-    color: var(--emerald); margin: 0 0 var(--space-2);
-    font-size: var(--text-lg);
-  }
-  .result-card p {
-    color: var(--text-muted); font-size: var(--text-sm); margin: 0;
-  }
-`;
-
-@applyStyles(styles)
-export default class PageFirstApp extends LoomElement {
-
-  update() {
-    return (
-      <div>
-        <doc-header title="Your First App" subtitle="Build a persistent todo list in 4 files. No CLI, no build config — just Vite + Loom."></doc-header>
-
-        {/* ─── What You'll Learn ─── */}
-
-        <section>
-          <h2>Concepts Used</h2>
-          <div class="concepts">
-            <div class="concept-card">
-              <div class="name">@component</div>
-              <div class="desc">Define a custom element</div>
-            </div>
-            <div class="concept-card">
-              <div class="name">@reactive</div>
-              <div class="desc">Auto re-render on change</div>
-            </div>
-            <div class="concept-card">
-              <div class="name">CollectionStore</div>
-              <div class="desc">CRUD for lists of items</div>
-            </div>
-            <div class="concept-card">
-              <div class="name">LocalAdapter</div>
-              <div class="desc">Persist to localStorage</div>
-            </div>
-            <div class="concept-card">
-              <div class="name">@watch</div>
-              <div class="desc">React to store changes</div>
-            </div>
-            <div class="concept-card">
-              <div class="name">loom-key</div>
-              <div class="desc">Keyed DOM diffing</div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Project Structure ─── */}
-
-        <section>
-          <h2>Project Structure</h2>
-          <div class="file-tree">
-            <div><span class="dir">my-todo/</span></div>
-            <div>  ├─ <span class="file">index.html</span></div>
-            <div>  ├─ <span class="hl">src/store.ts</span>    — the data model</div>
-            <div>  ├─ <span class="hl">src/todo-app.tsx</span> — the component</div>
-            <div>  └─ <span class="hl">src/main.ts</span>    — entry point</div>
-          </div>
-        </section>
-
-        {/* ─── Step 1 ─── */}
-
-        <div class="step">
-          <div class="step-header">
-            <div class="step-num">1</div>
-            <h2>Define the Store</h2>
-          </div>
-          <p>Create <span class="ic">src/store.ts</span>  — a typed collection with automatic localStorage persistence:</p>
-          <code-block lang="ts" code={`import { CollectionStore, LocalAdapter } from "@toyz/loom/store";
+const STORE = `import { CollectionStore, LocalAdapter } from "@toyz/loom/store";
 
 export interface Todo {
   id: string;
@@ -166,49 +20,33 @@ export interface Todo {
   done: boolean;
 }
 
+// The second argument is what makes it persistent. Drop it: in-memory store.
 export const todos = new CollectionStore<Todo>([], {
   key: "app:todos",
   storage: new LocalAdapter(),
-});`}></code-block>
-          <doc-notification type="note">
-            <div>
-              <strong>CollectionStore</strong> extends <span class="ic">Reactive&lt;T[]&gt;</span> with
-              <span class="ic">.add()</span>, <span class="ic">.remove()</span>,
-              <span class="ic">.update()</span>, and <span class="ic">.find()</span>.
-              The <span class="ic">LocalAdapter</span> persists every change to
-              <span class="ic">localStorage</span> automatically.
-            </div>
-          </doc-notification>
-        </div>
+});`;
 
-        {/* ─── Step 2 ─── */}
+const SHEET = `import { css } from "@toyz/loom";
 
-        <div class="step">
-          <div class="step-header">
-            <div class="step-num">2</div>
-            <h2>Build the Component</h2>
-          </div>
-          <p>Create <span class="ic">src/todo-app.tsx</span>:</p>
-          <code-block lang="ts" code={`import { LoomElement, component, reactive, css, styles } from "@toyz/loom";
-import { todos } from "./store";
+// Module scope, not inside update(): built and parsed once for the whole app
+// rather than on every render.
+export const sheet = css\`
+  :host { display: block; max-width: 480px; margin: 48px auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 16px; }
 
-// Built and parsed once for the whole app, not once per render.
-const sheet = css\`
-  :host { display: block; max-width: 480px; margin: 48px auto; font-family: system-ui; }
-  h1    { font-size: 1.5rem; margin-bottom: 16px; font-weight: 700; }
-  .row  { display: flex; gap: 8px; margin-bottom: 20px; }
+  .row { display: flex; gap: 8px; margin-bottom: 20px; }
   input {
     flex: 1; padding: 10px 14px;
-    border: 1px solid #33322a; border-radius: 8px;
     background: #14140f; color: #e6e1d3;
-    font-size: 14px; outline: none;
+    border: 1px solid #33322a; outline: none;
   }
   input:focus { border-color: #c4472f; }
   button {
-    padding: 10px 18px; border-radius: 8px; border: none;
+    padding: 10px 18px; border: none;
     background: #c4472f; color: #f5f1e6;
-    cursor: pointer; font-weight: 600; font-size: 14px;
+    font-weight: 600; cursor: pointer;
   }
+
   .todo {
     display: flex; align-items: center; justify-content: space-between;
     padding: 12px 0; border-bottom: 1px solid #33322a;
@@ -216,9 +54,13 @@ const sheet = css\`
   .todo:last-child { border-bottom: none; }
   .done .label { text-decoration: line-through; opacity: 0.45; }
   .label { flex: 1; cursor: pointer; }
-  .del { background: none; border: none; color: #6d6858; cursor: pointer; font-size: 18px; }
+  .del { background: none; border: none; color: #6d6858; cursor: pointer; }
   .empty { color: #6d6858; font-style: italic; padding: 24px 0; text-align: center; }
-\`;
+\`;`;
+
+const COMPONENT = `import { LoomElement, component, reactive, styles } from "@toyz/loom";
+import { todos } from "./store";
+import { sheet } from "./sheet";
 
 @component("todo-app")
 @styles(sheet)
@@ -226,8 +68,9 @@ export class TodoApp extends LoomElement {
   @reactive accessor input = "";
 
   add() {
-    if (!this.input.trim()) return;
-    todos.add({ text: this.input, done: false });
+    const text = this.input.trim();
+    if (!text) return;
+    todos.add({ text, done: false });
     this.input = "";
   }
 
@@ -236,13 +79,9 @@ export class TodoApp extends LoomElement {
     if (t) todos.update(id, { done: !t.done });
   }
 
-  remove(id: string) {
-    todos.remove(id);
-  }
-
   update() {
-    // Reading the store here is the subscription: the trace records it,
-    // so any change re-renders this component and nothing else.
+    // Reading .value here IS the subscription. The trace records it, so a
+    // change to the store re-renders this component and nothing else.
     const items = todos.value;
 
     return (
@@ -251,113 +90,190 @@ export class TodoApp extends LoomElement {
         <div class="row">
           <input
             value={this.input}
-            onInput={(e) => this.input = e.target.value}
+            onInput={(e) => (this.input = (e.target as HTMLInputElement).value)}
             onKeydown={(e) => e.key === "Enter" && this.add()}
             placeholder="What needs doing?"
           />
           <button onClick={() => this.add()}>Add</button>
         </div>
+
         {items.length === 0
-          ? <div class="empty">No todos yet — add one above!</div>
-          : items.map(t => (
-              <div
-                class={\`todo \${t.done ? "done" : ""}\`}
-                loom-key={t.id}
-              >
-                <span class="label" onClick={() => this.toggle(t.id)}>
-                  {t.done ? "[x] " : "[ ] "}{t.text}
-                </span>
-                <button class="del" onClick={() => this.remove(t.id)}>×</button>
+          ? <div class="empty">Nothing yet.</div>
+          : items.map((t) => (
+              <div class={\`todo \${t.done ? "done" : ""}\`} loom-key={t.id}>
+                <span class="label" onClick={() => this.toggle(t.id)}>{t.text}</span>
+                <button class="del" onClick={() => todos.remove(t.id)}>x</button>
               </div>
-            ))
-        }
+            ))}
       </div>
     );
   }
-}`}></code-block>
-          <doc-notification type="note">
-            <div>
-              Nothing subscribes to the store. Reading <span class="ic">todos.value</span> inside
-              <span class="ic">update()</span> <em>is</em> the subscription — the trace records
-              which reactives a render read, so a change re-renders exactly the components that
-              read it and nothing else. There is no teardown to write, and no local copy of the
-              list to keep in step.
-            </div>
-          </doc-notification>
-        </div>
+}`;
 
-        {/* ─── Step 3 ─── */}
+const MAIN = `import { app } from "@toyz/loom";
+import "./todo-app"; // side effect: registers <todo-app>
 
-        <div class="step">
-          <div class="step-header">
-            <div class="step-num">3</div>
-            <h2>Wire Up main.ts</h2>
-          </div>
-          <p>Create <span class="ic">src/main.ts</span>:</p>
-          <code-block lang="ts" code={`import { app } from "@toyz/loom";
-import "./todo-app"; // side-effect: registers <todo-app>
+app.start();`;
 
-app.start();`}></code-block>
-          <p>
-            Importing the component file triggers the <span class="ic">@component</span> decorator, which calls
-            <span class="ic">customElements.define()</span>. Then <span class="ic">app.start()</span> boots the
-            service container.
-          </p>
-        </div>
-
-        {/* ─── Step 4 ─── */}
-
-        <div class="step">
-          <div class="step-header">
-            <div class="step-num">4</div>
-            <h2>Add the HTML</h2>
-          </div>
-          <p>Create <span class="ic">index.html</span>:</p>
-          <code-block lang="html" code={`<!doctype html>
+const HTML = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Loom Todo</title>
     <style>
-      body { margin: 0; background: #0a0a12; color: #e8e8f0; }
+      body { margin: 0; background: #100f0b; color: #e6e1d3;
+             font-family: system-ui, sans-serif; }
     </style>
   </head>
   <body>
     <todo-app></todo-app>
     <script type="module" src="/src/main.ts"></script>
   </body>
-</html>`}></code-block>
-        </div>
+</html>`;
 
-        {/* ─── Step 5 ─── */}
-
-        <div class="step">
-          <div class="step-header">
-            <div class="step-num">5</div>
-            <h2>Run It</h2>
-          </div>
-          <code-block lang="bash" code={`npx vite`}></code-block>
-          <div class="result-card">
-            <h3 style="display: flex; align-items: center; justify-content: center; gap: 8px;"><loom-icon name="check-circle" size="20"></loom-icon>You're Live</h3>
-            <p>
-              Open <span class="ic">http://localhost:5173</span> — add some items, refresh, and they'll persist.
-            </p>
-          </div>
-        </div>
-
-        {/* ─── Key Takeaways ─── */}
+export default class PageFirstApp extends LoomElement {
+  update() {
+    return (
+      <div>
+        <doc-header
+          title="Your First App"
+          subtitle="A todo list that survives a reload, in four files and no state-management library."
+        ></doc-header>
 
         <section>
-          <h2>Key Takeaways</h2>
-          <ul>
-            <li><span class="ic">@reactive</span> triggers re-renders when properties change</li>
-            <li><span class="ic">@watch(store)</span> auto-subscribes to stores — no manual cleanup needed</li>
-            <li><span class="ic">loom-key</span> enables efficient keyed DOM reconciliation</li>
-            <li>Persistence is a single constructor option — swap <span class="ic">LocalAdapter</span> for <span class="ic">SessionAdapter</span> or your own backend</li>
-            <li>No build config beyond <span class="ic">tsconfig.json</span> — see <loom-link to="/guides/getting-started" styles={[inlineLink]} style="color: var(--accent)">Getting Started</loom-link></li>
-          </ul>
+          <p>A todo list is the standard first app because it exercises the parts that are genuinely awkward: a list that changes shape, an item edited in place, and state that has to outlive the page. Four files here, and every idea a real app needs.</p>
+          <p>The thing worth watching is what is <em>absent</em>. No subscribe call, no unsubscribe, no local copy of the list kept in step with the store, and no re-render you have to ask for. Reading the store during a render is what registers the dependency, and that is the entire mechanism.</p>
+          <punch-matrix
+            columns="SURVIVES RELOAD,SHARED BETWEEN COMPONENTS,NEEDS TEARDOWN,RE-RENDERS AUTOMATICALLY"
+            rows={[
+              { name: "local @reactive", punches: "RE-RENDERS AUTOMATICALLY", note: "Right for the input box" },
+              { name: "CollectionStore", punches: "SHARED BETWEEN COMPONENTS,RE-RENDERS AUTOMATICALLY", note: "One list, many readers" },
+              { name: "+ LocalAdapter", punches: "SURVIVES RELOAD,SHARED BETWEEN COMPONENTS,RE-RENDERS AUTOMATICALLY", note: "What this app uses" },
+            ]}
+          ></punch-matrix>
+          <p class="note">
+            The teardown column is empty on purpose. A subscription is owned by the render that
+            made it and released with the component, so there is nothing here to clean up.
+          </p>
         </section>
+
+        <doc-section heading="Step 1 — The store">
+          <div class="step-num">src/store.ts</div>
+          <p>
+            <span class="ic">CollectionStore</span> is a <span class="ic">Reactive&lt;T[]&gt;</span> with the four list
+            operations already on it. The second constructor argument is what makes it
+            persistent; leave it out and everything below still works, just not across a reload.
+          </p>
+          <code-block lang="ts" code={STORE}></code-block>
+          <doc-notification type="note">
+            <span class="ic">add()</span> generates an <span class="ic">id</span> when you do not supply one, which is
+            why the interface requires the field but the call site does not pass it. That id is
+            what <span class="ic">loom-key</span> uses later to keep list reordering cheap.
+          </doc-notification>
+        </doc-section>
+
+        <doc-section heading="Step 2 — The stylesheet">
+          <div class="step-num">src/sheet.ts</div>
+          <p>
+            Styles live at module scope so the sheet is parsed once and shared by every instance.
+            Building it inside <span class="ic">update()</span> rebuilds it on every render, which is the most
+            common performance mistake in a first Loom app.
+          </p>
+          <code-block lang="ts" code={SHEET}></code-block>
+        </doc-section>
+
+        <doc-section heading="Step 3 — The component">
+          <div class="step-num">src/todo-app.tsx</div>
+          <p>
+            One reactive field, for the text being typed. The list is not mirrored into the
+            component at all — it is read from the store during the render.
+          </p>
+          <code-block lang="tsx" code={COMPONENT}></code-block>
+
+          <h3>Why there is no subscribe call</h3>
+          <p>
+            Reading <span class="ic">todos.value</span> inside <span class="ic">update()</span> records the store as a
+            dependency of that render. When it changes, Loom re-renders exactly the components
+            that read it. Keeping a local copy in sync by hand is the bug this design removes,
+            not a feature it is missing.
+          </p>
+
+          <h3>peek() is the one to be careful with</h3>
+          <p class="caution">
+            <span class="ic">todos.peek()</span> reads the same value <em>without</em> recording the dependency. That
+            is what you want inside an event handler, and exactly what you do not want inside
+            <span class="ic"> update()</span> — a component that reads with peek renders once and then never again.
+          </p>
+        </doc-section>
+
+        <doc-section heading="Step 4 — Boot and markup">
+          <div class="step-num">src/main.ts and index.html</div>
+          <p>
+            Importing the component module is what registers the element. Nothing reads a value
+            from that import, so it is easy to delete by accident and then wonder where the tag
+            went.
+          </p>
+          <code-block lang="ts" code={MAIN}></code-block>
+          <code-block lang="html" code={HTML}></code-block>
+        </doc-section>
+
+        <doc-section heading="Step 5 — Run it">
+          <div class="step-num">npx vite</div>
+          <code-block lang="bash" code={`npx vite`}></code-block>
+          <div class="specimen">
+            <span class="label">What you should see</span>
+            <p>
+              Add a few items, tick one off, then reload. The list comes back, because the store
+              wrote every change through to storage as it happened — and nothing in the component
+              knows that, or had to ask for it.
+            </p>
+          </div>
+        </doc-section>
+
+        <doc-section heading="What to change next">
+          <p>
+            Each of these is a small edit to the code above, and each lands you on a different
+            part of the framework.
+          </p>
+          <table class="api-table">
+            <thead>
+              <tr>
+                <th>Try</th>
+                <th>Change</th>
+                <th>Leads to</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Per-tab instead of forever</td>
+                <td><code>SessionAdapter</code> in place of <code>LocalAdapter</code></td>
+                <td>Storage</td>
+              </tr>
+              <tr>
+                <td>A second view of the same list</td>
+                <td>Read <code>todos.value</code> in another component</td>
+                <td>Store patterns</td>
+              </tr>
+              <tr>
+                <td>A count that maintains itself</td>
+                <td>A <code>@computed</code> getter over the list</td>
+                <td>Reactive</td>
+              </tr>
+              <tr>
+                <td>Filter as you type</td>
+                <td><code>@debounce(200)</code> on the filter method</td>
+                <td>Timing</td>
+              </tr>
+              <tr>
+                <td>Ten thousand todos</td>
+                <td>Render the list inside <code>&lt;loom-virtual&gt;</code></td>
+                <td>Virtual List</td>
+              </tr>
+            </tbody>
+          </table>
+        </doc-section>
+
         <doc-nav></doc-nav>
       </div>
     );

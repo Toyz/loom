@@ -1,0 +1,477 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e6]:
+      - heading "Loom" [level=1] [ref=e7]
+      - generic [ref=e8]: v0.22.0
+    - button "Search... ⌘K" [ref=e19] [cursor=pointer]:
+      - img [ref=e21]
+      - generic [ref=e24]: Search...
+      - generic [ref=e25]: ⌘K
+    - navigation [ref=e26]:
+      - link "Home" [ref=e29] [cursor=pointer]:
+        - /url: "#/"
+        - generic: Home
+      - generic [ref=e30]:
+        - generic [ref=e32] [cursor=pointer]: Guides
+        - generic [ref=e33]:
+          - link "Getting Started" [ref=e36] [cursor=pointer]:
+            - /url: "#/guides/getting-started"
+            - generic: Getting Started
+          - link "Your First App" [ref=e39] [cursor=pointer]:
+            - /url: "#/guides/your-first-app"
+            - generic: Your First App
+          - link "Debugging" [ref=e42] [cursor=pointer]:
+            - /url: "#/guides/debugging"
+            - generic: Debugging
+          - link "LoomResult" [ref=e45] [cursor=pointer]:
+            - /url: "#/result"
+            - generic: LoomResult
+          - link "Hydration" [ref=e48] [cursor=pointer]:
+            - /url: "#/guides/hydration"
+            - generic: Hydration
+      - generic [ref=e49]:
+        - generic [ref=e51] [cursor=pointer]: Element
+        - generic [ref=e52]:
+          - link "Overview" [ref=e55] [cursor=pointer]:
+            - /url: "#/element/overview"
+            - generic: Overview
+          - link "Lifecycle" [ref=e58] [cursor=pointer]:
+            - /url: "#/element/lifecycle"
+            - generic: Lifecycle
+          - link "Timing" [ref=e61] [cursor=pointer]:
+            - /url: "#/element/timing"
+            - generic: Timing
+          - link "CSS" [ref=e64] [cursor=pointer]:
+            - /url: "#/element/css"
+            - generic: CSS
+          - link "DOM Queries" [ref=e67] [cursor=pointer]:
+            - /url: "#/element/queries"
+            - generic: DOM Queries
+          - link "JSX & Morphing" [ref=e70] [cursor=pointer]:
+            - /url: "#/element/jsx"
+            - generic: JSX & Morphing
+          - link "Decorators" [ref=e73] [cursor=pointer]:
+            - /url: "#/element/decorators"
+            - generic: Decorators
+          - link "Attributes" [ref=e76] [cursor=pointer]:
+            - /url: "#/element/attributes"
+            - generic: Attributes
+          - link "Light DOM" [ref=e79] [cursor=pointer]:
+            - /url: "#/element/light-dom"
+            - generic: Light DOM
+          - link "Lazy Loading" [ref=e82] [cursor=pointer]:
+            - /url: "#/element/lazy"
+            - generic: Lazy Loading
+          - link "Observer" [ref=e85] [cursor=pointer]:
+            - /url: "#/element/observer"
+            - generic: Observer
+          - link "Forms" [ref=e88] [cursor=pointer]:
+            - /url: "#/element/forms"
+            - generic: Forms
+          - generic [ref=e89]: Data Fetching
+          - link "Fetch" [ref=e92] [cursor=pointer]:
+            - /url: "#/store/api"
+            - generic: Fetch
+          - generic [ref=e93]: Built-ins
+          - link "Virtual List" [ref=e96] [cursor=pointer]:
+            - /url: "#/element/virtual-list"
+            - generic: Virtual List
+          - link "Icon" [ref=e99] [cursor=pointer]:
+            - /url: "#/element/icon"
+            - generic: Icon
+          - link "Canvas" [ref=e102] [cursor=pointer]:
+            - /url: "#/element/canvas"
+            - generic: Canvas
+          - link "Image" [ref=e105] [cursor=pointer]:
+            - /url: "#/element/image"
+            - generic: Image
+      - generic [ref=e106]:
+        - generic [ref=e108] [cursor=pointer]: Decorators
+        - generic [ref=e109]:
+          - link "Overview" [ref=e112] [cursor=pointer]:
+            - /url: "#/decorators/overview"
+            - generic: Overview
+          - link "Events" [ref=e115] [cursor=pointer]:
+            - /url: "#/decorators/events"
+            - generic: Events
+          - link "Transform" [ref=e118] [cursor=pointer]:
+            - /url: "#/decorators/transform"
+            - generic: Transform
+          - link "Hotkey" [ref=e121] [cursor=pointer]:
+            - /url: "#/decorators/hotkey"
+            - generic: Hotkey
+          - link "Log" [ref=e124] [cursor=pointer]:
+            - /url: "#/decorators/log"
+            - generic: Log
+          - link "Context" [ref=e127] [cursor=pointer]:
+            - /url: "#/decorators/context"
+            - generic: Context
+          - link "Portal" [ref=e130] [cursor=pointer]:
+            - /url: "#/decorators/portal"
+            - generic: Portal
+          - link "Typed Symbols" [ref=e133] [cursor=pointer]:
+            - /url: "#/decorators/symbols"
+            - generic: Typed Symbols
+          - link "Media" [ref=e136] [cursor=pointer]:
+            - /url: "#/decorators/media"
+            - generic: Media
+          - link "Fullscreen" [ref=e139] [cursor=pointer]:
+            - /url: "#/decorators/fullscreen"
+            - generic: Fullscreen
+          - link "Clipboard" [ref=e142] [cursor=pointer]:
+            - /url: "#/decorators/clipboard"
+            - generic: Clipboard
+          - link "Drag & Drop" [ref=e145] [cursor=pointer]:
+            - /url: "#/decorators/dnd"
+            - generic: Drag & Drop
+          - link "Dynamic CSS" [ref=e148] [cursor=pointer]:
+            - /url: "#/decorators/css"
+            - generic: Dynamic CSS
+      - generic [ref=e149]:
+        - generic [ref=e151] [cursor=pointer]: Store
+        - generic [ref=e152]:
+          - link "Overview" [ref=e155] [cursor=pointer]:
+            - /url: "#/store/overview"
+            - generic: Overview
+          - link "Reactive" [ref=e158] [cursor=pointer]:
+            - /url: "#/store/reactive"
+            - generic: Reactive
+          - link "Decorator" [ref=e161] [cursor=pointer]:
+            - /url: "#/store/store-decorator"
+            - generic: Decorator
+          - link "Storage" [ref=e164] [cursor=pointer]:
+            - /url: "#/store/storage"
+            - generic: Storage
+          - link "Patterns" [ref=e167] [cursor=pointer]:
+            - /url: "#/store/patterns"
+            - generic: Patterns
+          - link "Signals" [ref=e170] [cursor=pointer]:
+            - /url: "#/store/signals"
+            - generic: Signals
+      - generic [ref=e171]:
+        - generic [ref=e173] [cursor=pointer]: Router
+        - generic [ref=e174]:
+          - link "Overview" [ref=e177] [cursor=pointer]:
+            - /url: "#/router/overview"
+            - generic: Overview
+          - link "Routes" [ref=e180] [cursor=pointer]:
+            - /url: "#/router/routes"
+            - generic: Routes
+          - link "Route Data" [ref=e183] [cursor=pointer]:
+            - /url: "#/router/route-data"
+            - generic: Route Data
+          - link "Groups" [ref=e186] [cursor=pointer]:
+            - /url: "#/router/groups"
+            - generic: Groups
+          - link "Guards" [ref=e189] [cursor=pointer]:
+            - /url: "#/router/guards"
+            - generic: Guards
+          - link "Navigation" [ref=e192] [cursor=pointer]:
+            - /url: "#/router/navigation"
+            - generic: Navigation
+          - link "Lifecycle" [ref=e195] [cursor=pointer]:
+            - /url: "#/router/route-lifecycle"
+            - generic: Lifecycle
+          - link "Decorators" [ref=e198] [cursor=pointer]:
+            - /url: "#/router/decorators"
+            - generic: Decorators
+      - generic [ref=e199]:
+        - generic [ref=e201] [cursor=pointer]: DI & Services
+        - generic [ref=e202]:
+          - link "Overview" [ref=e205] [cursor=pointer]:
+            - /url: "#/di/overview"
+            - generic: Overview
+          - link "Decorators" [ref=e208] [cursor=pointer]:
+            - /url: "#/di/decorators"
+            - generic: Decorators
+      - generic [ref=e209]:
+        - generic [ref=e211] [cursor=pointer]: Packages
+        - generic [ref=e212]:
+          - generic [ref=e213]:
+            - text: RPC
+            - generic [ref=e214]: v0.5.0
+          - link "Overview" [ref=e217] [cursor=pointer]:
+            - /url: "#/packages/rpc-overview"
+            - generic: Overview
+          - link "Queries" [ref=e220] [cursor=pointer]:
+            - /url: "#/packages/rpc-queries"
+            - generic: Queries
+          - link "Mutations" [ref=e223] [cursor=pointer]:
+            - /url: "#/packages/rpc-mutations"
+            - generic: Mutations
+          - link "Transports" [ref=e226] [cursor=pointer]:
+            - /url: "#/packages/rpc-transports"
+            - generic: Transports
+          - link "Streams" [ref=e229] [cursor=pointer]:
+            - /url: "#/packages/rpc-streams"
+            - generic: Streams
+          - link "Testing" [ref=e232] [cursor=pointer]:
+            - /url: "#/packages/rpc-testing"
+            - generic: Testing
+          - link "Demo" [ref=e235] [cursor=pointer]:
+            - /url: "#/packages/rpc-demo"
+            - generic: Demo
+          - generic [ref=e236]:
+            - text: Analytics
+            - generic [ref=e237]: v0.1.3
+          - link "Overview" [ref=e240] [cursor=pointer]:
+            - /url: "#/packages/analytics-overview"
+            - generic: Overview
+          - link "Testing" [ref=e243] [cursor=pointer]:
+            - /url: "#/packages/analytics-testing"
+            - generic: Testing
+          - link "Demo" [ref=e246] [cursor=pointer]:
+            - /url: "#/packages/analytics-demo"
+            - generic: Demo
+          - generic [ref=e247]:
+            - text: Flags
+            - generic [ref=e248]: v0.1.3
+          - link "Overview" [ref=e251] [cursor=pointer]:
+            - /url: "#/packages/flags-overview"
+            - generic: Overview
+          - link "Testing" [ref=e254] [cursor=pointer]:
+            - /url: "#/packages/flags-testing"
+            - generic: Testing
+          - link "Demo" [ref=e257] [cursor=pointer]:
+            - /url: "#/packages/flags-demo"
+            - generic: Demo
+          - generic [ref=e258]:
+            - text: Placeholder
+            - generic [ref=e259]: v0.1.0
+          - link "Overview" [ref=e262] [cursor=pointer]:
+            - /url: "#/packages/placeholder-overview"
+            - generic: Overview
+          - link "Testing" [ref=e265] [cursor=pointer]:
+            - /url: "#/packages/placeholder-testing"
+            - generic: Testing
+          - link "Demo" [ref=e268] [cursor=pointer]:
+            - /url: "#/packages/placeholder-demo"
+            - generic: Demo
+          - generic [ref=e269]:
+            - text: Create Loom
+            - generic [ref=e270]: v0.2.2
+          - link "Overview" [ref=e273] [cursor=pointer]:
+            - /url: "#/packages/create-loom"
+            - generic: Overview
+      - generic [ref=e274]:
+        - generic [ref=e276] [cursor=pointer]: Examples
+        - generic [ref=e277]:
+          - link "Clock" [ref=e280] [cursor=pointer]:
+            - /url: "#/examples/clock"
+            - generic: Clock
+          - link "Attributes" [ref=e283] [cursor=pointer]:
+            - /url: "#/examples/attributes"
+            - generic: Attributes
+          - link "Todo List" [ref=e286] [cursor=pointer]:
+            - /url: "#/examples/todo"
+            - generic: Todo List
+          - link "Kanban Board" [ref=e289] [cursor=pointer]:
+            - /url: "#/examples/kanban"
+            - generic: Kanban Board
+          - link "Theme Switcher" [ref=e292] [cursor=pointer]:
+            - /url: "#/examples/theme-switcher"
+            - generic: Theme Switcher
+          - link "Contact Form" [ref=e295] [cursor=pointer]:
+            - /url: "#/examples/form"
+            - generic: Contact Form
+          - link "Fetch" [ref=e298] [cursor=pointer]:
+            - /url: "#/examples/api"
+            - generic: Fetch
+          - link "Virtual List" [ref=e301] [cursor=pointer]:
+            - /url: "#/examples/virtual-list-demo"
+            - generic: Virtual List
+          - link "Timing" [ref=e304] [cursor=pointer]:
+            - /url: "#/examples/timing-demo"
+            - generic: Timing
+          - link "Stress Test" [ref=e307] [cursor=pointer]:
+            - /url: "#/examples/stress-test"
+            - generic: Stress Test
+          - link "Canvas Game" [ref=e310] [cursor=pointer]:
+            - /url: "#/examples/canvas-game"
+            - generic: Canvas Game
+          - link "Image Gallery" [ref=e313] [cursor=pointer]:
+            - /url: "#/examples/image-gallery"
+            - generic: Image Gallery
+          - link "EventBus" [ref=e316] [cursor=pointer]:
+            - /url: "#/examples/eventbus"
+            - generic: EventBus
+  - main [ref=e317]:
+    - generic [ref=e322]:
+      - generic "DOM Queries" [ref=e323]:
+        - generic [ref=e324]:
+          - heading "DOM Queries" [level=1] [ref=e326]
+          - paragraph [ref=e327]: Live shadow-root lookups that cannot go stale, because nothing is cached.
+          - generic [ref=e329]:
+            - button "On this page 4 ▼" [ref=e330] [cursor=pointer]:
+              - generic [ref=e331]:
+                - generic [ref=e332]: On this page
+                - generic [ref=e333]: "4"
+              - generic [ref=e334]: ▼
+            - list [ref=e337]:
+              - listitem [ref=e338]:
+                - link "@query" [ref=e339] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e340]:
+                - link "@queryAll" [ref=e341] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e342]:
+                - link "How They Work" [ref=e343] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e344]:
+                - link "vs Manual Queries" [ref=e345] [cursor=pointer]:
+                  - /url: javascript:void(0)
+      - generic [ref=e346]:
+        - paragraph [ref=e347]: Querying the shadow root by hand goes wrong in two directions. Query too early — in the constructor or connect — and the template has not rendered, so you get null. Query once and cache the node, and the reference goes stale the moment a morph replaces that element.
+        - paragraph [ref=e348]: "@query and @queryAll sidestep both by reading on every access. The accessor is a live lookup, not a stored node, so it is correct after any render and there is nothing to invalidate. The cost is a querySelector per read, which is why the parameterized form pre-compiles its selector at decoration time rather than building it per call."
+      - generic [ref=e349]:
+        - generic [ref=e350]:
+          - img [ref=e352]
+          - heading "@query" [level=2] [ref=e355]
+        - generic [ref=e356]:
+          - generic [ref=e357]: "@query(selector)"
+          - generic [ref=e358]: Lazy shadow DOM querySelector. Returns the first match on access — always reads live DOM.
+          - generic [ref=e361]:
+            - generic [ref=e362]:
+              - generic [ref=e363]: ts
+              - button "Copy" [ref=e364] [cursor=pointer]
+            - generic [ref=e365]:
+              - generic [ref=e366]:
+                - generic [ref=e367]: ■
+                - generic [ref=e368]: ■
+                - generic [ref=e369]: □
+                - generic [ref=e370]: ■
+                - generic [ref=e371]: □
+                - generic [ref=e372]: □
+                - generic [ref=e373]: □
+                - generic [ref=e374]: □
+                - generic [ref=e375]: □
+              - code [ref=e377]: "@query(\".submit-btn\") accessor submitBtn!: HTMLButtonElement; @query(\"canvas\") accessor canvas!: HTMLCanvasElement; @mount setup() { this.canvas.width = 800; this.canvas.height = 600; this.submitBtn.addEventListener(\"click\", () => this.save()); }"
+        - generic [ref=e378]:
+          - generic [ref=e379]: "@query(\"selector-$0\") — Dynamic (parameterized)"
+          - generic [ref=e380]: Use $0, $1, etc. as placeholders to make the selector dynamic. The accessor becomes a callable typed as LoomHtmlQuery<Args, El>. The selector template is pre-compiled at decoration time — no regex at call time.
+          - generic [ref=e383]:
+            - generic [ref=e384]:
+              - generic [ref=e385]: ts
+              - button "Copy" [ref=e386] [cursor=pointer]
+            - generic [ref=e387]:
+              - generic [ref=e388]:
+                - generic [ref=e389]: □
+                - generic [ref=e390]: □
+                - generic [ref=e391]: □
+                - generic [ref=e392]: ■
+                - generic [ref=e393]: □
+                - generic [ref=e394]: □
+                - generic [ref=e395]: □
+                - generic [ref=e396]: □
+                - generic [ref=e397]: □
+                - generic [ref=e398]: □
+                - generic [ref=e399]: □
+                - generic [ref=e400]: ■
+                - generic [ref=e401]: □
+                - generic [ref=e402]: □
+                - generic [ref=e403]: □
+              - code [ref=e405]: "import type { LoomHtmlQuery } from \"@toyz/loom\"; // $0 is replaced by the first argument at call time @query(\".add-input-$0\") accessor inputFor!: LoomHtmlQuery<[string], HTMLInputElement>; // Usage — returns HTMLInputElement | null const el = this.inputFor(\"todo\"); // → querySelector(\".add-input-todo\") const el2 = this.inputFor(\"done\"); // → querySelector(\".add-input-done\") // Multiple placeholders @query(\".cell-$0-$1\") accessor cellAt!: LoomHtmlQuery<[number, number]>; const cell = this.cellAt(2, 3); // → querySelector(\".cell-2-3\")"
+          - generic [ref=e407]:
+            - generic [ref=e408]: NOTE
+            - generic:
+              - text: Selector templates are split and indexed at
+              - strong [ref=e409]: decoration time
+              - text: ", not call time. Each call is just array indexing + string concatenation — zero regex overhead at runtime."
+      - generic [ref=e410]:
+        - generic [ref=e411]:
+          - img [ref=e413]
+          - heading "@queryAll" [level=2] [ref=e417]
+        - generic [ref=e418]:
+          - generic [ref=e419]: "@queryAll(selector)"
+          - generic [ref=e420]: Lazy shadow DOM querySelectorAll. Returns an array (not NodeList) on each access.
+          - generic [ref=e423]:
+            - generic [ref=e424]:
+              - generic [ref=e425]: ts
+              - button "Copy" [ref=e426] [cursor=pointer]
+            - generic [ref=e427]:
+              - generic [ref=e428]:
+                - generic [ref=e429]: ■
+                - generic [ref=e430]: ■
+                - generic [ref=e431]: □
+                - generic [ref=e432]: □
+                - generic [ref=e433]: □
+                - generic [ref=e434]: □
+                - generic [ref=e435]: □
+              - code [ref=e437]: "@queryAll(\"input\") accessor inputs!: HTMLInputElement[]; @queryAll(\".swatch\") accessor swatches!: HTMLElement[]; validate() { const allValid = this.inputs.every(i => i.checkValidity()); this.swatches.forEach(s => s.classList.toggle(\"active\", false)); }"
+        - generic [ref=e438]:
+          - generic [ref=e439]: "@queryAll(\"selector-$0\") — Dynamic"
+          - generic [ref=e440]: Same placeholder system as @query, but returns all matches as an array. Typed as LoomHtmlQueryAll<Args, El>.
+          - generic [ref=e443]:
+            - generic [ref=e444]:
+              - generic [ref=e445]: ts
+              - button "Copy" [ref=e446] [cursor=pointer]
+            - generic [ref=e447]:
+              - generic [ref=e448]:
+                - generic [ref=e449]: □
+                - generic [ref=e450]: □
+                - generic [ref=e451]: ■
+                - generic [ref=e452]: □
+                - generic [ref=e453]: □
+                - generic [ref=e454]: □
+                - generic [ref=e455]: □
+              - code [ref=e457]: "import type { LoomHtmlQueryAll } from \"@toyz/loom\"; @queryAll(\".card-$0\") accessor cardsIn!: LoomHtmlQueryAll<[string]>; // Returns HTMLElement[] const cards = this.cardsIn(\"featured\"); // → querySelectorAll(\".card-featured\")"
+      - generic [ref=e458]:
+        - generic [ref=e459]:
+          - img [ref=e461]
+          - heading "How They Work" [level=2] [ref=e463]
+        - generic [ref=e465]: "Both decorators replace the property with a getter that callsthis.shadow.querySelector() or this.shadow.querySelectorAll()on each access. This means:"
+        - table [ref=e466]:
+          - rowgroup [ref=e467]:
+            - row "Feature Behavior" [ref=e468]:
+              - columnheader "Feature" [ref=e469]
+              - columnheader "Behavior" [ref=e470]
+          - rowgroup [ref=e471]:
+            - row "Live Always returns the current DOM state, even after morphing" [ref=e472]:
+              - cell "Live" [ref=e473]
+              - cell "Always returns the current DOM state, even after morphing" [ref=e474]
+            - row "No caching Each access queries the shadow root fresh" [ref=e475]:
+              - cell "No caching" [ref=e476]
+              - cell "Each access queries the shadow root fresh" [ref=e477]
+            - row "Shadow-scoped Only searches within the component's shadow DOM" [ref=e478]:
+              - cell "Shadow-scoped" [ref=e479]
+              - cell "Only searches within the component's shadow DOM" [ref=e480]
+            - row "Type-safe Type annotation on the property is preserved" [ref=e481]:
+              - cell "Type-safe" [ref=e482]
+              - cell "Type annotation on the property is preserved" [ref=e483]
+      - generic [ref=e484]:
+        - generic [ref=e485]:
+          - img [ref=e487]
+          - heading "vs Manual Queries" [level=2] [ref=e490]
+        - generic [ref=e491]:
+          - generic [ref=e492]: "The decorators are sugar for a common pattern. They're equivalent to:"
+          - generic [ref=e495]:
+            - generic [ref=e496]:
+              - generic [ref=e497]: ts
+              - button "Copy" [ref=e498] [cursor=pointer]
+            - generic [ref=e499]:
+              - generic [ref=e500]:
+                - generic [ref=e501]: □
+                - generic [ref=e502]: □
+                - generic [ref=e503]: □
+                - generic [ref=e504]: □
+                - generic [ref=e505]: □
+                - generic [ref=e506]: □
+                - generic [ref=e507]: ■
+              - code [ref=e509]: "// Without decorator get submitBtn() { return this.shadow.querySelector(\".submit-btn\") as HTMLButtonElement; } // With decorator — same behavior, less boilerplate @query(\".submit-btn\") submitBtn!: HTMLButtonElement;"
+      - generic [ref=e511]:
+        - link "← Previous CSS Element" [ref=e513] [cursor=pointer]:
+          - /url: "#/element/css"
+          - generic:
+            - generic [ref=e514]: ←
+            - generic [ref=e515]:
+              - generic [ref=e516]: Previous
+              - generic [ref=e517]: CSS
+              - generic [ref=e518]: Element
+        - link "Next JSX & Morphing Element →" [ref=e520] [cursor=pointer]:
+          - /url: "#/element/jsx"
+          - generic:
+            - generic [ref=e521]:
+              - generic [ref=e522]: Next
+              - generic [ref=e523]: JSX & Morphing
+              - generic [ref=e524]: Element
+            - generic [ref=e525]: →

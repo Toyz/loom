@@ -325,6 +325,21 @@ export const docStyles = css`
     margin-bottom: var(--space-3, 0.75rem);
   }
 
+  /* ── Step index ──
+     For a guide where the order is the content. The number is information,
+     so it stays — but as a mono index in the system's own idiom, not the
+     circled accent bullet it used to be. Shared, because two guides had
+     drifted into two different versions of it. */
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--thread, #c4472f);
+    margin-bottom: var(--space-2, 0.5rem);
+  }
+
   /* ── Badge ── */
 
   .badge {

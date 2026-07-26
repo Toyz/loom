@@ -1,0 +1,502 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Loom" [level=1] [ref=e7]
+        - generic [ref=e8]: v0.22.0
+      - generic [ref=e9]:
+        - img [ref=e12]
+        - img [ref=e16]
+        - img [ref=e20]
+        - img [ref=e24]
+        - img [ref=e28]
+        - img [ref=e32]
+        - img [ref=e36]
+        - img [ref=e40]
+        - img [ref=e44]
+    - button "Search... ⌘K" [ref=e46] [cursor=pointer]:
+      - img [ref=e48]
+      - generic [ref=e51]: Search...
+      - generic [ref=e52]: ⌘K
+    - navigation [ref=e53]:
+      - link "Home" [ref=e56] [cursor=pointer]:
+        - /url: "#/"
+        - generic: Home
+      - generic [ref=e57]:
+        - generic [ref=e59] [cursor=pointer]: Guides
+        - generic [ref=e60]:
+          - link "Getting Started" [ref=e63] [cursor=pointer]:
+            - /url: "#/guides/getting-started"
+            - generic: Getting Started
+          - link "Your First App" [ref=e66] [cursor=pointer]:
+            - /url: "#/guides/your-first-app"
+            - generic: Your First App
+          - link "Debugging" [ref=e69] [cursor=pointer]:
+            - /url: "#/guides/debugging"
+            - generic: Debugging
+          - link "LoomResult" [ref=e72] [cursor=pointer]:
+            - /url: "#/result"
+            - generic: LoomResult
+          - link "Hydration" [ref=e75] [cursor=pointer]:
+            - /url: "#/guides/hydration"
+            - generic: Hydration
+      - generic [ref=e76]:
+        - generic [ref=e78] [cursor=pointer]: Element
+        - generic [ref=e79]:
+          - link "Overview" [ref=e82] [cursor=pointer]:
+            - /url: "#/element/overview"
+            - generic: Overview
+          - link "Lifecycle" [ref=e85] [cursor=pointer]:
+            - /url: "#/element/lifecycle"
+            - generic: Lifecycle
+          - link "Timing" [ref=e88] [cursor=pointer]:
+            - /url: "#/element/timing"
+            - generic: Timing
+          - link "CSS" [ref=e91] [cursor=pointer]:
+            - /url: "#/element/css"
+            - generic: CSS
+          - link "DOM Queries" [ref=e94] [cursor=pointer]:
+            - /url: "#/element/queries"
+            - generic: DOM Queries
+          - link "JSX & Morphing" [ref=e97] [cursor=pointer]:
+            - /url: "#/element/jsx"
+            - generic: JSX & Morphing
+          - link "Decorators" [ref=e100] [cursor=pointer]:
+            - /url: "#/element/decorators"
+            - generic: Decorators
+          - link "Attributes" [ref=e103] [cursor=pointer]:
+            - /url: "#/element/attributes"
+            - generic: Attributes
+          - link "Light DOM" [ref=e106] [cursor=pointer]:
+            - /url: "#/element/light-dom"
+            - generic: Light DOM
+          - link "Lazy Loading" [ref=e109] [cursor=pointer]:
+            - /url: "#/element/lazy"
+            - generic: Lazy Loading
+          - link "Observer" [ref=e112] [cursor=pointer]:
+            - /url: "#/element/observer"
+            - generic: Observer
+          - link "Forms" [ref=e115] [cursor=pointer]:
+            - /url: "#/element/forms"
+            - generic: Forms
+          - generic [ref=e116]: Data Fetching
+          - link "Fetch" [ref=e119] [cursor=pointer]:
+            - /url: "#/store/api"
+            - generic: Fetch
+          - generic [ref=e120]: Built-ins
+          - link "Virtual List" [ref=e123] [cursor=pointer]:
+            - /url: "#/element/virtual-list"
+            - generic: Virtual List
+          - link "Icon" [ref=e126] [cursor=pointer]:
+            - /url: "#/element/icon"
+            - generic: Icon
+          - link "Canvas" [ref=e129] [cursor=pointer]:
+            - /url: "#/element/canvas"
+            - generic: Canvas
+          - link "Image" [ref=e132] [cursor=pointer]:
+            - /url: "#/element/image"
+            - generic: Image
+      - generic [ref=e133]:
+        - generic [ref=e135] [cursor=pointer]: Decorators
+        - generic [ref=e136]:
+          - link "Overview" [ref=e139] [cursor=pointer]:
+            - /url: "#/decorators/overview"
+            - generic: Overview
+          - link "Events" [ref=e142] [cursor=pointer]:
+            - /url: "#/decorators/events"
+            - generic: Events
+          - link "Transform" [ref=e145] [cursor=pointer]:
+            - /url: "#/decorators/transform"
+            - generic: Transform
+          - link "Hotkey" [ref=e148] [cursor=pointer]:
+            - /url: "#/decorators/hotkey"
+            - generic: Hotkey
+          - link "Log" [ref=e151] [cursor=pointer]:
+            - /url: "#/decorators/log"
+            - generic: Log
+          - link "Context" [ref=e154] [cursor=pointer]:
+            - /url: "#/decorators/context"
+            - generic: Context
+          - link "Portal" [ref=e157] [cursor=pointer]:
+            - /url: "#/decorators/portal"
+            - generic: Portal
+          - link "Typed Symbols" [ref=e160] [cursor=pointer]:
+            - /url: "#/decorators/symbols"
+            - generic: Typed Symbols
+          - link "Media" [ref=e163] [cursor=pointer]:
+            - /url: "#/decorators/media"
+            - generic: Media
+          - link "Fullscreen" [ref=e166] [cursor=pointer]:
+            - /url: "#/decorators/fullscreen"
+            - generic: Fullscreen
+          - link "Clipboard" [ref=e169] [cursor=pointer]:
+            - /url: "#/decorators/clipboard"
+            - generic: Clipboard
+          - link "Drag & Drop" [ref=e172] [cursor=pointer]:
+            - /url: "#/decorators/dnd"
+            - generic: Drag & Drop
+          - link "Dynamic CSS" [ref=e175] [cursor=pointer]:
+            - /url: "#/decorators/css"
+            - generic: Dynamic CSS
+      - generic [ref=e176]:
+        - generic [ref=e178] [cursor=pointer]: Store
+        - generic [ref=e179]:
+          - link "Overview" [ref=e182] [cursor=pointer]:
+            - /url: "#/store/overview"
+            - generic: Overview
+          - link "Reactive" [ref=e185] [cursor=pointer]:
+            - /url: "#/store/reactive"
+            - generic: Reactive
+          - link "Decorator" [ref=e188] [cursor=pointer]:
+            - /url: "#/store/store-decorator"
+            - generic: Decorator
+          - link "Storage" [ref=e191] [cursor=pointer]:
+            - /url: "#/store/storage"
+            - generic: Storage
+          - link "Patterns" [ref=e194] [cursor=pointer]:
+            - /url: "#/store/patterns"
+            - generic: Patterns
+          - link "Signals" [ref=e197] [cursor=pointer]:
+            - /url: "#/store/signals"
+            - generic: Signals
+      - generic [ref=e198]:
+        - generic [ref=e200] [cursor=pointer]: Router
+        - generic [ref=e201]:
+          - link "Overview" [ref=e204] [cursor=pointer]:
+            - /url: "#/router/overview"
+            - generic: Overview
+          - link "Routes" [ref=e207] [cursor=pointer]:
+            - /url: "#/router/routes"
+            - generic: Routes
+          - link "Route Data" [ref=e210] [cursor=pointer]:
+            - /url: "#/router/route-data"
+            - generic: Route Data
+          - link "Groups" [ref=e213] [cursor=pointer]:
+            - /url: "#/router/groups"
+            - generic: Groups
+          - link "Guards" [ref=e216] [cursor=pointer]:
+            - /url: "#/router/guards"
+            - generic: Guards
+          - link "Navigation" [ref=e219] [cursor=pointer]:
+            - /url: "#/router/navigation"
+            - generic: Navigation
+          - link "Lifecycle" [ref=e222] [cursor=pointer]:
+            - /url: "#/router/route-lifecycle"
+            - generic: Lifecycle
+          - link "Decorators" [ref=e225] [cursor=pointer]:
+            - /url: "#/router/decorators"
+            - generic: Decorators
+      - generic [ref=e226]:
+        - generic [ref=e228] [cursor=pointer]: DI & Services
+        - generic [ref=e229]:
+          - link "Overview" [ref=e232] [cursor=pointer]:
+            - /url: "#/di/overview"
+            - generic: Overview
+          - link "Decorators" [ref=e235] [cursor=pointer]:
+            - /url: "#/di/decorators"
+            - generic: Decorators
+      - generic [ref=e236]:
+        - generic [ref=e238] [cursor=pointer]: Packages
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - text: RPC
+            - generic [ref=e241]: v0.5.0
+          - link "Overview" [ref=e244] [cursor=pointer]:
+            - /url: "#/packages/rpc-overview"
+            - generic: Overview
+          - link "Queries" [ref=e247] [cursor=pointer]:
+            - /url: "#/packages/rpc-queries"
+            - generic: Queries
+          - link "Mutations" [ref=e250] [cursor=pointer]:
+            - /url: "#/packages/rpc-mutations"
+            - generic: Mutations
+          - link "Transports" [ref=e253] [cursor=pointer]:
+            - /url: "#/packages/rpc-transports"
+            - generic: Transports
+          - link "Streams" [ref=e256] [cursor=pointer]:
+            - /url: "#/packages/rpc-streams"
+            - generic: Streams
+          - link "Testing" [ref=e259] [cursor=pointer]:
+            - /url: "#/packages/rpc-testing"
+            - generic: Testing
+          - link "Demo" [ref=e262] [cursor=pointer]:
+            - /url: "#/packages/rpc-demo"
+            - generic: Demo
+          - generic [ref=e263]:
+            - text: Analytics
+            - generic [ref=e264]: v0.1.3
+          - link "Overview" [ref=e267] [cursor=pointer]:
+            - /url: "#/packages/analytics-overview"
+            - generic: Overview
+          - link "Testing" [ref=e270] [cursor=pointer]:
+            - /url: "#/packages/analytics-testing"
+            - generic: Testing
+          - link "Demo" [ref=e273] [cursor=pointer]:
+            - /url: "#/packages/analytics-demo"
+            - generic: Demo
+          - generic [ref=e274]:
+            - text: Flags
+            - generic [ref=e275]: v0.1.3
+          - link "Overview" [ref=e278] [cursor=pointer]:
+            - /url: "#/packages/flags-overview"
+            - generic: Overview
+          - link "Testing" [ref=e281] [cursor=pointer]:
+            - /url: "#/packages/flags-testing"
+            - generic: Testing
+          - link "Demo" [ref=e284] [cursor=pointer]:
+            - /url: "#/packages/flags-demo"
+            - generic: Demo
+          - generic [ref=e285]:
+            - text: Placeholder
+            - generic [ref=e286]: v0.1.0
+          - link "Overview" [ref=e289] [cursor=pointer]:
+            - /url: "#/packages/placeholder-overview"
+            - generic: Overview
+          - link "Testing" [ref=e292] [cursor=pointer]:
+            - /url: "#/packages/placeholder-testing"
+            - generic: Testing
+          - link "Demo" [ref=e295] [cursor=pointer]:
+            - /url: "#/packages/placeholder-demo"
+            - generic: Demo
+          - generic [ref=e296]:
+            - text: Create Loom
+            - generic [ref=e297]: v0.2.2
+          - link "Overview" [ref=e300] [cursor=pointer]:
+            - /url: "#/packages/create-loom"
+            - generic: Overview
+      - generic [ref=e301]:
+        - generic [ref=e303] [cursor=pointer]: Examples
+        - generic [ref=e304]:
+          - link "Clock" [ref=e307] [cursor=pointer]:
+            - /url: "#/examples/clock"
+            - generic: Clock
+          - link "Attributes" [ref=e310] [cursor=pointer]:
+            - /url: "#/examples/attributes"
+            - generic: Attributes
+          - link "Todo List" [ref=e313] [cursor=pointer]:
+            - /url: "#/examples/todo"
+            - generic: Todo List
+          - link "Kanban Board" [ref=e316] [cursor=pointer]:
+            - /url: "#/examples/kanban"
+            - generic: Kanban Board
+          - link "Theme Switcher" [ref=e319] [cursor=pointer]:
+            - /url: "#/examples/theme-switcher"
+            - generic: Theme Switcher
+          - link "Contact Form" [ref=e322] [cursor=pointer]:
+            - /url: "#/examples/form"
+            - generic: Contact Form
+          - link "Fetch" [ref=e325] [cursor=pointer]:
+            - /url: "#/examples/api"
+            - generic: Fetch
+          - link "Virtual List" [ref=e328] [cursor=pointer]:
+            - /url: "#/examples/virtual-list-demo"
+            - generic: Virtual List
+          - link "Timing" [ref=e331] [cursor=pointer]:
+            - /url: "#/examples/timing-demo"
+            - generic: Timing
+          - link "Stress Test" [ref=e334] [cursor=pointer]:
+            - /url: "#/examples/stress-test"
+            - generic: Stress Test
+          - link "Canvas Game" [ref=e337] [cursor=pointer]:
+            - /url: "#/examples/canvas-game"
+            - generic: Canvas Game
+          - link "Image Gallery" [ref=e340] [cursor=pointer]:
+            - /url: "#/examples/image-gallery"
+            - generic: Image Gallery
+          - link "EventBus" [ref=e343] [cursor=pointer]:
+            - /url: "#/examples/eventbus"
+            - generic: EventBus
+  - main [ref=e344]:
+    - generic [ref=e349]:
+      - generic "Hydration" [ref=e350]:
+        - generic [ref=e351]:
+          - heading "Hydration" [level=1] [ref=e353]
+          - paragraph [ref=e354]: The server paints it, the browser attaches it, and Loom adopts what is already there.
+      - generic [ref=e356]:
+        - paragraph [ref=e357]: "A client-rendered component shows nothing until its JavaScript has downloaded, parsed and run. Server-rendering the markup fixes the blank screen and introduces the harder problem: a shadow root is created by script, so there has historically been nothing for the server to render into."
+        - paragraph [ref=e358]: Declarative Shadow DOM closes that gap. The server emits the shadow content as ordinary markup, the browser attaches it during parse, and Loom reuses it rather than building its own. The pixels arrive before the bundle does, and no framework code was involved in putting them there.
+        - table [ref=e361]:
+          - rowgroup [ref=e362]:
+            - row "PAINTS BEFORE JS NEEDS A SERVER DISCARDS SERVER MARKUP CAN MISMATCH" [ref=e363]:
+              - columnheader [ref=e364]
+              - columnheader "PAINTS BEFORE JS" [ref=e365]
+              - columnheader "NEEDS A SERVER" [ref=e366]
+              - columnheader "DISCARDS SERVER MARKUP" [ref=e367]
+              - columnheader "CAN MISMATCH" [ref=e368]
+          - rowgroup [ref=e369]:
+            - 'row "client render Blank until the bundle has parsed PAINTS BEFORE JS: no NEEDS A SERVER: no DISCARDS SERVER MARKUP: yes CAN MISMATCH: no" [ref=e370]':
+              - cell "client render Blank until the bundle has parsed" [ref=e371]:
+                - text: client render
+                - generic [ref=e372]: Blank until the bundle has parsed
+              - 'cell "PAINTS BEFORE JS: no" [ref=e373]':
+                - img [ref=e376]
+              - 'cell "NEEDS A SERVER: no" [ref=e378]':
+                - img [ref=e381]
+              - 'cell "DISCARDS SERVER MARKUP: yes" [ref=e383]':
+                - img [ref=e386]
+              - 'cell "CAN MISMATCH: no" [ref=e388]':
+                - img [ref=e391]
+            - 'row "declarative shadow DOM Loom morphs against the markup already there PAINTS BEFORE JS: yes NEEDS A SERVER: yes DISCARDS SERVER MARKUP: no CAN MISMATCH: no" [ref=e393]':
+              - cell "declarative shadow DOM Loom morphs against the markup already there" [ref=e394]:
+                - text: declarative shadow DOM
+                - generic [ref=e395]: Loom morphs against the markup already there
+              - 'cell "PAINTS BEFORE JS: yes" [ref=e396]':
+                - img [ref=e399]
+              - 'cell "NEEDS A SERVER: yes" [ref=e401]':
+                - img [ref=e404]
+              - 'cell "DISCARDS SERVER MARKUP: no" [ref=e406]':
+                - img [ref=e409]
+              - 'cell "CAN MISMATCH: no" [ref=e411]':
+                - img [ref=e414]
+        - paragraph [ref=e416]: NOTE The last column is empty on purpose. Hydration mismatch is a whole category of bug in frameworks that diff a virtual tree against server HTML and give up when the two disagree. It does not exist here, for the reason in How it works below.
+      - generic [ref=e418]:
+        - heading "Basic usage" [level=2] [ref=e420]
+        - generic:
+          - paragraph [ref=e421]: Put a <template shadowrootmode="open"> inside the custom element in your HTML. The browser turns it into a real shadow root while parsing, with no script involved.
+          - generic [ref=e423]:
+            - generic [ref=e424]: index.html — served pre-rendered
+            - generic [ref=e425]:
+              - generic [ref=e426]:
+                - generic [ref=e427]: html
+                - button "Copy" [ref=e428] [cursor=pointer]
+              - generic [ref=e429]:
+                - generic [ref=e430]:
+                  - img [ref=e433]
+                  - img [ref=e437]
+                  - img [ref=e441]
+                  - img [ref=e445]
+                  - img [ref=e449]
+                  - img [ref=e453]
+                  - img [ref=e457]
+                  - img [ref=e461]
+                  - img [ref=e465]
+                  - img [ref=e469]
+                - code [ref=e472]: "<my-counter> <template shadowrootmode=\"open\"> <style> :host { display: block; font-family: sans-serif; } .count { font-size: 2rem; } </style> <p class=\"count\">0</p> <button>Increment</button> </template> </my-counter>"
+          - paragraph [ref=e473]: "The component itself is unchanged. There is no hydrate entry point and no server-versus-client branch to write:"
+          - generic [ref=e476]:
+            - generic [ref=e477]:
+              - generic [ref=e478]: ts
+              - button "Copy" [ref=e479] [cursor=pointer]
+            - generic [ref=e480]:
+              - generic [ref=e481]:
+                - img [ref=e484]
+                - img [ref=e488]
+                - img [ref=e492]
+                - img [ref=e496]
+                - img [ref=e500]
+                - img [ref=e504]
+                - img [ref=e508]
+                - img [ref=e512]
+                - img [ref=e516]
+                - img [ref=e520]
+                - img [ref=e524]
+                - img [ref=e528]
+                - img [ref=e532]
+              - code [ref=e535]: "@component(\"my-counter\") class MyCounter extends LoomElement { @reactive accessor count = 0; update() { return ( <> <p class=\"count\">{this.count}</p> <button onClick={() => this.count++}>Increment</button> </> ); } }"
+      - generic [ref=e537]:
+        - heading "How it works" [level=2] [ref=e539]
+        - generic:
+          - paragraph [ref=e540]: There is no hydration algorithm. That is the whole design, and it is worth being precise about, because it is what removes an entire class of bug.
+          - table [ref=e541]:
+            - rowgroup [ref=e542]:
+              - row "Phase What happens" [ref=e543]:
+                - columnheader "Phase" [ref=e544]
+                - columnheader "What happens" [ref=e545]
+            - rowgroup [ref=e546]:
+              - row "Parse The browser sees the template and attaches a shadow root containing it. The user is looking at the finished UI, and not a line of Loom has run." [ref=e547]:
+                - cell "Parse" [ref=e548]
+                - cell "The browser sees the template and attaches a shadow root containing it. The user is looking at the finished UI, and not a line of Loom has run." [ref=e549]
+              - row "Upgrade When the element is defined, LoomElement's constructor finds a shadowRoot already present and keeps it, instead of calling attachShadow(). That is the entire hydration-specific code path — one branch." [ref=e550]:
+                - cell "Upgrade" [ref=e551]
+                - cell "When the element is defined, LoomElement's constructor finds a shadowRoot already present and keeps it, instead of calling attachShadow(). That is the entire hydration-specific code path — one branch." [ref=e552]
+              - row "First render update() runs and its result is morphed against the shadow root, exactly as it would be on any later render. Matching nodes are left alone and the listeners and bindings attach to them." [ref=e553]:
+                - cell "First render" [ref=e554]
+                - cell "update() runs and its result is morphed against the shadow root, exactly as it would be on any later render. Matching nodes are left alone and the listeners and bindings attach to them." [ref=e555]
+          - paragraph [ref=e556]: TIP Because the first render is an ordinary morph and not a comparison against an expected tree, server markup that disagrees with update() is simply corrected. There is no mismatch warning because there is no mismatch check — the morph does what it always does. Stale or approximate server HTML degrades into a small DOM patch rather than a thrown error or a blanked component.
+      - generic [ref=e558]:
+        - heading "Two things that will catch you" [level=2] [ref=e560]
+        - generic:
+          - paragraph [ref=e561]: DO NOT The mode must be open. A closed declarative shadow root is not exposed as this.shadowRoot, so Loom cannot find it, calls attachShadow() on an element that already has one, and the constructor throws. Use shadowrootmode="open".
+          - paragraph [ref=e562]: CAUTION Styles can ship twice. A <style> inside the template stays in the shadow root, and @styles adds a constructable sheet on top of it — both are live, and the adopted sheet wins on equal specificity. Keep the inline copy to what the first paint actually needs, and let the component own the rest.
+      - generic [ref=e564]:
+        - heading "Choosing between them" [level=2] [ref=e566]
+        - generic:
+          - paragraph [ref=e567]: The question is never "is pre-painting good" — it is whether this particular markup is worth putting in the initial document, which it makes larger for everyone.
+          - table [ref=e568]:
+            - rowgroup [ref=e569]:
+              - row "The component is Use Because" [ref=e570]:
+                - columnheader "The component is" [ref=e571]
+                - columnheader "Use" [ref=e572]
+                - columnheader "Because" [ref=e573]
+            - rowgroup [ref=e574]:
+              - row "A shell, nav, or hero above the fold DSD It is the first thing seen, and it is the same for everyone" [ref=e575]:
+                - cell "A shell, nav, or hero above the fold" [ref=e576]
+                - cell "DSD" [ref=e577]:
+                  - code [ref=e578]: DSD
+                - cell "It is the first thing seen, and it is the same for everyone" [ref=e579]
+              - row "Below the fold @lazy Pre-painting what nobody has scrolled to only costs bytes" [ref=e580]:
+                - cell "Below the fold" [ref=e581]
+                - cell "@lazy" [ref=e582]:
+                  - code [ref=e583]: "@lazy"
+                - cell "Pre-painting what nobody has scrolled to only costs bytes" [ref=e584]
+              - row "Behind a click that has not happened @lazy Same reason, and the module can arrive during the click" [ref=e585]:
+                - cell "Behind a click that has not happened" [ref=e586]
+                - cell "@lazy" [ref=e587]:
+                  - code [ref=e588]: "@lazy"
+                - cell "Same reason, and the module can arrive during the click" [ref=e589]
+              - row "Different for every user Neither Per-user HTML cannot be cached at the edge, which was the point" [ref=e590]:
+                - cell "Different for every user" [ref=e591]
+                - cell "Neither" [ref=e592]
+                - cell "Per-user HTML cannot be cached at the edge, which was the point" [ref=e593]
+              - row "Meaningless without JavaScript Neither A pre-painted control that cannot yet be used is worse than nothing" [ref=e594]:
+                - cell "Meaningless without JavaScript" [ref=e595]
+                - cell "Neither" [ref=e596]
+                - cell "A pre-painted control that cannot yet be used is worse than nothing" [ref=e597]
+      - generic [ref=e599]:
+        - heading "Browser support" [level=2] [ref=e601]
+        - paragraph [ref=e602]: "Chrome and Edge 111+, Safari 16.4+, Firefox 123+. Older browsers ignore the template entirely: Loom finds no shadow root, attaches one, and renders on the client as usual. The page still works — it just loses the early paint, which is the correct way for a progressive enhancement to fail."
+      - generic [ref=e604]:
+        - link "← Previous LoomResult Guides" [ref=e606] [cursor=pointer]:
+          - /url: "#/result"
+          - generic:
+            - generic [ref=e607]: ←
+            - generic [ref=e608]:
+              - generic [ref=e609]: Previous
+              - generic [ref=e610]: LoomResult
+              - generic [ref=e611]: Guides
+        - link "Next Overview Element →" [ref=e613] [cursor=pointer]:
+          - /url: "#/element/overview"
+          - generic:
+            - generic [ref=e614]:
+              - generic [ref=e615]: Next
+              - generic [ref=e616]: Overview
+              - generic [ref=e617]: Element
+            - generic [ref=e618]: →
+    - navigation "On this page" [ref=e620]:
+      - generic [ref=e621]: On this page
+      - list [ref=e622]:
+        - listitem [ref=e623]:
+          - link "Basic usage" [ref=e624] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e626]
+            - generic [ref=e628]: Basic usage
+        - listitem [ref=e629]:
+          - link "How it works" [ref=e630] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e632]
+            - generic [ref=e634]: How it works
+        - listitem [ref=e635]:
+          - link "Two things that will catch you" [ref=e636] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e638]
+            - generic [ref=e640]: Two things that will catch you
+        - listitem [ref=e641]:
+          - link "Choosing between them" [ref=e642] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e644]
+            - generic [ref=e646]: Choosing between them
+        - listitem [ref=e647]:
+          - link "Browser support" [ref=e648] [cursor=pointer]:
+            - /url: javascript:void(0)
+            - img [ref=e650]
+            - generic [ref=e652]: Browser support

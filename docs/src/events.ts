@@ -20,6 +20,11 @@ export interface PageSection {
   /** The heading text. */
   label: string;
   /**
+   * 1 for a section, 2 for a heading inside one. The rail indents level 2 so
+   * a long page reads as an outline rather than a flat wall of entries.
+   */
+  level: 1 | 2;
+  /**
    * The section element itself, for scrolling and scroll-spy.
    *
    * Passed by reference on purpose: the bus is in-process and both ends live

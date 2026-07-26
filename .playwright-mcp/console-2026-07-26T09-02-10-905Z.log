@@ -1,0 +1,6 @@
+[       3ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/timing @ http://localhost:5174/src/groups.ts:56
+[      10ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/timing @ http://localhost:5174/src/groups.ts:56
+[  104680ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/timing @ http://localhost:5174/src/groups.ts:56
+[  128871ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5174/src/app.tsx?t=1785056659702:0
+[  145648ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5174/src/app.tsx?t=1785056659702:0
+[  168262ms] [LOG] %c🧭 Loom Guard %c docs-log %c— route allowed ✓ %c%s color:#a78bfa;font-weight:bold color:#34d399;font-weight:bold color:#94a3b8 color:#64748b /element/timing @ http://localhost:5174/src/groups.ts:56

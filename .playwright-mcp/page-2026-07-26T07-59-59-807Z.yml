@@ -1,0 +1,637 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e6]:
+      - heading "Loom" [level=1] [ref=e7]
+      - generic [ref=e8]: v0.22.0
+    - button "Search... ⌘K" [ref=e19] [cursor=pointer]:
+      - img [ref=e21]
+      - generic [ref=e24]: Search...
+      - generic [ref=e25]: ⌘K
+    - navigation [ref=e26]:
+      - link "Home" [ref=e29] [cursor=pointer]:
+        - /url: "#/"
+        - generic: Home
+      - generic [ref=e30]:
+        - generic [ref=e32] [cursor=pointer]: Guides
+        - generic [ref=e33]:
+          - link "Getting Started" [ref=e36] [cursor=pointer]:
+            - /url: "#/guides/getting-started"
+            - generic: Getting Started
+          - link "Your First App" [ref=e39] [cursor=pointer]:
+            - /url: "#/guides/your-first-app"
+            - generic: Your First App
+          - link "Debugging" [ref=e42] [cursor=pointer]:
+            - /url: "#/guides/debugging"
+            - generic: Debugging
+          - link "LoomResult" [ref=e45] [cursor=pointer]:
+            - /url: "#/result"
+            - generic: LoomResult
+          - link "Hydration" [ref=e48] [cursor=pointer]:
+            - /url: "#/guides/hydration"
+            - generic: Hydration
+      - generic [ref=e49]:
+        - generic [ref=e51] [cursor=pointer]: Element
+        - generic [ref=e52]:
+          - link "Overview" [ref=e55] [cursor=pointer]:
+            - /url: "#/element/overview"
+            - generic: Overview
+          - link "Lifecycle" [ref=e58] [cursor=pointer]:
+            - /url: "#/element/lifecycle"
+            - generic: Lifecycle
+          - link "Timing" [ref=e61] [cursor=pointer]:
+            - /url: "#/element/timing"
+            - generic: Timing
+          - link "CSS" [ref=e64] [cursor=pointer]:
+            - /url: "#/element/css"
+            - generic: CSS
+          - link "DOM Queries" [ref=e67] [cursor=pointer]:
+            - /url: "#/element/queries"
+            - generic: DOM Queries
+          - link "JSX & Morphing" [ref=e70] [cursor=pointer]:
+            - /url: "#/element/jsx"
+            - generic: JSX & Morphing
+          - link "Decorators" [ref=e73] [cursor=pointer]:
+            - /url: "#/element/decorators"
+            - generic: Decorators
+          - link "Attributes" [ref=e76] [cursor=pointer]:
+            - /url: "#/element/attributes"
+            - generic: Attributes
+          - link "Light DOM" [ref=e79] [cursor=pointer]:
+            - /url: "#/element/light-dom"
+            - generic: Light DOM
+          - link "Lazy Loading" [ref=e82] [cursor=pointer]:
+            - /url: "#/element/lazy"
+            - generic: Lazy Loading
+          - link "Observer" [ref=e85] [cursor=pointer]:
+            - /url: "#/element/observer"
+            - generic: Observer
+          - link "Forms" [ref=e88] [cursor=pointer]:
+            - /url: "#/element/forms"
+            - generic: Forms
+          - generic [ref=e89]: Data Fetching
+          - link "Fetch" [ref=e92] [cursor=pointer]:
+            - /url: "#/store/api"
+            - generic: Fetch
+          - generic [ref=e93]: Built-ins
+          - link "Virtual List" [ref=e96] [cursor=pointer]:
+            - /url: "#/element/virtual-list"
+            - generic: Virtual List
+          - link "Icon" [ref=e99] [cursor=pointer]:
+            - /url: "#/element/icon"
+            - generic: Icon
+          - link "Canvas" [ref=e102] [cursor=pointer]:
+            - /url: "#/element/canvas"
+            - generic: Canvas
+          - link "Image" [ref=e105] [cursor=pointer]:
+            - /url: "#/element/image"
+            - generic: Image
+      - generic [ref=e106]:
+        - generic [ref=e108] [cursor=pointer]: Decorators
+        - generic [ref=e109]:
+          - link "Overview" [ref=e112] [cursor=pointer]:
+            - /url: "#/decorators/overview"
+            - generic: Overview
+          - link "Events" [ref=e115] [cursor=pointer]:
+            - /url: "#/decorators/events"
+            - generic: Events
+          - link "Transform" [ref=e118] [cursor=pointer]:
+            - /url: "#/decorators/transform"
+            - generic: Transform
+          - link "Hotkey" [ref=e121] [cursor=pointer]:
+            - /url: "#/decorators/hotkey"
+            - generic: Hotkey
+          - link "Log" [ref=e124] [cursor=pointer]:
+            - /url: "#/decorators/log"
+            - generic: Log
+          - link "Context" [ref=e127] [cursor=pointer]:
+            - /url: "#/decorators/context"
+            - generic: Context
+          - link "Portal" [ref=e130] [cursor=pointer]:
+            - /url: "#/decorators/portal"
+            - generic: Portal
+          - link "Typed Symbols" [ref=e133] [cursor=pointer]:
+            - /url: "#/decorators/symbols"
+            - generic: Typed Symbols
+          - link "Media" [ref=e136] [cursor=pointer]:
+            - /url: "#/decorators/media"
+            - generic: Media
+          - link "Fullscreen" [ref=e139] [cursor=pointer]:
+            - /url: "#/decorators/fullscreen"
+            - generic: Fullscreen
+          - link "Clipboard" [ref=e142] [cursor=pointer]:
+            - /url: "#/decorators/clipboard"
+            - generic: Clipboard
+          - link "Drag & Drop" [ref=e145] [cursor=pointer]:
+            - /url: "#/decorators/dnd"
+            - generic: Drag & Drop
+          - link "Dynamic CSS" [ref=e148] [cursor=pointer]:
+            - /url: "#/decorators/css"
+            - generic: Dynamic CSS
+      - generic [ref=e149]:
+        - generic [ref=e151] [cursor=pointer]: Store
+        - generic [ref=e152]:
+          - link "Overview" [ref=e155] [cursor=pointer]:
+            - /url: "#/store/overview"
+            - generic: Overview
+          - link "Reactive" [ref=e158] [cursor=pointer]:
+            - /url: "#/store/reactive"
+            - generic: Reactive
+          - link "Decorator" [ref=e161] [cursor=pointer]:
+            - /url: "#/store/store-decorator"
+            - generic: Decorator
+          - link "Storage" [ref=e164] [cursor=pointer]:
+            - /url: "#/store/storage"
+            - generic: Storage
+          - link "Patterns" [ref=e167] [cursor=pointer]:
+            - /url: "#/store/patterns"
+            - generic: Patterns
+          - link "Signals" [ref=e170] [cursor=pointer]:
+            - /url: "#/store/signals"
+            - generic: Signals
+      - generic [ref=e171]:
+        - generic [ref=e173] [cursor=pointer]: Router
+        - generic [ref=e174]:
+          - link "Overview" [ref=e177] [cursor=pointer]:
+            - /url: "#/router/overview"
+            - generic: Overview
+          - link "Routes" [ref=e180] [cursor=pointer]:
+            - /url: "#/router/routes"
+            - generic: Routes
+          - link "Route Data" [ref=e183] [cursor=pointer]:
+            - /url: "#/router/route-data"
+            - generic: Route Data
+          - link "Groups" [ref=e186] [cursor=pointer]:
+            - /url: "#/router/groups"
+            - generic: Groups
+          - link "Guards" [ref=e189] [cursor=pointer]:
+            - /url: "#/router/guards"
+            - generic: Guards
+          - link "Navigation" [ref=e192] [cursor=pointer]:
+            - /url: "#/router/navigation"
+            - generic: Navigation
+          - link "Lifecycle" [ref=e195] [cursor=pointer]:
+            - /url: "#/router/route-lifecycle"
+            - generic: Lifecycle
+          - link "Decorators" [ref=e198] [cursor=pointer]:
+            - /url: "#/router/decorators"
+            - generic: Decorators
+      - generic [ref=e199]:
+        - generic [ref=e201] [cursor=pointer]: DI & Services
+        - generic [ref=e202]:
+          - link "Overview" [ref=e205] [cursor=pointer]:
+            - /url: "#/di/overview"
+            - generic: Overview
+          - link "Decorators" [ref=e208] [cursor=pointer]:
+            - /url: "#/di/decorators"
+            - generic: Decorators
+      - generic [ref=e209]:
+        - generic [ref=e211] [cursor=pointer]: Packages
+        - generic [ref=e212]:
+          - generic [ref=e213]:
+            - text: RPC
+            - generic [ref=e214]: v0.5.0
+          - link "Overview" [ref=e217] [cursor=pointer]:
+            - /url: "#/packages/rpc-overview"
+            - generic: Overview
+          - link "Queries" [ref=e220] [cursor=pointer]:
+            - /url: "#/packages/rpc-queries"
+            - generic: Queries
+          - link "Mutations" [ref=e223] [cursor=pointer]:
+            - /url: "#/packages/rpc-mutations"
+            - generic: Mutations
+          - link "Transports" [ref=e226] [cursor=pointer]:
+            - /url: "#/packages/rpc-transports"
+            - generic: Transports
+          - link "Streams" [ref=e229] [cursor=pointer]:
+            - /url: "#/packages/rpc-streams"
+            - generic: Streams
+          - link "Testing" [ref=e232] [cursor=pointer]:
+            - /url: "#/packages/rpc-testing"
+            - generic: Testing
+          - link "Demo" [ref=e235] [cursor=pointer]:
+            - /url: "#/packages/rpc-demo"
+            - generic: Demo
+          - generic [ref=e236]:
+            - text: Analytics
+            - generic [ref=e237]: v0.1.3
+          - link "Overview" [ref=e240] [cursor=pointer]:
+            - /url: "#/packages/analytics-overview"
+            - generic: Overview
+          - link "Testing" [ref=e243] [cursor=pointer]:
+            - /url: "#/packages/analytics-testing"
+            - generic: Testing
+          - link "Demo" [ref=e246] [cursor=pointer]:
+            - /url: "#/packages/analytics-demo"
+            - generic: Demo
+          - generic [ref=e247]:
+            - text: Flags
+            - generic [ref=e248]: v0.1.3
+          - link "Overview" [ref=e251] [cursor=pointer]:
+            - /url: "#/packages/flags-overview"
+            - generic: Overview
+          - link "Testing" [ref=e254] [cursor=pointer]:
+            - /url: "#/packages/flags-testing"
+            - generic: Testing
+          - link "Demo" [ref=e257] [cursor=pointer]:
+            - /url: "#/packages/flags-demo"
+            - generic: Demo
+          - generic [ref=e258]:
+            - text: Placeholder
+            - generic [ref=e259]: v0.1.0
+          - link "Overview" [ref=e262] [cursor=pointer]:
+            - /url: "#/packages/placeholder-overview"
+            - generic: Overview
+          - link "Testing" [ref=e265] [cursor=pointer]:
+            - /url: "#/packages/placeholder-testing"
+            - generic: Testing
+          - link "Demo" [ref=e268] [cursor=pointer]:
+            - /url: "#/packages/placeholder-demo"
+            - generic: Demo
+          - generic [ref=e269]:
+            - text: Create Loom
+            - generic [ref=e270]: v0.2.2
+          - link "Overview" [ref=e273] [cursor=pointer]:
+            - /url: "#/packages/create-loom"
+            - generic: Overview
+      - generic [ref=e274]:
+        - generic [ref=e276] [cursor=pointer]: Examples
+        - generic [ref=e277]:
+          - link "Clock" [ref=e280] [cursor=pointer]:
+            - /url: "#/examples/clock"
+            - generic: Clock
+          - link "Attributes" [ref=e283] [cursor=pointer]:
+            - /url: "#/examples/attributes"
+            - generic: Attributes
+          - link "Todo List" [ref=e286] [cursor=pointer]:
+            - /url: "#/examples/todo"
+            - generic: Todo List
+          - link "Kanban Board" [ref=e289] [cursor=pointer]:
+            - /url: "#/examples/kanban"
+            - generic: Kanban Board
+          - link "Theme Switcher" [ref=e292] [cursor=pointer]:
+            - /url: "#/examples/theme-switcher"
+            - generic: Theme Switcher
+          - link "Contact Form" [ref=e295] [cursor=pointer]:
+            - /url: "#/examples/form"
+            - generic: Contact Form
+          - link "Fetch" [ref=e298] [cursor=pointer]:
+            - /url: "#/examples/api"
+            - generic: Fetch
+          - link "Virtual List" [ref=e301] [cursor=pointer]:
+            - /url: "#/examples/virtual-list-demo"
+            - generic: Virtual List
+          - link "Timing" [ref=e304] [cursor=pointer]:
+            - /url: "#/examples/timing-demo"
+            - generic: Timing
+          - link "Stress Test" [ref=e307] [cursor=pointer]:
+            - /url: "#/examples/stress-test"
+            - generic: Stress Test
+          - link "Canvas Game" [ref=e310] [cursor=pointer]:
+            - /url: "#/examples/canvas-game"
+            - generic: Canvas Game
+          - link "Image Gallery" [ref=e313] [cursor=pointer]:
+            - /url: "#/examples/image-gallery"
+            - generic: Image Gallery
+          - link "EventBus" [ref=e316] [cursor=pointer]:
+            - /url: "#/examples/eventbus"
+            - generic: EventBus
+  - main [ref=e317]:
+    - generic [ref=e322]:
+      - generic "Timing" [ref=e323]:
+        - generic [ref=e324]:
+          - heading "Timing" [level=1] [ref=e326]
+          - paragraph [ref=e327]: Five decorators for work that happens later. Every one of them releases itself when the component leaves the DOM.
+          - generic [ref=e329]:
+            - button "On this page 7 ▼" [ref=e330] [cursor=pointer]:
+              - generic [ref=e331]:
+                - generic [ref=e332]: On this page
+                - generic [ref=e333]: "7"
+              - generic [ref=e334]: ▼
+            - list [ref=e337]:
+              - listitem [ref=e338]:
+                - link "@interval" [ref=e339] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e340]:
+                - link "@timeout" [ref=e341] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e342]:
+                - link "@debounce" [ref=e343] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e344]:
+                - link "@throttle" [ref=e345] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e346]:
+                - link "@animationFrame" [ref=e347] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e348]:
+                - link "Choosing between them" [ref=e349] [cursor=pointer]:
+                  - /url: javascript:void(0)
+              - listitem [ref=e350]:
+                - link "Worked example" [ref=e351] [cursor=pointer]:
+                  - /url: javascript:void(0)
+      - generic [ref=e352]:
+        - paragraph [ref=e353]: "A timer outliving its component is the classic web component leak: the element is gone, the callback still fires, and it writes to a detached DOM or a store nobody is reading. These decorators exist so you never write the matching clear call — teardown is registered at the same moment the timer starts."
+        - paragraph [ref=e354]: "They differ along three axes that matter more than their names: whether the decorator fires on its own or only when you call the method, whether it replaces your method with a wrapper, and whether it keeps running while the browser tab is hidden."
+        - 'img "@interval: SELF-FIRES, RUNS HIDDEN; not WRAPS, FRAME-SYNCED" [ref=e356]':
+          - generic [ref=e357]:
+            - generic [ref=e358]: "@interval"
+            - generic [ref=e359]: Repeats until disconnect
+          - generic [ref=e360]:
+            - generic [ref=e362]: SELF-FIRES
+            - generic [ref=e365]: WRAPS
+            - generic [ref=e368]: RUNS HIDDEN
+            - generic [ref=e371]: FRAME-SYNCED
+        - 'img "@timeout: SELF-FIRES, RUNS HIDDEN; not WRAPS, FRAME-SYNCED" [ref=e374]':
+          - generic [ref=e375]:
+            - generic [ref=e376]: "@timeout"
+            - generic [ref=e377]: Fires once per connect
+          - generic [ref=e378]:
+            - generic [ref=e380]: SELF-FIRES
+            - generic [ref=e383]: WRAPS
+            - generic [ref=e386]: RUNS HIDDEN
+            - generic [ref=e389]: FRAME-SYNCED
+        - 'img "@debounce: WRAPS, RUNS HIDDEN; not SELF-FIRES, FRAME-SYNCED" [ref=e392]':
+          - generic [ref=e393]:
+            - generic [ref=e394]: "@debounce"
+            - generic [ref=e395]: Waits for quiet, then runs once
+          - generic [ref=e396]:
+            - generic [ref=e398]: SELF-FIRES
+            - generic [ref=e401]: WRAPS
+            - generic [ref=e404]: RUNS HIDDEN
+            - generic [ref=e407]: FRAME-SYNCED
+        - 'img "@throttle: WRAPS, RUNS HIDDEN; not SELF-FIRES, FRAME-SYNCED" [ref=e410]':
+          - generic [ref=e411]:
+            - generic [ref=e412]: "@throttle"
+            - generic [ref=e413]: Leading edge, plus a trailing call
+          - generic [ref=e414]:
+            - generic [ref=e416]: SELF-FIRES
+            - generic [ref=e419]: WRAPS
+            - generic [ref=e422]: RUNS HIDDEN
+            - generic [ref=e425]: FRAME-SYNCED
+        - 'img "@animationFrame: SELF-FIRES, FRAME-SYNCED; not WRAPS, RUNS HIDDEN" [ref=e428]':
+          - generic [ref=e429]:
+            - generic [ref=e430]: "@animationFrame"
+            - generic [ref=e431]: Shares one rAF loop with every other component
+          - generic [ref=e432]:
+            - generic [ref=e434]: SELF-FIRES
+            - generic [ref=e437]: WRAPS
+            - generic [ref=e440]: RUNS HIDDEN
+            - generic [ref=e443]: FRAME-SYNCED
+        - paragraph [ref=e445]: NOTE Only @animationFrame stops when the tab is hidden, because that is what requestAnimationFrame does. Anything visual belongs there. A hidden-tab @interval is still burning battery.
+      - generic [ref=e446]:
+        - heading "@interval" [level=2] [ref=e448]
+        - generic [ref=e449]:
+          - generic [ref=e450]: "@interval(ms: number)"
+          - generic [ref=e451]: Starts a setInterval when the element connects and clears it when the element disconnects.
+          - generic [ref=e454]:
+            - generic [ref=e455]:
+              - generic [ref=e456]: ts
+              - button "Copy" [ref=e457] [cursor=pointer]
+            - generic [ref=e458]:
+              - generic [ref=e459]:
+                - generic [ref=e460]: ■
+                - generic [ref=e461]: □
+                - generic [ref=e462]: ■
+                - generic [ref=e463]: □
+                - generic [ref=e464]: ■
+                - generic [ref=e465]: □
+                - generic [ref=e466]: □
+                - generic [ref=e467]: □
+                - generic [ref=e468]: □
+                - generic [ref=e469]: □
+              - code [ref=e471]: "@component(\"session-timer\") class SessionTimer extends LoomElement { @reactive accessor secondsLeft = 900; @interval(1000) countDown() { if (this.secondsLeft > 0) this.secondsLeft--; else this.emit(new SessionExpired()); } }"
+          - paragraph [ref=e472]:
+            - text: CAUTION The timer starts on
+            - strong [ref=e473]: connect
+            - text: ", not on construction, and connect runs again every time the element moves in the DOM. Appending an existing element somewhere else restarts the interval rather than continuing it. If elapsed time has to survive a move, store a start timestamp instead of counting ticks."
+      - generic [ref=e474]:
+        - heading "@timeout" [level=2] [ref=e476]
+        - generic [ref=e477]:
+          - generic [ref=e478]: "@timeout(ms: number)"
+          - generic [ref=e479]: Runs the method once, ms after connect. Cancelled if the element disconnects first.
+          - generic [ref=e482]:
+            - generic [ref=e483]:
+              - generic [ref=e484]: ts
+              - button "Copy" [ref=e485] [cursor=pointer]
+            - generic [ref=e486]:
+              - generic [ref=e487]:
+                - generic [ref=e488]: ■
+                - generic [ref=e489]: □
+                - generic [ref=e490]: ■
+                - generic [ref=e491]: □
+                - generic [ref=e492]: ■
+                - generic [ref=e493]: □
+                - generic [ref=e494]: □
+                - generic [ref=e495]: □
+                - generic [ref=e496]: □
+              - code [ref=e498]: "@component(\"toast-message\") class ToastMessage extends LoomElement { @reactive accessor visible = true; @timeout(4000) dismiss() { this.visible = false; } }"
+          - paragraph [ref=e499]: CAUTION "Once" means once per connect, not once per element. A component that is moved twice runs its @timeout three times. For genuinely one-shot work, guard with a flag.
+      - generic [ref=e500]:
+        - heading "@debounce" [level=2] [ref=e502]
+        - generic [ref=e503]:
+          - generic [ref=e504]: "@debounce(ms: number)"
+          - generic [ref=e505]:
+            - text: Replaces the method with a version that waits for ms of silence before running. Each call cancels the pending one, so a burst produces exactly one execution — with the arguments of the
+            - emphasis [ref=e506]: last
+            - text: call.
+          - generic [ref=e509]:
+            - generic [ref=e510]:
+              - generic [ref=e511]: ts
+              - button "Copy" [ref=e512] [cursor=pointer]
+            - generic [ref=e513]:
+              - generic [ref=e514]:
+                - generic [ref=e515]: ■
+                - generic [ref=e516]: □
+                - generic [ref=e517]: ■
+                - generic [ref=e518]: □
+                - generic [ref=e519]: □
+                - generic [ref=e520]: ■
+                - generic [ref=e521]: □
+                - generic [ref=e522]: □
+                - generic [ref=e523]: □
+                - generic [ref=e524]: □
+              - code [ref=e526]: "@component(\"user-search\") class UserSearch extends LoomElement { @reactive accessor results: User[] = []; // Typing \"ada\" quickly issues one request, for \"ada\". @debounce(300) async search(term: string) { this.results = await findUsers(term); } }"
+          - paragraph [ref=e527]:
+            - text: NOTE Debounce delays
+            - emphasis [ref=e528]: everything
+            - text: ", including the first call. If the UI should react at once and then settle, you want @throttle."
+      - generic [ref=e529]:
+        - heading "@throttle" [level=2] [ref=e531]
+        - generic [ref=e532]:
+          - generic [ref=e533]: "@throttle(ms: number)"
+          - generic [ref=e534]: Replaces the method with a version that runs immediately, then at most once per ms afterwards.
+          - generic [ref=e537]:
+            - generic [ref=e538]:
+              - generic [ref=e539]: ts
+              - button "Copy" [ref=e540] [cursor=pointer]
+            - generic [ref=e541]:
+              - generic [ref=e542]:
+                - generic [ref=e543]: ■
+                - generic [ref=e544]: □
+                - generic [ref=e545]: ■
+                - generic [ref=e546]: □
+                - generic [ref=e547]: ■
+                - generic [ref=e548]: □
+                - generic [ref=e549]: □
+                - generic [ref=e550]: □
+                - generic [ref=e551]: □
+                - generic [ref=e552]: □
+              - code [ref=e554]: "@component(\"scroll-progress\") class ScrollProgress extends LoomElement { @reactive accessor percent = 0; @throttle(100) onScroll() { const el = document.documentElement; this.percent = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100; } }"
+          - paragraph [ref=e555]:
+            - text: NOTE Loom's throttle is
+            - strong [ref=e556]: leading and trailing
+            - text: ": the first call runs at once, and the last call inside the window runs when the window closes. Calls in between are dropped. For a scroll handler that means you always get the final resting position — many throttle implementations drop the trailing call and leave the UI one event stale."
+      - generic [ref=e557]:
+        - heading "@animationFrame" [level=2] [ref=e559]
+        - generic [ref=e560]:
+          - generic [ref=e561]: "@animationFrame | @animationFrame(layer) | @animationFrame(options)"
+          - generic [ref=e562]: Joins the shared render loop. The method receives (dt, timestamp) — dt is seconds since the previous frame, timestamp is the raw requestAnimationFrame value in milliseconds.
+          - generic [ref=e565]:
+            - generic [ref=e566]:
+              - generic [ref=e567]: ts
+              - button "Copy" [ref=e568] [cursor=pointer]
+            - generic [ref=e569]:
+              - generic [ref=e570]:
+                - generic [ref=e571]: ■
+                - generic [ref=e572]: □
+                - generic [ref=e573]: □
+                - generic [ref=e574]: □
+                - generic [ref=e575]: □
+                - generic [ref=e576]: ■
+                - generic [ref=e577]: □
+                - generic [ref=e578]: □
+                - generic [ref=e579]: □
+                - generic [ref=e580]: □
+                - generic [ref=e581]: □
+                - generic [ref=e582]: □
+                - generic [ref=e583]: □
+                - generic [ref=e584]: ■
+                - generic [ref=e585]: □
+                - generic [ref=e586]: □
+                - generic [ref=e587]: □
+                - generic [ref=e588]: □
+                - generic [ref=e589]: □
+              - code [ref=e591]: "@component(\"particle-field\") class ParticleField extends LoomElement { private particles: Particle[] = []; // Physics before paint: lower layers run first. @animationFrame({ layer: 0 }) step(dt: number) { for (const p of this.particles) { p.x += p.vx * dt; p.y += p.vy * dt; } } @animationFrame({ layer: 10, fps: 30 }) paint() { this.ctx.clearRect(0, 0, this.width, this.height); for (const p of this.particles) this.ctx.fillRect(p.x, p.y, 2, 2); } }"
+          - heading "One loop, not one per component" [level=3] [ref=e592]
+          - paragraph [ref=e593]: Every @animationFrame in the application shares a single requestAnimationFrame callback. A hundred animated components cost one rAF, not a hundred. layer orders callbacks within a frame — lower runs first — which is how you guarantee physics has finished before anything paints.
+          - heading "fps is a cap, and only below 60" [level=3] [ref=e594]
+          - paragraph [ref=e595]:
+            - text: fps applies only when it is above 0 and
+            - strong [ref=e596]: below 60
+            - text: ". Passing { fps: 60 } or higher is silently ignored and the callback runs every frame. The limiter subtracts its budget from an accumulator rather than resetting it, so a 30fps callback holds cadence instead of drifting slow."
+          - paragraph [ref=e597]:
+            - text: DO NOT dt is
+            - strong [ref=e598]: 0 on the first frame
+            - text: "— there is no previous timestamp to subtract. Anything shaped like distance / dt divides by zero on frame one. Multiplying by dt is safe: the object simply does not move for one frame."
+      - generic [ref=e599]:
+        - heading "Choosing between them" [level=2] [ref=e601]
+        - table [ref=e602]:
+          - rowgroup [ref=e603]:
+            - row "You want Use Because" [ref=e604]:
+              - columnheader "You want" [ref=e605]
+              - columnheader "Use" [ref=e606]
+              - columnheader "Because" [ref=e607]
+          - rowgroup [ref=e608]:
+            - row "A clock, a poll, a heartbeat @interval Fixed wall-clock cadence, keeps running hidden" [ref=e609]:
+              - cell "A clock, a poll, a heartbeat" [ref=e610]
+              - cell "@interval" [ref=e611]:
+                - code [ref=e612]: "@interval"
+              - cell "Fixed wall-clock cadence, keeps running hidden" [ref=e613]
+            - row "Auto-dismiss, delayed reveal @timeout One shot per connect" [ref=e614]:
+              - cell "Auto-dismiss, delayed reveal" [ref=e615]
+              - cell "@timeout" [ref=e616]:
+                - code [ref=e617]: "@timeout"
+              - cell "One shot per connect" [ref=e618]
+            - row "Search-as-you-type, autosave @debounce Collapses a burst into the last call" [ref=e619]:
+              - cell "Search-as-you-type, autosave" [ref=e620]
+              - cell "@debounce" [ref=e621]:
+                - code [ref=e622]: "@debounce"
+              - cell "Collapses a burst into the last call" [ref=e623]
+            - row "Scroll, resize, pointer move @throttle Responds now and still settles correctly" [ref=e624]:
+              - cell "Scroll, resize, pointer move" [ref=e625]
+              - cell "@throttle" [ref=e626]:
+                - code [ref=e627]: "@throttle"
+              - cell "Responds now and still settles correctly" [ref=e628]
+            - row "Canvas, physics, anything visual @animationFrame Frame-synced, pauses in a hidden tab" [ref=e629]:
+              - cell "Canvas, physics, anything visual" [ref=e630]
+              - cell "@animationFrame" [ref=e631]:
+                - code [ref=e632]: "@animationFrame"
+              - cell "Frame-synced, pauses in a hidden tab" [ref=e633]
+      - generic [ref=e634]:
+        - heading "Worked example" [level=2] [ref=e636]
+        - paragraph [ref=e637]: "A search field that stays responsive while typing and issues one request when you stop. It uses both wrappers for different jobs: throttle drives the instant local filter, debounce drives the network call."
+        - generic [ref=e638]:
+          - generic [ref=e639]: Complete component
+          - paragraph [ref=e640]: Nothing elided. Drop this into a project with @toyz/loom installed and it runs.
+        - generic [ref=e643]:
+          - generic [ref=e644]:
+            - generic [ref=e645]: tsx
+            - button "Copy" [ref=e646] [cursor=pointer]
+          - generic [ref=e647]:
+            - generic [ref=e648]:
+              - generic [ref=e649]: □
+              - generic [ref=e650]: □
+              - generic [ref=e651]: □
+              - generic [ref=e652]: □
+              - generic [ref=e653]: ■
+              - generic [ref=e654]: □
+              - generic [ref=e655]: ■
+              - generic [ref=e656]: ■
+              - generic [ref=e657]: ■
+              - generic [ref=e658]: □
+              - generic [ref=e659]: □
+              - generic [ref=e660]: □
+              - generic [ref=e661]: □
+              - generic [ref=e662]: ■
+              - generic [ref=e663]: □
+              - generic [ref=e664]: □
+              - generic [ref=e665]: □
+              - generic [ref=e666]: □
+              - generic [ref=e667]: □
+              - generic [ref=e668]: □
+              - generic [ref=e669]: ■
+              - generic [ref=e670]: □
+              - generic [ref=e671]: □
+              - generic [ref=e672]: □
+              - generic [ref=e673]: □
+              - generic [ref=e674]: □
+              - generic [ref=e675]: □
+              - generic [ref=e676]: □
+              - generic [ref=e677]: □
+              - generic [ref=e678]: □
+              - generic [ref=e679]: □
+              - generic [ref=e680]: □
+              - generic [ref=e681]: □
+              - generic [ref=e682]: □
+              - generic [ref=e683]: □
+              - generic [ref=e684]: □
+              - generic [ref=e685]: □
+              - generic [ref=e686]: □
+              - generic [ref=e687]: □
+              - generic [ref=e688]: □
+              - generic [ref=e689]: □
+              - generic [ref=e690]: □
+              - generic [ref=e691]: □
+              - generic [ref=e692]: □
+              - generic [ref=e693]: □
+              - generic [ref=e694]: □
+              - generic [ref=e695]: □
+              - generic [ref=e696]: □
+            - code [ref=e698]: "import { LoomElement, component, reactive, debounce, throttle } from \"@toyz/loom\"; interface Person { id: string; name: string } @component(\"people-search\") export class PeopleSearch extends LoomElement { @reactive accessor term = \"\"; @reactive accessor local: Person[] = []; @reactive accessor pending = false; private cache: Person[] = []; // Instant feedback per keystroke, capped at ten filter passes a second. @throttle(100) private filterLocal(term: string) { const q = term.toLowerCase(); this.local = this.cache.filter((p) => p.name.toLowerCase().includes(q)); } // One request, once typing stops. @debounce(300) private async fetchRemote(term: string) { if (!term) { this.pending = false; return; } this.pending = true; const res = await fetch(`/api/people?q=${encodeURIComponent(term)}`); this.cache = await res.json(); this.filterLocal(term); this.pending = false; } private onInput(e: Event) { this.term = (e.target as HTMLInputElement).value; this.filterLocal(this.term); this.fetchRemote(this.term); } update() { return ( <div> <input value={this.term} onInput={(e) => this.onInput(e)} placeholder=\"Search people\" /> {() => this.pending ? <span>Searching…</span> : null} <ul> {this.local.map((p) => <li loom-key={p.id}>{p.name}</li>)} </ul> </div> ); } }"
+      - generic [ref=e700]:
+        - link "← Previous Lifecycle Element" [ref=e702] [cursor=pointer]:
+          - /url: "#/element/lifecycle"
+          - generic:
+            - generic [ref=e703]: ←
+            - generic [ref=e704]:
+              - generic [ref=e705]: Previous
+              - generic [ref=e706]: Lifecycle
+              - generic [ref=e707]: Element
+        - link "Next CSS Element →" [ref=e709] [cursor=pointer]:
+          - /url: "#/element/css"
+          - generic:
+            - generic [ref=e710]:
+              - generic [ref=e711]: Next
+              - generic [ref=e712]: CSS
+              - generic [ref=e713]: Element
+            - generic [ref=e714]: →

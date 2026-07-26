@@ -49,8 +49,8 @@ export { transition } from "./transition";
 export type { TransitionOptions } from "./transition";
 
 // Hotkey decorator
-export { hotkey } from "./hotkey";
-export type { HotkeyOptions, HotkeyCombo } from "./hotkey";
+export { hotkey, hotkeyLabel, hotkeyLabels } from "./hotkey";
+export type { HotkeyOptions, HotkeyCombo, HotkeyLabelled } from "./hotkey";
 
 // Log decorator + transport
 export { log, LogTransport, ConsoleTransport, resetLogTransport } from "./log";
