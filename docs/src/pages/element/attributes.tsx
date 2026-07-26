@@ -231,6 +231,8 @@ class Ticker extends LoomAttribute {
             </div>
           </div>
         </section>
+
+        <doc-nav></doc-nav>
       </div>
     );
   }

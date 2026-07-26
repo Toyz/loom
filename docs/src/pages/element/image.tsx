@@ -155,6 +155,8 @@ export default class PageElementImage extends LoomElement {
             <code-block lang="tsx" code={GALLERY}></code-block>
           </div>
         </section>
+
+        <doc-nav></doc-nav>
       </div>
     );
   }
@@ -274,7 +276,6 @@ class PhotoGallery extends LoomElement {
         {this.photos.map(url => (
           <loom-image src={url} fit="cover" />
         ))}
-        <doc-nav></doc-nav>
       </div>
     );
   }
