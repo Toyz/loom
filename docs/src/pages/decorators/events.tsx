@@ -30,8 +30,7 @@ export default class PageDecoratorEvents extends LoomElement {
           <div class="group-header">
             <h2>Define Events</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Events extend <span class="ic">LoomEvent</span> — a plain class with typed payloads:</div>
+            <p>Events extend <span class="ic">LoomEvent</span> — a plain class with typed payloads:</p>
             <code-block lang="ts" code={`import { LoomEvent } from "@toyz/loom";
 
 export class UserLoggedIn extends LoomEvent {
@@ -48,7 +47,6 @@ export class ThemeChanged extends LoomEvent {
     super();
   }
 }`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ LoomEvent Static API ═══════════ */}
@@ -57,11 +55,10 @@ export class ThemeChanged extends LoomEvent {
           <div class="group-header">
             <h2>LoomEvent Static API</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Every <span class="ic">LoomEvent</span> subclass inherits a set of static helpers for constructing,
               emitting, and inspecting events without boilerplate.
-            </div>
+            </p>
             <code-block lang="ts" code={`// Create an instance (typed as the subclass — no cast needed)
 const e = UserLoggedIn.create("123", "Alice");
 
@@ -82,7 +79,6 @@ const json = e.toJSON(); // { userId: "123", name: "Alice", timestamp: ... }
 
 // Auto-stamped timestamp on every event
 console.log(e.timestamp); // Date.now() at construction`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ Frame-Scoped Dedup ═══════════ */}
@@ -91,11 +87,10 @@ console.log(e.timestamp); // Date.now() at construction`}></code-block>
           <div class="group-header">
             <h2>Frame-Scoped Deduplication</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Override <span class="ic">get dedupeKey()</span> to enable frame-scoped dedup. If multiple emissions with the same key
               occur in the same synchronous flush, only the first reaches handlers. The seen set is cleared after the current microtask drains.
-            </div>
+            </p>
             <code-block lang="ts" code={`class ThemeChanged extends LoomEvent {
   constructor(public theme: "light" | "dark") { super(); }
 
@@ -112,7 +107,6 @@ ThemeChanged.dispatch("dark");
               Events that return <span class="ic">undefined</span> from <span class="ic">dedupeKey</span> (the default)
               are never deduplicated — this is opt-in only. Dedup is per-key, per-bus-instance, and resets after each microtask.
             </doc-notification>
-          </div>
         </section>
 
         {/* ═══════════ Listen & Emit ═══════════ */}
@@ -121,7 +115,6 @@ ThemeChanged.dispatch("dark");
           <div class="group-header">
             <h2>Listen &amp; Emit</h2>
           </div>
-          <div class="feature-entry">
             <code-block lang="ts" code={`import { bus } from "@toyz/loom";
 
 // Subscribe — returns an unsubscribe function
@@ -134,7 +127,6 @@ bus.emit(new UserLoggedIn("123", "Alice"));
 
 // Clean up
 unsub();`}></code-block>
-          </div>
         </section>
 
 
@@ -212,10 +204,9 @@ accessor selectedIndex = 0;`}></code-block>
           <div class="group-header">
             <h2>Via LoomApp</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">app</span> singleton delegates to the same bus:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 
 app.on(ThemeChanged, (e) => {
@@ -223,7 +214,6 @@ app.on(ThemeChanged, (e) => {
 });
 
 app.emit(new ThemeChanged("dark"));`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ useBus ═══════════ */}
@@ -232,10 +222,9 @@ app.emit(new ThemeChanged("dark"));`}></code-block>
           <div class="group-header">
             <h2>useBus()</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">useBus()</span> replaces the global bus instance — useful for test isolation:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { EventBus, useBus } from "@toyz/loom";
 
 // Swap global bus for testing
@@ -243,7 +232,6 @@ const testBus = new EventBus();
 useBus(testBus);
 
 // All @on decorators and bus.emit() now use testBus`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ once() & @on.once ═══════════ */}
@@ -252,10 +240,9 @@ useBus(testBus);
           <div class="group-header">
             <h2>once() &amp; @on.once</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Fire-and-forget listeners — auto-unsubscribe after the first event fires.
-            </div>
+            </p>
             <code-block lang="ts" code={`// Imperative — on the bus
 const unsub = bus.once(AuthComplete, (e) => {
   console.log("Authenticated!", e.userId);
@@ -268,7 +255,6 @@ handleAuth(e: AuthComplete) {
   this.userId = e.userId;
   // never fires again — auto-removed after first call
 }`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ waitFor() ═══════════ */}
@@ -277,10 +263,9 @@ handleAuth(e: AuthComplete) {
           <div class="group-header">
             <h2>waitFor()</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Promise-based listener — <span class="ic">await</span> the next event of a type. Optional timeout.
-            </div>
+            </p>
             <code-block lang="ts" code={`// Wait for auth to complete
 const auth = await bus.waitFor(AuthComplete);
 console.log(auth.userId);
@@ -291,7 +276,6 @@ try {
 } catch {
   console.error("Auth timed out");
 }`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ Cancellable Events ═══════════ */}
@@ -300,10 +284,9 @@ try {
           <div class="group-header">
             <h2>Cancellable Events</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Call <span class="ic">event.cancel()</span> to stop dispatching to subsequent handlers and parent event types.
-            </div>
+            </p>
             <code-block lang="ts" code={`bus.on(FormSubmit, (e) => {
   if (!isValid(e.data)) {
     e.cancel(); // stops all subsequent handlers
@@ -315,7 +298,6 @@ bus.on(FormSubmit, (e) => {
   // This handler never runs if cancel() was called above
   saveToDB(e.data);
 });`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ Event Inheritance ═══════════ */}
@@ -324,11 +306,10 @@ bus.on(FormSubmit, (e) => {
           <div class="group-header">
             <h2>Event Inheritance</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Child events automatically fire handlers registered for parent types.
               The emit walks the prototype chain: <span class="ic">ChildEvent → ParentEvent → LoomEvent</span>.
-            </div>
+            </p>
             <code-block lang="ts" code={`class UIEvent extends LoomEvent {
   constructor(public source: string) { super(); }
 }
@@ -348,7 +329,6 @@ bus.emit(new ClickEvent("button", 10, 20));`}></code-block>
               <span class="ic">cancel()</span> stops both handler iteration and parent propagation.
               Parent-only listeners are never fired for child events they didn't subscribe to.
             </doc-notification>
-          </div>
         </section>
 
         {/* ═══════════ Example ═══════════ */}
@@ -357,10 +337,9 @@ bus.emit(new ClickEvent("button", 10, 20));`}></code-block>
           <div class="group-header">
             <h2>Example: Cross-Component Communication</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Events decouple components. A toolbar emits; any page can listen — no shared state needed:
-            </div>
+            </p>
             <code-block lang="ts" code={`// shared/events.ts
 import { LoomEvent } from "@toyz/loom";
 
@@ -397,7 +376,6 @@ class Page extends LoomElement {
     return <main class={this.theme}>{/* ... */}</main>;
   }
 }`}></code-block>
-          </div>
         </section>
 
         <doc-nav></doc-nav>

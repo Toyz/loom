@@ -32,14 +32,12 @@ export default class PageStoreOverview extends LoomElement {
           <div class="group-header">
             <h2>Philosophy</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Loom provides layered state management. Start simple with <span class="ic">@reactive</span> fields,
               scale up to <span class="ic">@store</span> for component-scoped deep reactivity,
               or use <span class="ic">Reactive&lt;T&gt;</span> and <span class="ic">CollectionStore&lt;T&gt;</span> for
               shared, service-level state. Every layer supports optional persistence.
-            </div>
-          </div>
+            </p>
         </section>
 
         {/* ═══════════ At a Glance ═══════════ */}
@@ -66,7 +64,6 @@ export default class PageStoreOverview extends LoomElement {
           <div class="group-header">
             <h2>Quick Example</h2>
           </div>
-          <div class="feature-entry">
             <code-block lang="ts" code={`import { LoomElement, component, reactive, store } from "@toyz/loom";
 
 // Simple: single reactive field
@@ -96,7 +93,6 @@ class TodoApp extends LoomElement {
     </ul>;
   }
 }`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ Choosing ═══════════ */}

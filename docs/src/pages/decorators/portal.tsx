@@ -36,10 +36,9 @@ export default class PageDecoratorPortal extends LoomElement {
                             clear the portal content.
                         </div>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             <strong>Options:</strong>
-                        </div>
+                        </p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
                             <tbody>
@@ -47,7 +46,6 @@ export default class PageDecoratorPortal extends LoomElement {
                                 <tr><td><code>className</code></td><td>string</td><td>—</td><td>CSS class(es) for the portal container</td></tr>
                             </tbody>
                         </table>
-                    </div>
                 </section>
 
                 <section>

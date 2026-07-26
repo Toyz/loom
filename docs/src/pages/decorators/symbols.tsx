@@ -23,12 +23,11 @@ export default class PageDecoratorsSymbols extends LoomElement {
           <div class="group-header">
             <h2>The Problem</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Raw <span class="ic">Symbol</span> property access is completely untyped in JavaScript.
               Accessing metadata with <span class="ic">{`(ctor as any)[MY_SYMBOL]`}</span> gives you <span class="ic">any</span> —
               no autocomplete, no type checking, no safety.
-            </div>
+            </p>
             <code-block lang="ts" code={`// The old way — completely untyped
 const MY_META = Symbol("my:meta");
 
@@ -36,7 +35,6 @@ const MY_META = Symbol("my:meta");
 (ctor as any)[MY_META] = 42;
 (ctor as any)[MY_META] = "oops";  // no error!
 const val = (ctor as any)[MY_META];  // any`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ LoomSymbol ═══════════ */}
@@ -45,12 +43,11 @@ const val = (ctor as any)[MY_META];  // any`}></code-block>
           <div class="group-header">
             <h2>LoomSymbol&lt;T&gt;</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">LoomSymbol&lt;T&gt;</span> wraps a native <span class="ic">symbol</span> and
               provides typed <span class="ic">from()</span>, <span class="ic">set()</span>, and <span class="ic">has()</span> methods.
               TypeScript enforces the correct type at every boundary.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { createSymbol } from "@toyz/loom";
 
 // Create a typed symbol
@@ -67,7 +64,6 @@ const name = SERVICE_NAME.from(ctor);  // string | undefined
 if (SERVICE_NAME.has(ctor)) {
   // ...
 }`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ createSymbol ═══════════ */}
@@ -170,11 +166,10 @@ for (const [name, sym] of SYMBOL_REGISTRY) {
           <div class="group-header">
             <h2>Core Symbols</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Loom ships with 18 core symbols that power the framework's internals.
               All are available from <span class="ic">@toyz/loom</span>:
-            </div>
+            </p>
             <code-block lang="ts" code={`// State & Reactivity
 REACTIVES        // string[] — reactive field names
 PROPS            // { key: string }[] — observed attributes
@@ -202,7 +197,6 @@ ROUTE_LEAVE      // string[] — @onRouteLeave methods
 // Other
 ON_HANDLERS      // { event, key }[] — @on bindings
 TRANSFORMS       // Map<string, Function> — @transform fns`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

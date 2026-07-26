@@ -19,11 +19,10 @@ export default class PageRouterNavigation extends LoomElement {
           <div class="group-header">
             <h2>&lt;loom-link&gt;</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               A navigation component that renders an anchor tag. Handles hash vs history mode
               automatically. Adds <span class="ic">.active</span> when the current path matches:
-            </div>
+            </p>
             <code-block lang="tsx" code={`// Navigate by path
 <loom-link to="/users">Users</loom-link>
 <loom-link to="/users/123">User Detail</loom-link>
@@ -38,7 +37,6 @@ export default class PageRouterNavigation extends LoomElement {
   <loom-icon name="gear" size="16"></loom-icon>
   Settings
 </loom-link>`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Prop</th><th>Type</th><th>Description</th></tr></thead>
@@ -50,10 +48,9 @@ export default class PageRouterNavigation extends LoomElement {
             </tbody>
           </table>
 
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use <span class="ic">styles</span> to override the internal anchor's CSS. For example, for inline text flow or full-width nav cards:
-            </div>
+            </p>
             <code-block lang="tsx" code={`import { css } from "@toyz/loom";
 
 // Inline in flowing text
@@ -65,18 +62,16 @@ const fill = css\`a { display: flex; width: 100%; height: 100%; }\`;
 <loom-link to="/bar" styles={[fill]} class="card">
   <span>Bar</span>
 </loom-link>`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Programmatic Navigation</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Access the router service to navigate from code — event handlers,
               guard redirects, or after async operations:
-            </div>
+            </p>
             <code-block lang="tsx" code={`import { app } from "@toyz/loom";
 import { LoomRouter } from "@toyz/loom/router";
 
@@ -100,7 +95,6 @@ setup() {
   const router = this.app.get(LoomRouter);
   if (!this.isAuthed) router.go("/login");
 }`}></code-block>
-          </div>
         </section>
 
         <section>
@@ -129,13 +123,11 @@ setup() {
           <div class="group-header">
             <h2>Active State</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Listen for <span class="ic">RouteChanged</span> events to track the current path and
               style active navigation items. See <loom-link to="/router/overview" style="color: var(--accent)">Overview</loom-link> for
               the event bus pattern.
-            </div>
-          </div>
+            </p>
         </section>
         <doc-nav></doc-nav>
       </div>

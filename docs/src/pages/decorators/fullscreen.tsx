@@ -32,15 +32,13 @@ export default class PageDecoratorFullscreen extends LoomElement {
                             <code>false</code> calls <code>exitFullscreen()</code>. Listens for <code>fullscreenchange</code> events to stay in sync.
                         </div>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc"><strong>Options:</strong></div>
+                        <p><strong>Options:</strong></p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
                             <tbody>
                                 <tr><td><code>navigationUI</code></td><td>"auto" | "hide" | "show"</td><td>"auto"</td><td>Navigation UI preference for fullscreen</td></tr>
                             </tbody>
                         </table>
-                    </div>
                 </section>
 
                 <section>

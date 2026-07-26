@@ -20,30 +20,27 @@ export default class PageGuidesHydration extends LoomElement {
                     <div class="group-header">
                         <h2>Overview</h2>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Loom supports <strong>Declarative Shadow DOM (DSD)</strong> hydration out of the box.
                             Write a <span class="ic">{"<template shadowrootmode=\"open\">"}</span> in your HTML and
                             the browser paints the shadow DOM <em>before any JavaScript loads</em>. When Loom's JS
                             arrives, it <strong>hydrates</strong> the existing shadow root — wiring up event listeners,
                             reactive bindings, and the trace engine — without destroying or re-rendering the pre-painted content.
-                        </div>
+                        </p>
                         <div class="dec-desc" style={{ marginTop: "0.75rem" }}>
                             This is entirely internal to <span class="ic">@toyz/loom</span> — no extra packages to install,
                             no SSG framework, and no build plugins.
                         </div>
-                    </div>
                 </section>
 
                 <section>
                     <div class="group-header">
                         <h2>Basic Usage</h2>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Add a <span class="ic">{"<template shadowrootmode=\"open\">"}</span> inside your custom element
                             in the HTML. The browser instantly creates a shadow root with the template content — no JS needed.
-                        </div>
+                        </p>
                         <code-block lang="html" code={`<!-- index.html — pre-rendered shell -->
 <my-counter>
   <template shadowrootmode="open">
@@ -55,13 +52,11 @@ export default class PageGuidesHydration extends LoomElement {
     <button>Increment</button>
   </template>
 </my-counter>`}></code-block>
-                    </div>
 
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Your Loom component doesn't change at all. When it mounts, Loom detects the existing
                             shadow root and <strong>morphs</strong> against it instead of rendering from scratch:
-                        </div>
+                        </p>
                         <code-block lang="ts" code={`@component("my-counter")
 class MyCounter extends LoomElement {
   @reactive accessor count = 0;
@@ -75,18 +70,15 @@ class MyCounter extends LoomElement {
     );
   }
 }`}></code-block>
-                    </div>
                 </section>
 
                 <section>
                     <div class="group-header">
                         <h2>How It Works</h2>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Three things happen under the hood:
-                        </div>
-                    </div>
+                        </p>
                     <table class="api-table">
                         <thead>
                             <tr><th>Phase</th><th>What Happens</th></tr>
@@ -148,13 +140,11 @@ class MyCounter extends LoomElement {
                     <div class="group-header">
                         <h2>Browser Support</h2>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Declarative Shadow DOM is supported in all modern browsers: <strong>Chrome 111+</strong>, <strong>Firefox 123+</strong>, <strong>Safari 16.4+</strong>, and <strong>Edge 111+</strong>.
                             In older browsers without DSD support, the <code>{"<template>"}</code> is ignored and Loom
                             falls back to normal client-side rendering — no breakage, just no pre-paint benefit.
-                        </div>
-                    </div>
+                        </p>
                 </section>
 
                 <doc-nav></doc-nav>

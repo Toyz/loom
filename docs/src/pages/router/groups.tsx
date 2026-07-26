@@ -44,11 +44,9 @@ class PageApiUsers extends LoomElement {
           <div class="group-header">
             <h2>Group Options</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The second argument to <span class="ic">@group</span> is an optional options object:
-            </div>
-          </div>
+            </p>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -70,11 +68,10 @@ class PageApiUsers extends LoomElement {
           <div class="group-header">
             <h2>Group Guards</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Guards defined on a group run <strong>before</strong> any route-level guards.
               This makes it easy to protect entire sections of your app:
-            </div>
+            </p>
             <code-block lang="ts" code={`@group("/admin", { guards: ["auth", "admin"] })
 class AdminGroup {}
 
@@ -84,19 +81,17 @@ class AdminGroup {}
 class PageAdminLogs extends LoomElement { }
 
 // Guard order: auth → admin → audit`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Group Metadata</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Group <span class="ic">meta</span> is inherited by all child routes.
               Route-level meta overrides group values. Guards and lifecycle hooks
               receive the merged metadata:
-            </div>
+            </p>
             <code-block lang="ts" code={`@group("/admin", { 
   guards: ["auth"],
   meta: { layout: "sidebar", requiresAuth: true }
@@ -116,18 +111,16 @@ checkAuth(ctx: RouteContext) {
   }
   return LoomResult.ok();
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Nested Groups</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Groups can nest by stacking <span class="ic">@group</span> and <span class="ic">@route</span> on the same class.
               Prefixes and guards chain from root to leaf:
-            </div>
+            </p>
             <code-block lang="tsx" code={`@group("/app", { guards: ["session"] })
 class AppGroup {}
 
@@ -144,18 +137,16 @@ class AdminGroup extends LoomElement {
 @route("/users", { group: AdminGroup })
 @component("page-admin-users")
 class PageAdminUsers extends LoomElement { }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Dynamic Params in Groups</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Group prefixes can contain dynamic <span class="ic">:param</span> segments.
               Parameters cascade to all child routes:
-            </div>
+            </p>
             <code-block lang="ts" code={`@group("/org/:orgId")
 class OrgGroup {}
 
@@ -168,27 +159,24 @@ class TeamGroup {}
 @route("/member/:memberId", { group: TeamGroup })
 @component("page-member")
 class PageMember extends LoomElement { }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>How It Works</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">@group</span> is a class decorator built on <span class="ic">createDecorator</span>.
               At define-time it stores group metadata (prefix, guards) on the constructor.
               When <span class="ic">@route</span> sees a <span class="ic">group</span> option, it walks the group chain
               from leaf to root — collecting all prefixes and guards — then compiles the full
               pattern into a single regex.
-            </div>
+            </p>
             <div class="dec-desc" style="margin-top: 0.75rem">
               Since TypeScript class decorators run bottom-up, <span class="ic">@group</span> automatically
               patches route entries that were registered by <span class="ic">@route</span> on the same class.
               This means decorator order doesn't matter for correctness.
             </div>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

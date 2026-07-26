@@ -19,11 +19,10 @@ export default class PageRouterOverview extends LoomElement {
           <div class="group-header">
             <h2>Setup</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Create a <span class="ic">LoomRouter</span> with either <span class="ic">hash</span> or <span class="ic">history</span> mode
               and register it with the app:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 import { LoomRouter } from "@toyz/loom/router";
 
@@ -31,7 +30,6 @@ const router = new LoomRouter({ mode: "hash" });
 app.use(router);
 app.start();
 router.start();`}></code-block>
-          </div>
         </section>
 
         <section>
@@ -47,24 +45,21 @@ router.start();`}></code-block>
               <tr><td>history</td><td>example.com/users/123</td><td>Yes (SPA fallback)</td></tr>
             </tbody>
           </table>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">hash</span> mode is zero-config and works on static hosts.
               <span class="ic">history</span> mode gives clean URLs but requires your server to serve
               <span class="ic">index.html</span> for all routes.
-            </div>
-          </div>
+            </p>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Outlet</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">&lt;loom-outlet&gt;</span> renders the matched route's component.
               Place it where routed content should appear:
-            </div>
+            </p>
             <code-block lang="tsx" code={`@component("my-app")
 class App extends LoomElement {
   update() {
@@ -76,7 +71,6 @@ class App extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
           <doc-notification type="note">
             <span class="ic">inherit-styles</span> passes the parent's adopted stylesheets to
             the routed component. Set <span class="ic">scrollToTop="false"</span> to opt out of
@@ -88,8 +82,7 @@ class App extends LoomElement {
           <div class="group-header">
             <h2>RouteChanged Event</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Listen for navigation changes anywhere via the event bus:</div>
+            <p>Listen for navigation changes anywhere via the event bus:</p>
             <code-block lang="tsx" code={`import { on } from "@toyz/loom";
 import { RouteChanged } from "@toyz/loom/router";
 
@@ -98,7 +91,6 @@ onRoute(e: RouteChanged) {
   console.log(\`Navigated to \${e.path}\`);
   // e.path, e.params, e.query available
 }`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

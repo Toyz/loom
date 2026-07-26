@@ -18,20 +18,17 @@ export default class PageStoreDecorator extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">@store</span> decorator creates an isolated, reactive store
               scoped to a single component instance. Mutations — even nested — automatically
               trigger re-renders. No DI, no shared state, just local component data.
-            </div>
-          </div>
+            </p>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Basic Usage</h2>
           </div>
-          <div class="feature-entry">
             <code-block lang="ts" code={`interface TodoState {
   items: string[];
   filter: "all" | "active" | "done";
@@ -52,38 +49,34 @@ class MyTodos extends LoomElement {
     </ul>;
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Deep Reactivity</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">@store</span> uses a deep <span class="ic">Proxy</span> under
               the hood. Nested property changes, array mutations (<code>push</code>, <code>splice</code>),
               and property deletions all trigger re-renders automatically.
-            </div>
+            </p>
             <code-block lang="ts" code={`// All of these trigger a re-render:
 this.state.filter = "active";        // top-level set
 this.state.meta.count = 5;           // nested set
 this.state.items.push("new item");   // array push
 this.state.items.splice(0, 1);       // array splice
 delete this.state.meta;              // delete`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Persisted Store</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Pass a persistence config as the second argument to automatically
               back the store with <code>localStorage</code>, <code>sessionStorage</code>,
               or any custom <span class="ic">StorageAdapter</span>:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LocalAdapter } from "@toyz/loom/store";
 
 @component("my-prefs")
@@ -99,20 +92,17 @@ class MyPrefs extends LoomElement {
     // Auto-persisted to localStorage
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Instance Isolation</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Each component instance gets its own independent copy of the store.
               Changes in one instance don't affect another — even if they share
               the same class.
-            </div>
-          </div>
+            </p>
         </section>
 
         <section>

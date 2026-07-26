@@ -109,51 +109,43 @@ export default class PageElementImage extends LoomElement {
           <div class="group-header">
             <h2>Custom Placeholder</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Pass any element into the <span class="ic">placeholder</span> slot to
               replace the default shimmer. It fades out when the image loads.
-            </div>
+            </p>
             <code-block lang="tsx" code={CUSTOM_PLACEHOLDER}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Error Handling</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               When an image fails to load, <span class="ic">&lt;loom-image&gt;</span> first tries the <span class="ic">fallback</span> URL (if set). If both fail, the <span class="ic">error</span> slot is shown — either your custom content or a default broken-image icon.
-            </div>
+            </p>
             <code-block lang="tsx" code={ERROR_HANDLING}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Preloading</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Preload critical images before they scroll into view — perfect for hero
               images or above-the-fold content:
-            </div>
+            </p>
             <code-block lang="ts" code={PRELOAD}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Gallery Example</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               A responsive image grid with free lazy loading — images only fetch
               as they scroll into view:
-            </div>
+            </p>
             <code-block lang="tsx" code={GALLERY}></code-block>
-          </div>
         </section>
 
         <doc-nav></doc-nav>

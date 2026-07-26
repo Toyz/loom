@@ -103,13 +103,11 @@ const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured"
           <div class="group-header">
             <h2>How They Work</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Both decorators replace the property with a getter that calls
               <span class="ic">this.shadow.querySelector()</span> or <span class="ic">this.shadow.querySelectorAll()</span>
               on each access. This means:
-            </div>
-          </div>
+            </p>
           <table class="api-table">
             <thead><tr><th>Feature</th><th>Behavior</th></tr></thead>
             <tbody>
@@ -125,8 +123,7 @@ const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured"
           <div class="group-header">
             <h2>vs Manual Queries</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">The decorators are sugar for a common pattern. They're equivalent to:</div>
+            <p>The decorators are sugar for a common pattern. They're equivalent to:</p>
             <code-block lang="ts" code={`// Without decorator
 get submitBtn() {
   return this.shadow.querySelector(".submit-btn") as HTMLButtonElement;
@@ -134,7 +131,6 @@ get submitBtn() {
 
 // With decorator — same behavior, less boilerplate
 @query(".submit-btn") submitBtn!: HTMLButtonElement;`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

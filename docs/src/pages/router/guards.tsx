@@ -75,11 +75,10 @@ class Guards {
           <div class="group-header">
             <h2>Connecting Guards to Routes</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Reference guards by name in the <span class="ic">@route</span> options.
               Guards run in order — if any guard rejects, navigation stops:
-            </div>
+            </p>
             <code-block lang="ts" code={`@route("/admin", { guards: ["auth", "admin"] })
 @component("page-admin")
 class PageAdmin extends LoomElement { }
@@ -87,15 +86,13 @@ class PageAdmin extends LoomElement { }
 @route("/billing", { guards: ["auth", "checkSubscription"] })
 @component("page-billing")
 class PageBilling extends LoomElement { }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Guard Resolution</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Guards are resolved in two phases:</div>
+            <p>Guards are resolved in two phases:</p>
             <ol>
               <li>
                 <strong>Global registry</strong> — guards registered via <span class="ic">@guard()</span> on
@@ -106,20 +103,17 @@ class PageBilling extends LoomElement { }`}></code-block>
                 route component's prototype.
               </li>
             </ol>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>How It Works</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">@guard()</span> is a define-time decorator built on <span class="ic">createDecorator</span>.
               It registers the method in a global <span class="ic">guardRegistry</span> map keyed by name.
               When <span class="ic">@guard()</span> is called without a name, the method name is used.
-            </div>
-          </div>
+            </p>
         </section>
         <doc-nav></doc-nav>
       </div>

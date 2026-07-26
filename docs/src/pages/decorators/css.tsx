@@ -18,23 +18,20 @@ export default class PageDecoratorCSS extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
-              <span class="ic">@css</span> turns a method into a reactive stylesheet generator.
-              The method returns a CSS string that is adopted into the component's shadow root.
-              When any <span class="ic">@reactive</span>, <span class="ic">@store</span>, or <span class="ic">@signal</span> value read during the method changes, the styles are automatically re-evaluated
-              and updated in-place via <span class="ic">CSSStyleSheet.replaceSync()</span>.
-            </div>
-            <code-block lang="ts" code={`import { dynamicCss } from "@toyz/loom";`}></code-block>
-          </div>
+          <p>
+            <span class="ic">@css</span> turns a method into a reactive stylesheet generator.
+            The method returns a CSS string that is adopted into the component's shadow root.
+            When any <span class="ic">@reactive</span>, <span class="ic">@store</span>, or <span class="ic">@signal</span> value read during the method changes, the styles are automatically re-evaluated
+            and updated in-place via <span class="ic">CSSStyleSheet.replaceSync()</span>.
+          </p>
+          <code-block lang="ts" code={`import { dynamicCss } from "@toyz/loom";`}></code-block>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Basic Usage</h2>
           </div>
-          <div class="feature-entry">
-            <code-block lang="ts" code={`import { component, LoomElement, reactive, dynamicCss } from "@toyz/loom";
+          <code-block lang="ts" code={`import { component, LoomElement, reactive, dynamicCss } from "@toyz/loom";
 
 @component("themed-card")
 class ThemedCard extends LoomElement {
@@ -57,22 +54,19 @@ class ThemedCard extends LoomElement {
     return <div class="card"><slot></slot></div>;
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>How It Works</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
-              On connect, <span class="ic">@css</span> creates a new <span class="ic">CSSStyleSheet</span>,
-              evaluates the method, calls <span class="ic">replaceSync()</span> with the result,
-              and adopts the sheet into the shadow root. It then subscribes to all reactive
-              fields on the component. When any change, re-evaluation is debounced to one
-              <span class="ic">replaceSync()</span> per microtask.
-            </div>
-          </div>
+          <p>
+            On connect, <span class="ic">@css</span> creates a new <span class="ic">CSSStyleSheet</span>,
+            evaluates the method, calls <span class="ic">replaceSync()</span> with the result,
+            and adopts the sheet into the shadow root. It then subscribes to all reactive
+            fields on the component. When any change, re-evaluation is debounced to one
+            <span class="ic">replaceSync()</span> per microtask.
+          </p>
 
           <table class="api-table">
             <thead><tr><th>Phase</th><th>What happens</th></tr></thead>
@@ -88,9 +82,8 @@ class ThemedCard extends LoomElement {
           <div class="group-header">
             <h2>@css vs @styles</h2>
           </div>
-          <div class="feature-entry">
-            <table class="api-table">
-              <thead><tr><th>Feature</th><th>@styles(css\`...\`)</th><th>@css</th></tr></thead>
+          <table class="api-table">
+            <thead><tr><th>Feature</th><th>@styles(css\`...\`)</th><th>@css</th></tr></thead>
               <tbody>
                 <tr><td>Type</td><td>Class decorator</td><td>Method decorator</td></tr>
                 <tr><td>When</td><td>Static — defined once</td><td>Dynamic — re-evaluates on state change</td></tr>
@@ -98,14 +91,12 @@ class ThemedCard extends LoomElement {
                 <tr><td>Use case</td><td>Layout, typography, base styles</td><td>Theme-reactive, state-dependent styles</td></tr>
                 <tr><td>Performance</td><td>Best — cached, shared</td><td>Great — debounced replaceSync()</td></tr>
               </tbody>
-            </table>
-          </div>
+          </table>
 
-          <div class="feature-entry">
-            <div class="dec-desc">
-              <strong>Best practice:</strong> Use <span class="ic">@styles</span> for static CSS,
-              and <span class="ic">@css</span> only for the parts that actually depend on state.
-            </div>
+          <p>
+            <strong>Best practice:</strong> Use <span class="ic">@styles</span> for static CSS,
+            and <span class="ic">@css</span> only for the parts that actually depend on state.
+          </p>
             <code-block lang="ts" code={`const baseSheet = css\`
   :host { display: block; }
   .card { padding: 1rem; }
@@ -121,18 +112,16 @@ class ThemedCard extends LoomElement {
     return \`:host { --accent: \${this.accent}; }\`;
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Multiple @css Methods</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
-              You can use multiple <span class="ic">@css</span> methods on a single component.
-              Each creates its own stylesheet, adopted independently.
-            </div>
+          <p>
+            You can use multiple <span class="ic">@css</span> methods on a single component.
+            Each creates its own stylesheet, adopted independently.
+          </p>
             <code-block lang="ts" code={`@component("my-el")
 class MyEl extends LoomElement {
   @reactive accessor layout = "grid";
@@ -146,7 +135,6 @@ class MyEl extends LoomElement {
     return \`:host { color: \${this.theme === "dark" ? "#fff" : "#000"}; }\`;
   }
 }`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

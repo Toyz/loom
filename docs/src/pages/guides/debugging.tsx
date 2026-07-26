@@ -52,11 +52,10 @@ inspect(el);
           <div class="group-header">
             <h2>DevTools Console Hook</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Install a global hook once, then inspect any element directly from
               the browser console. Add this to your app entry point:
-            </div>
+            </p>
             <code-block lang="ts" code={`// main.ts
 import { installGlobalHook } from "@toyz/loom/debug";
 
@@ -64,9 +63,9 @@ import { installGlobalHook } from "@toyz/loom/debug";
 if (import.meta.env.DEV) {
   installGlobalHook();
 }`}></code-block>
-            <div class="dec-desc">
+            <p>
               Then in the DevTools console:
-            </div>
+            </p>
             <code-block lang="js" code={`// Select an element in the Elements panel, then:
 __loom.inspect($0)
 
@@ -81,18 +80,16 @@ __loom.SYMBOL_REGISTRY
 //   "analytics:track" => Symbol(loom:analytics:track),
 //   ...
 // }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Reading Symbols Directly</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Every Loom decorator writes metadata to the class constructor using symbols.
               You can read them directly — no special tooling required:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { SYMBOL_REGISTRY } from "@toyz/loom";
 
 // Get an element
@@ -108,7 +105,6 @@ const routeBindings = ctor[SYMBOL_REGISTRY.get("route:props")];
 
 const tracked = ctor[SYMBOL_REGISTRY.get("analytics:track")];
 // [{ event: "settings.view", kind: "class" }]`}></code-block>
-          </div>
         </section>
 
         <section>
@@ -150,11 +146,9 @@ export function cache(ttl: number) {
           <div class="group-header">
             <h2>Built-in Plugin Symbols</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               All first-party Loom packages register their decorator metadata via <span class="ic">createSymbol()</span>. This means <span class="ic">inspect()</span> shows everything:
-            </div>
-          </div>
+            </p>
           <table class="api-table">
             <thead>
               <tr><th>Package</th><th>Symbol</th><th>Shows</th></tr>

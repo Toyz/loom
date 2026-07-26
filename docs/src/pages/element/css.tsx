@@ -20,11 +20,10 @@ export default class PageElementCSS extends LoomElement {
           <div class="group-header">
             <h2>The css`` Tagged Template</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Loom provides a <span class="ic">css</span> tagged template literal that creates a <span class="ic">CSSStyleSheet</span> object. The sheet is parsed once and cached — subsequent
               calls with the same template return the same instance.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { css } from "@toyz/loom";
 
 const styles = css\`
@@ -32,7 +31,6 @@ const styles = css\`
   .title { font-size: 1.5rem; font-weight: 700; }
   .subtitle { color: #888; }
 \`;`}></code-block>
-          </div>
         </section>
 
         <section>
@@ -63,29 +61,26 @@ class MyCard extends LoomElement {
   }
 }`}></code-block>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Multiple <span class="ic">@styles()</span> calls stack — all sheets are adopted. Useful for composing shared + component-specific styles:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { baseStyles } from "../styles/base";
 import { buttonStyles } from "../styles/buttons";
 
 @component("my-form")
 @styles(baseStyles, buttonStyles, formSheet)
 class MyForm extends LoomElement { ... }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Inline Styles in update()</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               For quick prototyping, call <span class="ic">this.css``</span> inside <span class="ic">update()</span>.
               The sheet is adopted into the shadow root automatically. Since it's cached, there's no
               performance penalty from calling it on every render.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("my-card")
 class MyCard extends LoomElement {
   update() {
@@ -102,7 +97,6 @@ class MyCard extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
           <doc-notification type="note">
             <loom-icon name="bolt" size={14} color="var(--text-muted)"></loom-icon> Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
             and avoids style adoption on every render call.
@@ -128,30 +122,27 @@ class MyCard extends LoomElement {
           <div class="group-header">
             <h2>:host and Scoping</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               All styles are scoped to the component's shadow root. Use <span class="ic">:host</span> to style the
               component's outer element, and <span class="ic">:host(.class)</span> for conditional styling based on
               host attributes or classes.
-            </div>
+            </p>
             <code-block lang="ts" code={`const sheet = css\`
   :host { display: flex; gap: 8px; }
   :host([disabled]) { opacity: 0.5; pointer-events: none; }
   :host(.compact) { padding: 4px; }
   ::slotted(p) { margin: 0; }
 \`;`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Dynamic Values</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use CSS custom properties for dynamic values. The template is parsed once, and you
               update custom properties on the host to change styles:
-            </div>
+            </p>
             <code-block lang="ts" code={`const sheet = css\`
   :host { border: 2px solid var(--card-accent); }
   .title { color: var(--card-accent); }
@@ -167,7 +158,6 @@ class ThemeCard extends LoomElement {
     return <h2 class="title"><slot></slot></h2>;
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>

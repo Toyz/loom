@@ -21,12 +21,11 @@ export default class PageResult extends LoomElement {
           <div class="group-header">
             <h2>Why Result?</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               JavaScript's <span class="ic">try/catch</span> is invisible in the
               type system — a function that throws looks identical to one that
               doesn't. <span class="ic">LoomResult</span> makes errors <strong>visible, typed, and composable</strong>.
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`// [BAD] try/catch — error handling is invisible
@@ -45,7 +44,6 @@ result.match({
   err: (e)    => showError(e.message),
 });`}
             ></code-block>
-          </div>
         </section>
 
         <section>
@@ -79,11 +77,10 @@ const result = await LoomResult.fromPromise(
           <div class="group-header">
             <h2>Narrowing</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">.ok</span> boolean is a discriminant —
               TypeScript narrows <span class="ic">.data</span> and <span class="ic">.error</span> automatically:
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`const r = LoomResult.ok("hello");
@@ -96,7 +93,6 @@ if (r.ok) {
   r.data;   // -> undefined
 }`}
             ></code-block>
-          </div>
         </section>
 
         <section>
@@ -166,12 +162,11 @@ const friendly = result.map_err(e => \`Failed: \${e.message}\`);`}
           <div class="group-header">
             <h2>Composable Match</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The match object isn't fixed — <strong>each layer adds
               optional branches</strong>. The base <span class="ic">{"{ ok, err }"}</span> is always required (guarantees exhaustiveness), and
               specializations extend it with opt-in states.
-            </div>
+            </p>
 
             <code-block
               lang="ts"
@@ -193,13 +188,11 @@ this.team.match({
 // Omit loading? Falls through to err during initial fetch.
 // The branch is additive, never breaking.`}
             ></code-block>
-          </div>
 
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Each implementation checks for its optional branches first,
               then falls through to the base <span class="ic">ok</span> / <span class="ic">err</span> contract. It's a priority chain:
-            </div>
+            </p>
 
             <code-block
               lang="ts"
@@ -212,7 +205,6 @@ match(cases) {
     : cases.err(error);               // base contract
 }`}
             ></code-block>
-          </div>
 
           <doc-notification type="note">
             This pattern means <strong>simple uses stay simple</strong> — you
@@ -227,12 +219,10 @@ match(cases) {
           <div class="group-header">
             <h2>Framework Integration</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               LoomResult isn't just a utility — it's woven into the framework
               everywhere errors can occur.
-            </div>
-          </div>
+            </p>
 
           <div class="feature-entry">
             <div class="dec-sig">@api — Tri-State Match</div>

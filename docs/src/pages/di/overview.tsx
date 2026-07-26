@@ -20,22 +20,19 @@ export default class PageDIOverview extends LoomElement {
           <div class="group-header">
             <h2>LoomApp</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">app</span> singleton is Loom's service container. It manages providers,
               delegates events, and boots the application.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 
 app.start(); // boots the app`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Registering Providers</h2>
           </div>
-          <div class="feature-entry">
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 
 // Class → auto-instantiated as singleton
@@ -46,7 +43,6 @@ app.use("API_URL", "https://api.example.com");
 
 // Factory function
 app.use(() => new DatabasePool({ max: 10 }));`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Pattern</th><th>Behavior</th></tr></thead>
@@ -63,13 +59,11 @@ app.use(() => new DatabasePool({ max: 10 }));`}></code-block>
           <div class="group-header">
             <h2>Retrieving Services</h2>
           </div>
-          <div class="feature-entry">
             <code-block lang="ts" code={`// Get (throws if not registered)
 const auth = app.get(AuthService);
 
 // Maybe (returns undefined if not registered)
 const db = app.maybe(DatabasePool);`}></code-block>
-          </div>
         </section>
 
         <section>

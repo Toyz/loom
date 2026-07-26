@@ -62,32 +62,29 @@ class Tooltip extends LoomAttribute {
           <div class="group-header">
             <h2>Lifecycle</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Three hooks, mirroring LoomElement:</div>
+            <p>Three hooks, mirroring LoomElement:</p>
             <code-block lang="ts" code={`connect()                    // attribute appeared on a connected element
 valueChanged(old, next)      // attribute value was patched
 disconnect()                 // attribute removed, or element left the DOM`}></code-block>
-            <div class="dec-desc">
+            <p>
               The base also gives you <span class="ic">this.el</span>, <span class="ic">this.name</span>,
               <span class="ic">this.value</span>, plus the same <span class="ic">on</span> /
               <span class="ic">emit</span> / <span class="ic">track</span> / <span class="ic">app</span> helpers
               as LoomElement. Anything you <span class="ic">track()</span> is cleaned up on disconnect.
-            </div>
-          </div>
+            </p>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Passing args as props</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               HTML attributes are strings, but JSX lets you pass anything. When you write
               <span class="ic">{`intersect={load}`}</span>, Loom sets a marker attribute (so it is
               observed and morphed) and stashes the raw value on <span class="ic">this.arg</span>.
               Every element decorator works on a controller and targets <span class="ic">this.el</span>,
               so there is no hand-rolled observer boilerplate:
-            </div>
+            </p>
             <code-block lang="ts" code={`@attribute("intersect")
 class Intersect extends LoomAttribute<() => void> {
   @observer("intersection")           // observes this.el automatically
@@ -95,17 +92,15 @@ class Intersect extends LoomAttribute<() => void> {
     if (e.isIntersecting) this.arg(); // this.arg is the load fn
   }
 }`}></code-block>
-            <div class="dec-desc">
+            <p>
               For plain string attributes (<span class="ic">shortcut="j"</span>) or hand-written HTML,
               <span class="ic">this.arg</span> equals <span class="ic">this.value</span>. Bare attributes
               (<span class="ic">sticky</span>) give <span class="ic">this.arg === true</span>.
-            </div>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            </p>
+            <p>
               Structured args flow through Loom's <span class="ic">@prop</span> system. Pass an object
               and each key lands on the matching reactive field:
-            </div>
+            </p>
             <code-block lang="tsx" code={`@attribute("tooltip")
 class Tooltip extends LoomAttribute {
   @prop accessor text = "";
@@ -114,19 +109,17 @@ class Tooltip extends LoomAttribute {
 }
 
 <button tooltip={{ text: "Save", placement: "bottom" }}>Save</button>`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Rendering — attributes as portals</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               A controller is a full component wrapped onto a foreign element. Override
               <span class="ic">update()</span> to render JSX; Loom mounts it into a target
               location and re-morphs it whenever a reactive field changes — a smart portal.
-            </div>
+            </p>
             <code-block lang="tsx" code={`@attribute("tooltip")
 class Tooltip extends LoomAttribute {
   @prop accessor text = "";
@@ -134,13 +127,13 @@ class Tooltip extends LoomAttribute {
     return <div class="bubble">{this.text}</div>;  // mounted into document.body
   }
 }`}></code-block>
-            <div class="dec-desc">
+            <p>
               The portal target resolves in this order:
               runtime <span class="ic">this.to</span> prop →
               <span class="ic">@attribute(name, {`{ target }`})</span> option →
               <span class="ic">get target()</span> override → <span class="ic">document.body</span>.
               It is re-resolved on every render, so the output moves if the target changes.
-            </div>
+            </p>
             <code-block lang="tsx" code={`// 1. Option — fixed target for every instance
 @attribute("tooltip", { target: "#modal-root" })
 class Tooltip extends LoomAttribute { /* ... */ }
@@ -150,18 +143,16 @@ class Tooltip extends LoomAttribute { /* ... */ }
 
 // 3. Code — anchor to the host element itself
 get target() { return this.el; }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Typing your attributes</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Augment <span class="ic">LoomCustomAttributes</span> so your directives type-check on
               every intrinsic element.
-            </div>
+            </p>
             <code-block lang="ts" code={`declare module "@toyz/loom/jsx-runtime" {
   interface LoomCustomAttributes {
     sticky?: boolean;
@@ -172,33 +163,29 @@ get target() { return this.el; }`}></code-block>
 
 // now type-checks on any element:
 <div sticky intersect={load} shortcut="j" />`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Light DOM & hand-written HTML</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Two roots are observed automatically: every component's shadow root
               (via <span class="ic">LoomElement</span>) and <span class="ic">document.body</span> —
               so controllers work on top-level HTML and on modals / toasts / portals appended to
               the body, with no setup. You only call <span class="ic">observeAttributes</span> for a
               root Loom doesn't reach (e.g. a shadow root you created by hand):
-            </div>
+            </p>
             <code-block lang="ts" code={`import { observeAttributes } from "@toyz/loom";
 
 observeAttributes(myCustomRoot); // scans now, reacts to changes, returns an unobserve fn`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Which decorators work</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Decorators that route through connect hooks work on controllers.
               DOM-targeting ones auto-target <span class="ic">this.el</span>:
               <span class="ic">@observer</span>, <span class="ic">@hotkey</span>, and
@@ -210,26 +197,25 @@ observeAttributes(myCustomRoot); // scans now, reacts to changes, returns an uno
               <span class="ic">@watch</span>, <span class="ic">@on(BusEvent)</span>, <span class="ic">@log</span>,
               <span class="ic">@prop</span> / <span class="ic">@reactive</span> (drive
               <span class="ic">update()</span> re-renders).
-            </div>
+            </p>
             <code-block lang="ts" code={`@attribute("data-ticker")
 class Ticker extends LoomAttribute {
   @interval(1000)
   tick() { console.log("tick", this.el); }
 }`}></code-block>
-            <div class="dec-desc">
+            <p>
               Once a controller renders (<span class="ic">update()</span> overridden or
               <span class="ic">@styles</span> present) it gets its own shadow root, so the shadow-scoped
               decorators work too: <span class="ic">@styles</span>, <span class="ic">@query</span> /
               <span class="ic">@queryAll</span>, <span class="ic">@dynamicCss</span>, and the
               <span class="ic">css()</span> / <span class="ic">$()</span> helpers — same as LoomElement.
               Global (<span class="ic">:root</span>) theme variables inherit into it.
-            </div>
-            <div class="dec-desc">
+            </p>
+            <p>
               Only decorators tied to a host custom element don't apply:
               <span class="ic">@component</span>, <span class="ic">@slot</span>, <span class="ic">@form</span>,
               <span class="ic">@portal</span>.
-            </div>
-          </div>
+            </p>
         </section>
 
         <doc-nav></doc-nav>

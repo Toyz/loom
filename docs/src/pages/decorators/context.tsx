@@ -44,10 +44,9 @@ export default class PageDecoratorContext extends LoomElement {
                             Returns <span class="ic">undefined</span> if no provider is found.
                         </div>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             <strong>Key types:</strong>
-                        </div>
+                        </p>
                         <table class="api-table">
                             <thead><tr><th>Key Type</th><th>Example</th><th>Notes</th></tr></thead>
                             <tbody>
@@ -56,7 +55,6 @@ export default class PageDecoratorContext extends LoomElement {
                                 <tr><td>Symbol</td><td><code>Symbol("auth")</code></td><td>Private / collision-free</td></tr>
                             </tbody>
                         </table>
-                    </div>
                 </section>
 
                 <section>

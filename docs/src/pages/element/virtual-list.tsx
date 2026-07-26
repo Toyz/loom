@@ -18,12 +18,10 @@ export default class PageVirtualList extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">&lt;loom-virtual&gt;</span> renders only the visible items in a scrollable container.
               Items are measured, cached, and recycled — you get smooth scrolling even with 100k+ rows.
-            </div>
-          </div>
+            </p>
           <doc-notification type="note">
             <span class="ic">LoomVirtual</span> is a built-in element that ships with Loom. Import it explicitly
             to register the custom element (it's excluded from the main barrel to avoid side effects):
@@ -35,10 +33,9 @@ export default class PageVirtualList extends LoomElement {
           <div class="group-header">
             <h2>Basic Usage</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Pass your data via <span class="ic">items</span> and provide a render template as a function child:
-            </div>
+            </p>
             <code-block lang="tsx" code={`import "@toyz/loom/element/virtual";
 
 // In your component's update():
@@ -47,19 +44,17 @@ export default class PageVirtualList extends LoomElement {
     <div class="msg">{msg.text}</div>
   )}
 </loom-virtual>`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Styling</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">&lt;loom-virtual&gt;</span> uses Shadow DOM internally. The host element must have
               <span class="ic">display: block</span> and a <strong>fixed height</strong> — without a constrained
               height, there's nothing to virtualize against.
-            </div>
+            </p>
             <code-block lang="css" code={`/* In the consumer's styles */
 loom-virtual {
   display: block;
@@ -68,7 +63,6 @@ loom-virtual {
   border-radius: 8px;
   overflow: hidden;     /* clip host — inner viewport scrolls */
 }`}></code-block>
-          </div>
           <doc-notification type="note">
             The internal structure is <span class="ic">.vl-viewport → .vl-spacer → .vl-window</span>.
             The viewport scrolls, the spacer sets the total height, and the window is absolutely positioned
@@ -110,26 +104,23 @@ loom-virtual {
           <div class="group-header">
             <h2>Children Template</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The function child is the render template. It receives each item and its index,
               and returns a DOM node. JSX works perfectly — you can even use other Loom components:
-            </div>
+            </p>
             <code-block lang="tsx" code={`<loom-virtual items={this.people} estimatedHeight={38}>
   {(person: Person, index: number) => (
     <person-row pid={person.id} name={person.name} role={person.role}>
     </person-row>
   )}
 </loom-virtual>`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Infinite Scroll</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Use the <span class="ic">onNearEnd</span> callback for pagination:</div>
+            <p>Use the <span class="ic">onNearEnd</span> callback for pagination:</p>
             <code-block lang="tsx" code={`<loom-virtual
   items={this.messages}
   estimatedHeight={44}
@@ -137,19 +128,17 @@ loom-virtual {
 >
   {(msg: Message) => <div class="msg">{msg.text}</div>}
 </loom-virtual>`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Dynamic Item Counts</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Changing the <span class="ic">items</span> array (by reference) automatically clears
               the height cache, rebuilds offsets, and re-renders the visible window. This works seamlessly
               with reactive state:
-            </div>
+            </p>
             <code-block lang="tsx" code={`@reactive accessor data: Person[] = generate(10_000);
 
 setCount(n: number) {
@@ -160,7 +149,6 @@ setCount(n: number) {
 <loom-virtual items={this.data} estimatedHeight={38}>
   {(p: Person) => <div>{p.name}</div>}
 </loom-virtual>`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

@@ -32,8 +32,7 @@ export default class PageDecoratorDnd extends LoomElement {
                             The method returns the drag data string. Adds/removes a <code>"dragging"</code> CSS class during drag.
                         </div>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc"><strong>DraggableOptions:</strong></div>
+                        <p><strong>DraggableOptions:</strong></p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
                             <tbody>
@@ -42,15 +41,13 @@ export default class PageDecoratorDnd extends LoomElement {
                                 <tr><td><code>selector</code></td><td>string</td><td>—</td><td>CSS selector for child elements — enables event delegation. Matched element passed as first arg to method.</td></tr>
                             </tbody>
                         </table>
-                    </div>
                     <div class="feature-entry">
                         <div class="dec-sig">@dropzone(options?)</div>
                         <div class="dec-desc">
                             Method decorator. Wires <code>dragover</code>/<code>dragleave</code>/<code>drop</code> with proper <code>preventDefault()</code>. The method receives the transferred data string and the <code>DragEvent</code>.
                         </div>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc"><strong>DropzoneOptions:</strong></div>
+                        <p><strong>DropzoneOptions:</strong></p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
                             <tbody>
@@ -61,7 +58,6 @@ export default class PageDecoratorDnd extends LoomElement {
                                 <tr><td><code>over</code></td><td>{"() => Node | string"}</td><td>—</td><td>JSX overlay rendered during dragover, removed on leave/drop</td></tr>
                             </tbody>
                         </table>
-                    </div>
                 </section>
 
                 <section>

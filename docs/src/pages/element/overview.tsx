@@ -21,11 +21,10 @@ export default class PageElementOverview extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">LoomElement</span> extends <span class="ic">HTMLElement</span> and provides Shadow DOM,
               scoped CSS, lifecycle management, and automatic DOM morphing. Every Loom component inherits from it.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LoomElement, component, styles, css } from "@toyz/loom";
 
 const sheet = css\`
@@ -40,18 +39,16 @@ export class MyWidget extends LoomElement {
     return <p>Hello from a Loom component!</p>;
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>The update() Method</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">update()</span> is your render function. It's called whenever a <span class="ic">@reactive</span> property
               changes. Return a JSX node and Loom will morph the shadow DOM to match — only touching elements that actually changed.
-            </div>
+            </p>
             <code-block lang="ts" code={`update() {
   return (
     <div>
@@ -60,7 +57,6 @@ export class MyWidget extends LoomElement {
     </div>
   );
 }`}></code-block>
-          </div>
           <doc-notification type="note">
             If <span class="ic">update()</span> returns <span class="ic">void</span>, no morph occurs — useful when you
             manage the DOM imperatively.

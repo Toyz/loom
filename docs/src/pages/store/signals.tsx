@@ -18,26 +18,23 @@ export default class PageStoreSignals extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Loom's Signal layer bridges the <a href="https://github.com/tc39/proposal-signals" target="_blank">TC39 Signals proposal</a> with
               Loom's real-DOM trace engine. Unlike VDOM frameworks, Loom patches the actual DOM via morphing.
               Signals integrate by backing onto <span class="ic">Reactive&lt;T&gt;</span>, so dependency tracking, fast-patch bindings,
               and <span class="ic">scheduleUpdate()</span> work seamlessly.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { SignalState, SignalComputed, signal } from "@toyz/loom/store";`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>@signal Decorator</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Works like <span class="ic">@reactive</span> but backed by a <span class="ic">SignalState&lt;T&gt;</span>.
               The accessor exposes the raw value for ergonomic templates. The backing Signal is exposed as <span class="ic">this.$signal_&lt;field&gt;</span> for interop with external Signal-based code.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { component, LoomElement } from "@toyz/loom";
 import { signal } from "@toyz/loom/store";
 
@@ -54,12 +51,10 @@ class Counter extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
 
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">$signal_</span> accessor gives full Signal API access for interop scenarios:
-            </div>
+            </p>
             <code-block lang="ts" code={`// Access the backing SignalState
 const sig = this.$signal_count;
 
@@ -69,7 +64,6 @@ sig.set(42);   // write (triggers re-render)
 
 // Pass to external Signal-based libraries
 externalLib.observe(sig);`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Feature</th><th>@reactive</th><th>@signal</th></tr></thead>
@@ -88,11 +82,10 @@ externalLib.observe(sig);`}></code-block>
           <div class="group-header">
             <h2>SignalState&lt;T&gt;</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               A read-write Signal compatible with the TC39 <span class="ic">Signal.State</span> API. Backed by <span class="ic">Reactive&lt;T&gt;</span>,
               so reads via <span class="ic">.get()</span> are tracked by the trace engine.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { SignalState } from "@toyz/loom/store";
 
 const counter = new SignalState(0);
@@ -105,7 +98,6 @@ counter.peek();   // read without tracking
 counter.subscribe((value, prev) => {
   console.log(\`\${prev} → \${value}\`);
 });`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
@@ -122,11 +114,10 @@ counter.subscribe((value, prev) => {
           <div class="group-header">
             <h2>SignalComputed&lt;T&gt;</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               A read-only computed Signal. Lazily evaluates a callback, caches the result, and auto-tracks dependencies.
               Re-evaluates only when a dependency changes.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { SignalState, SignalComputed } from "@toyz/loom/store";
 
 const count = new SignalState(3);
@@ -138,7 +129,6 @@ doubled.get();  // 10 — recomputed
 
 // Dispose when no longer needed
 doubled.dispose();`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
@@ -155,17 +145,14 @@ doubled.dispose();`}></code-block>
           <div class="group-header">
             <h2>Converters</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Bridge between Loom's <span class="ic">Reactive&lt;T&gt;</span> and external Signal ecosystems.
-            </div>
-          </div>
+            </p>
 
-          <div class="feature-entry">
             <h3>toSignal(reactive) → SignalState</h3>
-            <div class="dec-desc">
+            <p>
               Wraps an existing <span class="ic">Reactive&lt;T&gt;</span> as a Signal. Shares the same backing Reactive — zero overhead.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { Reactive } from "@toyz/loom/store";
 import { toSignal } from "@toyz/loom/store";
 
@@ -175,14 +162,12 @@ const sig = toSignal(count);
 sig.get();     // 0 — reads from same Reactive
 sig.set(5);    // count.value is now 5
 count.set(10); // sig.get() is now 10`}></code-block>
-          </div>
 
-          <div class="feature-entry">
             <h3>fromSignal(signal, subscribe?) → Reactive</h3>
-            <div class="dec-desc">
+            <p>
               Wraps an external Signal as a Loom <span class="ic">Reactive&lt;T&gt;</span>. Since external Signals
               may not have subscribe, you provide a callback that hooks into your framework's effect system.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { fromSignal } from "@toyz/loom/store";
 
 // Wrap external TC39 Signal
@@ -195,20 +180,18 @@ const loomReactive = fromSignal(externalSignal, (onChange) => {
 });
 
 // Now usable with @watch, trace engine, components, etc.`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>How It Works with Real DOM</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Unlike VDOM frameworks, Loom patches the real DOM. The trace engine records which
               <span class="ic">Reactive</span> instances are read during <span class="ic">update()</span>.
               Signals integrate seamlessly because <span class="ic">SignalState.get()</span> calls
               <span class="ic">Reactive.value</span> under the hood.
-            </div>
+            </p>
             <code-block lang="ts" code={`// The rendering pipeline:
 //
 // 1. Component.update() runs in startTrace()/endTrace()
@@ -219,7 +202,6 @@ const loomReactive = fromSignal(externalSignal, (onChange) => {
 //
 // For closure bindings: {() => counter.get()}
 // The fast-patch path re-evaluates just that patcher — no full morph.`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

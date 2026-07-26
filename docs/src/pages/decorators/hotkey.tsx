@@ -36,10 +36,9 @@ export default class PageElementHotkey extends LoomElement {
                             Listeners are auto-cleaned on disconnect.
                         </div>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             <strong>Options:</strong>
-                        </div>
+                        </p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
                             <tbody>
@@ -47,18 +46,16 @@ export default class PageElementHotkey extends LoomElement {
                                 <tr><td><code>preventDefault</code></td><td>boolean</td><td>true</td><td>Call <code>e.preventDefault()</code> on match</td></tr>
                             </tbody>
                         </table>
-                    </div>
                 </section>
 
                 <section>
                     <div class="group-header">
                         <h2>Key Combos</h2>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Combos use <span class="ic">+</span> to join modifiers and a key.
                             Case-insensitive. Supported modifiers:
-                        </div>
+                        </p>
                         <table class="api-table">
                             <thead><tr><th>Modifier</th><th>Aliases</th><th>Meaning</th></tr></thead>
                             <tbody>
@@ -72,19 +69,17 @@ export default class PageElementHotkey extends LoomElement {
                         <doc-notification type="note">
                             Use <span class="ic">mod</span> for cross-platform shortcuts — it maps to <span class="ic">⌘ Cmd</span> on macOS and <span class="ic">Ctrl</span> everywhere else.
                         </doc-notification>
-                    </div>
                 </section>
 
                 <section>
                     <div class="group-header">
                         <h2>Object Combos</h2>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Instead of string combos, use <span class="ic">HotkeyCombo</span> objects
                             for programmatic or complex definitions. Object combos can also carry
                             inline <span class="ic">global</span> and <span class="ic">preventDefault</span> settings.
-                        </div>
+                        </p>
                         <table class="api-table">
                             <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
                             <tbody>
@@ -99,7 +94,6 @@ export default class PageElementHotkey extends LoomElement {
                             </tbody>
                         </table>
                         <code-block lang="ts" code={OBJECT_COMBOS}></code-block>
-                    </div>
                 </section>
 
                 <section>
@@ -113,17 +107,15 @@ export default class PageElementHotkey extends LoomElement {
                     <div class="group-header">
                         <h2>Live Demo</h2>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             Try pressing <span class="ic">⌘K</span> or <span class="ic">Ctrl+K</span> right now — the
                             docs search is powered by <span class="ic">@hotkey</span>:
-                        </div>
+                        </p>
                         <code-block lang="ts" code={LIVE_DEMO}></code-block>
                         <doc-notification type="note">
                             This is the actual code running in this docs site. The search palette
                             you see when pressing ⌘K uses <span class="ic">@hotkey</span> for its keyboard shortcut.
                         </doc-notification>
-                    </div>
                 </section>
 
                 <section>

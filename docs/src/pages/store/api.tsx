@@ -35,9 +35,7 @@ export default class PageFetch extends LoomElement {
           <div class="group-header">
             <h2>ApiState&lt;T&gt;</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">The object returned by the accessor. All properties are reactive — accessing them triggers re-renders.</div>
-          </div>
+            <p>The object returned by the accessor. All properties are reactive — accessing them triggers re-renders.</p>
           <table class="api-table">
             <thead><tr><th>Property / Method</th><th>Description</th></tr></thead>
             <tbody>
@@ -60,10 +58,8 @@ export default class PageFetch extends LoomElement {
           <div class="group-header">
             <h2>Options</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Use an options object for dynamic keys, interceptors, retries, or stale time.</div>
+            <p>Use an options object for dynamic keys, interceptors, retries, or stale time.</p>
             <code-block lang="ts" code={OPTIONS_EXAMPLE}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
@@ -93,10 +89,8 @@ export default class PageFetch extends LoomElement {
             <code-block lang="ts" code={INTERCEPTOR_EXAMPLE}></code-block>
           </div>
 
-          <div class="feature-entry">
             <h3>ApiCtx</h3>
-            <div class="dec-desc">The mutable context passed to interceptors.</div>
-          </div>
+            <p>The mutable context passed to interceptors.</p>
           <table class="api-table">
             <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -115,13 +109,11 @@ export default class PageFetch extends LoomElement {
           <div class="group-header">
             <h2>Error Handling — @catch_</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">@catch_</span> unifies error handling for both render errors and
               async <span class="ic">@api</span> fetch failures. It comes in three forms:
-            </div>
+            </p>
             <code-block lang="ts" code={CATCH_EXAMPLE}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Form</th><th>Scope</th></tr></thead>

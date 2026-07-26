@@ -45,10 +45,9 @@ export default class PageElementLog extends LoomElement {
               Full options object with <span class="ic">level</span>, <span class="ic">label</span>, <span class="ic">includeArgs</span>, and <span class="ic">skipArgs</span>.
             </div>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <strong>Options:</strong>
-            </div>
+            </p>
             <table class="api-table">
               <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
               <tbody>
@@ -58,19 +57,16 @@ export default class PageElementLog extends LoomElement {
                 <tr><td><code>skipArgs</code></td><td>number[] | Record</td><td>—</td><td>Selectively redact args by index or nested keys</td></tr>
               </tbody>
             </table>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>LogEntry</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Every <span class="ic">@log</span> call sends a structured <span class="ic">LogEntry</span> to the transport:
-            </div>
+            </p>
             <code-block lang="ts" code={LOG_ENTRY}></code-block>
-          </div>
         </section>
 
         <section>
@@ -104,14 +100,12 @@ export default class PageElementLog extends LoomElement {
           <div class="group-header">
             <h2>Arg Redaction</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use <span class="ic">includeArgs</span> and <span class="ic">skipArgs</span> to
               control what gets logged. Supports full opt-out, index-based redaction, and
               nested dot-path key redaction for object arguments.
-            </div>
+            </p>
             <code-block lang="ts" code={SKIP_ARGS_EXAMPLE}></code-block>
-          </div>
         </section>
 
         <section>

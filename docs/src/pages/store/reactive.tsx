@@ -18,8 +18,7 @@ export default class PageStoreReactive extends LoomElement {
           <div class="group-header">
             <h2>Reactive&lt;T&gt;</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">A generic observable value container. Notifies subscribers when the value changes.</div>
+            <p>A generic observable value container. Notifies subscribers when the value changes.</p>
             <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom/store";
 
 // In-memory (lost on reload)
@@ -30,7 +29,6 @@ const settings = new Reactive({ theme: "dark" }, {
   key: "app:settings",
   storage: new LocalAdapter(),
 });`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Method / Property</th><th>Description</th></tr></thead>
@@ -63,11 +61,10 @@ unsub();`}></code-block>
           <div class="group-header">
             <h2>CollectionStore&lt;T&gt;</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               CRUD layer over <span class="ic">Reactive&lt;T[]&gt;</span>. Items must have an <span class="ic">id: string</span> field.
               Auto-generates UUIDs if omitted.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { CollectionStore, LocalAdapter } from "@toyz/loom/store";
 
 interface Todo {
@@ -80,7 +77,6 @@ const todos = new CollectionStore<Todo>([], {
   key: "app:todos",
   storage: new LocalAdapter(),
 });`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
@@ -113,11 +109,10 @@ todos.subscribe((items) => {
           <div class="group-header">
             <h2>Persistence Migration</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use <span class="ic">swapStorage</span> to upgrade storage backend at runtime — for example,
               starting in-memory and switching to localStorage once the user logs in:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom/store";
 
 // Start in-memory (anonymous user)
@@ -133,7 +128,6 @@ prefs.swapStorage({
 
 // Log out: remove storage, keep in-memory
 prefs.clear({ theme: "dark", lang: "en" });`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

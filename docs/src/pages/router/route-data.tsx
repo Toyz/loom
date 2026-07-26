@@ -178,10 +178,9 @@ class PageDashboard extends LoomElement {
           <div class="group-header">
             <h2>@transform</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Route params and query strings are always strings from the URL. Use <span class="ic">@transform</span> to parse them into typed values:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { transform } from "@toyz/loom/transform";
 
 @route("/users/:id")
@@ -197,18 +196,16 @@ class PageUser extends LoomElement {
   @transform((v) => v === "true")
   accessor isAdmin = false;
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Combining Params + Query + Meta</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Mix and match single picks, full decompose, query strings,
               and route metadata on the same component:
-            </div>
+            </p>
             <code-block lang="ts" code={`@route("/users/:id/posts", {
   group: AdminGroup, // inherits group meta
   meta: { analytics: "user-posts" }
@@ -232,7 +229,6 @@ class PageUserPosts extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>

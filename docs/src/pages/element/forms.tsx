@@ -20,14 +20,12 @@ export default class PageElementForms extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">@form</span> decorator creates a typed <span class="ic">FormState&lt;T&gt;</span> object
               with validation, transforms, and dirty tracking. Unlike traditional form libraries that query DOM elements,
               Loom's <span class="ic">@form</span> is <strong>DOM-independent</strong> — you explicitly bind fields
               in your template using <code>.bind(field)</code>.
-            </div>
-          </div>
+            </p>
         </section>
 
         <section>
@@ -103,9 +101,7 @@ class LoginPage extends LoomElement {
           <div class="group-header">
             <h2>Field Schema</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Each field in the schema can define:</div>
-          </div>
+            <p>Each field in the schema can define:</p>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -119,11 +115,10 @@ class LoginPage extends LoomElement {
           <div class="group-header">
             <h2>Explicit Binding</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Instead of magic DOM queries, you explicitly wire each input using <code>.bind(field)</code> and
               <code>.data.field</code> for controlled inputs:
-            </div>
+            </p>
             <code-block lang="tsx" code={`// Each input is explicitly bound in the template:
 <input value={f.data.email} onInput={f.bind("email")} />
 
@@ -134,7 +129,6 @@ this.login.reset();
 if (this.login.validate()) {
   console.log("All good!", this.login.data);
 }`}></code-block>
-          </div>
         </section>
 
         <section>

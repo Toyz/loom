@@ -28,18 +28,14 @@ export default class PageElementObserver extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">@observer</span> decorator binds a method to a native DOM observer.
               Loom creates the observer on <span class="ic">connectedCallback</span>, observes the element (or a custom target),
               and disconnects automatically on <span class="ic">disconnectedCallback</span>. No manual lifecycle management needed.
-            </div>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            </p>
+            <p>
               Three observer types are supported:
-            </div>
-          </div>
+            </p>
           <table class="api-table">
             <thead><tr><th>Type</th><th>Native API</th><th>Use Case</th></tr></thead>
             <tbody>
@@ -78,15 +74,13 @@ class ResponsiveCard extends LoomElement {
   }
 }`}></code-block>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Pass <code>ResizeObserverOptions</code> as the second argument to control which box model to observe:
-            </div>
+            </p>
             <code-block lang="ts" code={`@observer("resize", { box: "border-box" })
 onResize(entry: ResizeObserverEntry) {
   // entry.borderBoxSize is now populated
 }`}></code-block>
-          </div>
         </section>
 
         <section>
@@ -169,12 +163,11 @@ class SlotCounter extends LoomElement {
           <div class="group-header">
             <h2>Custom Target</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               By default, <span class="ic">@observer</span> observes <code>this</code> — the component element itself.
               Pass a <strong>target resolver</strong> as the third argument to observe a different node, such as
               a parent, the document, or a node inside the shadow DOM.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
 import { observer } from "@toyz/loom/element";
 
@@ -193,7 +186,6 @@ class ParentWatcher extends LoomElement {
     this.resizeCanvas(width, height);
   }
 }`}></code-block>
-          </div>
           <doc-notification type="note">
             If the target resolver returns <code>null</code> or <code>undefined</code>, the observer
             is silently skipped. This is safe — no error is thrown.
@@ -204,11 +196,10 @@ class ParentWatcher extends LoomElement {
           <div class="group-header">
             <h2>Multiple Observers</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               A single component can have any number of <span class="ic">@observer</span> decorators.
               Each creates its own independent observer. All are cleaned up together on disconnect.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("smart-panel")
 class SmartPanel extends LoomElement {
   @observer("resize")
@@ -226,18 +217,15 @@ class SmartPanel extends LoomElement {
     // Re-count or re-render
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Lifecycle</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Observers follow the element's lifecycle automatically:
-            </div>
-          </div>
+            </p>
           <table class="api-table">
             <thead><tr><th>Element Event</th><th>Observer Action</th></tr></thead>
             <tbody>

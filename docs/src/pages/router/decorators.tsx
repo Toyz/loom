@@ -112,12 +112,11 @@ class UserSettings extends LoomElement { }
           <div class="group-header">
             <h2>Route Param Injection</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use <span class="ic">@prop</span> with route options to inject path and query
               parameters directly into reactive properties. Imported from
               <span class="ic">@toyz/loom/router</span>.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { params, routeQuery } from "@toyz/loom/router";
 
 // Single path parameter
@@ -131,20 +130,18 @@ class UserSettings extends LoomElement { }
 
 // All query params decomposed
 @prop({ query: routeQuery }) query!: { page: string; sort: string };`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>URL Part Decorators</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">@subdomain</span>, <span class="ic">@domain</span>, and <span class="ic">@tld</span> are set-and-forget auto-accessor decorators that
               parse <span class="ic">window.location.hostname</span> once at construction time.
               No reactive backing, no connect hooks — ideal for multi-tenant apps that branch
               on the subdomain.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { subdomain, domain, tld } from "@toyz/loom/router";
 
 @component("my-app")
@@ -168,7 +165,6 @@ class MyApp extends LoomElement {
                 <tr><td><code>localhost</code></td><td><code>""</code></td><td><code>"localhost"</code></td><td><code>"localhost"</code></td><td><code>""</code></td></tr>
               </tbody>
             </table>
-          </div>
         </section>
 
         <section>

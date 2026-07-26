@@ -18,12 +18,11 @@ export default class PageJsx extends LoomElement {
           <div class="group-header">
             <h2>How It Works</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Loom's JSX runtime (<span class="ic">@toyz/loom/jsx-runtime</span>) creates real DOM elements, not virtual nodes.
               When <span class="ic">update()</span> returns a new tree, Loom's morph algorithm diffs and patches the shadow DOM
               in-place, preserving focus, scroll position, and input values.
-            </div>
+            </p>
             <code-block lang="json" code={`// tsconfig.json
 {
   "compilerOptions": {
@@ -31,18 +30,16 @@ export default class PageJsx extends LoomElement {
     "jsxImportSource": "@toyz/loom"
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Keyed Reconciliation</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use <span class="ic">loom-key</span> to enable efficient list diffing. Without keys, Loom re-uses
               nodes positionally. With keys, it correctly handles insertions, deletions, and reordering.
-            </div>
+            </p>
             <code-block lang="ts" code={`update() {
   return (
     <ul>
@@ -52,20 +49,17 @@ export default class PageJsx extends LoomElement {
     </ul>
   );
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>rawHTML</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Inject pre-rendered HTML strings with the <span class="ic">rawHTML</span> prop. Useful for markdown,
               syntax-highlighted code, or trusted server content.
-            </div>
+            </p>
             <code-block lang="ts" code={`<div rawHTML={markdownToHtml(content)} />`}></code-block>
-          </div>
           <doc-notification type="note">
             <strong>Warning:</strong> rawHTML bypasses Loom's DOM diffing. Only use with trusted content — never user input.
           </doc-notification>
@@ -75,12 +69,11 @@ export default class PageJsx extends LoomElement {
           <div class="group-header">
             <h2>SVG Support</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               SVG elements are created with the correct namespace automatically. Loom recognizes all standard SVG tags
               (<span class="ic">svg</span>, <span class="ic">path</span>, <span class="ic">circle</span>,
               <span class="ic">g</span>, etc.).
-            </div>
+            </p>
             <code-block lang="ts" code={`update() {
   return (
     <svg viewBox="0 0 24 24" width={24} height={24}>
@@ -89,35 +82,30 @@ export default class PageJsx extends LoomElement {
     </svg>
   );
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>loom-keep</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Mark elements with <span class="ic">loom-keep</span> to skip them during morphing.
               Useful for third-party libraries that manage their own DOM subtree (e.g., maps, charts, code editors).
-            </div>
+            </p>
             <code-block lang="ts" code={`<div loom-keep ref={(el) => initMap(el)} />`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Event Handlers</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               JSX event handlers use the <span class="ic">onEvent</span> convention. They're added as native DOM event
               listeners and correctly diffed during morphing.
-            </div>
+            </p>
             <code-block lang="ts" code={`<button onClick={() => this.save()}>Save</button>
 <input onInput={(e) => this.query = e.target.value} />
 <div onPointerDown={this.handleDrag} />`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

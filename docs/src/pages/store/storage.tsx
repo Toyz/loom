@@ -26,17 +26,15 @@ export default class PageStoreStorage extends LoomElement {
           <div class="group-header">
             <h2>StorageAdapter Interface</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               All persistence in Loom goes through the <span class="ic">StorageAdapter</span> interface.
               Reactive and CollectionStore accept a storage option, and Loom handles serialization automatically.
-            </div>
+            </p>
             <code-block lang="ts" code={`interface StorageAdapter {
   get(key: string): string | null;
   set(key: string, value: string): void;
   remove(key: string): void;
 }`}></code-block>
-          </div>
         </section>
 
         <section>
@@ -101,7 +99,6 @@ accessor theme = "dark";`}></code-block>
             </tbody>
           </table>
 
-          <div class="feature-entry">
             <div class="dec-desc" style="margin-top: 1rem;">
               Values are hydrated from storage on first access — if a stored value exists, it takes precedence over the initializer. Changes are debounced and flushed via microtask so rapid writes result in a single storage write.
             </div>
@@ -112,17 +109,15 @@ connectedCallback() {
   super.connectedCallback();
   this.visitCount++;  // hydrate → increment → auto-persist
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Custom Adapter</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Implement <span class="ic">StorageAdapter</span> to persist to any backend — IndexedDB, a remote API, etc:
-            </div>
+            </p>
             <code-block lang="ts" code={`class IndexedDBAdapter implements StorageAdapter {
   private cache = new Map<string, string>();
 
@@ -146,17 +141,15 @@ const store = new Reactive([], {
   key: "app:items",
   storage: new IndexedDBAdapter(),
 });`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Swapping at Runtime</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use <span class="ic">swapStorage()</span> to change backends without losing data:
-            </div>
+            </p>
             <code-block lang="ts" code={`// Start in memory, upgrade to persistent after auth
 const userData = new Reactive(null);
 
@@ -166,7 +159,6 @@ onLogin(() => {
     storage: new LocalAdapter(),
   });
 });`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

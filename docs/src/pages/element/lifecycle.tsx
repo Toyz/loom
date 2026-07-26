@@ -185,8 +185,7 @@ async fetchUser() {
           <div class="group-header">
             <h2>Combined Example</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">A component with error boundary, async loading, and cleanup:</div>
+            <p>A component with error boundary, async loading, and cleanup:</p>
             <code-block lang="ts" code={`@component("user-card")
 @catch_((err, el) => {
   el.shadow.replaceChildren(
@@ -229,18 +228,16 @@ class UserCard extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>firstUpdated()</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Override <span class="ic">firstUpdated()</span> for one-time setup after the first render completes.
               The shadow DOM is fully populated at this point.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("my-el")
 class MyEl extends LoomElement {
   @mount
@@ -253,20 +250,18 @@ class MyEl extends LoomElement {
     this.shadow.querySelector("input")?.focus();
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>shouldUpdate()</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Override <span class="ic">shouldUpdate()</span> to skip render cycles.
               Called before each <span class="ic">update()</span> — return <span class="ic">false</span> to
               prevent the morph. Useful for imperative components like canvas or virtual lists
               that manage their own DOM after the initial skeleton.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("my-canvas-wrapper")
 class CanvasWrapper extends LoomElement {
   private initialized = false;
@@ -287,7 +282,6 @@ class CanvasWrapper extends LoomElement {
     return !this.initialized;
   }
 }`}></code-block>
-          </div>
           <doc-notification type="note">
             Default is <span class="ic">true</span> — all components render normally unless you override this.
             Built-in elements like <span class="ic">&lt;loom-canvas&gt;</span> and <span class="ic">&lt;loom-virtual&gt;</span> use this to block re-morphing.

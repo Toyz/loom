@@ -33,17 +33,15 @@ export default class PageDecoratorMedia extends LoomElement {
                             reactively whenever the match state changes. Cleanup is automatic on disconnect.
                         </div>
                     </div>
-                    <div class="feature-entry">
-                        <div class="dec-desc">
+                        <p>
                             <strong>Parameters:</strong>
-                        </div>
+                        </p>
                         <table class="api-table">
                             <thead><tr><th>Param</th><th>Type</th><th>Description</th></tr></thead>
                             <tbody>
                                 <tr><td><code>query</code></td><td>string</td><td>CSS media query string, e.g. <code>"(max-width: 768px)"</code></td></tr>
                             </tbody>
                         </table>
-                    </div>
                 </section>
 
                 <section>

@@ -105,23 +105,19 @@ export default class PageCanvas extends LoomElement {
           <div class="group-header">
             <h2>Fixed Size</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">For pixel-perfect rendering (e.g. games), disable auto-resize and set explicit dimensions:</div>
+            <p>For pixel-perfect rendering (e.g. games), disable auto-resize and set explicit dimensions:</p>
             <code-block lang="ts" code={FIXED_SIZE}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Imperative Access</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               You can also grab a reference via <span class="ic">@query</span> and draw
               directly outside the render loop:
-            </div>
+            </p>
             <code-block lang="ts" code={IMPERATIVE}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

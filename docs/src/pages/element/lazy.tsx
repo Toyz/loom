@@ -20,15 +20,13 @@ export default class PageElementLazy extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               The <span class="ic">@lazy</span> decorator enables code-splitting for any Loom component.
               Instead of bundling all component code upfront, <span class="ic">@lazy</span> defers
               loading the real implementation until the element is first connected to the DOM.
               This is useful for heavy components, route pages, or any element that
               doesn't need to be available immediately.
-            </div>
-          </div>
+            </p>
         </section>
 
         <section>
@@ -61,12 +59,11 @@ class HeavyChart extends LoomElement {}
           <div class="group-header">
             <h2>With Routes</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">@lazy</span> pairs naturally with <span class="ic">@route</span> for
               code-split pages. The stub registers the route immediately, but the page
               module only loads when a user navigates to it.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
 import { lazy } from "@toyz/loom/element";
 import { route } from "@toyz/loom/router";
@@ -80,19 +77,17 @@ class PageSettings extends LoomElement {}
 @component("page-admin")
 @lazy(() => import("./pages/admin"))
 class PageAdmin extends LoomElement {}`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Loading Indicator</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Pass a <span class="ic">loading</span> option to display something while the chunk is
               loading. You can use a tag name string <strong>or a JSX factory</strong> that returns
               a DOM node:
-            </div>
+            </p>
             <code-block lang="ts" code={`// Tag name — simple, use a pre-registered component
 @component("dashboard-page")
 @lazy(() => import("./pages/dashboard"), {
@@ -115,19 +110,16 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
               (like <span class="ic">&lt;my-spinner /&gt;</span>) is a full Loom element with DI,
               reactivity, and all decorators.
             </doc-notification>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>How It Works</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               When a <span class="ic">@lazy</span>-decorated element is connected to the DOM for
               the first time:
-            </div>
-          </div>
+            </p>
           <ol>
             <li>The loading indicator is shown (if configured)</li>
             <li>The loader function is called, triggering a dynamic import</li>
@@ -145,11 +137,10 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
           <div class="group-header">
             <h2>Events</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">@lazy</span> emits global events over the bus so any component can react
               to loading state — show progress bars, dim backgrounds, or track metrics.
-            </div>
+            </p>
             <code-block lang="tsx" code={`import { LoomElement, on } from "@toyz/loom";
 import { LazyLoadStart, LazyLoadEnd } from "@toyz/loom/element";
 
@@ -166,7 +157,6 @@ onLazyEnd(e: LazyLoadEnd) {
     console.error(\`<\${e.tag}> failed in \${e.duration}ms\`, e.error);
   }
 }`}></code-block>
-          </div>
 
           <table class="api-table">
             <thead><tr><th>Event</th><th>Property</th><th>Type</th><th>Description</th></tr></thead>
@@ -188,13 +178,12 @@ onLazyEnd(e: LazyLoadEnd) {
           <div class="group-header">
             <h2>Viewport Trigger</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               By default, <span class="ic">@lazy</span> loads the module as soon as the element is
               connected to the DOM. With <span class="ic">trigger: 'viewport'</span>, loading is
               deferred until the element scrolls near the viewport — powered by
               <code>IntersectionObserver</code>.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("heavy-chart")
 @lazy(() => import("./components/heavy-chart"), {
   trigger: 'viewport',       // load when near-visible
@@ -202,7 +191,6 @@ onLazyEnd(e: LazyLoadEnd) {
   loading: 'chart-skeleton'  // show skeleton while off-screen
 })
 class HeavyChart extends LoomElement {}`}></code-block>
-          </div>
           <doc-notification type="note">
             The observer is automatically cleaned up — disconnected and nulled — both after the
             load fires <strong>and</strong> if the element is removed from the DOM before loading.
@@ -214,12 +202,11 @@ class HeavyChart extends LoomElement {}`}></code-block>
           <div class="group-header">
             <h2>Prefetch</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Every <span class="ic">@lazy</span> class exposes a static
               <span class="ic">.prefetch()</span> method that warms the import cache before mount.
               Pairs naturally with hover states, route predictions, or idle callbacks.
-            </div>
+            </p>
             <code-block lang="ts" code={`// Warm the cache on hover — instant mount when user navigates
 navLink.addEventListener('mouseenter', () => {
   SettingsPage.prefetch();
@@ -230,14 +217,11 @@ requestIdleCallback(() => {
   DashboardPage.prefetch();
   AnalyticsPage.prefetch();
 });`}></code-block>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">.prefetch()</span> is idempotent — calling it multiple times returns the
               same cached promise. When the element mounts, it reuses the prefetched module instead of
               calling the loader again.
-            </div>
-          </div>
+            </p>
           <doc-notification type="tip">
             Combine <span class="ic">prefetch</span> with <span class="ic">trigger: 'viewport'</span>
             for the best of both worlds: start downloading the chunk early, then mount instantly when

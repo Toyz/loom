@@ -21,12 +21,10 @@ export default class PageElementIcon extends LoomElement {
             <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               <span class="ic">&lt;loom-icon&gt;</span> is a built-in custom element for rendering inline SVG icons.
               Icons are registered by name, rendered into shadow DOM, and styled via CSS custom properties.
-            </div>
-          </div>
+            </p>
           <doc-notification type="note">
             Like <span class="ic">LoomVirtual</span>, <span class="ic">LoomIcon</span> is excluded from the main barrel
             to avoid side effects. Import it explicitly to register the element:
@@ -39,10 +37,9 @@ export default class PageElementIcon extends LoomElement {
             <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Registering Icons</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Register icons with <span class="ic">LoomIcon.register()</span> for single icons or <span class="ic">LoomIcon.registerAll()</span> for batch registration:
-            </div>
+            </p>
             <code-block lang="ts" code={`// Single icon
 LoomIcon.register("home", '<path d="M3 12l9-9 9 9..." />');
 
@@ -52,7 +49,6 @@ LoomIcon.registerAll({
   search: '<path d="M21 21l-6-6m2-5a7 7 0 11-14..." />',
   close:  '<path d="M18 6L6 18M6 6l12 12" />',
 });`}></code-block>
-          </div>
           <doc-notification type="note">
             Register icons early in your app's entry point — before any component that uses
             <span class="ic">&lt;loom-icon&gt;</span> renders.
@@ -64,14 +60,12 @@ LoomIcon.registerAll({
             <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Usage</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">Use the element in JSX or HTML with the <span class="ic">name</span> attribute:</div>
+            <p>Use the element in JSX or HTML with the <span class="ic">name</span> attribute:</p>
             <code-block lang="ts" code={`// In JSX
 <loom-icon name="home" size={20} color="var(--text-muted)"></loom-icon>
 
 // In HTML
 <loom-icon name="search" size="16" color="#888"></loom-icon>`}></code-block>
-          </div>
         </section>
 
         <section>
@@ -108,13 +102,11 @@ LoomIcon.registerAll({
             <loom-icon name="puzzle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>IconResolver</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               For external icon packs (Heroicons, Lucide, etc.), register an <span class="ic">IconResolver</span> via DI.
               The resolver is tried <strong>first</strong> — if it returns <span class="ic">null</span>, the static registry is used as fallback.
               If no resolver is registered, only the static registry is used (backward compatible).
-            </div>
-          </div>
+            </p>
           <code-block lang="ts" code={RESOLVER_EXAMPLE}></code-block>
           <doc-notification type="note">
             <span class="ic">IconResolver</span> is optional. Existing apps using <span class="ic">LoomIcon.register()</span> continue
@@ -127,18 +119,16 @@ LoomIcon.registerAll({
             <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Styling</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Icons inherit <span class="ic">currentColor</span> by default, so they respond to the parent's
               text color. Override with the <span class="ic">color</span> attribute or CSS:
-            </div>
+            </p>
             <code-block lang="ts" code={`/* Icons inherit text color */
 .nav-item { color: #888; }
 .nav-item:hover { color: #fff; }
 
 /* Or set explicitly */
 <loom-icon name="bolt" color="var(--text-muted)"></loom-icon>`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

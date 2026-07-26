@@ -20,17 +20,15 @@ export default class PageText extends LoomElement {
           <div class="group-header">
             <h2>Overview</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Decodes common HTML entities (<span class="ic">&amp;lt;</span>, <span class="ic">&amp;gt;</span>,
               <span class="ic">&amp;amp;</span>, etc.) back to their literal characters. Use when rendering
               server-escaped strings in JSX.
-            </div>
+            </p>
             <doc-notification type="note">
               <strong>Safe by design:</strong> The decoded string is inserted as a text node —
               the browser cannot interpret it as HTML. No sanitizer needed.
             </doc-notification>
-          </div>
         </section>
 
         <section>

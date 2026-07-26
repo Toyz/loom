@@ -99,11 +99,10 @@ accessor routeParams!: UserParams;`}></code-block>
           <div class="group-header">
             <h2>Built-in Transformers</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Loom ships with common value transformers you can use with <span class="ic">@transform</span>
               or compose into custom pipelines:
-            </div>
+            </p>
             <table class="api-table">
               <thead><tr><th>Transformer</th><th>Conversion</th></tr></thead>
               <tbody>
@@ -121,7 +120,6 @@ accessor routeParams!: UserParams;`}></code-block>
 @prop @transform(toNumber) accessor count!: number;
 @prop @transform(toBoolean) accessor enabled!: boolean;
 @prop @transform(toDate) accessor createdAt!: Date;`}></code-block>
-          </div>
         </section>
 
         {/* ═══════════ Custom ═══════════ */}
@@ -130,10 +128,9 @@ accessor routeParams!: UserParams;`}></code-block>
           <div class="group-header">
             <h2>Custom Transforms</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               Use <span class="ic">createTransform</span> for reusable transforms with validation or complex logic:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { createTransform } from "@toyz/loom/transform";
 
 const toUpperCase = createTransform<string, string>(
@@ -141,7 +138,6 @@ const toUpperCase = createTransform<string, string>(
 );
 
 @prop @transform(toUpperCase) accessor title!: string;`}></code-block>
-          </div>
         </section>
         <doc-nav></doc-nav>
       </div>

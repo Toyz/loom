@@ -65,7 +65,6 @@ class EditorPage extends LoomElement {
           <div class="group-header">
             <h2>Combined Usage</h2>
           </div>
-          <div class="feature-entry">
             <code-block lang="ts" code={`@route("/dashboard", { meta: { layout: "full" } })
 @component("page-dashboard")
 class Dashboard extends LoomElement {
@@ -80,34 +79,29 @@ class Dashboard extends LoomElement {
     this.stopPolling();
   }
 }`}></code-block>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Lifecycle Order</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">When navigating from route A to route B:</div>
+            <p>When navigating from route A to route B:</p>
             <ol>
               <li>Guards for route B are checked</li>
               <li><code>@onRouteLeave</code> fires on route A's element</li>
               <li>Route resolves and <code>RouteChanged</code> event emits</li>
               <li><code>@onRouteEnter</code> fires on route B's element (after DOM update)</li>
             </ol>
-          </div>
         </section>
 
         <section>
           <div class="group-header">
             <h2>Multiple Handlers</h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
+            <p>
               You can apply <code>@onRouteEnter</code> or <code>@onRouteLeave</code> to
               multiple methods. All decorated methods will be called in declaration order.
-            </div>
-          </div>
+            </p>
         </section>
         <doc-nav></doc-nav>
       </div>
