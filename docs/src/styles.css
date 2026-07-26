@@ -1,5 +1,21 @@
-/**
+ /**
  * Loom Docs — Design System
+ *
+ * Direction: the Jacquard loom. Its punched cards were the first program —
+ * Ada Lovelace: "the Analytical Engine weaves algebraic patterns just as the
+ * Jacquard-loom weaves flowers and leaves." A decorator is a punch: a small
+ * declarative mark on a line that tells the machine what to lift.
+ *
+ * Materials, and what each is for:
+ *   ground  machine housing — the page
+ *   card    punched card stock — physical artifacts ONLY (specimens, lifecycle
+ *           cards). Never a generic container. If everything is a card, the
+ *           card stops meaning anything.
+ *   thread  madder red — marks a punched position. Not filigree.
+ *   indigo  the grid printed on real card stock — structure, secondary
+ *
+ * Type is IBM Plex throughout: IBM manufactured the cards, Plex is IBM's
+ * typeface. Condensed for display, Sans for prose, Mono for code and data.
  */
 
 /* ── Reset ── */
@@ -11,44 +27,55 @@
 
 /* ── Tokens ── */
 :root {
-  /* Palette */
-  --bg-base:       #0c0c10;
-  --bg-surface:    #121218;
-  --bg-raised:     #1a1a24;
-  --bg-hover:      #22222e;
-  --bg-active:     #2a2a38;
+  /* Ground — warm olive-black, the machine's housing. Deliberately not blue-black. */
+  --ground:        #14140f;
+  --ground-raised: #1c1c15;
+  --ground-sunk:   #100f0b;
+  --ground-hover:  #24241b;
 
-  --border-subtle: #1e1e2a;
-  --border-muted:  #2a2a3a;
+  /* Card stock — real punch cards were an olive-tinted buff, not warm cream */
+  --card:          #ded6c0;
+  --card-edge:     #c9c0a6;
+  --card-ink:      #1a1913;
 
-  --text-primary:  #e8e8f0;
-  --text-secondary:#9898ad;
-  --text-muted:    #5e5e74;
+  /* Warp — hairline rules; the fixed threads content is woven across */
+  --warp:          #33322a;
+  --warp-lit:      #4a4839;
 
-  --accent:        #818cf8;
-  --accent-dim:    #6366b0;
-  --accent-glow:   rgba(129, 140, 248, .12);
+  /* Thread — madder red. A punched position. Used sparingly. */
+  --thread:        #c4472f;
+  --thread-dim:    #8f3423;
+  --thread-wash:   rgba(196, 71, 47, 0.10);
 
-  --rose:          #f472b6;
-  --emerald:       #34d399;
-  --amber:         #fbbf24;
-  --cyan:          #22d3ee;
+  /* Indigo — the grid printed on card stock. Structural, secondary. */
+  --indigo:        #6b8cae;
+  --indigo-dim:    #47607a;
+
+  /* Text on ground */
+  --text-primary:  #e6e1d3;
+  --text-secondary:#a09a88;
+  --text-muted:    #6d6858;
+
+  /* Semantic — few on purpose. Colour means something or it is not used. */
+  --ok:            #7f9c5a;
+  --warn:          #c99a3d;
 
   /* Typography */
-  --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+  --font-display: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans:    'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, monospace;
 
   --text-xs:   0.75rem;
   --text-sm:   0.8125rem;
   --text-base: 0.9375rem;
-  --text-lg:   1.125rem;
+  --text-lg:   1.0625rem;
   --text-xl:   1.375rem;
-  --text-2xl:  1.75rem;
-  --text-3xl:  2.5rem;
-  --text-4xl:  3.5rem;
+  --text-2xl:  1.875rem;
+  --text-3xl:  2.75rem;
+  --text-4xl:  4rem;
 
-  --leading-tight: 1.2;
-  --leading-normal: 1.6;
+  --leading-tight: 1.1;
+  --leading-normal: 1.65;
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -63,17 +90,49 @@
   --space-16: 4rem;
 
   /* Layout */
-  --sidebar-width: 260px;
+  --sidebar-width: 272px;
   --content-max: 780px;
+  --rail-width: 40px;      /* the card's numbered edge */
 
-  /* Radius */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* Punch geometry — one source of truth for the motif */
+  --punch-size: 7px;
+  --punch-gap: 5px;
+
+  /* Radius — card stock is die-cut, not rounded */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
 
   /* Transitions */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── Compatibility aliases ──
+     ~100 pages still use the previous token names. Mapping them here applies
+     the new palette everywhere at once; they retire as pages are rewritten. */
+  --bg-base:       var(--ground);
+  --bg-surface:    var(--ground-sunk);
+  --bg-raised:     var(--ground-raised);
+  --bg-hover:      var(--ground-hover);
+  --bg-active:     var(--ground-hover);
+  --border-subtle: var(--warp);
+  --border-muted:  var(--warp-lit);
+  --accent:        var(--thread);
+  --accent-dim:    var(--thread-dim);
+  --accent-glow:   var(--thread-wash);
+  --rose:          var(--thread);
+  --emerald:       var(--ok);
+  --amber:         var(--warn);
+  --cyan:          var(--indigo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ── Base ── */
@@ -88,20 +147,26 @@ body {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   color: var(--text-primary);
-  background: var(--bg-base);
+  background: var(--ground);
   min-height: 100vh;
 }
 
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a { color: var(--thread); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 code, pre {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
 }
 
+/* Keyboard focus stays visible everywhere. */
+:focus-visible {
+  outline: 2px solid var(--thread);
+  outline-offset: 2px;
+}
+
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--warp-lit); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

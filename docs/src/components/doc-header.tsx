@@ -26,90 +26,77 @@ const styles = css`
     margin-bottom: 2.5rem;
   }
 
-  /* ── Title with shimmer ── */
+  /* ── Title ──
+     Plex Condensed, uppercase, stamped. The previous title animated a
+     gradient across itself on an 8s loop; a page title is a label, and
+     movement with no meaning is the loudest AI tell in the whole design. */
 
   .title-row {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 0.75rem;
   }
-  .title-row loom-icon {
-    flex-shrink: 0;
-    opacity: 0.85;
-  }
+  /* The per-page icon carried no information that the title did not. */
+  .title-row loom-icon { display: none; }
 
   h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
-    margin: 0 0 0.25rem 0;
-    background: linear-gradient(
-      90deg,
-      #e8e8f0 0%,
-      #e8e8f0 35%,
-      var(--accent, #818cf8) 50%,
-      var(--rose, #f472b6) 60%,
-      #e8e8f0 75%,
-      #e8e8f0 100%
-    );
-    background-size: 300% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer 8s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0%, 100% { background-position: 100% 50%; }
-    50%      { background-position: 0% 50%; }
+    font-family: var(--font-display, sans-serif);
+    font-size: 2.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary, #e6e1d3);
   }
 
   .subtitle {
-    color: var(--text-secondary, #9898ad);
-    font-size: 1.125rem;
-    line-height: 1.5;
+    color: var(--text-secondary, #a09a88);
+    font-size: 1.0625rem;
+    line-height: 1.55;
     margin: 0;
     font-weight: 400;
+    max-width: 62ch;
   }
 
-  /* ── Accent line ── */
-
+  /* Was a 60px gradient dash. Now the first weft line of the page: a full
+     rule that actually separates the header from the body. */
   .accent-line {
     margin-top: 1.5rem;
-    width: 60px;
-    height: 3px;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--accent, #818cf8), var(--rose, #f472b6));
-    opacity: 0.6;
+    width: 100%;
+    height: 1px;
+    border-radius: 0;
+    background: var(--warp, #33322a);
+    opacity: 1;
   }
 
-  /* ── TOC ── */
+  /* ── Contents ──
+     Was a bordered card restating every H2 directly above those same H2s.
+     Now a single quiet line of jump links, closer to a card's index strip. */
 
   .toc {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     padding: 0;
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid var(--border-subtle, #1e1e2a);
-    border-radius: 10px;
-    overflow: hidden;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
   }
 
   .toc-toggle {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0.7rem 1.25rem;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    width: auto;
+    padding: 0.25rem 0;
     background: none;
     border: none;
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
   }
-  .toc-toggle:hover {
-    background: rgba(255, 255, 255, 0.02);
-  }
+  .toc-toggle:hover .toc-title { color: var(--text-secondary, #a09a88); }
 
   .toc-toggle-left {
     display: flex;
@@ -162,49 +149,40 @@ const styles = css`
   .toc-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 2px;
+    gap: 0 1.25rem;
     list-style: none;
     margin: 0;
-    padding: 0 1.25rem 0.75rem;
+    padding: 0.5rem 0 0.25rem;
   }
 
   .toc-item {
-    flex: 0 0 50%;
+    flex: 0 0 auto;
     min-width: 0;
   }
 
   .toc-item a {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.8125rem;
-    font-weight: 450;
-    color: var(--text-secondary, #9898ad);
+    gap: 6px;
+    padding: 3px 0;
+    border-radius: 0;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-muted, #6d6858);
     text-decoration: none;
     cursor: pointer;
-    border-left: 2px solid transparent;
-    transition: all 0.18s ease;
+    border-left: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .toc-item a:hover {
-    background: rgba(129, 140, 248, 0.06);
-    border-left-color: var(--accent, #818cf8);
-    color: #e0e0f0;
-    padding-left: 12px;
+    background: transparent;
+    color: var(--text-primary, #e6e1d3);
+    border-bottom-color: var(--thread, #c4472f);
   }
-  .toc-item a:active {
-    background: rgba(129, 140, 248, 0.12);
-    transform: scale(0.98);
-  }
-  .toc-item a loom-icon {
-    flex-shrink: 0;
-    opacity: 0.55;
-    transition: opacity 0.18s ease, filter 0.18s ease;
-  }
+  .toc-item a loom-icon { display: none; }
   .toc-item a:hover loom-icon {
     opacity: 1;
     filter: brightness(1.25);

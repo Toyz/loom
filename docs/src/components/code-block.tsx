@@ -144,80 +144,109 @@ const styles = css`
     margin-bottom: var(--space-4, 1rem);
   }
 
+  /* The code block is the card feed: a sunken well with a punched left edge,
+     the way stock sits in the reader. Square corners — card stock is die-cut. */
   .block {
-    background: #0d0d14;
-    border: 1px solid var(--border-subtle, #1e1e2a);
-    border-radius: var(--radius-md, 8px);
+    position: relative;
+    background: var(--ground-sunk, #100f0b);
+    border: 1px solid var(--warp, #33322a);
+    border-radius: 0;
     overflow: hidden;
     font-size: 13px;
     line-height: 1.7;
+  }
+
+  /* Sprocket margin: the feed holes down the left edge of the stock. Purely
+     an edge treatment, so it is hidden from assistive tech by being a border
+     image rather than content. */
+  .block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 14px;
+    background-image: radial-gradient(
+      circle at 7px center,
+      var(--warp-lit, #4a4839) 0 1.5px,
+      transparent 1.6px
+    );
+    background-size: 14px 13px;
+    background-repeat: repeat-y;
+    border-right: 1px solid var(--warp, #33322a);
+    pointer-events: none;
   }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 16px;
-    background: rgba(255,255,255,0.02);
-    border-bottom: 1px solid var(--border-subtle, #1e1e2a);
+    padding: 5px 12px 5px 26px;
+    background: transparent;
+    border-bottom: 1px solid var(--warp, #33322a);
   }
 
   .lang-label {
     font-family: var(--font-mono, monospace);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, #6d6858);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
   }
 
   .copy-btn {
     background: none;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 0;
     padding: 2px 8px;
     cursor: pointer;
     font-family: var(--font-mono, monospace);
-    font-size: 11px;
-    color: var(--text-muted, #5e5e74);
-    transition: all 0.15s ease;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted, #6d6858);
+    transition: color 0.15s ease, border-color 0.15s ease;
   }
   .copy-btn:hover {
-    color: var(--text-secondary, #9898ad);
-    border-color: var(--border-muted, #2a2a3a);
-    background: rgba(255,255,255,0.03);
+    color: var(--text-primary, #e6e1d3);
+    border-color: var(--warp-lit, #4a4839);
   }
   .copy-btn.copied {
-    color: var(--emerald, #34d399);
+    color: var(--ok, #7f9c5a);
+    border-color: var(--ok, #7f9c5a);
   }
 
   pre {
     margin: 0;
-    padding: 16px 20px;
+    padding: 14px 20px 14px 26px;
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.06) transparent;
+    scrollbar-color: var(--warp-lit, #4a4839) transparent;
   }
 
   code {
-    font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+    font-family: var(--font-mono, monospace);
     font-size: 13px;
-    color: var(--text-primary, #e8e8f0);
+    color: var(--text-primary, #e6e1d3);
   }
 
-  /* ── Token colors ── */
-  .tok-keyword    { color: #c084fc; }
-  .tok-decorator  { color: #818cf8; font-weight: 500; }
-  .tok-string     { color: #86efac; }
-  .tok-comment    { color: #5e5e74; font-style: italic; }
-  .tok-type       { color: #67e8f9; }
-  .tok-number     { color: #fbbf24; }
-  .tok-punctuation{ color: #6b7280; }
-  .tok-ident      { color: #e8e8f0; }
-  .tok-variable   { color: #67e8f9; }
-  .tok-flag       { color: #fbbf24; }
-  .tok-tag        { color: #f472b6; }
-  .tok-key        { color: #67e8f9; }
+  /* ── Token colours ──
+     Tuned for the olive ground and kept to one warm/one cool family plus
+     neutrals, so a snippet reads as one object rather than confetti.
+     The decorator is the loudest token on purpose: it is the punch. */
+  .tok-keyword    { color: #b98b6a; }
+  .tok-decorator  { color: #d9603f; font-weight: 600; }
+  .tok-string     { color: #93a86a; }
+  .tok-comment    { color: #6d6858; font-style: italic; }
+  .tok-type       { color: #8fa9c4; }
+  .tok-number     { color: #c99a3d; }
+  .tok-punctuation{ color: #6d6858; }
+  .tok-ident      { color: #e6e1d3; }
+  .tok-variable   { color: #8fa9c4; }
+  .tok-flag       { color: #c99a3d; }
+  .tok-tag        { color: #b98b6a; }
+  .tok-key        { color: #8fa9c4; }
 `;
 
 /* ── Component ── */

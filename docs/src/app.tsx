@@ -139,7 +139,7 @@ const styles = css`
   :host {
     display: flex;
     min-height: 100vh;
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   }
 
   /* ─────────── Mobile Header (mobile only) ─────────── */
@@ -321,7 +321,7 @@ const styles = css`
   .brand-version {
     margin-left: auto;
     font-size: 0.625rem;
-    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-family: var(--font-mono, "IBM Plex Mono", monospace);
     color: var(--text-muted, #5e5e74);
     border: 1px solid var(--border-subtle, #1e1e2a);
     padding: 2px 8px;
@@ -358,7 +358,7 @@ const styles = css`
   }
   .search-trigger-kbd {
     font-size: 0.6rem;
-    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-family: var(--font-mono, "IBM Plex Mono", monospace);
     color: var(--text-muted, #5e5e74);
     border: 1px solid var(--border-subtle, #1e1e2a);
     padding: 2px 5px;
@@ -469,7 +469,7 @@ const styles = css`
   }
   .divider-version {
     font-size: 0.5rem;
-    font-family: var(--font-mono, "JetBrains Mono", monospace);
+    font-family: var(--font-mono, "IBM Plex Mono", monospace);
     color: var(--text-muted, #5e5e74);
     border: 1px solid var(--border-subtle, #1e1e2a);
     padding: 1px 5px;
