@@ -1,0 +1,14 @@
+{
+  // Pre-release check: typecheck the docs against the GENERATED dist/*.d.ts
+  // instead of loom's src/. Catches declaration-emit problems that the
+  // src-path resolution in tsconfig.json hides.
+  //
+  //   npm run build            # at the repo root — tsc → dist/
+  //   cd docs && npx tsc -p tsconfig.dist.json
+  //
+  // Run once before tagging a release, not on every iteration.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {}
+  }
+}

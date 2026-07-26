@@ -38,7 +38,30 @@ export default defineConfig({
     // Prevent dual module instances — ensures loom-rpc's imports of
     // @toyz/loom resolve to the same copy as the docs site's imports.
     dedupe: ["@toyz/loom"],
+    // Aliases are matched in insertion order, so every subpath MUST come before
+    // the barrel it prefixes ("element/icon" before "element", and all loom
+    // subpaths before bare "@toyz/loom").
     alias: {
+      // loom aliases — resolve to src/ so the docs exercise the working tree.
+      // Without these, node_modules/@toyz/loom (a symlink to the repo root)
+      // resolves through package.json exports to dist/, and the site silently
+      // runs against whatever was last built. Mirrors vitest.config.ts.
+      "@toyz/loom/jsx-runtime": resolve(root, "src/jsx-runtime.ts"),
+      "@toyz/loom/jsx-dev-runtime": resolve(root, "src/jsx-dev-runtime.ts"),
+      "@toyz/loom/element/icon": resolve(root, "src/element/icon.ts"),
+      "@toyz/loom/element/virtual": resolve(root, "src/element/virtual.ts"),
+      "@toyz/loom/element/canvas": resolve(root, "src/element/canvas.ts"),
+      "@toyz/loom/element/image": resolve(root, "src/element/image.ts"),
+      "@toyz/loom/element": resolve(root, "src/element/index.ts"),
+      "@toyz/loom/router": resolve(root, "src/router/index.ts"),
+      "@toyz/loom/store": resolve(root, "src/store/index.ts"),
+      "@toyz/loom/di": resolve(root, "src/di/index.ts"),
+      "@toyz/loom/transform": resolve(root, "src/transform/index.ts"),
+      "@toyz/loom/query": resolve(root, "src/query/index.ts"),
+      "@toyz/loom/decorators": resolve(root, "src/decorators/index.ts"),
+      "@toyz/loom/debug": resolve(root, "src/debug/inspect.ts"),
+      "@toyz/loom/testing": resolve(root, "src/testing.ts"),
+      "@toyz/loom": resolve(root, "src/index.ts"),
       // loom-rpc aliases
       "@toyz/loom-rpc/testing": resolve(root, "loom-rpc/src/testing.ts"),
       "@toyz/loom-rpc": resolve(root, "loom-rpc/src/index.ts"),

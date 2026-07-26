@@ -13,7 +13,31 @@
     "types": ["vite/client"],
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "@toyz/loom"
+    "jsxImportSource": "@toyz/loom",
+
+    // Typecheck against loom's src/, matching the Vite aliases in
+    // vite.config.ts. Without this, `npm run tsc` reads dist/*.d.ts while the
+    // dev server runs src/ — a type break would only surface after a build.
+    // tsconfig.dist.json drops these to verify the generated .d.ts instead.
+    // No baseUrl (deprecated in TS 5.x) — paths resolve relative to this file.
+    "paths": {
+      "@toyz/loom/jsx-runtime": ["../src/jsx-runtime.ts"],
+      "@toyz/loom/jsx-dev-runtime": ["../src/jsx-dev-runtime.ts"],
+      "@toyz/loom/element/icon": ["../src/element/icon.ts"],
+      "@toyz/loom/element/virtual": ["../src/element/virtual.ts"],
+      "@toyz/loom/element/canvas": ["../src/element/canvas.ts"],
+      "@toyz/loom/element/image": ["../src/element/image.ts"],
+      "@toyz/loom/element": ["../src/element/index.ts"],
+      "@toyz/loom/router": ["../src/router/index.ts"],
+      "@toyz/loom/store": ["../src/store/index.ts"],
+      "@toyz/loom/di": ["../src/di/index.ts"],
+      "@toyz/loom/transform": ["../src/transform/index.ts"],
+      "@toyz/loom/query": ["../src/query/index.ts"],
+      "@toyz/loom/decorators": ["../src/decorators/index.ts"],
+      "@toyz/loom/debug": ["../src/debug/inspect.ts"],
+      "@toyz/loom/testing": ["../src/testing.ts"],
+      "@toyz/loom": ["../src/index.ts"]
+    }
   },
   "include": ["src"]
 }
