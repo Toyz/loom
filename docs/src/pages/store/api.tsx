@@ -41,7 +41,8 @@ export default class PageFetch extends LoomElement {
               <tr><td><span class="ic">.ok</span></td><td>True if the last fetch succeeded</td></tr>
               <tr><td><span class="ic">.data</span></td><td>Resolved data (<code>T | undefined</code>)</td></tr>
               <tr><td><span class="ic">.error</span></td><td>Error from the last fetch attempt</td></tr>
-              <tr><td><span class="ic">.loading</span></td><td><code>true</code> during initial fetch (not refetch)</td></tr>
+              <tr><td><span class="ic">.loading</span></td><td><code>true</code> only while there is nothing to show — the first fetch, before any data</td></tr>
+              <tr><td><span class="ic">.fetching</span></td><td><code>true</code> whenever a request is in flight, including a background refetch that already has data</td></tr>
               <tr><td><span class="ic">.stale</span></td><td><code>true</code> after <code>staleTime</code> has elapsed</td></tr>
               <tr><td><span class="ic">.refetch()</span></td><td>Manually re-run the fetch</td></tr>
               <tr><td><span class="ic">.invalidate()</span></td><td>Mark stale + trigger refetch</td></tr>
@@ -65,9 +66,52 @@ export default class PageFetch extends LoomElement {
               <tr><td><code>pipe</code></td><td><code>string[]</code></td><td>Named interceptors to run <strong>after</strong> fetch (response transformers).</td></tr>
               <tr><td><code>staleTime</code></td><td><code>number</code></td><td>ms before data is considered stale (default: 0).</td></tr>
               <tr><td><code>retry</code></td><td><code>number</code></td><td>Retry count with exponential backoff (default: 0).</td></tr>
+              <tr><td><code>enabled</code></td><td><code>(el) =&gt; boolean</code></td><td>Gate the request. Nothing is fetched while this returns false.</td></tr>
             </tbody>
           </table>
         </doc-section>
+        {/* ── Gating ── */}
+        <doc-section heading="Waiting for a prop">
+          <p>
+            An <span class="ic">@api</span> fires as soon as the accessor is first read, which is
+            during the component's first render. If the URL depends on a prop that arrives
+            later — a route param, an id passed from a parent — that first request goes out
+            against <span class="ic">undefined</span>, and its failure then has to be explained
+            away in the UI.
+          </p>
+          <p>
+            <span class="ic">enabled</span> gates it. While the gate is shut nothing is
+            requested, and the state reports <span class="ic">loading: false</span> with no
+            data — because a request that has not been made is not a request that is pending.
+            The fetch goes out on the first render after the gate opens.
+          </p>
+          <code-block lang="ts" code={ENABLED_EXAMPLE}></code-block>
+          <doc-notification type="tip">
+            Pair it with <span class="ic">key</span>. The gate decides <em>whether</em> to
+            fetch; the key decides <em>when to fetch again</em>. A query that is gated on an id
+            and keyed by it will fetch once when the id appears and again whenever it changes.
+          </doc-notification>
+        </doc-section>
+
+        {/* ── loading vs fetching ── */}
+        <doc-section heading="loading vs fetching">
+          <p>
+            Two different questions, and conflating them produces the flicker where a screen
+            blanks itself every time it revalidates.
+          </p>
+          <table class="api-table">
+            <thead>
+              <tr><th>State</th><th><code>loading</code></th><th><code>fetching</code></th><th>Render</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>First fetch, nothing yet</td><td>true</td><td>true</td><td>A skeleton</td></tr>
+              <tr><td>Loaded, idle</td><td>false</td><td>false</td><td>The data</td></tr>
+              <tr><td>Refetching, data present</td><td>false</td><td>true</td><td>The data, plus a quiet indicator</td></tr>
+              <tr><td>Gated shut</td><td>false</td><td>false</td><td>Whatever "nothing asked for" looks like</td></tr>
+            </tbody>
+          </table>
+        </doc-section>
+
         {/* ── Interceptors ── */}
         <doc-section heading="Interceptors">
           <api-entry sig="@intercept()">
@@ -148,6 +192,27 @@ class Profile extends LoomElement {
       loading: () => <div class="skeleton" />,
       ok:      (u) => <h1>{u.name}</h1>,
       err:     (e) => <p class="error">{e.message}</p>,
+    });
+  }
+}`;
+
+const ENABLED_EXAMPLE = `@component("user-card")
+class UserCard extends LoomElement {
+  @prop accessor userId = "";
+
+  @api<User>({
+    fn: (el) => fetch(\`/api/users/\${el.userId}\`).then((r) => r.json()),
+    key: (el) => el.userId,
+    enabled: (el) => Boolean(el.userId),   // nothing goes out until the id lands
+  })
+  accessor user!: ApiState<User>;
+
+  update() {
+    if (!this.userId) return <p>Pick someone.</p>;
+    return this.user.match({
+      loading: () => <p>Loading...</p>,
+      ok: (u) => <p>{u.name}{this.user.fetching ? " (refreshing)" : ""}</p>,
+      err: (e) => <p>{e.message}</p>,
     });
   }
 }`;

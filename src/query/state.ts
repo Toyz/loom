@@ -31,7 +31,20 @@ export function createApiState<T>(
   const staleTime = opts.staleTime ?? 0;
   const maxRetries = opts.retry ?? 0;
 
+  /** Whether a request is allowed right now. No gate declared means always. */
+  const isEnabled = (): boolean => (opts.enabled ? opts.enabled(host) : true);
+
   async function runFetch(): Promise<void> {
+    // A gated query has not failed and is not pending — it simply has not been
+    // asked for yet. Reporting loading:true here would leave a spinner up for
+    // a request that is never going to be made.
+    if (!isEnabled()) {
+      loading = false;
+      fetching = false;
+      scheduleUpdate();
+      return;
+    }
+
     // Abort any in-flight request
     controller?.abort();
     controller = new AbortController();
@@ -171,6 +184,26 @@ export function createApiState<T>(
     }
   }
 
+  /**
+   * Re-arm once the gate opens.
+   *
+   * A query gated on a prop has no key change to react to when that prop
+   * finally arrives — `enabled` flips but the key was undefined before and is
+   * undefined-shaped still. Deferred for the same reason checkKey() is: this
+   * runs inside a getter read during a traced render.
+   */
+  let gateOpen = false;
+  function checkGate(): void {
+    if (!opts.enabled) return;
+    const open = isEnabled();
+    if (open && !gateOpen && data === undefined && !fetching) {
+      gateOpen = true;
+      queueMicrotask(runFetch);
+    } else if (!open) {
+      gateOpen = false;
+    }
+  }
+
   /** Check if stale */
   function checkStale(): void {
     if (staleTime > 0 && lastFetchTime > 0 && !stale) {
@@ -187,6 +220,7 @@ export function createApiState<T>(
     },
     get data() {
       checkKey();
+      checkGate();
       checkStale();
       return data;
     },
@@ -195,6 +229,9 @@ export function createApiState<T>(
     },
     get loading() {
       return loading;
+    },
+    get fetching() {
+      return fetching;
     },
     get stale() {
       checkStale();
@@ -249,7 +286,9 @@ export function createApiState<T>(
     },
   };
 
-  // Fire initial fetch
+  // Fire the initial fetch. runFetch() no-ops while the gate is shut, and
+  // `data` re-checks it on every read, so the request goes out on the first
+  // render after the gate opens.
   if (opts.key) {
     lastKey = opts.key(host);
   }

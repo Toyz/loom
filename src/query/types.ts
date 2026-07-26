@@ -53,8 +53,17 @@ export interface ApiState<T, E = Error> {
   readonly data: T | undefined;
   /** Error from the last fetch attempt */
   readonly error: E | undefined;
-  /** True during the initial fetch or refetch */
+  /** True during the initial fetch — no data has ever arrived yet. */
   readonly loading: boolean;
+  /**
+   * True whenever a request is in flight, including a background revalidation
+   * that already has data to show.
+   *
+   * `loading` is for "there is nothing to render yet"; this is for "what you
+   * are looking at may be about to change". A spinner that blanks the screen
+   * on every refetch is the bug this distinction prevents.
+   */
+  readonly fetching: boolean;
   /** True when staleTime has elapsed since last successful fetch */
   readonly stale: boolean;
   /** Manually re-execute the fetch */
@@ -102,4 +111,23 @@ export interface ApiOptions<T, El = any> {
   staleTime?: number;
   /** Number of retries on failure with exponential backoff (default: 0) */
   retry?: number;
+  /**
+   * Gate the request. When this returns false nothing is fetched, and the
+   * state sits at `loading: false` with no data rather than reporting a
+   * request that never happened.
+   *
+   * Without it, an @api whose URL depends on a prop fires once before that
+   * prop is set — a request for `/users/undefined` whose failure then has to
+   * be explained away.
+   *
+   * ```ts
+   * @api({
+   *   fn: (el) => fetch(`/users/${el.userId}`).then((r) => r.json()),
+   *   key: (el) => el.userId,
+   *   enabled: (el) => Boolean(el.userId),
+   * })
+   * accessor user!: ApiState<User>;
+   * ```
+   */
+  enabled?: (el: El) => boolean;
 }
