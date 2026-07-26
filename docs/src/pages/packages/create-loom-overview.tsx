@@ -43,14 +43,14 @@ npm run dev`}></code-block>
     └── global.d.ts        CSS module types`}></code-block>
         </doc-section>
         <doc-section heading="Dependencies">
-          <table class="api-table">
-            <thead><tr><th>Type</th><th>Package</th><th>Why</th></tr></thead>
-            <tbody>
-              <tr><td><code>dependencies</code></td><td>@toyz/loom</td><td>The framework (zero transitive deps)</td></tr>
-              <tr><td><code>devDependencies</code></td><td>typescript</td><td>Type checking</td></tr>
-              <tr><td><code>devDependencies</code></td><td>vite</td><td>Dev server + bundler</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Type", "Package", "Why"]}
+            rows={[
+              [<code>dependencies</code>, "@toyz/loom", "The framework (zero transitive deps)"],
+              [<code>devDependencies</code>, "typescript", "Type checking"],
+              [<code>devDependencies</code>, "vite", "Dev server + bundler"],
+            ]}
+          ></api-table>
           <p>No other packages. No plugins. No polyfills.</p>
         </doc-section>
         <doc-section heading="Starter Component">

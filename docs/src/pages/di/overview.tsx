@@ -37,15 +37,15 @@ app.use("API_URL", "https://api.example.com");
 // Factory function
 app.use(() => new DatabasePool({ max: 10 }));`}></code-block>
 
-          <table class="api-table">
-            <thead><tr><th>Pattern</th><th>Behavior</th></tr></thead>
-            <tbody>
-              <tr><td><span class="ic">app.use(Class)</span></td><td>Instantiates once, keyed by constructor</td></tr>
-              <tr><td><span class="ic">app.use(key, value)</span></td><td>Stores value under explicit key</td></tr>
-              <tr><td><span class="ic">app.use(instance)</span></td><td>Stores instance, keyed by its constructor</td></tr>
-              <tr><td><span class="ic">app.use(factory)</span></td><td>Calls factory, stores result</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Pattern", "Behavior"]}
+            rows={[
+              [<span class="ic">app.use(Class)</span>, "Instantiates once, keyed by constructor"],
+              [<span class="ic">app.use(key, value)</span>, "Stores value under explicit key"],
+              [<span class="ic">app.use(instance)</span>, "Stores instance, keyed by its constructor"],
+              [<span class="ic">app.use(factory)</span>, "Calls factory, stores result"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Retrieving Services">
             <code-block lang="ts" code={`// Get (throws if not registered)

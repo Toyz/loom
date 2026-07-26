@@ -43,18 +43,16 @@ class MyButton extends LoomElement {
               When <span class="ic">shadow: false</span> is set, Loom skips <span class="ic">attachShadow()</span> in the constructor. Instead, <span class="ic">this.shadow</span> points to the host element itself.
               All existing APIs work unchanged:
             </p>
-          <table class="api-table">
-            <thead>
-              <tr><th>API</th><th>Behavior</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>update()</code></td><td>Morphs directly into the host element</td></tr>
-              <tr><td><code>$() / $$()</code></td><td>Query the host's subtree</td></tr>
-              <tr><td><code>@query / @queryAll</code></td><td>Same as above</td></tr>
-              <tr><td><code>@reactive / @prop</code></td><td>Work normally — trigger re-renders</td></tr>
-              <tr><td><code>@mount / @unmount</code></td><td>All lifecycle hooks fire as expected</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["API", "Behavior"]}
+            rows={[
+              [<code>update()</code>, "Morphs directly into the host element"],
+              [<code>$() / $$()</code>, "Query the host's subtree"],
+              [<code>@query / @queryAll</code>, "Same as above"],
+              [<code>@reactive / @prop</code>, "Work normally — trigger re-renders"],
+              [<code>@mount / @unmount</code>, "All lifecycle hooks fire as expected"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="CSS with Light DOM">
             <p>

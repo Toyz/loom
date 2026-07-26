@@ -21,61 +21,25 @@ export default class PageCanvas extends LoomElement {
           <code-block lang="ts" code={QUICK_START}></code-block>
         </doc-section>
         <doc-section heading="Props">
-          <table class="api-table">
-            <thead>
-              <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="ic">autoResize</span></td>
-                <td>boolean</td>
-                <td><span class="ic">true</span></td>
-                <td>Match canvas dimensions to host element via ResizeObserver</td>
-              </tr>
-              <tr>
-                <td><span class="ic">width</span></td>
-                <td>number</td>
-                <td>0</td>
-                <td>Fixed width in CSS pixels (only used when autoResize is false)</td>
-              </tr>
-              <tr>
-                <td><span class="ic">height</span></td>
-                <td>number</td>
-                <td>0</td>
-                <td>Fixed height in CSS pixels (only used when autoResize is false)</td>
-              </tr>
-              <tr>
-                <td><span class="ic">draw</span></td>
-                <td>(ctx, dt, t) =&gt; void</td>
-                <td>null</td>
-                <td>Called every frame with the 2D context, delta time (s), and timestamp</td>
-              </tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Prop", "Type", "Default", "Description"]}
+            rows={[
+              [<span class="ic">autoResize</span>, "boolean", <span class="ic">true</span>, "Match canvas dimensions to host element via ResizeObserver"],
+              [<span class="ic">width</span>, "number", "0", "Fixed width in CSS pixels (only used when autoResize is false)"],
+              [<span class="ic">height</span>, "number", "0", "Fixed height in CSS pixels (only used when autoResize is false)"],
+              [<span class="ic">draw</span>, "(ctx, dt, t) =&gt; void", "null", "Called every frame with the 2D context, delta time (s), and timestamp"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="API">
-          <table class="api-table">
-            <thead>
-              <tr><th>Member</th><th>Type</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="ic">ctx</span></td>
-                <td>CanvasRenderingContext2D</td>
-                <td>Cached 2D rendering context</td>
-              </tr>
-              <tr>
-                <td><span class="ic">canvas</span></td>
-                <td>HTMLCanvasElement</td>
-                <td>Reference to the raw &lt;canvas&gt; element</td>
-              </tr>
-              <tr>
-                <td><span class="ic">clear()</span></td>
-                <td>void</td>
-                <td>Convenience to clear the full canvas</td>
-              </tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Member", "Type", "Description"]}
+            rows={[
+              [<span class="ic">ctx</span>, "CanvasRenderingContext2D", "Cached 2D rendering context"],
+              [<span class="ic">canvas</span>, "HTMLCanvasElement", "Reference to the raw &lt;canvas&gt; element"],
+              [<span class="ic">clear()</span>, "void", "Convenience to clear the full canvas"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="How It Works">
           <ul>

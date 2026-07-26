@@ -36,15 +36,13 @@ app.start();
 router.start();`}></code-block>
         </doc-section>
         <doc-section heading="Modes">
-          <table class="api-table">
-            <thead>
-              <tr><th>Mode</th><th>URL Shape</th><th>Requires Server</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>hash</td><td>example.com/#/users/123</td><td>No</td></tr>
-              <tr><td>history</td><td>example.com/users/123</td><td>Yes (SPA fallback)</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Mode", "URL Shape", "Requires Server"]}
+            rows={[
+              ["hash", "example.com/#/users/123", "No"],
+              ["history", "example.com/users/123", "Yes (SPA fallback)"],
+            ]}
+          ></api-table>
             <p>
               <span class="ic">hash</span> mode is zero-config and works on static hosts.
               <span class="ic">history</span> mode gives clean URLs but requires your server to serve

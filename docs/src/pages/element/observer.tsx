@@ -33,14 +33,14 @@ export default class PageElementObserver extends LoomElement {
             <p>
               Three observer types are supported:
             </p>
-          <table class="api-table">
-            <thead><tr><th>Type</th><th>Native API</th><th>Use Case</th></tr></thead>
-            <tbody>
-              <tr><td><code>"resize"</code></td><td><code>ResizeObserver</code></td><td>React to element size changes</td></tr>
-              <tr><td><code>"intersection"</code></td><td><code>IntersectionObserver</code></td><td>Detect visibility in viewport</td></tr>
-              <tr><td><code>"mutation"</code></td><td><code>MutationObserver</code></td><td>Watch child/attribute/text changes</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Type", "Native API", "Use Case"]}
+            rows={[
+              [<code>"resize"</code>, <code>ResizeObserver</code>, "React to element size changes"],
+              [<code>"intersection"</code>, <code>IntersectionObserver</code>, "Detect visibility in viewport"],
+              [<code>"mutation"</code>, <code>MutationObserver</code>, "Watch child/attribute/text changes"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="ResizeObserver">
           <api-entry sig={`@observer("resize", opts?)`}>

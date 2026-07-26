@@ -138,42 +138,16 @@ class MyCounter extends LoomElement {
             markup is worth putting in the initial document, which it makes larger for
             everyone.
           </p>
-          <table class="api-table">
-            <thead>
-              <tr>
-                <th>The component is</th>
-                <th>Use</th>
-                <th>Because</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>A shell, nav, or hero above the fold</td>
-                <td><code>DSD</code></td>
-                <td>It is the first thing seen, and it is the same for everyone</td>
-              </tr>
-              <tr>
-                <td>Below the fold</td>
-                <td><code>@lazy</code></td>
-                <td>Pre-painting what nobody has scrolled to only costs bytes</td>
-              </tr>
-              <tr>
-                <td>Behind a click that has not happened</td>
-                <td><code>@lazy</code></td>
-                <td>Same reason, and the module can arrive during the click</td>
-              </tr>
-              <tr>
-                <td>Different for every user</td>
-                <td>Neither</td>
-                <td>Per-user HTML cannot be cached at the edge, which was the point</td>
-              </tr>
-              <tr>
-                <td>Meaningless without JavaScript</td>
-                <td>Neither</td>
-                <td>A pre-painted control that cannot yet be used is worse than nothing</td>
-              </tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["The component is", "Use", "Because"]}
+            rows={[
+              ["A shell, nav, or hero above the fold", <code>DSD</code>, "It is the first thing seen, and it is the same for everyone"],
+              ["Below the fold", <code>@lazy</code>, "Pre-painting what nobody has scrolled to only costs bytes"],
+              ["Behind a click that has not happened", <code>@lazy</code>, "Same reason, and the module can arrive during the click"],
+              ["Different for every user", "Neither", "Per-user HTML cannot be cached at the edge, which was the point"],
+              ["Meaningless without JavaScript", "Neither", "A pre-painted control that cannot yet be used is worse than nothing"],
+            ]}
+          ></api-table>
         </doc-section>
 
         <doc-section heading="Browser support">

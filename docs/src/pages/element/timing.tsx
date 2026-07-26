@@ -197,42 +197,16 @@ class ParticleField extends LoomElement {
           </api-entry>
         </doc-section>
         <doc-section heading="Choosing between them">
-          <table class="api-table">
-            <thead>
-              <tr>
-                <th>You want</th>
-                <th>Use</th>
-                <th>Because</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>A clock, a poll, a heartbeat</td>
-                <td><code>@interval</code></td>
-                <td>Fixed wall-clock cadence, keeps running hidden</td>
-              </tr>
-              <tr>
-                <td>Auto-dismiss, delayed reveal</td>
-                <td><code>@timeout</code></td>
-                <td>One shot per connect</td>
-              </tr>
-              <tr>
-                <td>Search-as-you-type, autosave</td>
-                <td><code>@debounce</code></td>
-                <td>Collapses a burst into the last call</td>
-              </tr>
-              <tr>
-                <td>Scroll, resize, pointer move</td>
-                <td><code>@throttle</code></td>
-                <td>Responds now and still settles correctly</td>
-              </tr>
-              <tr>
-                <td>Canvas, physics, anything visual</td>
-                <td><code>@animationFrame</code></td>
-                <td>Frame-synced, pauses in a hidden tab</td>
-              </tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["You want", "Use", "Because"]}
+            rows={[
+              ["A clock, a poll, a heartbeat", <code>@interval</code>, "Fixed wall-clock cadence, keeps running hidden"],
+              ["Auto-dismiss, delayed reveal", <code>@timeout</code>, "One shot per connect"],
+              ["Search-as-you-type, autosave", <code>@debounce</code>, "Collapses a burst into the last call"],
+              ["Scroll, resize, pointer move", <code>@throttle</code>, "Responds now and still settles correctly"],
+              ["Canvas, physics, anything visual", <code>@animationFrame</code>, "Frame-synced, pauses in a hidden tab"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Worked example">
           <p>

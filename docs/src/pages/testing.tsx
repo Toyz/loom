@@ -151,53 +151,15 @@ describe("TestCounter", () => {
 
         <section>
           <h2>API Reference</h2>
-          <table class="api-table">
-            <thead>
-              <tr>
-                <th>Function</th>
-                <th>Returns</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <code>fixture(tag, attrs?)</code>
-                </td>
-                <td>
-                  <code>Promise&lt;Rendered&lt;T&gt;&gt;</code>
-                </td>
-                <td>Mount by tag, flush first render</td>
-              </tr>
-              <tr>
-                <td>
-                  <code>fixtureHTML(html)</code>
-                </td>
-                <td>
-                  <code>Promise&lt;Rendered&lt;T&gt;&gt;</code>
-                </td>
-                <td>Mount from HTML string</td>
-              </tr>
-              <tr>
-                <td>
-                  <code>cleanup()</code>
-                </td>
-                <td>
-                  <code>void</code>
-                </td>
-                <td>Remove all fixtures, fire disconnects</td>
-              </tr>
-              <tr>
-                <td>
-                  <code>nextRender(el)</code>
-                </td>
-                <td>
-                  <code>Promise&lt;void&gt;</code>
-                </td>
-                <td>Wait for next scheduled update</td>
-              </tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Function", "Returns", "Description"]}
+            rows={[
+              [<code>fixture(tag, attrs?)</code>, <code>Promise&lt;Rendered&lt;T&gt;&gt;</code>, "Mount by tag, flush first render"],
+              [<code>fixtureHTML(html)</code>, <code>Promise&lt;Rendered&lt;T&gt;&gt;</code>, "Mount from HTML string"],
+              [<code>cleanup()</code>, <code>void</code>, "Remove all fixtures, fire disconnects"],
+              [<code>nextRender(el)</code>, <code>Promise&lt;void&gt;</code>, "Wait for next scheduled update"],
+            ]}
+          ></api-table>
         </section>
         <doc-nav></doc-nav>
       </div>

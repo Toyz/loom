@@ -121,10 +121,16 @@ export const PermissionState = {
 /* ── Predicates ──
    The rules these encode are the whole reason the four states are not three.
    Written out at each call site they get re-derived, and "unsupported" is the
-   one people get wrong: it is not a refusal. */
+   one people get wrong: it is not a refusal.
+
+   All four are type guards, so the state narrows in both branches. After
+   `if (isBlocked(s)) return ...`, the remaining code sees the three states
+   that are actually left, and a switch over them can be exhaustive. Returning
+   plain `boolean` would have thrown that away at exactly the point it is
+   most useful. */
 
 /** Granted outright — proceed with no interruption. */
-export function isGranted(state: LoomPermissionState): boolean {
+export function isGranted(state: LoomPermissionState): state is "granted" {
   return state === "granted";
 }
 
@@ -132,7 +138,7 @@ export function isGranted(state: LoomPermissionState): boolean {
  * A dead end. Nothing in the page can undo this — only site settings — so
  * offer an explanation rather than a control that cannot work.
  */
-export function isBlocked(state: LoomPermissionState): boolean {
+export function isBlocked(state: LoomPermissionState): state is "denied" {
   return state === "denied";
 }
 
@@ -141,7 +147,7 @@ export function isBlocked(state: LoomPermissionState): boolean {
  * before the browser asks, which is the difference between a granted
  * permission and a dismissed one.
  */
-export function willPrompt(state: LoomPermissionState): boolean {
+export function willPrompt(state: LoomPermissionState): state is "prompt" {
   return state === "prompt";
 }
 
@@ -152,7 +158,9 @@ export function willPrompt(state: LoomPermissionState): boolean {
  * advance is not the browser saying no, and treating it as no is how a
  * feature gets disabled on engines where it would have worked.
  */
-export function canAttempt(state: LoomPermissionState): boolean {
+export function canAttempt(
+  state: LoomPermissionState,
+): state is Exclude<LoomPermissionState, "denied"> {
   return state !== "denied";
 }
 

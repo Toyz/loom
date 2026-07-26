@@ -60,16 +60,16 @@ class EditProfile extends LoomElement {
             The accessor type for <span class="ic">@mutate</span>. Tracks in-flight state
             and stores the result of the last call.
           </p>
-          <table class="api-table">
-            <thead><tr><th>Property / Method</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>.call(...args)</code></td><td>Promise&lt;T&gt;</td><td>Execute the mutation. Returns the result or throws on error.</td></tr>
-              <tr><td><code>.loading</code></td><td>boolean</td><td>True while the mutation is in flight.</td></tr>
-              <tr><td><code>.error</code></td><td>Error | null</td><td>Error from the last attempt, or null.</td></tr>
-              <tr><td><code>.data</code></td><td>T | undefined</td><td>Data from the last successful call.</td></tr>
-              <tr><td><code>.reset()</code></td><td>void</td><td>Clear all state (data, error, loading).</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Property / Method", "Type", "Description"]}
+            rows={[
+              [<code>.call(...args)</code>, "Promise&lt;T&gt;", "Execute the mutation. Returns the result or throws on error."],
+              [<code>.loading</code>, "boolean", "True while the mutation is in flight."],
+              [<code>.error</code>, "Error | null", "Error from the last attempt, or null."],
+              [<code>.data</code>, "T | undefined", "Data from the last successful call."],
+              [<code>.reset()</code>, "void", "Clear all state (data, error, loading)."],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Refetching After Mutation">
           <p>

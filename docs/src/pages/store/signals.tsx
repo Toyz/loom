@@ -96,15 +96,15 @@ counter.subscribe((value, prev) => {
   console.log(\`\${prev} → \${value}\`);
 });`}></code-block>
 
-          <table class="api-table">
-            <thead><tr><th>Method</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><span class="ic">.get()</span></td><td>Read value (trace-tracked)</td></tr>
-              <tr><td><span class="ic">.set(value)</span></td><td>Write value (triggers subscribers)</td></tr>
-              <tr><td><span class="ic">.peek()</span></td><td>Read without trace tracking</td></tr>
-              <tr><td><span class="ic">.subscribe(fn)</span></td><td>Listen for changes. Returns unsubscribe.</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Method", "Description"]}
+            rows={[
+              [<span class="ic">.get()</span>, "Read value (trace-tracked)"],
+              [<span class="ic">.set(value)</span>, "Write value (triggers subscribers)"],
+              [<span class="ic">.peek()</span>, "Read without trace tracking"],
+              [<span class="ic">.subscribe(fn)</span>, "Listen for changes. Returns unsubscribe."],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="SignalComputed&lt;T&gt;">
             <p>
@@ -123,15 +123,15 @@ doubled.get();  // 10 — recomputed
 // Dispose when no longer needed
 doubled.dispose();`}></code-block>
 
-          <table class="api-table">
-            <thead><tr><th>Method</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><span class="ic">.get()</span></td><td>Read computed value (lazy, trace-tracked)</td></tr>
-              <tr><td><span class="ic">.peek()</span></td><td>Read without trace tracking</td></tr>
-              <tr><td><span class="ic">.subscribe(fn)</span></td><td>Listen for value changes</td></tr>
-              <tr><td><span class="ic">.dispose()</span></td><td>Clean up dependency subscriptions</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Method", "Description"]}
+            rows={[
+              [<span class="ic">.get()</span>, "Read computed value (lazy, trace-tracked)"],
+              [<span class="ic">.peek()</span>, "Read without trace tracking"],
+              [<span class="ic">.subscribe(fn)</span>, "Listen for value changes"],
+              [<span class="ic">.dispose()</span>, "Clean up dependency subscriptions"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Converters">
             <p>

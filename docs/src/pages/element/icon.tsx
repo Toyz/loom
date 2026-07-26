@@ -54,23 +54,23 @@ LoomIcon.registerAll({
 <loom-icon name="search" size="16" color="#888"></loom-icon>`}></code-block>
         </doc-section>
         <doc-section heading="API">
-          <table class="api-table">
-            <thead><tr><th>Attribute / Property</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>name</code></td><td>string</td><td>Name of the registered icon to render</td></tr>
-              <tr><td><code>size</code></td><td>number</td><td>Width and height in pixels (default: 24)</td></tr>
-              <tr><td><code>color</code></td><td>string</td><td>CSS color for the icon (default: currentColor)</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Attribute / Property", "Type", "Description"]}
+            rows={[
+              [<code>name</code>, "string", "Name of the registered icon to render"],
+              [<code>size</code>, "number", "Width and height in pixels (default: 24)"],
+              [<code>color</code>, "string", "CSS color for the icon (default: currentColor)"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Static Methods">
-          <table class="api-table">
-            <thead><tr><th>Method</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>LoomIcon.register(name, svg)</code></td><td>Register a single icon by name</td></tr>
-              <tr><td><code>LoomIcon.registerAll(map)</code></td><td>Register multiple icons at once</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Method", "Description"]}
+            rows={[
+              [<code>LoomIcon.register(name, svg)</code>, "Register a single icon by name"],
+              [<code>LoomIcon.registerAll(map)</code>, "Register multiple icons at once"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="IconResolver">
             <p>

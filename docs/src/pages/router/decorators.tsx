@@ -43,14 +43,14 @@ class PageAdmin extends LoomElement { ... }
 @component("user-settings")
 class UserSettings extends LoomElement { ... }`}></code-block>
           </api-entry>
-          <table class="api-table">
-            <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>guards</code></td><td><code>string[]</code></td><td>Named guards to check before rendering</td></tr>
-              <tr><td><code>group</code></td><td><code>Constructor</code></td><td>Group this route belongs to (inherits prefix + guards)</td></tr>
-              <tr><td><code>name</code></td><td><code>string</code></td><td>Named route for programmatic navigation</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Option", "Type", "Description"]}
+            rows={[
+              [<code>guards</code>, <code>string[]</code>, "Named guards to check before rendering"],
+              [<code>group</code>, <code>Constructor</code>, "Group this route belongs to (inherits prefix + guards)"],
+              [<code>name</code>, <code>string</code>, "Named route for programmatic navigation"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="@guard">
           <api-entry sig="@guard(name?)">

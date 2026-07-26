@@ -45,14 +45,14 @@ export default class PageDecoratorContext extends LoomElement {
                         <p>
                             <strong>Key types:</strong>
                         </p>
-                        <table class="api-table">
-                            <thead><tr><th>Key Type</th><th>Example</th><th>Notes</th></tr></thead>
-                            <tbody>
-                                <tr><td>Class</td><td><code>ThemeContext</code></td><td>Full type inference, auto-instantiation</td></tr>
-                                <tr><td>String</td><td><code>"locale"</code></td><td>Simple primitives</td></tr>
-                                <tr><td>Symbol</td><td><code>Symbol("auth")</code></td><td>Private / collision-free</td></tr>
-                            </tbody>
-                        </table>
+                        <api-table
+                          head={["Key Type", "Example", "Notes"]}
+                          rows={[
+                            ["Class", <code>ThemeContext</code>, "Full type inference, auto-instantiation"],
+                            ["String", <code>"locale"</code>, "Simple primitives"],
+                            ["Symbol", <code>Symbol("auth")</code>, "Private / collision-free"],
+                          ]}
+                        ></api-table>
                 </doc-section>
                 <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>

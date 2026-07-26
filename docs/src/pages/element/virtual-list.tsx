@@ -59,26 +59,26 @@ loom-virtual {
           </doc-notification>
         </doc-section>
         <doc-section heading="Props">
-          <table class="api-table">
-            <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>items</code></td><td><code>T[]</code></td><td><code>[]</code></td><td>Array of items to virtualize. Assigning a new array triggers re-render.</td></tr>
-              <tr><td><code>estimatedHeight</code></td><td><code>number</code></td><td><code>40</code></td><td>Initial height estimate per row in px. Auto-refined after measurement.</td></tr>
-              <tr><td><code>overscan</code></td><td><code>number</code></td><td><code>3</code></td><td>Extra items rendered above/below the visible window.</td></tr>
-              <tr><td><code>pinToBottom</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Auto-scroll to bottom when items are appended. Great for chat UIs.</td></tr>
-              <tr><td><code>onNearEnd</code></td><td><code>() =&gt; void</code></td><td><code>null</code></td><td>Callback fired when scrolled within 100px of the bottom — use for infinite scroll / pagination.</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Prop", "Type", "Default", "Description"]}
+            rows={[
+              [<code>items</code>, <code>T[]</code>, <code>[]</code>, "Array of items to virtualize. Assigning a new array triggers re-render."],
+              [<code>estimatedHeight</code>, <code>number</code>, <code>40</code>, "Initial height estimate per row in px. Auto-refined after measurement."],
+              [<code>overscan</code>, <code>number</code>, <code>3</code>, "Extra items rendered above/below the visible window."],
+              [<code>pinToBottom</code>, <code>boolean</code>, <code>true</code>, "Auto-scroll to bottom when items are appended. Great for chat UIs."],
+              [<code>onNearEnd</code>, <code>() =&gt; void</code>, <code>null</code>, "Callback fired when scrolled within 100px of the bottom — use for infinite scroll / pagination."],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Imperative Methods">
-          <table class="api-table">
-            <thead><tr><th>Method</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>push(...items)</code></td><td>Append items. Auto-scrolls if user is near the bottom.</td></tr>
-              <tr><td><code>scrollToEnd()</code></td><td>Scroll to the very bottom immediately.</td></tr>
-              <tr><td><code>refresh()</code></td><td>Re-measure all visible items and rebuild offsets.</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Method", "Description"]}
+            rows={[
+              [<code>push(...items)</code>, "Append items. Auto-scrolls if user is near the bottom."],
+              [<code>scrollToEnd()</code>, "Scroll to the very bottom immediately."],
+              [<code>refresh()</code>, "Re-measure all visible items and rebuild offsets."],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Children Template">
             <p>

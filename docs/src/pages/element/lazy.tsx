@@ -249,12 +249,12 @@ requestIdleCallback(() => {
             <loom-icon name="zap" size={18} color="var(--text-muted)"></loom-icon>
             <h3>Static Methods</h3>
           </div>
-          <table class="api-table">
-            <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>MyClass.prefetch()</code></td><td><code>Promise</code></td><td>Pre-warm the import cache. Idempotent — multiple calls return the same promise.</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Method", "Returns", "Description"]}
+            rows={[
+              [<code>MyClass.prefetch()</code>, <code>Promise</code>, "Pre-warm the import cache. Idempotent — multiple calls return the same promise."],
+            ]}
+          ></api-table>
         </section>
         <doc-nav></doc-nav>
       </div>

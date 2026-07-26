@@ -128,63 +128,21 @@ export function cache(ttl: number) {
             <p>
               All first-party Loom packages register their decorator metadata via <span class="ic">createSymbol()</span>. This means <span class="ic">inspect()</span> shows everything:
             </p>
-          <table class="api-table">
-            <thead>
-              <tr><th>Package</th><th>Symbol</th><th>Shows</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>@toyz/loom</code></td>
-                <td><code>reactives</code></td>
-                <td>Reactive property names</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom</code></td>
-                <td><code>props</code></td>
-                <td>External prop bindings</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom</code></td>
-                <td><code>route:props</code></td>
-                <td>Route param/query bindings</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom</code></td>
-                <td><code>watch</code></td>
-                <td>Watcher registrations</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom</code></td>
-                <td><code>emit</code></td>
-                <td>Event emitter names</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom</code></td>
-                <td><code>transforms</code></td>
-                <td>Value transform mappings</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom-analytics</code></td>
-                <td><code>analytics:track</code></td>
-                <td>Tracked events and targets</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom-flags</code></td>
-                <td><code>flags:gated</code></td>
-                <td>Feature flag gates</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom-rpc</code></td>
-                <td><code>rpc:queries</code></td>
-                <td>RPC query bindings</td>
-              </tr>
-              <tr>
-                <td><code>@toyz/loom-rpc</code></td>
-                <td><code>rpc:mutations</code></td>
-                <td>RPC mutation bindings</td>
-              </tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Package", "Symbol", "Shows"]}
+            rows={[
+              [<code>@toyz/loom</code>, <code>reactives</code>, "Reactive property names"],
+              [<code>@toyz/loom</code>, <code>props</code>, "External prop bindings"],
+              [<code>@toyz/loom</code>, <code>route:props</code>, "Route param/query bindings"],
+              [<code>@toyz/loom</code>, <code>watch</code>, "Watcher registrations"],
+              [<code>@toyz/loom</code>, <code>emit</code>, "Event emitter names"],
+              [<code>@toyz/loom</code>, <code>transforms</code>, "Value transform mappings"],
+              [<code>@toyz/loom-analytics</code>, <code>analytics:track</code>, "Tracked events and targets"],
+              [<code>@toyz/loom-flags</code>, <code>flags:gated</code>, "Feature flag gates"],
+              [<code>@toyz/loom-rpc</code>, <code>rpc:queries</code>, "RPC query bindings"],
+              [<code>@toyz/loom-rpc</code>, <code>rpc:mutations</code>, "RPC mutation bindings"],
+            ]}
+          ></api-table>
         </doc-section>
         <section>
           <div class="note">

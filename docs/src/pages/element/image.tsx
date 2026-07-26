@@ -66,16 +66,14 @@ export default class PageElementImage extends LoomElement {
           </table>
         </doc-section>
         <doc-section heading="Static Methods">
-          <table class="api-table">
-            <thead>
-              <tr><th>Method</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>LoomImage.preload(...urls)</code></td><td>Preload images into the cache — returns a Promise</td></tr>
-              <tr><td><code>LoomImage.clearCache(url?)</code></td><td>Clear all or a specific cached image</td></tr>
-              <tr><td><code>LoomImage.isCached(url)</code></td><td>Check if a URL is already cached</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Method", "Description"]}
+            rows={[
+              [<code>LoomImage.preload(...urls)</code>, "Preload images into the cache — returns a Promise"],
+              [<code>LoomImage.clearCache(url?)</code>, "Clear all or a specific cached image"],
+              [<code>LoomImage.isCached(url)</code>, "Check if a URL is already cached"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="How It Works">
           <ul>

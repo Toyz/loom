@@ -111,12 +111,12 @@ if (this.login.validate()) {
 }`}></code-block>
         </doc-section>
         <doc-section heading="Decorator Signature">
-          <table class="api-table">
-            <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>schema</code></td><td><code>FormSchema&lt;T&gt;</code></td><td>Per-field transform and validation config</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Argument", "Type", "Description"]}
+            rows={[
+              [<code>schema</code>, <code>FormSchema&lt;T&gt;</code>, "Per-field transform and validation config"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-nav></doc-nav>
       </div>

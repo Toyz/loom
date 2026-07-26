@@ -100,15 +100,15 @@ const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured"
               <span class="ic">this.shadow.querySelector()</span> or <span class="ic">this.shadow.querySelectorAll()</span>
               on each access. This means:
             </p>
-          <table class="api-table">
-            <thead><tr><th>Feature</th><th>Behavior</th></tr></thead>
-            <tbody>
-              <tr><td>Live</td><td>Always returns the current DOM state, even after morphing</td></tr>
-              <tr><td>No caching</td><td>Each access queries the shadow root fresh</td></tr>
-              <tr><td>Shadow-scoped</td><td>Only searches within the component's shadow DOM</td></tr>
-              <tr><td>Type-safe</td><td>Type annotation on the property is preserved</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Feature", "Behavior"]}
+            rows={[
+              ["Live", "Always returns the current DOM state, even after morphing"],
+              ["No caching", "Each access queries the shadow root fresh"],
+              ["Shadow-scoped", "Only searches within the component's shadow DOM"],
+              ["Type-safe", "Type annotation on the property is preserved"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="vs Manual Queries">
             <p>The decorators are sugar for a common pattern. They're equivalent to:</p>

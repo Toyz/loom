@@ -39,16 +39,16 @@ export default class PageStoreOverview extends LoomElement {
         {/* ═══════════ At a Glance ═══════════ */}
 
         <doc-section heading="At a Glance">
-          <table class="api-table">
-            <thead><tr><th>Primitive</th><th>Scope</th><th>Use Case</th></tr></thead>
-            <tbody>
-              <tr><td><code>@reactive</code></td><td>Field</td><td>Single reactive property on a component</td></tr>
-              <tr><td><code>@store</code></td><td>Component</td><td>Deep-reactive object store, isolated per instance</td></tr>
-              <tr><td><code>Reactive&lt;T&gt;</code></td><td>Shared</td><td>Observable value container, usable anywhere</td></tr>
-              <tr><td><code>CollectionStore&lt;T&gt;</code></td><td>Shared</td><td>CRUD array store with add/remove/update</td></tr>
-              <tr><td><code>StorageAdapter</code></td><td>Any</td><td>Pluggable persistence (localStorage, sessionStorage, custom)</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Primitive", "Scope", "Use Case"]}
+            rows={[
+              [<code>@reactive</code>, "Field", "Single reactive property on a component"],
+              [<code>@store</code>, "Component", "Deep-reactive object store, isolated per instance"],
+              [<code>Reactive&lt;T&gt;</code>, "Shared", "Observable value container, usable anywhere"],
+              [<code>CollectionStore&lt;T&gt;</code>, "Shared", "CRUD array store with add/remove/update"],
+              [<code>StorageAdapter</code>, "Any", "Pluggable persistence (localStorage, sessionStorage, custom)"],
+            ]}
+          ></api-table>
         </doc-section>
         {/* ═══════════ Quick Example ═══════════ */}
 

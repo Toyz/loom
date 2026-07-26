@@ -78,16 +78,16 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
           <p>
             Structured error thrown by transports with additional context about the failed call.
           </p>
-          <table class="api-table">
-            <thead><tr><th>Property</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>.message</code></td><td>string</td><td>Error message</td></tr>
-              <tr><td><code>.status</code></td><td>number | undefined</td><td>HTTP status code (if applicable)</td></tr>
-              <tr><td><code>.router</code></td><td>string | undefined</td><td>The router name</td></tr>
-              <tr><td><code>.method</code></td><td>string | undefined</td><td>The method name</td></tr>
-              <tr><td><code>.code</code></td><td>string | undefined</td><td>Application-specific error code</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Property", "Type", "Description"]}
+            rows={[
+              [<code>.message</code>, "string", "Error message"],
+              [<code>.status</code>, "number | undefined", "HTTP status code (if applicable)"],
+              [<code>.router</code>, "string | undefined", "The router name"],
+              [<code>.method</code>, "string | undefined", "The method name"],
+              [<code>.code</code>, "string | undefined", "Application-specific error code"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-section heading="Custom Transports">
           <p>

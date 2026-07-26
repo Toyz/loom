@@ -34,14 +34,14 @@ export default class PageStoreStorage extends LoomElement {
 }`}></code-block>
         </doc-section>
         <doc-section heading="Built-in Adapters">
-          <table class="api-table">
-            <thead><tr><th>Adapter</th><th>Persists</th><th>Scope</th></tr></thead>
-            <tbody>
-              <tr><td><code>MemoryStorage</code></td><td>Never (default)</td><td>Current session only</td></tr>
-              <tr><td><code>LocalAdapter</code></td><td>localStorage</td><td>Across tabs &amp; reloads</td></tr>
-              <tr><td><code>SessionAdapter</code></td><td>sessionStorage</td><td>Current tab only</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Adapter", "Persists", "Scope"]}
+            rows={[
+              [<code>MemoryStorage</code>, "Never (default)", "Current session only"],
+              [<code>LocalAdapter</code>, "localStorage", "Across tabs &amp; reloads"],
+              [<code>SessionAdapter</code>, "sessionStorage", "Current tab only"],
+            ]}
+          ></api-table>
           <code-block lang="ts" code={`import { Reactive, LocalAdapter, SessionAdapter } from "@toyz/loom/store";
 
 // Persists to localStorage

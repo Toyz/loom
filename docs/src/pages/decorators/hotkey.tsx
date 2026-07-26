@@ -44,16 +44,16 @@ export default class PageElementHotkey extends LoomElement {
                             Combos use <span class="ic">+</span> to join modifiers and a key.
                             Case-insensitive. Supported modifiers:
                         </p>
-                        <table class="api-table">
-                            <thead><tr><th>Modifier</th><th>Aliases</th><th>Meaning</th></tr></thead>
-                            <tbody>
-                                <tr><td><code>ctrl</code></td><td>control</td><td>Control key</td></tr>
-                                <tr><td><code>shift</code></td><td>—</td><td>Shift key</td></tr>
-                                <tr><td><code>alt</code></td><td>option</td><td>Alt / Option key</td></tr>
-                                <tr><td><code>meta</code></td><td>cmd, command, win</td><td>Meta / Command / Windows key</td></tr>
-                                <tr><td><code>mod</code></td><td>—</td><td>⌘ on Mac, Ctrl elsewhere</td></tr>
-                            </tbody>
-                        </table>
+                        <api-table
+                          head={["Modifier", "Aliases", "Meaning"]}
+                          rows={[
+                            [<code>ctrl</code>, "control", "Control key"],
+                            [<code>shift</code>, "—", "Shift key"],
+                            [<code>alt</code>, "option", "Alt / Option key"],
+                            [<code>meta</code>, "cmd, command, win", "Meta / Command / Windows key"],
+                            [<code>mod</code>, "—", "⌘ on Mac, Ctrl elsewhere"],
+                          ]}
+                        ></api-table>
                         <doc-notification type="note">
                             Use <span class="ic">mod</span> for cross-platform shortcuts — it maps to <span class="ic">⌘ Cmd</span> on macOS and <span class="ic">Ctrl</span> everywhere else.
                         </doc-notification>

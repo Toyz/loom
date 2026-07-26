@@ -122,6 +122,16 @@ existing suite could not see.
 
 ### Documentation
 
+- **`<api-table>`.** There were 101 hand-written reference tables across the
+  docs — table, thead, a row of th, then a tbody of tr/td — which is the same
+  drift risk the page skeleton had before `<doc-section>`: a column count that
+  does not match its header, a missing tbody, a phase row styled by hand.
+  Cells take a string or a node, since most carry a `<code>` or a link, and a
+  `{ phase }` row spans every column for tables whose rows are a sequence.
+  Thirty converted by codemod, verified cell-by-cell against the previous
+  markup with nothing lost; the other 71 hold JSX the codemod could not prove
+  safe to move and were left alone rather than guessed at.
+
 - **`staleTime` does not revalidate.** Both the Fetch and RPC Queries pages
   described stale-while-revalidate: that a read past `staleTime` triggers a
   background refetch. It does not. `checkStale()` flips a boolean and nothing

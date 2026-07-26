@@ -331,3 +331,54 @@ describe("PermissionState + predicates", () => {
     }
   });
 });
+
+describe("predicates narrow the type", () => {
+  it("narrows in both branches", () => {
+    const s = "prompt" as LoomPermissionState;
+
+    if (isGranted(s)) {
+      // @ts-expect-error — narrowed to "granted", cannot be "denied"
+      const bad: "denied" = s;
+      void bad;
+    }
+
+    if (isBlocked(s)) {
+      const only: "denied" = s;   // narrowed
+      expect(only).toBe("denied");
+    } else {
+      // @ts-expect-error — "denied" is excluded here
+      const bad: "denied" = s;
+      void bad;
+    }
+  });
+
+  it("canAttempt excludes denied from the type, not just the value", () => {
+    const s = "unsupported" as LoomPermissionState;
+    if (canAttempt(s)) {
+      const narrowed: Exclude<LoomPermissionState, "denied"> = s;
+      expect(narrowed).toBe("unsupported");
+      // @ts-expect-error — denied cannot reach here
+      const bad: "denied" = s;
+      void bad;
+    }
+  });
+
+  it("supports an exhaustive switch after excluding denied", () => {
+    const label = (s: LoomPermissionState): string => {
+      if (isBlocked(s)) return "blocked";
+      switch (s) {
+        case "granted": return "ok";
+        case "prompt": return "will ask";
+        case "unsupported": return "unknown";
+        default: {
+          // Reached only if a state is added without updating this switch.
+          const never: never = s;
+          return never;
+        }
+      }
+    };
+    expect(label("granted")).toBe("ok");
+    expect(label("denied")).toBe("blocked");
+    expect(label("unsupported")).toBe("unknown");
+  });
+});

@@ -144,15 +144,15 @@ class ThemeCard extends LoomElement {
 }`}></code-block>
         </doc-section>
         <doc-section heading="API Reference">
-          <table class="api-table">
-            <thead><tr><th>API</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>css`...`</code></td><td>Tagged template</td><td>Create a cached CSSStyleSheet</td></tr>
-              <tr><td><code>@styles(sheet, ...)</code></td><td>Class decorator</td><td>Auto-adopt stylesheets on connect</td></tr>
-              <tr><td><code>this.css`...`</code></td><td>Instance method</td><td>Adopt inline styles in update()</td></tr>
-              <tr><td><code>this.adoptStyles(sheets)</code></td><td>Instance method</td><td>Programmatic style adoption</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["API", "Type", "Description"]}
+            rows={[
+              [<code>css`...`</code>, "Tagged template", "Create a cached CSSStyleSheet"],
+              [<code>@styles(sheet, ...)</code>, "Class decorator", "Auto-adopt stylesheets on connect"],
+              [<code>this.css`...`</code>, "Instance method", "Adopt inline styles in update()"],
+              [<code>this.adoptStyles(sheets)</code>, "Instance method", "Programmatic style adoption"],
+            ]}
+          ></api-table>
         </doc-section>
         <doc-nav></doc-nav>
       </div>
