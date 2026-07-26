@@ -13,7 +13,7 @@ export default class PageElementCSS extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>The css`` Tagged Template</h2>
           </div>
           <div class="feature-entry">
@@ -33,7 +33,7 @@ const styles = css\`
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@styles Decorator</h2>
           </div>
           <div class="feature-entry">
@@ -75,7 +75,7 @@ class MyForm extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Inline Styles in update()</h2>
           </div>
           <div class="feature-entry">
@@ -102,14 +102,14 @@ class MyCard extends LoomElement {
 }`}></code-block>
           </div>
           <doc-notification type="note">
-            <loom-icon name="bolt" size={14} color="var(--amber)"></loom-icon> Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
+            <loom-icon name="bolt" size={14} color="var(--text-muted)"></loom-icon> Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
             and avoids style adoption on every render call.
           </doc-notification>
         </section>
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <table class="api-table">
@@ -125,7 +125,7 @@ class MyCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>:host and Scoping</h2>
           </div>
           <div class="feature-entry">
@@ -145,7 +145,7 @@ class MyCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Dynamic Values</h2>
           </div>
           <div class="feature-entry">
@@ -173,7 +173,7 @@ class ThemeCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

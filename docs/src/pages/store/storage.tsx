@@ -11,7 +11,7 @@ export default class PageStoreStorage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>StorageAdapter Interface</h2>
           </div>
           <div class="feature-entry">
@@ -29,7 +29,7 @@ export default class PageStoreStorage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="package" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="package" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Built-in Adapters</h2>
           </div>
           <table class="api-table">
@@ -57,7 +57,7 @@ const draft = new Reactive("", {
 
         <section>
           <div class="group-header">
-            <loom-icon name="save" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="save" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@persist</h2>
           </div>
           <div class="feature-entry">
@@ -107,7 +107,7 @@ connectedCallback() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Adapter</h2>
           </div>
           <div class="feature-entry">
@@ -142,7 +142,7 @@ const store = new Reactive([], {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Swapping at Runtime</h2>
           </div>
           <div class="feature-entry">

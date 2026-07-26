@@ -13,7 +13,7 @@ export default class PageElementIcon extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -31,7 +31,7 @@ export default class PageElementIcon extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Registering Icons</h2>
           </div>
           <div class="feature-entry">
@@ -56,13 +56,13 @@ LoomIcon.registerAll({
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Usage</h2>
           </div>
           <div class="feature-entry">
             <div class="dec-desc">Use the element in JSX or HTML with the <span class="ic">name</span> attribute:</div>
             <code-block lang="ts" code={`// In JSX
-<loom-icon name="home" size={20} color="var(--accent)"></loom-icon>
+<loom-icon name="home" size={20} color="var(--text-muted)"></loom-icon>
 
 // In HTML
 <loom-icon name="search" size="16" color="#888"></loom-icon>`}></code-block>
@@ -71,7 +71,7 @@ LoomIcon.registerAll({
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API</h2>
           </div>
           <table class="api-table">
@@ -86,7 +86,7 @@ LoomIcon.registerAll({
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Static Methods</h2>
           </div>
           <table class="api-table">
@@ -100,7 +100,7 @@ LoomIcon.registerAll({
 
         <section>
           <div class="group-header">
-            <loom-icon name="puzzle" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="puzzle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>IconResolver</h2>
           </div>
           <div class="feature-entry">
@@ -119,7 +119,7 @@ LoomIcon.registerAll({
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Styling</h2>
           </div>
           <div class="feature-entry">
@@ -132,7 +132,7 @@ LoomIcon.registerAll({
 .nav-item:hover { color: #fff; }
 
 /* Or set explicitly */
-<loom-icon name="bolt" color="var(--amber)"></loom-icon>`}></code-block>
+<loom-icon name="bolt" color="var(--text-muted)"></loom-icon>`}></code-block>
           </div>
         </section>
         <doc-nav></doc-nav>

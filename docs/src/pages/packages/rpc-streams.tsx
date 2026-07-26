@@ -13,7 +13,7 @@ export default class PageRpcStreams extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <p>
@@ -27,7 +27,7 @@ export default class PageRpcStreams extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage — Component</h2>
           </div>
           <p>
@@ -64,7 +64,7 @@ class ChatFeed extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Direct Iteration</h2>
           </div>
           <p>
@@ -82,7 +82,7 @@ for await (const msg of this.chatMessages.events) { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@stream Options</h2>
           </div>
           <table class="api-table">
@@ -96,7 +96,7 @@ for await (const msg of this.chatMessages.events) { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Manual Control — eager: false</h2>
           </div>
           <p>
@@ -126,7 +126,7 @@ leaveRoom() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>RpcStream&lt;T&gt; API</h2>
           </div>
           <table class="api-table">
@@ -144,7 +144,7 @@ leaveRoom() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Transport — Implementing stream()</h2>
           </div>
           <p>

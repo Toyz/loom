@@ -15,7 +15,7 @@ export default class PageDecoratorTransform extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@transform</h2>
           </div>
           <div class="feature-entry">
@@ -35,7 +35,7 @@ accessor userId!: number;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>typed&lt;T&gt;()</h2>
           </div>
           <div class="feature-entry">
@@ -63,7 +63,7 @@ accessor routeParams!: UserParams;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@typedTransformer</h2>
           </div>
           <div class="feature-entry">
@@ -95,7 +95,7 @@ accessor routeParams!: UserParams;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="package" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="package" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Built-in Transformers</h2>
           </div>
           <div class="feature-entry">
@@ -127,7 +127,7 @@ accessor routeParams!: UserParams;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Transforms</h2>
           </div>
           <div class="feature-entry">

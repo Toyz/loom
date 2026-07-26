@@ -18,7 +18,7 @@ export default class PageRouterGuards extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@guard</h2>
           </div>
           <div class="feature-entry">
@@ -56,7 +56,7 @@ class Guards {
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Connecting Guards to Routes</h2>
           </div>
           <div class="feature-entry">
@@ -76,7 +76,7 @@ class PageBilling extends LoomElement { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Guard Resolution</h2>
           </div>
           <div class="feature-entry">
@@ -97,7 +97,7 @@ class PageBilling extends LoomElement { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">

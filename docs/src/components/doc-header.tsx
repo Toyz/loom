@@ -56,7 +56,6 @@ const styles = css`
     line-height: 1.55;
     margin: 0;
     font-weight: 400;
-    max-width: 62ch;
   }
 
   /* Was a 60px gradient dash. Now the first weft line of the page: a full

@@ -14,7 +14,7 @@ export default class PageResult extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Why Result?</h2>
           </div>
           <div class="feature-entry">
@@ -46,7 +46,7 @@ result.match({
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Creating Results</h2>
           </div>
           <code-block
@@ -74,7 +74,7 @@ const result = await LoomResult.fromPromise(
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Narrowing</h2>
           </div>
           <div class="feature-entry">
@@ -99,7 +99,7 @@ if (r.ok) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Combinators</h2>
           </div>
 
@@ -163,7 +163,7 @@ const friendly = result.map_err(e => \`Failed: \${e.message}\`);`}
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Composable Match</h2>
           </div>
           <div class="feature-entry">
@@ -225,7 +225,7 @@ match(cases) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Framework Integration</h2>
           </div>
           <div class="feature-entry">
@@ -318,7 +318,7 @@ checkAuth(route: RouteInfo, @inject(TokenStore) t: TokenStore) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

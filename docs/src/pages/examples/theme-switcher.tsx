@@ -14,7 +14,7 @@ export default class ExampleThemeSwitcher extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Demo</h2>
           </div>
           <theme-toggle></theme-toggle>
@@ -22,7 +22,7 @@ export default class ExampleThemeSwitcher extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
             <h2>What This Shows</h2>
           </div>
           <ul>
@@ -36,7 +36,7 @@ export default class ExampleThemeSwitcher extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Source</h2>
           </div>
           <source-block file="docs/src/pages/examples/components/theme-toggle.tsx"></source-block>

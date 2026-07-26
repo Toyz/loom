@@ -552,8 +552,14 @@ const styles = css`
   /* Anchored to the sidebar rather than centred in the viewport: centring a
      narrow column inside a 2000px main leaves ~570px dead on each side and the
      text ends up floating unattached to the nav it belongs to. */
+  /* ONE measure for the whole page. Prose used to carry its own 68ch cap
+     while code blocks and tables ran the full column, so every paragraph
+     wrapped ~300px short of the block below it and the right edge was
+     ragged on every page. The column is now 720px of content: ~76ch of
+     Plex Sans, and ~92 columns of 13px mono, which is wider than any code
+     sample in the docs. Text and code end on the same line. */
   .page {
-    max-width: 1040px;
+    max-width: 832px;
     margin: 0;
     margin-left: min(6vw, 88px);
     padding: 56px 56px 96px 56px;

@@ -26,7 +26,7 @@ export default class PageElementAttributes extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="plug" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="plug" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@attribute</h2>
           </div>
           <div class="feature-entry">
@@ -56,7 +56,7 @@ class Tooltip extends LoomAttribute {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Lifecycle</h2>
           </div>
           <div class="feature-entry">
@@ -75,7 +75,7 @@ disconnect()                 // attribute removed, or element left the DOM`}></c
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Passing args as props</h2>
           </div>
           <div class="feature-entry">
@@ -117,7 +117,7 @@ class Tooltip extends LoomAttribute {
 
         <section>
           <div class="group-header">
-            <loom-icon name="external-link" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="external-link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Rendering — attributes as portals</h2>
           </div>
           <div class="feature-entry">
@@ -154,7 +154,7 @@ get target() { return this.el; }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Typing your attributes</h2>
           </div>
           <div class="feature-entry">
@@ -177,7 +177,7 @@ get target() { return this.el; }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="sun" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="sun" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Light DOM & hand-written HTML</h2>
           </div>
           <div class="feature-entry">
@@ -196,7 +196,7 @@ observeAttributes(myCustomRoot); // scans now, reacts to changes, returns an uno
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Which decorators work</h2>
           </div>
           <div class="feature-entry">

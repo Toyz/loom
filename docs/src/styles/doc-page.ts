@@ -42,7 +42,6 @@ export const docStyles = css`
     line-height: 1.55;
     margin-bottom: var(--space-8, 2rem);
     font-weight: 400;
-    max-width: 62ch;
   }
   /* The old decorative gradient bar is gone. The rule below the header is
      structural — it is the first weft line of the page. */
@@ -81,7 +80,6 @@ export const docStyles = css`
     color: var(--text-secondary, #a09a88);
     line-height: var(--leading-normal, 1.65);
     margin-bottom: var(--space-4, 1rem);
-    max-width: 68ch;
   }
 
   strong { color: var(--text-primary, #e6e1d3); font-weight: 600; }
@@ -89,7 +87,6 @@ export const docStyles = css`
   ul, ol {
     color: var(--text-secondary, #a09a88);
     margin: 0 0 var(--space-4, 1rem) var(--space-5, 1.25rem);
-    max-width: 68ch;
   }
   li { margin-bottom: var(--space-2, 0.5rem); }
   li::marker { color: var(--warp-lit, #4a4839); }
@@ -194,7 +191,6 @@ export const docStyles = css`
     font-size: var(--text-sm, 0.8125rem);
     margin-bottom: var(--space-3, 0.75rem);
     line-height: 1.65;
-    max-width: 68ch;
   }
 
   /* ── Group header ──
@@ -239,7 +235,6 @@ export const docStyles = css`
     position: relative;
     background: transparent;
     color: var(--text-secondary, #a09a88);
-    max-width: 68ch;
   }
   .note p, .tip p, .warning p, .caution p { margin-bottom: 0; }
 

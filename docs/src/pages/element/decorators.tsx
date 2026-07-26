@@ -15,7 +15,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="cube" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="cube" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Registration</h2>
           </div>
           <table class="api-table">
@@ -31,7 +31,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>State</h2>
           </div>
           <table class="api-table">
@@ -49,7 +49,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Lifecycle</h2>
           </div>
           <table class="api-table">
@@ -67,7 +67,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="search" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="search" size={20} color="var(--text-muted)"></loom-icon>
             <h2>DOM</h2>
           </div>
           <table class="api-table">
@@ -84,7 +84,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="broadcast" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="broadcast" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Events & Interaction</h2>
           </div>
           <table class="api-table">
@@ -103,7 +103,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="clock" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="clock" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Timing</h2>
           </div>
           <table class="api-table">
@@ -122,7 +122,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Data Fetching</h2>
           </div>
           <table class="api-table">
@@ -138,7 +138,7 @@ export default class PageElementDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Miscellaneous</h2>
           </div>
           <table class="api-table">

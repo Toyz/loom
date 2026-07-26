@@ -14,7 +14,7 @@ export default class PageDebugging extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="search" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="search" size={20} color="var(--text-muted)"></loom-icon>
             <h2>inspect()</h2>
           </div>
           <div class="feature-entry">
@@ -46,7 +46,7 @@ inspect(el);
 
         <section>
           <div class="group-header">
-            <loom-icon name="terminal" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="terminal" size={20} color="var(--text-muted)"></loom-icon>
             <h2>DevTools Console Hook</h2>
           </div>
           <div class="feature-entry">
@@ -83,7 +83,7 @@ __loom.SYMBOL_REGISTRY
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Reading Symbols Directly</h2>
           </div>
           <div class="feature-entry">
@@ -111,7 +111,7 @@ const tracked = ctor[SYMBOL_REGISTRY.get("analytics:track")];
 
         <section>
           <div class="group-header">
-            <loom-icon name="plug" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="plug" size={20} color="var(--text-muted)"></loom-icon>
             <h2>createSymbol() — Plugin API</h2>
           </div>
           <div class="feature-entry">
@@ -147,7 +147,7 @@ export function cache(ttl: number) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="package" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="package" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Built-in Plugin Symbols</h2>
           </div>
           <div class="feature-entry">

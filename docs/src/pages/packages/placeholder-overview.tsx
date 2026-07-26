@@ -13,7 +13,7 @@ export default class PagePlaceholderOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Install</h2>
           </div>
           <code-block lang="bash" code={`npm install @toyz/loom-placeholder`}></code-block>
@@ -24,7 +24,7 @@ export default class PagePlaceholderOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <p>
@@ -40,7 +40,7 @@ export default class PagePlaceholderOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>1. Register a Provider</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -51,7 +51,7 @@ app.use(PlaceholderProvider, new RgbaPlaceholder());`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>2. Use the Component</h2>
           </div>
           <code-block lang="tsx" code={`import "@toyz/loom-placeholder"; // registers <loom-placeholder>
@@ -75,7 +75,7 @@ app.use(PlaceholderProvider, new RgbaPlaceholder());`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>3. Use the Provider Directly</h2>
           </div>
           <code-block lang="ts" code={`const provider = new RgbaPlaceholder();
@@ -89,7 +89,7 @@ provider.rgba({ r: 255, g: 0, b: 170, a: 128, width: 64, height: 64, format: "sv
 
         <section>
           <div class="group-header">
-            <loom-icon name="image" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="image" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Props</h2>
           </div>
           <table class="api-table">
@@ -108,7 +108,7 @@ provider.rgba({ r: 255, g: 0, b: 170, a: 128, width: 64, height: 64, format: "sv
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Providers</h2>
           </div>
           <p>

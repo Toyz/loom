@@ -13,7 +13,7 @@ export default class PageText extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -31,7 +31,7 @@ export default class PageText extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Usage</h2>
           </div>
           <div class="feature-entry">
@@ -57,7 +57,7 @@ class ChatMessage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Supported Entities</h2>
           </div>
           <table class="api-table">
@@ -77,7 +77,7 @@ class ChatMessage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Why not innerHTML?</h2>
           </div>
           <div class="feature-entry">

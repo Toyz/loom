@@ -13,7 +13,7 @@ export default class PageElementLightDom extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sun" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="sun" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -35,7 +35,7 @@ class MyButton extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">
@@ -60,7 +60,7 @@ class MyButton extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="palette" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="palette" size={20} color="var(--text-muted)"></loom-icon>
             <h2>CSS with Light DOM</h2>
           </div>
           <div class="feature-entry">
@@ -98,7 +98,7 @@ class MyButton extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="star" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="star" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Built-in Example: loom-icon</h2>
           </div>
           <div class="feature-entry">
@@ -117,12 +117,12 @@ class MyButton extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>When to Use</h2>
           </div>
           <div class="grid">
             <div class="card">
-              <h3><loom-icon name="check" size={16} color="var(--emerald)"></loom-icon> Use Light DOM</h3>
+              <h3><loom-icon name="check" size={16} color="var(--text-muted)"></loom-icon> Use Light DOM</h3>
               <ul>
                 <li>Icons, buttons, badges, tags</li>
                 <li>Components that should inherit parent styles</li>
@@ -131,7 +131,7 @@ class MyButton extends LoomElement { ... }`}></code-block>
               </ul>
             </div>
             <div class="card">
-              <h3><loom-icon name="x" size={16} color="var(--rose)"></loom-icon> Keep Shadow DOM</h3>
+              <h3><loom-icon name="x" size={16} color="var(--text-muted)"></loom-icon> Keep Shadow DOM</h3>
               <ul>
                 <li>Complex widgets (modals, date pickers)</li>
                 <li>Components with internal state and scoped styles</li>

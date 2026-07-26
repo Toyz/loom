@@ -14,7 +14,7 @@ export default class PageDecoratorPortal extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+                        <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Quick Start</h2>
                     </div>
                     <code-block lang="ts" code={QUICK_START}></code-block>
@@ -22,7 +22,7 @@ export default class PageDecoratorPortal extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>API</h2>
                     </div>
                     <div class="feature-entry">
@@ -49,7 +49,7 @@ export default class PageDecoratorPortal extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="layers" size={20} color="var(--cyan)"></loom-icon>
+                        <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Examples</h2>
                     </div>
                     <code-block lang="ts" code={EXAMPLES}></code-block>
@@ -57,7 +57,7 @@ export default class PageDecoratorPortal extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
+                        <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>How It Works</h2>
                     </div>
                     <ul>

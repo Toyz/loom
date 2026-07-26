@@ -16,7 +16,7 @@ export default class PageDecoratorsSymbols extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="alert-circle" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="alert-circle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>The Problem</h2>
           </div>
           <div class="feature-entry">
@@ -39,7 +39,7 @@ const val = (ctor as any)[MY_META];  // any`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield-check" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="shield-check" size={20} color="var(--text-muted)"></loom-icon>
             <h2>LoomSymbol&lt;T&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -71,7 +71,7 @@ if (SERVICE_NAME.has(ctor)) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="plus-circle" size={20} color="var(--sky)"></loom-icon>
+            <loom-icon name="plus-circle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>createSymbol</h2>
           </div>
           <div class="feature-entry">
@@ -146,7 +146,7 @@ console.log(a === b);  // true`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="database" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="database" size={20} color="var(--text-muted)"></loom-icon>
             <h2>SYMBOL_REGISTRY</h2>
           </div>
           <div class="feature-entry">
@@ -168,7 +168,7 @@ for (const [name, sym] of SYMBOL_REGISTRY) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--indigo)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Core Symbols</h2>
           </div>
           <div class="feature-entry">

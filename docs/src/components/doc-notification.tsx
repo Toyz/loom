@@ -1,9 +1,14 @@
 /**
- * Doc Notification — Callout / Alert Banner
+ * <doc-notification> — a callout.
  *
- * Shadow DOM component with <slot> for content.
- * Styled to match the .callout aesthetic from first-app.
- * Supports types: note (indigo), tip (emerald), warning (amber), caution (rose).
+ * Renders identically to the .note / .tip / .warning / .caution classes in
+ * styles/doc-page.ts. Both exist because a callout containing rich markup is
+ * easier to slot into a component than to write as a bare class, but a reader
+ * must never be able to tell which one a given page used.
+ *
+ * Four levels, separated by rule weight and one printed word. No icon, no
+ * radius, no tinted fill except at the strongest level — a callout is an aside
+ * in the margin of the page, not a card sitting on top of it.
  *
  * Usage:
  *   <doc-notification type="note">
@@ -17,97 +22,81 @@ import { prop } from "@toyz/loom/store";
 const notifStyles = css`
   :host {
     display: block;
-    border-radius: var(--radius-md, 8px);
-    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
-    margin: var(--space-4, 1rem) 0;
+    border-radius: 0;
+    background: transparent;
+    padding: var(--space-3, 0.75rem) 0 var(--space-3, 0.75rem) var(--space-4, 1rem);
+    margin: 0 0 var(--space-4, 1rem);
     font-size: var(--text-sm, 0.8125rem);
-    line-height: 1.6;
+    line-height: 1.65;
+    color: var(--text-secondary, #a09a88);
   }
 
-  .wrap {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-3, 0.75rem);
-  }
-
-  .wrap > loom-icon {
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .body {
-    flex: 1;
-    min-width: 0;
-  }
-
-  /* ── Note (indigo / accent) ── */
-  :host([type="note"]) {
-    background: var(--accent-glow, rgba(129, 140, 248, 0.12));
-    border: 1px solid var(--accent-dim, var(--thread-dim));
-    color: var(--text-secondary, var(--text-secondary));
-  }
-
-  /* ── Tip (emerald) ── */
-  :host([type="tip"]) {
-    background: rgba(52, 211, 153, 0.12);
-    border: 1px solid rgba(52, 211, 153, 0.35);
-    color: var(--text-secondary, var(--text-secondary));
-  }
-
-  /* ── Warning (amber) ── */
-  :host([type="warning"]) {
-    background: rgba(251, 191, 36, 0.1);
-    border: 1px solid rgba(251, 191, 36, 0.3);
-    color: var(--text-secondary, var(--text-secondary));
-  }
-
-  /* ── Caution (rose) ── */
-  :host([type="caution"]) {
-    background: rgba(244, 114, 182, 0.1);
-    border: 1px solid rgba(244, 114, 182, 0.3);
-    color: var(--text-secondary, var(--text-secondary));
-  }
-
-  /* Slotted inline elements */
-  ::slotted(.ic) {
-    display: inline !important;
+  /* The printed level label. Replaces the coloured icon that used to sit in
+     a flex row to the left of the text. */
+  .label {
+    display: block;
     font-family: var(--font-mono, monospace);
-    font-size: 0.8em;
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
-    background: rgba(129, 140, 248, 0.1);
-    color: var(--accent, var(--thread));
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-1, 0.25rem);
   }
 
+  :host([type="note"]) { border-left: 1px solid var(--indigo-dim, #47607a); }
+  :host([type="note"]) .label { color: var(--indigo, #6b8cae); }
+
+  :host([type="tip"]) { border-left: 1px solid var(--ok, #7f9c5a); }
+  :host([type="tip"]) .label { color: var(--ok, #7f9c5a); }
+
+  :host([type="warning"]) { border-left: 1px solid var(--warn, #c99a3d); }
+  :host([type="warning"]) .label { color: var(--warn, #c99a3d); }
+
+  /* Caution is the strongest level: a data-loss or security footgun, and the
+     only one that earns a fill. */
+  :host([type="caution"]) {
+    border-left: 2px solid var(--thread, #c4472f);
+    background: var(--thread-wash, rgba(196, 71, 47, 0.1));
+    padding-right: var(--space-4, 1rem);
+  }
+  :host([type="caution"]) .label { color: var(--thread, #c4472f); }
+
+  /* Slotted content matches docStyles exactly. Inline code is underlined,
+     not boxed — a chip per identifier turns prose into a field of buttons. */
+  ::slotted(.ic),
   ::slotted(code) {
     display: inline !important;
     font-family: var(--font-mono, monospace);
-    font-size: 0.8em;
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
-    background: rgba(129, 140, 248, 0.1);
-    color: var(--accent, var(--thread));
-  }
-
-  ::slotted(loom-link) {
-    display: inline !important;
+    font-size: 0.875em;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    border-bottom: 1px solid var(--thread-dim, #8f3423);
+    color: var(--text-primary, #e6e1d3);
+    overflow-wrap: break-word;
   }
 
   ::slotted(strong) {
-    color: var(--accent, var(--thread));
+    color: var(--text-primary, #e6e1d3);
+    font-weight: 600;
   }
+
+  ::slotted(loom-link) { display: inline !important; }
 
   ::slotted(loom-icon) {
     display: inline-flex !important;
     vertical-align: middle;
   }
+
+  ::slotted(p) { margin: 0; }
 `;
 
-const ICON_MAP: Record<string, { name: string; color: string }> = {
-  note: { name: "alert-circle", color: "var(--accent, #818cf8)" },
-  tip: { name: "sparkles", color: "var(--emerald, #34d399)" },
-  warning: { name: "alert-triangle", color: "var(--amber, #fbbf24)" },
-  caution: { name: "shield", color: "var(--rose, #f472b6)" },
+/** Printed in place of the old per-type icon. */
+const LABELS: Record<string, string> = {
+  note: "NOTE",
+  tip: "TIP",
+  warning: "CAUTION",
+  caution: "DO NOT",
 };
 
 @component("doc-notification")
@@ -116,13 +105,10 @@ export class DocNotification extends LoomElement {
   @prop accessor type: "note" | "tip" | "warning" | "caution" = "note";
 
   update() {
-    const icon = ICON_MAP[this.type] ?? ICON_MAP.note;
     return (
-      <div class="wrap">
-        <loom-icon name={icon.name} size={16} color={icon.color}></loom-icon>
-        <div class="body">
-          <slot></slot>
-        </div>
+      <div>
+        <span class="label">{LABELS[this.type] ?? LABELS.note}</span>
+        <slot></slot>
       </div>
     );
   }

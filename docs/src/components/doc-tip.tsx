@@ -44,13 +44,14 @@ const tipStyles = css`
     line-height: 1.45;
     color: color-mix(in srgb, var(--card-ink, #16150f) 78%, transparent);
   }
+  /* The path, not a sentence telling you to go read it. */
   .more {
     display: block;
     margin-top: 6px;
     font-family: var(--font-mono, monospace);
     font-size: 0.625rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
     color: color-mix(in srgb, var(--card-ink, #16150f) 55%, transparent);
   }
 `;
@@ -107,7 +108,7 @@ export class DocTip extends LoomAttribute {
       <div class="tip" style={style} role="tooltip">
         <div class="name">{`@${key}`}</div>
         <div class="summary">{help.summary}</div>
-        <span class="more">Click the token name in the docs for the full page</span>
+        <span class="more">{help.to}</span>
       </div>
     );
   }

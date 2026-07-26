@@ -11,7 +11,7 @@ export default class PageDecoratorCSS extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="palette" size={20} color="var(--purple)"></loom-icon>
+            <loom-icon name="palette" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -27,7 +27,7 @@ export default class PageDecoratorCSS extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <div class="feature-entry">
@@ -59,7 +59,7 @@ class ThemedCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">
@@ -84,7 +84,7 @@ class ThemedCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@css vs @styles</h2>
           </div>
           <div class="feature-entry">
@@ -125,7 +125,7 @@ class ThemedCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="star" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="star" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Multiple @css Methods</h2>
           </div>
           <div class="feature-entry">

@@ -12,7 +12,7 @@ export default class PageRouterOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Setup</h2>
           </div>
           <div class="feature-entry">
@@ -32,7 +32,7 @@ router.start();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Modes</h2>
           </div>
           <table class="api-table">
@@ -55,7 +55,7 @@ router.start();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Outlet</h2>
           </div>
           <div class="feature-entry">
@@ -84,7 +84,7 @@ class App extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>RouteChanged Event</h2>
           </div>
           <div class="feature-entry">

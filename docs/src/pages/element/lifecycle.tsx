@@ -96,7 +96,7 @@ export default class PageElementLifecycle extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@mount</h2>
           </div>
           <div class="feature-entry">
@@ -114,7 +114,7 @@ setup() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="upload" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="upload" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@unmount</h2>
           </div>
           <div class="feature-entry">
@@ -132,7 +132,7 @@ teardown() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@catch_</h2>
           </div>
           <div class="feature-entry">
@@ -151,7 +151,7 @@ class MyWidget extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="clock" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="clock" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@suspend</h2>
           </div>
           <div class="feature-entry">
@@ -172,7 +172,7 @@ async fetchUser() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Combined Example</h2>
           </div>
           <div class="feature-entry">
@@ -224,7 +224,7 @@ class UserCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>firstUpdated()</h2>
           </div>
           <div class="feature-entry">
@@ -249,7 +249,7 @@ class MyEl extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="filter" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="filter" size={20} color="var(--text-muted)"></loom-icon>
             <h2>shouldUpdate()</h2>
           </div>
           <div class="feature-entry">
@@ -288,7 +288,7 @@ class CanvasWrapper extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Full Lifecycle Order</h2>
           </div>
 

@@ -12,7 +12,7 @@ export default class PageRouterGroups extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@group</h2>
           </div>
           <div class="feature-entry">
@@ -38,7 +38,7 @@ class PageApiUsers extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Group Options</h2>
           </div>
           <div class="feature-entry">
@@ -65,7 +65,7 @@ class PageApiUsers extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Group Guards</h2>
           </div>
           <div class="feature-entry">
@@ -87,7 +87,7 @@ class PageAdminLogs extends LoomElement { }
 
         <section>
           <div class="group-header">
-            <loom-icon name="database" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="database" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Group Metadata</h2>
           </div>
           <div class="feature-entry">
@@ -120,7 +120,7 @@ checkAuth(ctx: RouteContext) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Nested Groups</h2>
           </div>
           <div class="feature-entry">
@@ -149,7 +149,7 @@ class PageAdminUsers extends LoomElement { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Dynamic Params in Groups</h2>
           </div>
           <div class="feature-entry">
@@ -174,7 +174,7 @@ class PageMember extends LoomElement { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">

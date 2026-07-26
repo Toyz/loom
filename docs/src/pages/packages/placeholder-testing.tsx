@@ -13,7 +13,7 @@ export default class PagePlaceholderTesting extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Import</h2>
           </div>
           <code-block lang="ts" code={`import { MockPlaceholder } from "@toyz/loom-placeholder/testing";`}></code-block>
@@ -21,7 +21,7 @@ export default class PagePlaceholderTesting extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Setup</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -36,7 +36,7 @@ beforeEach(() => mock.reset());`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="check" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="check" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Assertions</h2>
           </div>
           <code-block lang="ts" code={`// Returns predictable URLs
@@ -60,7 +60,7 @@ mock.reset();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API</h2>
           </div>
           <table class="api-table">

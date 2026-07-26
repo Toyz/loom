@@ -13,7 +13,7 @@ export default class PageRpcQueries extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <p>
@@ -40,7 +40,7 @@ class UserList extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Reactive Arguments</h2>
           </div>
           <p>
@@ -59,7 +59,7 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Options</h2>
           </div>
           <table class="api-table">
@@ -75,7 +75,7 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>SWR Caching</h2>
           </div>
           <p>
@@ -93,7 +93,7 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>RpcQuery&lt;TArgs, TReturn&gt;</h2>
           </div>
           <p>
@@ -120,7 +120,7 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Pattern Matching</h2>
           </div>
           <p>

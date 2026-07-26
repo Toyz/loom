@@ -13,7 +13,7 @@ export default class PageElementForms extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -28,7 +28,7 @@ export default class PageElementForms extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <div class="feature-entry">
@@ -80,7 +80,7 @@ class LoginPage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>FormState&lt;T&gt; API</h2>
           </div>
           <table class="api-table">
@@ -99,7 +99,7 @@ class LoginPage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Field Schema</h2>
           </div>
           <div class="feature-entry">
@@ -116,7 +116,7 @@ class LoginPage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Explicit Binding</h2>
           </div>
           <div class="feature-entry">
@@ -139,7 +139,7 @@ if (this.login.validate()) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Decorator Signature</h2>
           </div>
           <table class="api-table">

@@ -14,7 +14,7 @@ export default class PageElementOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -41,7 +41,7 @@ export class MyWidget extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>The update() Method</h2>
           </div>
           <div class="feature-entry">
@@ -66,7 +66,7 @@ export class MyWidget extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>The @component Decorator</h2>
           </div>
           <div class="feature-entry">
@@ -93,7 +93,7 @@ class MyCounter extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

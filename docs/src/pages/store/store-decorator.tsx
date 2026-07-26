@@ -11,7 +11,7 @@ export default class PageStoreDecorator extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -25,7 +25,7 @@ export default class PageStoreDecorator extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <div class="feature-entry">
@@ -54,7 +54,7 @@ class MyTodos extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Deep Reactivity</h2>
           </div>
           <div class="feature-entry">
@@ -74,7 +74,7 @@ delete this.state.meta;              // delete`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="database" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="database" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Persisted Store</h2>
           </div>
           <div class="feature-entry">
@@ -103,7 +103,7 @@ class MyPrefs extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Instance Isolation</h2>
           </div>
           <div class="feature-entry">
@@ -117,7 +117,7 @@ class MyPrefs extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Options</h2>
           </div>
           <table class="api-table">
@@ -132,7 +132,7 @@ class MyPrefs extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>When to Use</h2>
           </div>
           <table class="api-table">

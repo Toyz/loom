@@ -14,7 +14,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Quick Start</h2>
           </div>
           <code-block lang="ts" code={QUICK_START}></code-block>
@@ -22,7 +22,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Props</h2>
           </div>
           <table class="api-table">
@@ -72,7 +72,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Static Methods</h2>
           </div>
           <table class="api-table">
@@ -89,7 +89,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <ul>
@@ -106,7 +106,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Placeholder</h2>
           </div>
           <div class="feature-entry">
@@ -120,7 +120,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="alert-triangle" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="alert-triangle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Error Handling</h2>
           </div>
           <div class="feature-entry">
@@ -133,7 +133,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Preloading</h2>
           </div>
           <div class="feature-entry">
@@ -147,7 +147,7 @@ export default class PageElementImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Gallery Example</h2>
           </div>
           <div class="feature-entry">

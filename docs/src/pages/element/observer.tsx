@@ -13,7 +13,7 @@ export default class PageElementObserver extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -40,7 +40,7 @@ export default class PageElementObserver extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>ResizeObserver</h2>
           </div>
           <div class="feature-entry">
@@ -80,7 +80,7 @@ onResize(entry: ResizeObserverEntry) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="eye" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="eye" size={20} color="var(--text-muted)"></loom-icon>
             <h2>IntersectionObserver</h2>
           </div>
           <div class="feature-entry">
@@ -120,7 +120,7 @@ class LazyImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="search" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="search" size={20} color="var(--text-muted)"></loom-icon>
             <h2>MutationObserver</h2>
           </div>
           <div class="feature-entry">
@@ -158,7 +158,7 @@ class SlotCounter extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Target</h2>
           </div>
           <div class="feature-entry">
@@ -194,7 +194,7 @@ class ParentWatcher extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--accent)"></loom-icon>
+            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Multiple Observers</h2>
           </div>
           <div class="feature-entry">
@@ -224,7 +224,7 @@ class SmartPanel extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Lifecycle</h2>
           </div>
           <div class="feature-entry">
@@ -248,7 +248,7 @@ class SmartPanel extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <div class="feature-entry">

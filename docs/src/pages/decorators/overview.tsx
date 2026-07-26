@@ -21,7 +21,7 @@ export default class PageDecoratorsOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>createDecorator</h2>
           </div>
           <div class="feature-entry">
@@ -63,7 +63,7 @@ const tag = createDecorator<[string]>((ctor, name) => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>State</h2>
           </div>
 
@@ -149,7 +149,7 @@ onTheme(val: string, prev: string) { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>More Decorators</h2>
           </div>
           <table class="api-table">

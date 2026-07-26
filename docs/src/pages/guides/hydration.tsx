@@ -13,7 +13,7 @@ export default class PageGuidesHydration extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="zap" size={20} color="var(--amber)"></loom-icon>
+                        <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Overview</h2>
                     </div>
                     <div class="feature-entry">
@@ -33,7 +33,7 @@ export default class PageGuidesHydration extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="code" size={20} color="var(--cyan)"></loom-icon>
+                        <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Basic Usage</h2>
                     </div>
                     <div class="feature-entry">
@@ -77,7 +77,7 @@ class MyCounter extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="settings" size={20} color="var(--rose)"></loom-icon>
+                        <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>How It Works</h2>
                     </div>
                     <div class="feature-entry">
@@ -118,12 +118,12 @@ class MyCounter extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="compass" size={20} color="var(--accent)"></loom-icon>
+                        <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>When to Use</h2>
                     </div>
                     <div class="grid">
                         <div class="card">
-                            <h3><loom-icon name="check" size={16} color="var(--emerald)"></loom-icon> Great For</h3>
+                            <h3><loom-icon name="check" size={16} color="var(--text-muted)"></loom-icon> Great For</h3>
                             <ul>
                                 <li>App shells, nav bars, and hero sections</li>
                                 <li>Above-the-fold content that must paint instantly</li>
@@ -132,7 +132,7 @@ class MyCounter extends LoomElement {
                             </ul>
                         </div>
                         <div class="card">
-                            <h3><loom-icon name="x" size={16} color="var(--rose)"></loom-icon> Not Needed For</h3>
+                            <h3><loom-icon name="x" size={16} color="var(--text-muted)"></loom-icon> Not Needed For</h3>
                             <ul>
                                 <li>Below-the-fold components (lazy load instead)</li>
                                 <li>Highly dynamic content that changes on every load</li>
@@ -145,7 +145,7 @@ class MyCounter extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--accent)"></loom-icon>
+                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Browser Support</h2>
                     </div>
                     <div class="feature-entry">

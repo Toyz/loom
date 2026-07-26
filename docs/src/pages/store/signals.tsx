@@ -11,7 +11,7 @@ export default class PageStoreSignals extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="radio" size={20} color="var(--purple)"></loom-icon>
+            <loom-icon name="radio" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -27,7 +27,7 @@ export default class PageStoreSignals extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="edit-3" size={20} color="var(--amber)"></loom-icon>
+            <loom-icon name="edit-3" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@signal Decorator</h2>
           </div>
           <div class="feature-entry">
@@ -83,7 +83,7 @@ externalLib.observe(sig);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--emerald)"></loom-icon>
+            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>SignalState&lt;T&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -118,7 +118,7 @@ counter.subscribe((value, prev) => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="cpu" size={20} color="var(--cyan)"></loom-icon>
+            <loom-icon name="cpu" size={20} color="var(--text-muted)"></loom-icon>
             <h2>SignalComputed&lt;T&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -152,7 +152,7 @@ doubled.dispose();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="repeat" size={20} color="var(--rose)"></loom-icon>
+            <loom-icon name="repeat" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Converters</h2>
           </div>
           <div class="feature-entry">
@@ -200,7 +200,7 @@ const loomReactive = fromSignal(externalSignal, (onChange) => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="git-merge" size={20} color="var(--sky)"></loom-icon>
+            <loom-icon name="git-merge" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works with Real DOM</h2>
           </div>
           <div class="feature-entry">
