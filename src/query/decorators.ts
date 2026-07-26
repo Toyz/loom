@@ -100,7 +100,7 @@ export function api<T extends object>(
         const state = (this as unknown as Record<symbol, unknown>)[state_.key] as
           | ApiState<T>
           | undefined;
-        state?.dispose();
+        state?.dispose?.();
       });
     });
 

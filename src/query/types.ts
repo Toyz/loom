@@ -61,8 +61,13 @@ export interface ApiState<T, E = Error> {
   refetch(): Promise<void>;
   /** Mark data as stale and trigger refetch */
   invalidate(): void;
-  /** Abort any in-flight request. Called automatically on host disconnect. */
-  dispose(): void;
+  /**
+   * Abort any in-flight request. Called automatically on host disconnect.
+   *
+   * Optional so that other implementations of this structural interface —
+   * loom-rpc's RpcQuery, for one — are not broken by its addition.
+   */
+  dispose?(): void;
 
   // ── LoomResult combinators ──
 
