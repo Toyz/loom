@@ -42,9 +42,31 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   /** Monotonic navigation ID — used to discard stale async navigations */
   private _navId = 0;
 
-  /** Register the outlet so lifecycle hooks can find rendered elements */
+  /**
+   * Register the outlet so lifecycle hooks can find rendered elements.
+   *
+   * Called by <loom-outlet> on connect. Until that wiring existed this had no
+   * callers at all, so `_outlet` was permanently null and @onRouteEnter /
+   * @onRouteLeave never fired for anyone.
+   */
   setOutlet(el: HTMLElement): void {
     this._outlet = el;
+  }
+
+  /** Unregister an outlet on disconnect (ignores a stale outlet). */
+  clearOutlet(el: HTMLElement): void {
+    if (this._outlet === el) this._outlet = null;
+  }
+
+  /**
+   * Re-resolve the current URL through the guard pipeline.
+   *
+   * Used by <loom-outlet> on cold load: the outlet used to call matchRoute()
+   * and mount directly, which raced ahead of the router's async guard
+   * resolution and rendered guarded routes on direct URL entry.
+   */
+  refresh(): Promise<void> {
+    return this._resolveWithGuards();
   }
 
   constructor(opts: RouterOptions = {}) {
@@ -76,15 +98,16 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       return;
     }
     const id = ++this._navId;
-    const path = this._resolvePath(target);
+    const url = this._resolveUrl(target);
+    const path = this._normalizePath(url);
     const allowed = await this._checkGuards(path);
     if (id !== this._navId) return; // stale — a newer navigation started
     if (allowed === false) return;
     if (typeof allowed === "string") {
       return this.go(allowed, _depth + 1);
     }
-    this.mode.write(path);
-    this._doRender(path); // guards already ran — skip re-check
+    this.mode.write(url);   // address bar keeps the query
+    this._doRender(path);   // matching/RouteChanged use the bare path
   }
 
   /** Alias for go() */
@@ -99,15 +122,16 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       return;
     }
     const id = ++this._navId;
-    const path = this._resolvePath(target);
+    const url = this._resolveUrl(target);
+    const path = this._normalizePath(url);
     const allowed = await this._checkGuards(path);
     if (id !== this._navId) return; // stale — a newer navigation started
     if (allowed === false) return;
     if (typeof allowed === "string") {
       return this.replace(allowed, _depth + 1);
     }
-    this.mode.replace(path);
-    this._doRender(path); // guards already ran — skip re-check
+    this.mode.replace(url);  // address bar keeps the query
+    this._doRender(path);    // matching/RouteChanged use the bare path
   }
 
   /** Go back in history */
@@ -132,7 +156,7 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   }
 
   /**
-   * Normalize a path:
+   * Normalize a path for MATCHING:
    * - Strip query strings (`/store?tab=2` → `/store`)
    * - Strip trailing slashes (`/store/` → `/store`)
    * - Ensure leading slash
@@ -146,6 +170,25 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
     // Ensure leading slash
     if (!path.startsWith("/")) path = "/" + path;
     return path;
+  }
+
+  /**
+   * Normalize a URL for the ADDRESS BAR — same rules, query preserved.
+   *
+   * `_normalizePath` strips the query, and the stripped value used to be what
+   * got written, so `router.go("/search?q=loom")` silently dropped `?q=loom`
+   * and any @prop({ query }) read an empty string.
+   */
+  private _normalizeUrl(url: string): string {
+    const qIdx = url.indexOf("?");
+    if (qIdx === -1) return this._normalizePath(url);
+    return this._normalizePath(url.slice(0, qIdx)) + url.slice(qIdx);
+  }
+
+  /** Resolve a RouteTarget to a full URL (query preserved). */
+  private _resolveUrl(target: RouteTarget): string {
+    if (typeof target === "string") return this._normalizeUrl(target);
+    return this._normalizeUrl(buildPath(target.name, target.params));
   }
 
   /**
@@ -276,7 +319,11 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       const args = this._resolveGuardInjectParams(reg.method, reg.key);
       const result = await reg.method.apply(null, [routeInfo, ...args]);
       if (result instanceof LoomResult) {
-        if (!result.ok) return result.error as string ?? false;
+        // `as` binds tighter than `??`, so `result.error as string ?? false`
+        // returned the Error object itself for err(new Error(...)). Callers
+        // test only `=== false` and `typeof === "string"`, so it matched
+        // neither and the navigation was ALLOWED. A non-string error blocks.
+        if (!result.ok) return typeof result.error === "string" ? result.error : false;
         continue;
       }
       if (result === false) return false;
@@ -292,7 +339,11 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
       const args = this._resolveGuardInjectParams(proto, key);
       const result = await proto[key].apply(proto, [routeInfo, ...args]);
       if (result instanceof LoomResult) {
-        if (!result.ok) return result.error as string ?? false;
+        // `as` binds tighter than `??`, so `result.error as string ?? false`
+        // returned the Error object itself for err(new Error(...)). Callers
+        // test only `=== false` and `typeof === "string"`, so it matched
+        // neither and the navigation was ALLOWED. A non-string error blocks.
+        if (!result.ok) return typeof result.error === "string" ? result.error : false;
         continue;
       }
       if (result === false) return false;

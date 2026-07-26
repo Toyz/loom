@@ -209,7 +209,7 @@ describe("baseline: guard error blocks navigation (Phase 7A)", () => {
     routeByName.clear();
   });
 
-  it.fails("LoomResult.err(new Error(...)) denies the route", async () => {
+  it("LoomResult.err(new Error(...)) denies the route", async () => {
     const mock = new MockMode("/");
 
     class G {

@@ -14,6 +14,7 @@ import { LoomElement } from "../element/element";
 import { component, query } from "../element/decorators";
 import { prop } from "../store/decorators";
 import { on } from "../decorators/events";
+import { watch } from "../store/watch";
 import { app } from "../app";
 import { LoomRouter, type RouteTarget } from "./router";
 import { RouteChanged } from "./events";
@@ -58,20 +59,34 @@ class LoomLink extends LoomElement {
       ];
     }
 
-    // Build initial DOM
-    const a = document.createElement("a");
-    a.setAttribute("part", "anchor");
-    const slot = document.createElement("slot");
-    a.appendChild(slot);
-    this.shadow.appendChild(a);
+    // Build initial DOM — guarded, because connectedCallback runs again every
+    // time the element is moved in the DOM. Without this a reconnect appended
+    // a SECOND <a> (and @query("a") keeps syncing the first, so the visible
+    // one kept a stale href).
+    if (!this.shadow.querySelector("a")) {
+      const a = document.createElement("a");
+      a.setAttribute("part", "anchor");
+      const slot = document.createElement("slot");
+      a.appendChild(slot);
+      this.shadow.appendChild(a);
+    }
 
     this._sync();
 
     // Intercept clicks — use router.go() instead of native nav
-    this.shadow.addEventListener("click", (e: Event) => {
+    const onClick = (e: Event) => {
+      const me = e as MouseEvent;
+      if (me.defaultPrevented) return;
+      // Let the browser handle modifier and non-primary clicks, so
+      // cmd/ctrl-click still opens a new tab and middle-click still works.
+      if (me.button !== 0 || me.metaKey || me.ctrlKey || me.shiftKey || me.altKey) return;
       e.preventDefault();
       this.router.go(this._target());
-    });
+    };
+    this.shadow.addEventListener("click", onClick);
+    // Tracked, so disconnect removes it — otherwise a moved link accumulated
+    // one handler per reconnect and router.go() fired N times per click.
+    this.track(() => this.shadow.removeEventListener("click", onClick));
   }
 
   /** Build a RouteTarget from current props */
@@ -90,13 +105,37 @@ class LoomLink extends LoomElement {
     this._sync();
   }
 
+  // The href and .active class used to be refreshed only on connect and on
+  // RouteChanged, so `<loom-link to={this.nextPage}>` kept pointing at the
+  // original path after nextPage changed.
+  @watch("to")
+  @watch("name")
+  @watch("params")
+  private _onTargetChanged() {
+    this._sync();
+  }
+
   private _sync(): void {
     const a = this.anchor;
     if (!a) return;
-    const resolved = typeof this._target() === "string"
-      ? this._target() as string
-      : buildPath((this._target() as { name: string; params?: Record<string, string> }).name, (this._target() as { name: string; params?: Record<string, string> }).params);
-    a.href = this.router.href(this._target());
+    // Resolve ONCE. This used to call _target() five times, re-running
+    // JSON.parse(this.params) on each.
+    let target: RouteTarget;
+    let resolved: string;
+    try {
+      target = this._target();
+      resolved = typeof target === "string"
+        ? target
+        : buildPath(target.name, target.params);
+    } catch (e) {
+      // buildPath throws on an unknown route name or missing param, and
+      // malformed `params` JSON throws in _target(). EventBus.emit does not
+      // guard its handlers, so throwing here from the RouteChanged listener
+      // aborted every later subscriber — including the outlet's re-render.
+      console.error("[Loom] <loom-link> could not resolve its target", e);
+      return;
+    }
+    a.href = this.router.href(target);
     a.className = this.router.current.path === resolved ? "active" : "";
   }
 }

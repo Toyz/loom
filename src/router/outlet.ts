@@ -38,19 +38,39 @@ class LoomOutlet extends LoomElement {
     this._show(e.path, e.params, e.meta);
   }
 
-  /** Called after the first render — resolve whatever the current URL is */
+  /**
+   * Called after the first render — resolve whatever the current URL is.
+   *
+   * This used to call matchRoute() + _show() directly, bypassing every guard.
+   * The router's own resolution is async, so on a cold load the outlet always
+   * won the race and mounted guarded components (running their @mount hooks
+   * and fetches) before the guard could deny them. Delegate to the router
+   * instead; only the no-router fallback still matches directly.
+   */
   firstUpdated() {
     if (this._initialResolved) return;
     this._initialResolved = true;
-    // Use the router's mode to read the current path (supports hash + history)
-    let path: string;
-    try {
-      path = app.get<LoomRouter>(LoomRouter).mode.read();
-    } catch {
-      // Fallback: try both hash and pathname
-      path = location.hash.slice(1) || location.pathname || "/";
+
+    const found = app.maybe<LoomRouter>(LoomRouter);
+    const router = found.ok ? found.value : undefined;
+    if (router) {
+      // Registering here is what finally makes @onRouteEnter/@onRouteLeave fire.
+      router.setOutlet(this);
+      this.track(() => router.clearOutlet(this));
+
+      const cur = router.current;
+      if (cur.tag) {
+        // Already guard-checked by the router — safe to mount.
+        this._show(cur.path, cur.params, cur.meta);
+      } else {
+        // Not resolved yet: run the guard pipeline rather than pre-empting it.
+        void router.refresh();
+      }
+      return;
     }
-    // Normalize: strip query strings and trailing slashes
+
+    // No router registered — keep the standalone behavior.
+    let path = location.hash.slice(1) || location.pathname || "/";
     const qIdx = path.indexOf("?");
     if (qIdx !== -1) path = path.slice(0, qIdx);
     if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
@@ -117,6 +137,13 @@ class LoomOutlet extends LoomElement {
     const queryMap = this._parseQuery();
     const boundParamKeys = new Set<string>();
 
+    // Per-element snapshot of the declared defaults, captured before the first
+    // injection. An absent param/query used to be substituted with "", which
+    // the coercion below then turned into 0 for a numeric prop — so
+    // `@prop({ query: "page" }) accessor page = 1` became 0 on any URL without
+    // ?page=, instead of staying 1.
+    const defaults = this._routeDefaults(el, routeBindings);
+
     for (const binding of routeBindings) {
       let value: unknown;
 
@@ -125,14 +152,22 @@ class LoomOutlet extends LoomElement {
         value = { ...params };
       } else if (typeof binding.param === "string") {
         // Single param pick: @prop({ param: "id" })
-        value = params[binding.param] ?? "";
         boundParamKeys.add(binding.param);
+        if (!(binding.param in params)) {
+          (el as unknown as Record<string, unknown>)[binding.propKey] = defaults[binding.propKey];
+          continue;
+        }
+        value = params[binding.param];
       } else if (binding.query === querySentinel) {
         // Full query decompose: @prop({query: routeQuery})
         value = Object.fromEntries(queryMap);
       } else if (typeof binding.query === "string") {
         // Single query pick: @prop({ query: "tab" })
-        value = queryMap.get(binding.query) ?? "";
+        if (!queryMap.has(binding.query)) {
+          (el as unknown as Record<string, unknown>)[binding.propKey] = defaults[binding.propKey];
+          continue;
+        }
+        value = queryMap.get(binding.query);
       } else if (binding.meta === metaSentinel) {
         // Full meta decompose: @prop({meta: routeMeta})
         value = { ...meta };
@@ -161,6 +196,29 @@ class LoomOutlet extends LoomElement {
         el.setAttribute(key, val);
       }
     }
+  }
+
+  /**
+   * Snapshot each route-bound prop's declared default, once per element.
+   *
+   * Taken on the first injection, before anything has been written, so a later
+   * navigation that omits a param can restore the initializer value rather
+   * than blanking the prop.
+   */
+  private _routeDefaults(
+    el: HTMLElement,
+    bindings: Array<{ propKey: string }>,
+  ): Record<string, unknown> {
+    const host = el as unknown as { __loomRouteDefaults?: Record<string, unknown> };
+    let defaults = host.__loomRouteDefaults;
+    if (!defaults) {
+      defaults = Object.create(null) as Record<string, unknown>;
+      for (const b of bindings) {
+        defaults[b.propKey] = (el as unknown as Record<string, unknown>)[b.propKey];
+      }
+      host.__loomRouteDefaults = defaults;
+    }
+    return defaults;
   }
 
   /** Parse query params from the URL (supports both hash and history mode) */

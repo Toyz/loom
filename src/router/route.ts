@@ -68,11 +68,39 @@ export function compilePattern(pattern: string): { regex: RegExp; paramNames: st
         paramNames.push(seg.slice(1));
         return "([^/]+)";
       }
-      return seg.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      // A bare "*" segment is a splat: match the rest of the path.
+      if (seg === "*") {
+        paramNames.push("wildcard");
+        return "(.*)";
+      }
+      // Escape each side of an in-segment "*" and join with a wildcard, so
+      // `/files/*.png` matches `/files/logo.png`. Previously the "*" was
+      // regex-escaped into a literal asterisk and the route matched only the
+      // URL "/files/*.png".
+      return seg
+        .split("*")
+        .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+        .join("[^/]*");
     })
     .join("\\/");
 
   return { regex: new RegExp(`^${regexStr}$`), paramNames };
+}
+
+/**
+ * Percent-decode a route param, tolerating malformed input.
+ *
+ * Hash mode round-trips through the URL object, whose hash setter
+ * percent-encodes, so `/user/Ada Lovelace` comes back as `Ada%20Lovelace`.
+ * A stray "%" makes decodeURIComponent throw URIError, which would take down
+ * routing entirely — fall back to the raw value.
+ */
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
 }
 
 /**
@@ -85,7 +113,7 @@ export function matchRoute(path: string): { entry: RouteEntry; params: Record<st
     if (m) {
       const params: Record<string, string> = {};
       entry.paramNames.forEach((name, i) => {
-        params[name] = m[i + 1];
+        params[name] = safeDecode(m[i + 1]);
       });
       return { entry, params };
     }
@@ -106,6 +134,9 @@ export function buildPath(name: string, params: Record<string, string> = {}): st
 
   return entry.pattern.replace(/:([^/]+)/g, (_, key) => {
     if (!(key in params)) throw new Error(`[Loom] Missing param "${key}" for route "${name}"`);
-    return params[key];
+    // Encode so values containing spaces, slashes or "#" round-trip. Without
+    // this, buildPath("user", { id: "a/b" }) produced "/user/a/b", which then
+    // matched a different two-segment route.
+    return encodeURIComponent(params[key]);
   });
 }
