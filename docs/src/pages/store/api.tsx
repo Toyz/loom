@@ -70,6 +70,59 @@ export default class PageFetch extends LoomElement {
             </tbody>
           </table>
         </doc-section>
+        {/* ── @fetch ── */}
+        <doc-section heading="@fetch — the common case">
+          <p>
+            Most <span class="ic">@api</span> declarations are the same four lines: build a URL
+            from a prop, call fetch, check the response, parse JSON. Written by hand that is
+            also four chances to get it wrong, and the third one usually gets skipped.
+          </p>
+          <api-entry sig="@fetch(url | options)">
+            <p>
+              Takes a URL, a function of the host, or an options object. Everything
+              <span class="ic">@api</span> understands passes through — including
+              <span class="ic">enabled</span>, <span class="ic">retry</span>,
+              <span class="ic">use</span> and <span class="ic">pipe</span>.
+            </p>
+            <code-block lang="ts" code={FETCH_EXAMPLE}></code-block>
+          </api-entry>
+
+          <table class="api-table">
+            <thead><tr><th>It handles</th><th>Because otherwise</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Non-2xx becomes an <code>HttpError</code></td>
+                <td><code>fetch()</code> resolves for 404 and 500, so a hand-rolled <code>.then(r =&gt; r.json())</code> lands the error page in <code>data</code> and reports <code>ok: true</code></td>
+              </tr>
+              <tr>
+                <td>Interceptors apply</td>
+                <td>It goes through <code>ctx.fetch</code>. A bare <code>fetch()</code> inside <code>fn</code> bypasses the context, which quietly drops the auth header an <code>@intercept</code> just set</td>
+              </tr>
+              <tr>
+                <td>The key is the resolved URL</td>
+                <td>A URL built from a prop refetches when that prop changes, with no separate <code>key</code> to keep in step — those two drifting apart is its own class of bug</td>
+              </tr>
+              <tr>
+                <td><code>params</code> are serialised</td>
+                <td>Empty and undefined values are dropped rather than sent as blanks, and the order is stable so the cache key is too</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <doc-notification type="caution">
+            The export is named <span class="ic">fetch</span>, so importing it shadows the global
+            <span class="ic"> fetch</span> in that module. If you need both, import it as
+            <span class="ic">{`{ fetch as fetchJson }`}</span>.
+          </doc-notification>
+
+          <p class="note">
+            <span class="ic">as: "text"</span> returns the body as a string and
+            <span class="ic">as: "response"</span> hands back the raw
+            <span class="ic">Response</span> — useful for a HEAD request or a blob, where
+            parsing is the caller's business.
+          </p>
+        </doc-section>
+
         {/* ── Gating ── */}
         <doc-section heading="Waiting for a prop">
           <p>
@@ -194,6 +247,27 @@ class Profile extends LoomElement {
       err:     (e) => <p class="error">{e.message}</p>,
     });
   }
+}`;
+
+const FETCH_EXAMPLE = `import { fetch } from "@toyz/loom/query";
+
+@component("user-card")
+class UserCard extends LoomElement {
+  @prop accessor userId = "";
+
+  // URL from a prop: the key is derived from it, so this refetches when the
+  // prop changes, and enabled keeps it quiet until there is an id at all.
+  @fetch<User>({
+    url: (el) => \`/api/users/\${el.userId}\`,
+    enabled: (el) => Boolean(el.userId),
+    use: ["auth"],          // @intercept handlers still apply
+    retry: 2,
+  })
+  accessor user!: ApiState<User>;
+
+  // The short form, when there is nothing to configure
+  @fetch<Config>("/api/config")
+  accessor config!: ApiState<Config>;
 }`;
 
 const ENABLED_EXAMPLE = `@component("user-card")

@@ -23,6 +23,23 @@ existing suite could not see.
   the state reports `loading: false` with no data, because a request that has
   not been made is not one that is pending. It goes out on the first render
   after the gate opens.
+- **`@fetch`** — `@api` for the common case: a URL, optional params, JSON out.
+  It goes through `ctx.fetch`, so `@intercept` handlers actually apply; a bare
+  `fetch()` inside a hand-written `fn` bypasses the context and silently drops
+  whatever an interceptor set. A non-2xx becomes an `HttpError` carrying the
+  status and the parsed body, rather than being parsed as if it were data —
+  `fetch()` only rejects on network failure, so this is the check most
+  hand-rolled versions omit. The cache key defaults to the resolved URL, so a
+  URL built from a prop refetches when that prop changes without a second
+  declaration to keep in step.
+- **`@watch(Service, "field")` works against `@reactive` fields.** It only ever
+  worked when the property held a literal `Reactive` instance. A field declared
+  `@reactive accessor count = 0` reads back as a plain number — the `Reactive`
+  lives on a symbol the accessor closes over — so the `subscribe` check found
+  nothing and threw "is not a Reactive", which is the form the DI docs
+  describe. It now resolves the backing store for `@reactive`, `@store` and
+  `@signal` fields, and the error names the fix when a field genuinely is not
+  reactive.
 - **`ApiState.fetching`.** Already tracked internally and never exposed.
   `loading` is false once data exists, so there was no way to show a
   background revalidation without blanking the screen. `loading` means "there

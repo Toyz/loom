@@ -7,7 +7,7 @@
  */
 
 import { app } from "../app";
-import { WATCHERS, addConnectHook } from "../decorators/symbols";
+import { WATCHERS, addConnectHook, findLocalStore } from "../decorators/symbols";
 import type { Schedulable } from "../element/element";
 
 /**
@@ -36,6 +36,32 @@ import type { Schedulable } from "../element/element";
  * onTheme(val: string, prev: string) { … }
  * ```
  */
+/**
+ * Get the observable behind `svc[prop]`.
+ *
+ * A field declared `@reactive accessor count = 0` reads back as a plain
+ * number — the `Reactive` lives on a symbol the accessor closes over. So
+ * checking `svc[prop].subscribe` found nothing and threw, which made
+ * `@watch(SomeService, "count")` unusable against exactly the services
+ * people wanted to watch.
+ *
+ * The read on the first line is load-bearing: `@reactive` creates its backing
+ * store lazily on first access, so a field nobody has read yet has no symbol
+ * to find.
+ */
+function resolveReactive(svc: Record<string, unknown>, prop: string): unknown {
+  const direct = svc[prop];
+  if (typeof (direct as { subscribe?: Function })?.subscribe === "function") {
+    return direct; // already a Reactive instance
+  }
+  return (
+    findLocalStore(svc, `reactive:${prop}`) ??
+    findLocalStore(svc, `store:${prop}`) ??
+    findLocalStore(svc, `signal:${prop}`) ??
+    direct
+  );
+}
+
 export function watch(field: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function watch(store: { subscribe: Function; value: unknown }): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function watch(service: new (...args: unknown[]) => unknown, prop?: string): (method: Function, context: ClassMethodDecoratorContext) => void;
@@ -57,11 +83,12 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
       context.addInitializer(function () {
         const self = this as object;
         const hook = (el: object) => {
-          const svc = app.get(service);
-          const reactive = prop ? (svc as Record<string, unknown>)[prop] : svc;
+          const svc = app.get(service) as Record<string, unknown>;
+          const reactive = prop ? resolveReactive(svc, prop) : svc;
           if (typeof (reactive as { subscribe?: Function })?.subscribe !== "function") {
             throw new Error(
-              `[loom] @watch: ${service.name}${prop ? "." + prop : ""} is not a Reactive`,
+              `[loom] @watch: ${service.name}${prop ? "." + prop : ""} is not reactive. ` +
+              `Declare it as \`@reactive accessor ${prop ?? "field"}\`, or as a Reactive instance.`,
             );
           }
           const unsub = (reactive as { subscribe: Function }).subscribe((v: unknown, p: unknown) => {

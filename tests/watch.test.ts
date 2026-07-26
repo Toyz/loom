@@ -208,8 +208,10 @@ describe("@watch (DI-resolved service)", () => {
     customElements.define(tag, El);
 
     const el = document.createElement(tag);
+    // The message now names the fix, because the common cause of hitting it
+    // is a plain field where an @reactive accessor was meant.
     expect(() => document.body.appendChild(el)).toThrow(
-      "[loom] @watch: BadService.name is not a Reactive",
+      /\[loom\] @watch: BadService\.name is not reactive/,
     );
   });
 

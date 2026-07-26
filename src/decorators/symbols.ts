@@ -98,6 +98,25 @@ export function localSymbol<T = unknown>(name: string): LoomSymbol<T> {
   return new LoomSymbol<T>(name);
 }
 
+/**
+ * Find the backing store a per-instance decorator stashed on `target`.
+ *
+ * `localSymbol()` mints a fresh `Symbol()` per call, so the key cannot be
+ * reconstructed from outside the module that created it. The description is
+ * stable, though, which is enough to find it — this is how anything outside
+ * the accessor's own closure reaches the `Reactive` behind an `@reactive`
+ * field.
+ *
+ * @param name e.g. `reactive:count` or `store:settings`
+ */
+export function findLocalStore<T = unknown>(target: object, name: string): T | undefined {
+  const wanted = `loom:${name}`;
+  for (const sym of Object.getOwnPropertySymbols(target)) {
+    if (sym.description === wanted) return (target as Record<symbol, unknown>)[sym] as T;
+  }
+  return undefined;
+}
+
 export { SYMBOL_REGISTRY };
 
 export const REACTIVES = createSymbol("reactives");
