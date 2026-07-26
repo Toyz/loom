@@ -25,6 +25,9 @@ import { clipboard } from "@toyz/loom/element";
 import { route } from "@toyz/loom/router";
 import { DECORATOR_COUNT } from "../data/decorators";
 
+/** Measured at build time. The strip and the spec sheet must not disagree. */
+const GZIP_KB = __LOOM_GZIP_BYTES__ ? `${(__LOOM_GZIP_BYTES__ / 1024).toFixed(1)}KB` : "";
+
 const INSTALL_CMD = "npm install @toyz/loom";
 
 /** The component printed on the card. Real, and it compiles. */
@@ -223,10 +226,74 @@ const styles = css`
   }
   .claim + .claim { margin-top: var(--space-2); }
 
-  .measured-intro {
-    color: var(--text-secondary);
-    margin-bottom: var(--space-4);
+/* ── Spec sheet ──
+     These are the only numbers on the site that are worth reading before the
+     prose, so they are set in the display face at the size of a heading. No
+     boxes: the warp rules that separate everything else separate these too. */
+  .spec-group + .spec-group { margin-top: var(--space-8); }
+
+  .spec-group-head {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--warp);
+    margin-bottom: var(--space-5);
   }
+
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--space-6) var(--space-5);
+  }
+  .spec-grid-tight {
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  }
+
+  .spec-value {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+  }
+  .spec-unit {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0;
+  }
+
+  .spec-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-top: var(--space-2);
+  }
+  .spec-source {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  /* FCP and LCP being equal is the point, so they are marked as a pair
+     rather than left to be noticed. */
+  .spec-paired .spec-value { color: var(--thread); }
+
+  @media (max-width: 768px) {
+    .spec-value { font-size: 2rem; }
+  }
+
   .measured-note {
     color: var(--text-muted);
     font-size: var(--text-sm);
@@ -382,7 +449,7 @@ export default class PageHome extends LoomElement {
           <code-block
             lang="tsx"
             card
-            foot={`0 DEPENDENCIES,~8KB GZIPPED,${DECORATOR_COUNT} DECORATORS,TYPESCRIPT`}
+            foot={`0 DEPENDENCIES,${GZIP_KB} GZIPPED,${DECORATOR_COUNT} DECORATORS,TYPESCRIPT`}
             code={HERO_SOURCE}
           ></code-block>
         </section>
@@ -438,34 +505,69 @@ export default class PageHome extends LoomElement {
 
         <section>
           <div class="band-label">Measured, not asserted</div>
-          <p class="measured-intro">
-            Every figure below is checkable. Two are read from this repository when the site
-            is built, so they cannot go stale; the rest come from a Lighthouse run against a
-            production site built with Loom.
-          </p>
-          <api-table
-            head={["Figure", "Value", "Where it comes from"]}
-            rows={[
-              ["Core, gzipped", <code>{__LOOM_GZIP_BYTES__ ? `${(__LOOM_GZIP_BYTES__ / 1024).toFixed(1)} kB` : "—"}</code>, "The public entry, bundled, minified and tree-shaken at build time"],
-              ["Runtime dependencies", <code>0</code>, "package.json has no dependencies and no peerDependencies"],
-              ["Tests", <code>{String(__LOOM_TESTS__)}</code>, "Counted from tests/ when this page was built"],
-              ["Total Blocking Time", <code>0 ms</code>, "Lighthouse, 4x CPU throttling, on a production dashboard"],
-              ["First Contentful Paint", <code>0.7 s</code>, "Same run"],
-              ["Largest Contentful Paint", <code>0.7 s</code>, "Same run — equal to FCP, so nothing arrived late"],
-              ["Cumulative Layout Shift", <code>0</code>, "Same run"],
-              ["Lighthouse Performance", <code>99</code>, "Same run"],
-            ]}
-          ></api-table>
+
+          <div class="spec-group">
+            <div class="spec-group-head">Read from this repository, when this page was built</div>
+            <div class="spec-grid">
+              <div class="spec">
+                <div class="spec-value">
+                  {__LOOM_GZIP_BYTES__ ? (__LOOM_GZIP_BYTES__ / 1024).toFixed(1) : "\u2014"}
+                  <span class="spec-unit">kB</span>
+                </div>
+                <div class="spec-label">Core, gzipped</div>
+                <div class="spec-source">Public entry, bundled and tree-shaken</div>
+              </div>
+              <div class="spec">
+                <div class="spec-value">0</div>
+                <div class="spec-label">Dependencies</div>
+                <div class="spec-source">None, and no peer dependencies</div>
+              </div>
+              <div class="spec">
+                <div class="spec-value">{String(__LOOM_TESTS__)}</div>
+                <div class="spec-label">Tests</div>
+                <div class="spec-source">Counted from tests/ at build time</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="spec-group">
+            <div class="spec-group-head">
+              Lighthouse, 4&times; CPU throttling, on a production dashboard built with Loom
+            </div>
+            <div class="spec-grid spec-grid-tight">
+              <div class="spec">
+                <div class="spec-value">99</div>
+                <div class="spec-label">Performance</div>
+              </div>
+              <div class="spec">
+                <div class="spec-value">0<span class="spec-unit">ms</span></div>
+                <div class="spec-label">Blocking</div>
+              </div>
+              <div class="spec spec-paired">
+                <div class="spec-value">0.7<span class="spec-unit">s</span></div>
+                <div class="spec-label">First paint</div>
+              </div>
+              <div class="spec spec-paired">
+                <div class="spec-value">0.7<span class="spec-unit">s</span></div>
+                <div class="spec-label">Largest paint</div>
+              </div>
+              <div class="spec">
+                <div class="spec-value">0</div>
+                <div class="spec-label">Layout shift</div>
+              </div>
+            </div>
+          </div>
+
           <p class="measured-note">
-            The line worth reading twice is LCP matching FCP. It means the largest element
-            painted in the same frame as the first one — no hero image landing a second later,
-            no framework runtime between the markup and the pixels. That gap is where a
-            framework usually shows up in a trace.
+            The two in the middle are the same number on purpose. The largest element painted
+            in the same frame as the first one &mdash; no hero image landing a second later, no
+            framework runtime between the markup and the pixels. That gap is where a framework
+            usually shows up in a trace.
           </p>
           <p class="measured-note">
-            Total Blocking Time is a load metric: it says no task exceeded 50ms between first
-            paint and interactive. It says nothing about what happens after, which is the
-            honest limit of the number.
+            Blocking time is a load metric: no task exceeded 50ms between first paint and
+            interactive. It says nothing about what happens after, which is the honest limit
+            of the number.
           </p>
         </section>
 

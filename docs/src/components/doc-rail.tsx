@@ -17,6 +17,7 @@
  */
 
 import { LoomElement, component, reactive, css, styles, on } from "@toyz/loom";
+import { RouteChanged } from "@toyz/loom/router";
 import { PageSections, ActiveSection, type PageSection } from "../events";
 
 const railStyles = css`
@@ -130,6 +131,20 @@ export class DocRail extends LoomElement {
    * guessed number of frames for a lazy route to finish loading — whenever
    * the page knows, it says so, and that is when this runs.
    */
+  /**
+   * Clear on navigation, rather than waiting to be told about the new page.
+   *
+   * Not every page has a <doc-header> -- the home page does not -- so nothing
+   * announces sections there, and the rail went on showing the previous
+   * page's index. Route change is the authoritative "that page is gone"
+   * signal; PageSections then repopulates it if the new page has one.
+   */
+  @on(RouteChanged)
+  onRoute() {
+    this.entries = [];
+    this.activeId = "";
+  }
+
   @on(PageSections)
   onSections(e: PageSections) {
     // One section is not an index.
