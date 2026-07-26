@@ -68,6 +68,67 @@ function coreGzipBytes(): number {
 }
 
 const coreBytes = coreGzipBytes();
+
+/**
+ * Keep the decorator registry honest.
+ *
+ * Three hand-maintained things have to agree: the list that drives the home
+ * page count and the reference page, the doc-tip popover summaries, and what
+ * loom actually exports. They had drifted badly -- the home page claimed 41
+ * decorators when there were 56, because @api, @intercept, @attribute,
+ * @store, @signal and nine others had been documented without ever being
+ * added to the list.
+ *
+ * Checked at build time rather than trusted, since the failure is silent:
+ * a wrong count looks exactly like a right one.
+ */
+function checkDecoratorRegistry(): void {
+  const collect = (dir: string, out: Set<string>) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = resolve(dir, entry.name);
+      if (entry.isDirectory()) { collect(full, out); continue; }
+      if (!/\.ts$/.test(entry.name)) continue;
+      const src = readFileSync(full, "utf-8");
+      for (const m of src.matchAll(/export (?:const|function|class|abstract class) (\w+)/g)) {
+        out.add(m[1]!);
+      }
+      for (const m of src.matchAll(/export\s*\{([^}]*)\}/g)) {
+        for (const part of m[1]!.split(",")) {
+          const name = part.trim().split(" as ").pop()!.trim();
+          if (name && !name.startsWith("type ")) out.add(name);
+        }
+      }
+    }
+  };
+  const exported = new Set<string>();
+  collect(resolve(root, "src"), exported);
+
+  const listSrc = readFileSync(resolve(__dirname, "src/data/decorators.ts"), "utf-8");
+  const helpSrc = readFileSync(resolve(__dirname, "src/data/decorator-help.ts"), "utf-8");
+
+  const listed = [...listSrc.matchAll(/\{ name: "([^"]+)"/g)]
+    .map((m) => m[1]!)
+    .filter((n) => n.startsWith("@"))
+    .map((n) => n.slice(1));
+  const helped = new Set(
+    [...helpSrc.matchAll(/^\s{2}(\w+):\s*\{ summary:/gm)].map((m) => m[1]!),
+  );
+
+  const problems: string[] = [];
+  for (const d of listed) {
+    if (!exported.has(d)) problems.push(`@${d} is listed but loom does not export it`);
+    if (!helped.has(d)) problems.push(`@${d} is listed but has no doc-tip summary`);
+  }
+  for (const h of helped) {
+    if (!listed.includes(h)) problems.push(`@${h} has a doc-tip summary but is missing from the list`);
+  }
+  if (problems.length) {
+    throw new Error("[docs] decorator registry is out of sync:\n  " + problems.join("\n  "));
+  }
+}
+
+checkDecoratorRegistry();
+
 // Fail the build rather than ship a spec card confidently printing "0 TESTS".
 // A zero here means the directory moved, not that the suite is empty.
 if (testCount === 0) {

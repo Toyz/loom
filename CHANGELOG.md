@@ -122,6 +122,16 @@ existing suite could not see.
 
 ### Documentation
 
+- **The decorator count was wrong, and now cannot be.** The home page claimed
+  41; there are 56. Fourteen decorators had been documented without ever being
+  added to the list that drives the count — `@attribute`, `@store`, `@signal`,
+  `@lazy`, `@form`, `@slot`, `@styles`, `@persist`, `@transition`, `@event`,
+  `@maybe`, `@dynamicCss`, `@onRouteEnter`, `@onRouteLeave` — and `@api`,
+  `@intercept`, `@fetch` and `@permission` were missing too. The count also
+  included `createDecorator` and the transform helpers, which are functions
+  you call rather than decorators you apply. The docs build now fails if the
+  list, the doc-tip summaries and loom's actual exports disagree, because a
+  wrong count looks exactly like a right one.
 - **Real numbers on the home page.** It made qualitative performance claims
   and cited nothing. It now shows a table where every figure is checkable:
   core bundle size and test count are read from this repository at build time

@@ -16,6 +16,11 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
 
   // Component
   { name: "@component", id: "component", color: "var(--accent)", category: "Component" },
+  { name: "@attribute", id: "attribute", color: "var(--accent)", category: "Component" },
+  { name: "@styles", id: "styles", color: "var(--accent)", category: "Component" },
+  { name: "@dynamicCss", id: "dynamiccss", color: "var(--accent)", category: "Component" },
+  { name: "@lazy", id: "lazy", color: "var(--accent)", category: "Component" },
+  { name: "@transition", id: "transition", color: "var(--accent)", category: "Component" },
 
 
   // State
@@ -24,14 +29,20 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   { name: "@computed", id: "computed", color: "var(--amber)", category: "State" },
   { name: "@watch", id: "watch", color: "var(--amber)", category: "State" },
   { name: "@readonly", id: "readonly", color: "var(--amber)", category: "State" },
+  { name: "@store", id: "store", color: "var(--amber)", category: "State" },
+  { name: "@signal", id: "signal", color: "var(--amber)", category: "State" },
+  { name: "@persist", id: "persist", color: "var(--amber)", category: "State" },
 
   // Events
   { name: "@on", id: "on", color: "var(--rose)", category: "Events" },
   { name: "@emit", id: "emit", color: "var(--rose)", category: "Events" },
+  { name: "@event", id: "event", color: "var(--rose)", category: "Events" },
 
   // DOM
   { name: "@query", id: "query", color: "var(--emerald)", category: "DOM" },
   { name: "@queryAll", id: "queryall", color: "var(--emerald)", category: "DOM" },
+  { name: "@slot", id: "slot", color: "var(--emerald)", category: "DOM" },
+  { name: "@form", id: "form", color: "var(--emerald)", category: "DOM" },
 
   // Lifecycle
   { name: "@mount", id: "mount", color: "var(--cyan)", category: "Lifecycle" },
@@ -42,8 +53,8 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   // DI & Services
   { name: "@service", id: "service", color: "var(--text-secondary)", category: "DI & Services" },
   { name: "@inject", id: "inject", color: "var(--text-secondary)", category: "DI & Services" },
+{ name: "@maybe", id: "maybe", color: "var(--text-secondary)", category: "DI & Services" },
   { name: "@factory", id: "factory", color: "var(--text-secondary)", category: "DI & Services" },
-  { name: "@watchService", id: "watchservice", color: "var(--text-secondary)", category: "DI & Services" },
 
   // Timing
   { name: "@interval", id: "interval", color: "var(--amber)", category: "Timing" },
@@ -63,6 +74,9 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   { name: "@clipboard", id: "clipboard", color: "var(--rose)", category: "Platform" },
   { name: "@draggable", id: "draggable", color: "var(--rose)", category: "Platform" },
   { name: "@dropzone", id: "dropzone", color: "var(--rose)", category: "Platform" },
+  { name: "@permission", id: "permission", color: "var(--rose)", category: "Platform" },
+  { name: "@hotkey", id: "hotkey", color: "var(--rose)", category: "Platform" },
+  { name: "@observer", id: "observer", color: "var(--rose)", category: "Platform" },
 
   // Transform
   { name: "@transform", id: "transform", color: "var(--emerald)", category: "Transform" },
@@ -70,10 +84,25 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   { name: "typed<T>", id: "typed", color: "var(--emerald)", category: "Transform" },
   { name: "typedTransformer<T>", id: "typedtransformer", color: "var(--emerald)", category: "Transform" },
 
+  // Data
+  { name: "@api", id: "api", color: "var(--amber)", category: "Data" },
+  { name: "@fetch", id: "fetch", color: "var(--amber)", category: "Data" },
+  { name: "@intercept", id: "intercept", color: "var(--amber)", category: "Data" },
+
   // Router
   { name: "@route", id: "route", color: "var(--cyan)", category: "Router" },
   { name: "@group", id: "group", color: "var(--cyan)", category: "Router" },
   { name: "@guard", id: "guard", color: "var(--cyan)", category: "Router" },
+  { name: "@onRouteEnter", id: "onrouteenter", color: "var(--cyan)", category: "Router" },
+  { name: "@onRouteLeave", id: "onrouteleave", color: "var(--cyan)", category: "Router" },
 ];
 
-export const DECORATOR_COUNT = DECORATOR_LIST.length;
+/**
+ * How many decorators there are.
+ *
+ * Not `DECORATOR_LIST.length`: the list also carries Foundation entries like
+ * `createDecorator` and the Transform helpers, which are functions you call,
+ * not decorators you apply. Counting them made the home page claim one more
+ * decorator than Loom has.
+ */
+export const DECORATOR_COUNT = DECORATOR_LIST.filter((d) => d.name.startsWith("@")).length;

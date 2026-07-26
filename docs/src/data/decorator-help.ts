@@ -22,6 +22,8 @@ export const DECORATOR_HELP: Record<string, DecoratorHelp> = {
   component: { summary: "Registers the class as a custom element and wires its observed attributes.", to: "/element/decorators" },
   styles: { summary: "Adopts one or more CSSStyleSheets into the component's shadow root on connect.", to: "/element/css" },
   dynamicCss: { summary: "Re-evaluates a CSS string whenever the reactive fields it reads change.", to: "/decorators/css" },
+  provide: { summary: "Publishes a value down the DOM tree, across shadow boundaries, keyed by class.", to: "/decorators/context" },
+  consume: { summary: "Reads the nearest provided value and re-renders when it changes.", to: "/decorators/context" },
   attribute: { summary: "Registers a controller that attaches behaviour to any element carrying the attribute.", to: "/element/attributes" },
 
   // State
