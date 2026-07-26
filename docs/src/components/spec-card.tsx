@@ -32,7 +32,7 @@ const SPECS: readonly Spec[] = [
   { label: "VIRTUAL DOM", value: "NONE" },
   { label: "UPDATE TIERS", value: "THREE" },
   { label: "DECORATORS", value: "TC39" },
-  { label: "TESTS", value: "1441" },
+  { label: "TESTS", value: String(__LOOM_TESTS__) },
 ];
 
 /* ── Hollerith (IBM 029) ──

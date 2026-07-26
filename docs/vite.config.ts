@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { readFileSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -12,6 +12,38 @@ const loomRpcPkg = JSON.parse(readFileSync(resolve(root, "loom-rpc/package.json"
 const loomAnalyticsPkg = JSON.parse(readFileSync(resolve(root, "loom-analytics/package.json"), "utf-8"));
 const loomFlagsPkg = JSON.parse(readFileSync(resolve(root, "loom-flags/package.json"), "utf-8"));
 const loomPlaceholderPkg = JSON.parse(readFileSync(resolve(root, "loom-placeholder/package.json"), "utf-8"));
+
+/**
+ * Count declared tests, for the spec card in the docs shell.
+ *
+ * Counted statically rather than by running the suite: a docs build should
+ * not depend on a test run, and the number has to exist even when the tests
+ * are failing. The suite declares no `.each` blocks, so one declaration is
+ * one case and this matches what vitest reports exactly -- 1442 at the time
+ * of writing, being 1441 passing plus 1 skipped. If `.each` is ever
+ * introduced this undercounts, and the honest fix then is to read a JSON
+ * reporter instead of loosening the claim.
+ */
+function countTests(dir: string): number {
+  let total = 0;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = resolve(dir, entry.name);
+    if (entry.isDirectory()) {
+      total += countTests(full);
+    } else if (/\.test\.tsx?$/.test(entry.name)) {
+      const src = readFileSync(full, "utf-8");
+      total += (src.match(/^\s*(?:it|test)(?:\.\w+)*\s*\(/gm) ?? []).length;
+    }
+  }
+  return total;
+}
+
+const testCount = countTests(resolve(root, "tests"));
+// Fail the build rather than ship a spec card confidently printing "0 TESTS".
+// A zero here means the directory moved, not that the suite is empty.
+if (testCount === 0) {
+  throw new Error("[docs] counted 0 tests in tests/ — has the directory moved?");
+}
 
 export default defineConfig({
   base: process.env.CI ? "/loom/" : "/",
@@ -26,6 +58,7 @@ export default defineConfig({
   },
   define: {
     __LOOM_VERSION__: JSON.stringify(pkg.version),
+    __LOOM_TESTS__: JSON.stringify(testCount),
     __LOOM_RPC_VERSION__: JSON.stringify(loomRpcPkg.version),
     __LOOM_ANALYTICS_VERSION__: JSON.stringify(loomAnalyticsPkg.version),
     __LOOM_FLAGS_VERSION__: JSON.stringify(loomFlagsPkg.version),
