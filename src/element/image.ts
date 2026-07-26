@@ -28,6 +28,7 @@ import { component, query, styles } from "./decorators";
 import { prop } from "../store/decorators";
 import { css } from "../css";
 import { observer } from "./observers";
+import { watch } from "../store/watch";
 
 // ── Static image cache ──
 const imageCache = new Map<string, HTMLImageElement>();
@@ -159,36 +160,61 @@ export class LoomImage extends LoomElement {
   // ── Image loading with cache ──
 
   private loadImage() {
-    if (!this.src) return;
+    // Capture the URL for this load. `this.src` can change while the image is
+    // in flight, and the callbacks used to read it again — caching the bytes
+    // under whatever src happened to be current when they fired.
+    const url = this.src;
+    if (!url) return;
 
     // Check cache first
-    const cached = imageCache.get(this.src);
+    const cached = imageCache.get(url);
     if (cached) {
-      this.applyImage(cached.src);
+      this.applyImage(url, cached.src);
       return;
     }
 
     // Load and cache
     const img = new Image();
     img.onload = () => {
-      imageCache.set(this.src, img);
-      this.applyImage(img.src);
+      imageCache.set(url, img);
+      this.applyImage(url, img.src);
     };
     img.onerror = () => {
       // Try fallback if available and not already using it
-      if (this.fallback && this.src !== this.fallback) {
+      const fallback = this.fallback;
+      if (fallback && url !== fallback) {
         const fallbackImg = new Image();
         fallbackImg.onload = () => {
-          imageCache.set(this.fallback, fallbackImg);
-          this.applyImage(fallbackImg.src);
+          imageCache.set(fallback, fallbackImg);
+          this.applyImage(url, fallbackImg.src);
         };
-        fallbackImg.onerror = () => this._showError();
-        fallbackImg.src = this.fallback;
+        fallbackImg.onerror = () => { if (this.src === url) this._showError(); };
+        fallbackImg.src = fallback;
         return;
       }
-      this._showError();
+      if (this.src === url) this._showError();
     };
-    img.src = this.src;
+    img.src = url;
+  }
+
+  /**
+   * Re-run the load when the source changes.
+   *
+   * shouldUpdate() returns `!this.imgEl`, i.e. false forever after the first
+   * render, and nothing watched `src` — so `<loom-image src={this.photo}>`
+   * kept showing the first photo for the life of the element.
+   */
+  @watch("src")
+  private onSrcChanged(next: string, prev: string) {
+    if (next === prev || !this.imgEl) return;
+    this._loaded = false;
+    this._error = false;
+    this.imgEl.classList.remove("loaded");
+    if (this.placeholderEl) this.placeholderEl.classList.remove("hidden");
+    if (this.errorEl) this.errorEl.classList.add("hidden");
+    // Only fetch if we are (or already were) in view; otherwise the
+    // IntersectionObserver will kick it off.
+    if (this._visible) this.loadImage();
   }
 
   /** Transition to error state — hides placeholder, shows error slot */
@@ -198,8 +224,9 @@ export class LoomImage extends LoomElement {
     if (this.errorEl) this.errorEl.classList.remove("hidden");
   }
 
-  private applyImage(src: string) {
-    if (!this.imgEl) return;
+  private applyImage(forUrl: string, src: string) {
+    // A superseded load must not paint over a newer one.
+    if (!this.imgEl || this.src !== forUrl) return;
     this.imgEl.src = src;
     this.imgEl.onload = () => {
       this._loaded = true;

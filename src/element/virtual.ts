@@ -120,12 +120,6 @@ export class LoomVirtual<T = any> extends LoomElement {
     this.invalidate();
   }
 
-  updated(changed: Map<string, any>) {
-    if (changed.has("items")) {
-      this.invalidate();
-    }
-  }
-
   /**
    * Override shouldUpdate: we handle item rendering manually via renderWindow.
    * Only allow full morph on the very first render (when DOM doesn't exist yet).
@@ -134,16 +128,24 @@ export class LoomVirtual<T = any> extends LoomElement {
     // Let the first update() through to build the skeleton
     if (!this.window) return true;
 
-    // After skeleton exists, mark dirty so @animationFrame picks it up
-    this.invalidate();
+    // After skeleton exists, mark dirty so @animationFrame picks it up.
+    // A pure append leaves every existing row's measured height valid, so
+    // push() asks us to keep the cache for exactly one pass.
+    const keepCache = this._keepCacheOnce;
+    this._keepCacheOnce = false;
+    this.invalidate({ keepCache });
     return false;
   }
+
+  /** Set by push() so the next invalidate keeps measured row heights. */
+  private _keepCacheOnce = false;
 
   // ── Public API (imperative escape hatches) ──
 
   /** Append items (auto-scrolls if pinned to bottom) */
   push(...newItems: T[]): void {
     this.pinToBottom = this.isAtBottom();
+    this._keepCacheOnce = true;
     this.items = [...this.items, ...newItems];
   }
 
@@ -165,9 +167,15 @@ export class LoomVirtual<T = any> extends LoomElement {
 
   // ── Internals ──
 
-  /** Invalidate range and schedule a render via @animationFrame */
-  private invalidate(): void {
-    this.heightCache.clear();
+  /**
+   * Invalidate range and schedule a render via @animationFrame.
+   *
+   * `keepCache` preserves measured row heights — appending one chat message
+   * used to discard all 10k of them, so every visible row fell back to
+   * estimatedHeight and the spacer height (and scroll position) jumped.
+   */
+  private invalidate(opts?: { keepCache?: boolean }): void {
+    if (!opts?.keepCache) this.heightCache.clear();
     this.rangeStart = -1;
     this.rangeEnd = -1;
     this.rebuildOffsets();

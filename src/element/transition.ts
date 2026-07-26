@@ -23,6 +23,8 @@ export interface TransitionOptions {
   leaveClass?: string;
 }
 
+import { localSymbol } from "../decorators/symbols";
+
 /**
  * @transition(opts) — Method decorator
  *
@@ -31,10 +33,15 @@ export interface TransitionOptions {
  * before the element is removed.
  */
 export function transition(opts: TransitionOptions) {
-  return function (method: Function, _context: ClassMethodDecoratorContext) {
-    let currentEl: Element | null = null;
+  return function (method: Function, context: ClassMethodDecoratorContext) {
+    // Per-INSTANCE, not per-class. This used to be a `let` in the decorator
+    // application closure, which is created once per decorated method — so two
+    // components sharing the class clobbered each other's element and the
+    // leave animation removed the wrong one's DOM.
+    const CURRENT = localSymbol<Element | null>(`transition:${String(context.name)}`);
 
     return function (this: unknown, ...args: unknown[]) {
+      const store = this as unknown as Record<symbol, Element | null>;
       const result = (method as (...a: unknown[]) => unknown).apply(this, args);
 
       if (result != null) {
@@ -54,16 +61,17 @@ export function transition(opts: TransitionOptions) {
                 el.style.animation = "";
               }, { once: true });
             }
-            currentEl = el;
+            store[CURRENT.key] = el;
           }
         });
         return result;
       }
 
       // Leaving — play leave animation before removing
+      const currentEl = store[CURRENT.key];
       if (currentEl && currentEl instanceof HTMLElement) {
         const el = currentEl;
-        currentEl = null;
+        store[CURRENT.key] = null;
 
         if (opts.leaveClass) {
           el.classList.add(opts.leaveClass);

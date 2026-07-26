@@ -17,19 +17,19 @@
  * <loom-canvas draw={(ctx, dt, t) => { ... }} />
  * ```
  *
- * External listeners also work:
- * ```ts
- * el.addEventListener("draw", (e: CustomEvent) => ...);
- * ```
+ * NOTE: this is a callback PROP, not a DOM event. No CustomEvent is
+ * dispatched, so `el.addEventListener("draw", ...)` will not fire — read or
+ * call the property instead. Wrapping the getter to also dispatch would make
+ * it always truthy and break the common `if (this.draw)` guard, so cross-shadow
+ * dispatch would need to be an explicit opt-in rather than silent behavior.
  */
 
-import { CONNECT_HOOKS, localSymbol } from "../decorators/symbols";
+import { localSymbol } from "../decorators/symbols";
 
 /**
  * Decorator for typed event callback props.
  *
- * - Stores the callback as a JS property (JSX sets it via property assignment)
- * - Dispatches a composed CustomEvent on invocation for cross-shadow-DOM listening
+ * Stores the callback as a JS property, which is how JSX assigns it.
  */
 export function event<T extends (...args: any[]) => void>() {
   return <This extends HTMLElement>(

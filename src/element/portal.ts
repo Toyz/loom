@@ -100,26 +100,21 @@ export function portal(
                     renderPortal(host, entry);
                 }
 
-                // Patch scheduleUpdate to also re-render portals
-                const origSchedule = host.scheduleUpdate;
-                if (origSchedule && !(host as any).__portalPatched) {
-                    (host as any).__portalPatched = true;
-                    const origFlush = (host as any)._flushUpdate as (() => void) | undefined;
-
-                    if (origFlush) {
-                        const boundHost = host;
-                        (host as any)._flushUpdate = function () {
-                            origFlush.call(boundHost);
-                            // After main update, re-render all portal content
-                            const entries = boundHost[PORTAL_ENTRIES.key] as PortalEntry[] | undefined;
-                            if (entries) {
-                                for (const entry of entries) {
-                                    if (entry.container) renderPortal(boundHost, entry);
-                                }
-                            }
-                        };
+                // Re-render portals after every render pass.
+                //
+                // This used to monkey-patch host._flushUpdate, and the cleanup
+                // only reset a __portalPatched boolean without restoring the
+                // original — so each disconnect/reconnect wrapped the wrapper
+                // and the portal re-rendered N times per update after N moves.
+                const afterUpdate = () => {
+                    const entries = host[PORTAL_ENTRIES.key] as PortalEntry[] | undefined;
+                    if (!entries) return;
+                    for (const entry of entries) {
+                        if (entry.container) renderPortal(host, entry);
                     }
-                }
+                };
+                const hooks = ((host as any).__afterUpdate ??= []) as Array<() => void>;
+                hooks.push(afterUpdate);
 
                 return () => {
                     // Cleanup: remove all portal containers
@@ -129,7 +124,8 @@ export function portal(
                             entry.container = null;
                         }
                     }
-                    (host as any).__portalPatched = false;
+                    const idx = hooks.indexOf(afterUpdate);
+                    if (idx >= 0) hooks.splice(idx, 1);
                 };
             };
 

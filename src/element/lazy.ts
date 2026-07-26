@@ -42,6 +42,68 @@ export interface LazyOptions {
  * The loader should return a dynamic import whose default export
  * is the real component class.
  */
+
+/**
+ * Copy route-bound props from a @lazy shell onto the real implementation.
+ *
+ * Resolution order per binding on the REAL component:
+ *   1. the shell's property of the same accessor name
+ *   2. the shell's property for the same param/query key, if the stub named it
+ *      differently
+ *   3. the shell's attribute (params) or the live URL (query) — needed when the
+ *      stub declares no matching @prop, so the outlet never wrote anything
+ * Then apply the real component's @transform, or coerce by the destination's
+ * current type.
+ *
+ * Extracted because this ~50-line algorithm existed verbatim in two places
+ * (scheduleUpdate and the post-import mount) and had already been patched three
+ * times independently: a70ba28, b9706f7, f6095b4.
+ */
+function forwardRouteProps(shell: HTMLElement, dest: object, stubCtor: any, realCtor: any): void {
+  const realBindings: any[] = realCtor[ROUTE_PROPS.key] ?? [];
+  const stubBindings: any[] = stubCtor[ROUTE_PROPS.key] ?? [];
+  const transforms = realCtor[TRANSFORMS.key] as Map<string, Function> | undefined;
+
+  for (const binding of realBindings) {
+    let val = (shell as any)[binding.propKey];
+
+    if (val === undefined && typeof binding.param === "string") {
+      const stubBinding = stubBindings.find((b: any) => b.param === binding.param);
+      if (stubBinding) val = (shell as any)[stubBinding.propKey];
+      if (val === undefined) val = shell.getAttribute(binding.param) ?? undefined;
+    } else if (val === undefined && binding.query !== undefined) {
+      const stubBinding = stubBindings.find((b: any) => b.query === binding.query);
+      if (stubBinding) val = (shell as any)[stubBinding.propKey];
+      if (val === undefined) {
+        // Same parsing as LoomOutlet._parseQuery(): hash mode keeps the query
+        // inside the fragment, history mode in location.search.
+        const hash = location.hash;
+        const hashQ = hash.indexOf("?");
+        const qp = hashQ >= 0
+          ? new URLSearchParams(hash.slice(hashQ + 1))
+          : new URLSearchParams(location.search);
+        if (typeof binding.query === "string") {
+          const v = qp.get(binding.query);
+          if (v !== null) val = v;
+        } else if (typeof binding.query === "symbol") {
+          // routeQuery sentinel — decompose the full query as an object
+          val = Object.fromEntries(qp);
+        }
+      }
+    }
+
+    if (val === undefined) continue;
+    if (transforms?.has(binding.propKey)) {
+      val = transforms.get(binding.propKey)!(val);
+    } else if (typeof val === "string") {
+      const current = (dest as any)[binding.propKey];
+      if (typeof current === "number") val = Number(val);
+      else if (typeof current === "boolean") val = val !== "false";
+    }
+    (dest as any)[binding.propKey] = val;
+  }
+}
+
 export function lazy(
   loader: () => Promise<{ default: unknown } | unknown>,
   opts?: LazyOptions,
@@ -87,48 +149,7 @@ export function lazy(
         // Re-forward route props from shell → impl
         const realCtor = impl.constructor as any;
         const realBindings: any[] = realCtor[ROUTE_PROPS.key] ?? [];
-        const stubBindings: any[] = ctor[ROUTE_PROPS.key] ?? [];
-        const transforms = realCtor[TRANSFORMS.key] as Map<string, Function> | undefined;
-
-        for (const binding of realBindings) {
-          let val = (this as any)[binding.propKey];
-          if (val === undefined && typeof binding.param === "string") {
-            const stubBinding = stubBindings.find((b: any) => b.param === binding.param);
-            if (stubBinding) val = (this as any)[stubBinding.propKey];
-            if (val === undefined) val = this.getAttribute(binding.param) ?? undefined;
-          } else if (val === undefined && binding.query !== undefined) {
-            // Query bindings: find the stub's propKey for the same query key/sentinel
-            const stubBinding = stubBindings.find((b: any) => b.query === binding.query);
-            if (stubBinding) val = (this as any)[stubBinding.propKey];
-            // Fallback: read from URL — same logic as outlet._parseQuery()
-            // Needed when stub has no @prop({ query }) binding so the outlet
-            // never wrote the value to the shell property.
-            if (val === undefined) {
-              const hash = location.hash;
-              const hashQ = hash.indexOf("?");
-              const qp = hashQ >= 0
-                ? new URLSearchParams(hash.slice(hashQ + 1))
-                : new URLSearchParams(location.search);
-              if (typeof binding.query === "string") {
-                const v = qp.get(binding.query);
-                if (v !== null) val = v;
-              } else if (typeof binding.query === "symbol") {
-                // routeQuery sentinel — decompose full query as object
-                val = Object.fromEntries(qp);
-              }
-            }
-          }
-          if (val !== undefined) {
-            if (transforms?.has(binding.propKey)) {
-              val = transforms.get(binding.propKey)!(val);
-            } else if (typeof val === "string") {
-              const current = (impl as any)[binding.propKey];
-              if (typeof current === "number") val = Number(val);
-              else if (typeof current === "boolean") val = val !== "false";
-            }
-            (impl as any)[binding.propKey] = val;
-          }
-        }
+        forwardRouteProps(this, impl, ctor, realCtor);
 
         // Also forward unbound attributes
         for (const attr of this.attributes) {
@@ -327,60 +348,10 @@ export function lazy(
             }
           }
 
-          // Forward route data via ROUTE_PROPS metadata.
-          // Use the REAL component's bindings so propKey (accessor name)
-          // is used instead of the attribute/param name.
-          const realBindings: any[] = realCtor[ROUTE_PROPS.key] ?? [];
-          const stubBindings: any[] = ctor[ROUTE_PROPS.key] ?? [];
-          const transforms = realCtor[TRANSFORMS.key] as Map<string, Function> | undefined;
-
-          for (const binding of realBindings) {
-            // Try to read from stub by propKey first (works when stub has same accessor)
-            let val = (this as any)[binding.propKey];
-
-            // Fallback: if stub used a different accessor name, look up by param/query key
-            if (val === undefined && typeof binding.param === "string") {
-              // Check stub bindings for same param
-              const stubBinding = stubBindings.find((b: any) => b.param === binding.param);
-              if (stubBinding) val = (this as any)[stubBinding.propKey];
-              // Last resort: read from attribute
-              if (val === undefined) val = this.getAttribute(binding.param) ?? undefined;
-            } else if (val === undefined && binding.query !== undefined) {
-              // Query bindings: find the stub's propKey for the same query key/sentinel
-              const stubBinding = stubBindings.find((b: any) => b.query === binding.query);
-              if (stubBinding) val = (this as any)[stubBinding.propKey];
-              // Fallback: read from URL — same logic as outlet._parseQuery()
-              // Needed when stub has no @prop({ query }) binding so the outlet
-              // never wrote the value to the shell property.
-              if (val === undefined) {
-                const hash = location.hash;
-                const hashQ = hash.indexOf("?");
-                const qp = hashQ >= 0
-                  ? new URLSearchParams(hash.slice(hashQ + 1))
-                  : new URLSearchParams(location.search);
-                if (typeof binding.query === "string") {
-                  const v = qp.get(binding.query);
-                  if (v !== null) val = v;
-                } else if (typeof binding.query === "symbol") {
-                  // routeQuery sentinel — decompose full query as object
-                  val = Object.fromEntries(qp);
-                }
-              }
-            }
-
-            if (val !== undefined) {
-              // Apply @transform if registered on the real component
-              if (transforms?.has(binding.propKey)) {
-                val = transforms.get(binding.propKey)!(val);
-              } else if (typeof val === "string") {
-                // Auto-coerce string → number/boolean
-                const current = (realEl as any)[binding.propKey];
-                if (typeof current === "number") val = Number(val);
-                else if (typeof current === "boolean") val = val !== "false";
-              }
-              (realEl as any)[binding.propKey] = val;
-            }
-          }
+          // Forward route data via ROUTE_PROPS metadata. Uses the REAL
+          // component's bindings, so propKey (the accessor name) wins over the
+          // attribute/param name.
+          forwardRouteProps(this, realEl, ctor, realCtor);
 
           // Forward stashed styles from adoptStyles() calls before impl mounted
           if (this.__lazyStyles && typeof (realEl as any).adoptStyles === "function") {

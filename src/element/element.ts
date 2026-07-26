@@ -330,16 +330,26 @@ export abstract class LoomElement extends HTMLElement {
     this._runAfterUpdate();
   }
 
-  /** @internal — run post-render callbacks registered in __afterUpdate. */
+  /**
+   * @internal — run post-render callbacks registered in __afterUpdate.
+   *
+   * Hooks may remove themselves (that is exactly what @portal's cleanup does),
+   * which shifts the array underneath the loop. Rewinding by however many
+   * entries disappeared keeps registration order without allocating a
+   * snapshot on every render.
+   */
   private _runAfterUpdate(): void {
     const hooks = this.__afterUpdate;
     if (!hooks) return;
     for (let i = 0; i < hooks.length; i++) {
+      const lengthBefore = hooks.length;
       try {
         hooks[i]();
       } catch (e) {
         console.error("[Loom] afterUpdate hook threw", e);
       }
+      const removed = lengthBefore - hooks.length;
+      if (removed > 0) i -= removed;
     }
   }
 
