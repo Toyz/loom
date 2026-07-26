@@ -15,11 +15,11 @@
  * ```ts
  * @prop({params})
  * @typedTransformer<UserParams>({ id: Number })
- * routeParams!: UserParams;
+ * accessor routeParams!: UserParams;
  * ```
  */
 
-import { TRANSFORMS } from "../decorators/symbols";
+import { transform } from "./transform";
 
 export interface TransformSchema<T> {
   [key: string]: (v: string) => T[keyof T];
@@ -41,19 +41,15 @@ export function typed<T>(schema: TransformSchema<T>): (raw: Record<string, strin
 
 /**
  * Decorator: apply a typed schema transform directly.
- * Shorthand for @transform(typed<T>(schema)).
+ * Shorthand for `@transform(typed<T>(schema))` — and implemented as exactly
+ * that, so there is one registration path rather than two that can drift.
  *
  * ```ts
  * @prop({params})
  * @typedTransformer<UserParams>({ id: Number, name: String })
- * routeParams!: UserParams;
+ * accessor routeParams!: UserParams;
  * ```
  */
 export function typedTransformer<T>(schema: TransformSchema<T>) {
-  const fn = typed<T>(schema);
-  return (proto: any, key: string) => {
-    const ctor = proto.constructor;
-    if (!ctor[TRANSFORMS.key]) ctor[TRANSFORMS.key] = new Map<string, Function>();
-    ctor[TRANSFORMS.key].set(key, fn);
-  };
+  return transform<any, any>(typed<T>(schema) as (value: unknown) => any);
 }

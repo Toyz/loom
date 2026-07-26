@@ -5,18 +5,21 @@
  * These are ready-to-use property decorators that pipe values
  * through standard JavaScript coercion functions.
  *
+ * These are auto-accessor decorators (TC39 stage 3), so the field must be
+ * declared with `accessor`:
+ *
  * ```ts
  * @prop({ param: "id" })
  * @toNumber
- * userId!: number;
+ * accessor userId!: number;
  *
  * @prop({ param: "active" })
  * @toBoolean
- * isActive!: boolean;
+ * accessor isActive!: boolean;
  *
  * @prop({ param: "created" })
  * @toDate
- * createdAt!: Date;
+ * accessor createdAt!: Date;
  * ```
  */
 

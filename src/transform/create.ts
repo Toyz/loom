@@ -9,21 +9,33 @@
  * const toNumber = createTransform(Number);
  * const toDate = createTransform((v: string) => new Date(v));
  *
- * // Use it:
+ * // Use it — note `accessor`, these are auto-accessor decorators:
  * @prop({ param: "id" })
  * @toNumber
- * userId!: number;
+ * accessor userId!: number;
  * ```
  */
 
 import { TRANSFORMS } from "../decorators/symbols";
 
-export function createTransform<In = any, Out = any>(
-  fn: (value: In) => Out,
-): (target: any, key: string) => void {
-  return (proto: any, key: string) => {
-    const ctor = proto.constructor;
-    if (!ctor[TRANSFORMS.key]) ctor[TRANSFORMS.key] = new Map<string, Function>();
-    ctor[TRANSFORMS.key].set(key, fn);
+/**
+ * Build a reusable `@transform`-style auto-accessor decorator.
+ *
+ * TC39 stage 3 calls a decorator as `(value, context)`, not the legacy
+ * `(prototype, key)`. This used to assume the legacy shape, so on a plain
+ * field it threw at class-definition time (`proto` was `undefined`) and on an
+ * `accessor` it silently registered the transform on `Object` under a key that
+ * was the context object. Mirrors the shape in ./transform.ts.
+ */
+export function createTransform<In = any, Out = any>(fn: (value: In) => Out) {
+  return <This extends object, V>(
+    _target: ClassAccessorDecoratorTarget<This, V>,
+    context: ClassAccessorDecoratorContext<This, V>,
+  ): void => {
+    const key = String(context.name);
+    context.addInitializer(function (this: This) {
+      const ctor = (this as object & { constructor: object }).constructor;
+      TRANSFORMS.ownMap<string, Function>(ctor).set(key, fn as unknown as Function);
+    });
   };
 }
