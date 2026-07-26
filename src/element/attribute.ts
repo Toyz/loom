@@ -40,10 +40,10 @@
 import { bus, type Constructor, type Handler } from "../bus";
 import { type LoomEvent } from "../event";
 import { app, type LoomApp } from "../app";
-import { getConnectHooks } from "../decorators/symbols";
+import { getConnectHooks, REACTIVES } from "../decorators/symbols";
 import { createDecorator } from "../decorators/create";
 import { pendingProps } from "../store/decorators";
-import { morph } from "../morph";
+import { morph, registerMorphHook } from "../morph";
 import { adoptCSS, type CSSValue } from "../css";
 
 // ── Registry ──
@@ -222,10 +222,15 @@ export abstract class LoomAttribute<A = string> {
   /** The host `<div>` carrying the shadow root — teleported to the portal target. */
   private _shadowHost: HTMLElement | null = null;
   private _renderScheduled = false;
+  /** Set by __unmount — blocks any render or shadow creation queued earlier. */
+  private _disposed = false;
 
   /** Create the shadow host + root and mount it at the resolved target. */
   private _ensureShadow(): void {
-    if (this.shadow) return;
+    // A render queued before unmount would otherwise land here afterwards and
+    // append a <div data-loom-attr> to the portal target that nothing will
+    // ever remove — the cleanup array has already drained.
+    if (this._disposed || this.shadow) return;
     const host = document.createElement("div");
     host.setAttribute("data-loom-attr", this.name);
     this.shadow = host.attachShadow({ mode: "open" });
@@ -258,6 +263,7 @@ export abstract class LoomAttribute<A = string> {
 
   /** Force a re-render of `update()` output. Usually automatic via reactivity. */
   protected rerender(): void {
+    if (this._disposed) return;
     this._ensureShadow();
     const dest = this._resolveTarget();
     if (this._shadowHost!.parentNode !== dest) {
@@ -271,9 +277,13 @@ export abstract class LoomAttribute<A = string> {
   }
 
   private _scheduleRender = (): void => {
-    if (this._renderScheduled) return;
+    if (this._disposed || this._renderScheduled) return;
     this._renderScheduled = true;
-    queueMicrotask(() => { this._renderScheduled = false; this.rerender(); });
+    queueMicrotask(() => {
+      this._renderScheduled = false;
+      if (this._disposed) return;
+      this.rerender();
+    });
   };
 
   // ── Helpers (mirror LoomElement) ──
@@ -321,8 +331,17 @@ export abstract class LoomAttribute<A = string> {
     // Portal rendering: if update() is overridden, mount its output and wire
     // reactive re-renders (like LoomElement, but teleported to `this.target`).
     if (renders) {
-      this.rerender();            // first render — creates lazily-read reactives
-      this._subscribeReactives(); // then subscribe so none are missed
+      // Force every declared reactive field into existence BEFORE subscribing.
+      // @reactive/@prop backing stores are created lazily on first read, so
+      // discovering them after the first render missed any field that render
+      // did not happen to touch — e.g. a value only read inside the branch of
+      // a conditional template — and that field could then never re-render.
+      const fields = (REACTIVES.from(this.constructor as object) as string[] | undefined) ?? [];
+      for (let i = 0; i < fields.length; i++) {
+        void (this as unknown as Record<string, unknown>)[fields[i]];
+      }
+      this._subscribeReactives(); // subscribe first
+      this.rerender();            // then render
     }
   }
 
@@ -359,9 +378,23 @@ export abstract class LoomAttribute<A = string> {
 
   /** @internal — run disconnect() + all tracked cleanups. */
   __unmount(): void {
-    for (let i = 0; i < this.cleanups.length; i++) this.cleanups[i]();
-    this.cleanups.length = 0;
-    this.disconnect();
+    this._disposed = true;
+    // Swap first, then try/catch each: one throwing cleanup must not skip the
+    // rest or leave them queued to run again. Mirrors LoomElement.
+    const cleanups = this.cleanups;
+    this.cleanups = [];
+    for (let i = 0; i < cleanups.length; i++) {
+      try {
+        cleanups[i]();
+      } catch (e) {
+        console.error("[Loom] attribute cleanup threw during unmount", e);
+      }
+    }
+    try {
+      this.disconnect();
+    } catch (e) {
+      console.error("[Loom] attribute disconnect() threw", e);
+    }
   }
 }
 
@@ -382,6 +415,7 @@ export abstract class LoomAttribute<A = string> {
 export const attribute = createDecorator<[name: string, opts?: AttributeOptions]>((ctor, name, opts) => {
   registry.set(name, ctor as unknown as AttributeCtor);
   hasRegisteredAttributes = true;
+  installMorphHook();
   (ctor as unknown as Record<string, unknown>).__loom_attr = name;
   if (opts?.target != null) {
     (ctor as unknown as Record<string, unknown>).__loom_attr_target = opts.target;
@@ -400,6 +434,33 @@ export const attribute = createDecorator<[name: string, opts?: AttributeOptions]
   ensureDocumentObserved();
 }, { class: true });
 
+/**
+ * Forward `__loomAttrArgs` from the freshly-built JSX element onto the live
+ * one during morph, and push the new values into any mounted controllers.
+ *
+ * jsx() builds a new element every render and stashes rich args on it as an
+ * expando. morph copies attributes, __loomEvents and __loomProps but knows
+ * nothing about this one, so without the hook the live element kept its
+ * first-render args forever. Installed lazily on first @attribute registration
+ * so apps that do not use the feature pay nothing.
+ */
+let _morphHookInstalled = false;
+function installMorphHook(): void {
+  if (_morphHookInstalled) return;
+  _morphHookInstalled = true;
+  registerMorphHook((old, next) => {
+    const nextArgs = (next as AttrArgHost)[ATTR_ARGS];
+    if (!nextArgs) return;
+    (old as AttrArgHost)[ATTR_ARGS] = nextArgs;
+    const map = instances.get(old);
+    if (!map) return;
+    for (const name in nextArgs) {
+      const inst = map.get(name);
+      if (inst) applyArg(inst, nextArgs[name]);
+    }
+  });
+}
+
 /** Observe document.body for registered attributes (deferred until body exists). */
 function ensureDocumentObserved(): void {
   if (typeof document === "undefined") return; // SSR guard
@@ -417,24 +478,16 @@ function ensureDocumentObserved(): void {
 
 // ── Instance management ──
 
-function attach(el: Element, name: string, value: string): void {
-  const Ctor = registry.get(name);
-  if (!Ctor) return;
-  let map = instances.get(el);
-  if (!map) { map = new Map(); instances.set(el, map); }
-  if (map.has(name)) { // already mounted — treat as value update
-    map.get(name)!.__update(value);
-    return;
-  }
-  const inst = new Ctor();
-  inst.el = el as HTMLElement;
-  inst.name = name;
-  inst.value = value;
-  const arg = readArg(el, name, value);
+/**
+ * Feed a rich JSX arg into a controller.
+ *
+ * Structured args — `<div tooltip={{ text, placement }}>` — are spread onto the
+ * controller so any @prop/@reactive accessor of the same name receives the
+ * value (and, on a re-render, schedules a re-render of the controller).
+ * Functions, strings, arrays and null stay on `this.arg` untouched.
+ */
+function applyArg(inst: LoomAttribute<unknown>, arg: unknown): void {
   inst.arg = arg;
-  // Structured args: `<div tooltip={{ text, placement }}>` → assign each key
-  // onto the controller, feeding any @prop/@reactive accessors of the same
-  // name. Functions, strings, arrays, null stay on `this.arg` untouched.
   if (arg !== null && typeof arg === "object" && !Array.isArray(arg)) {
     const obj = arg as Record<string, unknown>;
     for (const k in obj) {
@@ -443,6 +496,28 @@ function attach(el: Element, name: string, value: string): void {
       }
     }
   }
+}
+
+function attach(el: Element, name: string, value: string): void {
+  const Ctor = registry.get(name);
+  if (!Ctor) return;
+  let map = instances.get(el);
+  if (!map) { map = new Map(); instances.set(el, map); }
+  if (map.has(name)) {
+    // Already mounted — refresh both the rich arg and the string value.
+    // __update() alone early-returns when the marker attribute is unchanged,
+    // which for an object arg it always is (it is written as ""), so a
+    // `tooltip={{ text: this.label }}` froze at its first-render value.
+    const inst = map.get(name)!;
+    applyArg(inst, readArg(el, name, value));
+    inst.__update(value);
+    return;
+  }
+  const inst = new Ctor();
+  inst.el = el as HTMLElement;
+  inst.name = name;
+  inst.value = value;
+  applyArg(inst, readArg(el, name, value));
   map.set(name, inst);
   inst.__mount();
 }
@@ -506,7 +581,12 @@ function scanTree(root: ParentNode): void {
 export function observeAttributes(root: Document | ShadowRoot | Element): () => void {
   const existing = observedRoots.get(root);
   if (existing) {
-    // Already observed — just re-scan for late-registered attributes.
+    // Already observed — re-scan for late-registered attributes.
+    //
+    // Deliberately unconditional. Re-calling observeAttributes() is the
+    // supported way to force a synchronous scan when you cannot wait for the
+    // MutationObserver microtask, so skipping the walk when the registry has
+    // not grown would break that contract on a public export.
     scanTree(root as unknown as ParentNode);
     return () => detachRoot(root);
   }
@@ -557,10 +637,18 @@ function detachRoot(root: Node): void {
   disposeTree(root as Element);
 }
 
-/** Dispose controllers on an element and all its descendants. */
-function disposeTree(el: Element): void {
-  if (el.nodeType !== 1) return;
-  detachAll(el);
-  const all = el.querySelectorAll?.("*");
+/**
+ * Dispose controllers on a root and all its descendants.
+ *
+ * The descendant walk must NOT sit behind the element check: detachRoot passes
+ * whatever root was observed, and LoomElement observes `this.shadow` — a
+ * ShadowRoot, nodeType 11. Bailing on it meant every controller inside a
+ * component's shadow root leaked when the component was removed: __unmount()
+ * never ran, so @interval timers kept firing and the <div data-loom-attr> each
+ * one had appended to document.body was orphaned, once per mount/unmount.
+ */
+function disposeTree(root: Node): void {
+  if ((root as Element).nodeType === 1) detachAll(root as Element);
+  const all = (root as ParentNode).querySelectorAll?.("*");
   if (all) for (let i = 0; i < all.length; i++) detachAll(all[i]);
 }
