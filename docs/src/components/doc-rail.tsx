@@ -39,6 +39,7 @@ const railStyles = css`
     max-height: inherit;
     display: flex;
     flex-direction: column;
+    min-height: 0;
     /* The card's edge. Positions are punched along it. */
     border-left: 1px solid var(--warp, #33322a);
     padding: 0 0 0 14px;
@@ -59,6 +60,7 @@ const railStyles = css`
     list-style: none;
     margin: 0;
     padding: 0 0 8px;
+    flex: 0 1 auto;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
@@ -98,6 +100,8 @@ const railStyles = css`
     font-size: 0.6875rem;
   }
   li.sub a loom-icon { transform: scale(0.82); }
+
+  spec-card { flex: 0 0 auto; }
 
   a:focus-visible {
     outline: 1px solid var(--thread, #c4472f);
@@ -159,6 +163,7 @@ export class DocRail extends LoomElement {
             );
           })}
         </ol>
+        <spec-card></spec-card>
       </nav>
     );
   }
