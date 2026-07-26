@@ -13,6 +13,10 @@ export default class ExampleVirtualList extends LoomElement {
         <doc-header title="Virtual List" subtitle="Render 100k items without breaking a sweat."></doc-header>
 
         <section>
+          <p>A hundred thousand rows with a few dozen elements in the DOM. Open the inspector while scrolling and count them: the list is windowed, so the cost is the viewport rather than the dataset. Row heights are measured rather than assumed, so they do not have to match.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

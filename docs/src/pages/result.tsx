@@ -13,6 +13,11 @@ export default class PageResult extends LoomElement {
           Used throughout the framework and available as a public utility."></doc-header>
 
         <section>
+          <p>An exception is an invisible second return type. Nothing in a function's signature says it throws, nothing forces a caller to handle it, and the compiler is equally happy whether you did or not — so the error path is the one that is never exercised until production.</p>
+          <p><span class="ic">LoomResult</span> makes it the first return type instead. A function returns success or failure as a value, and reading the success requires acknowledging the failure. It is used throughout Loom where an operation can fail for an ordinary reason: guards, validation, and transforms.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Why Result?</h2>
           </div>

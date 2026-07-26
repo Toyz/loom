@@ -11,6 +11,11 @@ export default class PageGuidesHydration extends LoomElement {
             <div>
                 <doc-header title="Hydration" subtitle="Instant FCP with Declarative Shadow DOM — zero extra dependencies."></doc-header>
 
+        <section>
+          <p>A client-rendered component shows nothing until its JavaScript has downloaded, parsed and run. Server-rendering the markup fixes the blank screen and introduces the harder problem: the shadow root does not exist in HTML, so there has been nothing to server-render into.</p>
+          <p>Declarative Shadow DOM closes that gap. The server emits the shadow content as markup, the browser attaches it before any script runs, and Loom adopts the existing tree instead of rebuilding it. First paint does not wait for the bundle, and there is no framework runtime involved in getting it on screen.</p>
+        </section>
+
                 <section>
                     <div class="group-header">
                         <h2>Overview</h2>

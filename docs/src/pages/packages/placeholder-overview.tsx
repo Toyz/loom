@@ -12,6 +12,11 @@ export default class PagePlaceholderOverview extends LoomElement {
         <doc-header title="@toyz/loom-placeholder" subtitle="Placeholder components for Loom — pluggable providers, ships with rgba.lol."></doc-header>
 
         <section>
+          <p>Content that has not arrived still occupies space, and how you fill that space decides whether the page settles or jumps. A missing box shifts everything below it the moment the real content lands.</p>
+          <p>A placeholder holds the exact dimensions in advance. The provider is pluggable, so the same markup can render a solid block, a shimmer, or a remote image service without the component knowing which.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Install</h2>
           </div>

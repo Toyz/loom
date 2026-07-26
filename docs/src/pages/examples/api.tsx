@@ -13,6 +13,10 @@ export default class ExampleApi extends LoomElement {
         <doc-header title="@api — Data Fetching" subtitle="Declarative async data with @api, response pipelines via pipe, and scoped error boundaries with @catch_."></doc-header>
 
         <section>
+          <p>Declarative fetching with the states you actually have to render: loading, error, and loaded. Click through the buttons fast — a superseded response is discarded rather than allowed to overwrite a newer one, which is the failure this decorator exists to prevent.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

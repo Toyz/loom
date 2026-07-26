@@ -13,6 +13,10 @@ export default class ExampleStressTest extends LoomElement {
         <doc-header title="Stress Test" subtitle="Traced Template Projection in action — a @interval(16) ticks at 60fps while @computed derives stats and @watch reacts to changes."></doc-header>
 
         <section>
+          <p>A thousand cells updated on a 16ms tick, to show what the three-tier update actually costs. Most ticks change one cell, and the other 999 components resolve to a skip because nothing they read changed — that is the tier the framework is built around.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

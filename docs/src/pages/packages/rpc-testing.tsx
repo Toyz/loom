@@ -12,6 +12,11 @@ export default class PageRpcTesting extends LoomElement {
         <doc-header title="Testing" subtitle="MockTransport — drop-in test transport with mocks, delays, and assertions."></doc-header>
 
         <section>
+          <p>Testing against a real server makes tests slow, order-dependent, and prone to failing for reasons unrelated to the code under test. Testing against a hand-stubbed client makes them lie, because the stub drifts from the real signature and nothing checks it.</p>
+          <p><span class="ic">MockTransport</span> is the third option: a real client, typed from the same declaration, with the network replaced. Mock a method and the mock has to match the signature — if the server contract changes, the test stops compiling.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Setup</h2>
           </div>

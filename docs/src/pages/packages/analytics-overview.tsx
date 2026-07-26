@@ -12,6 +12,11 @@ export default class PageAnalyticsOverview extends LoomElement {
         <doc-header title="@toyz/loom-analytics" subtitle="Zero-dependency, transport-swappable analytics — decorator-driven event tracking."></doc-header>
 
         <section>
+          <p>Analytics calls have a way of ending up inline, so a method that saves a document also knows the name of your analytics vendor. Swapping vendors then means touching every one of those call sites, and testing anything means the test fires real events.</p>
+          <p><span class="ic">@track</span> moves the call to a decorator and the vendor behind a transport. The method says what happened; where that goes is configured once.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Install</h2>
           </div>

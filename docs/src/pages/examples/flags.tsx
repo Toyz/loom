@@ -13,6 +13,10 @@ export default class ExampleFlags extends LoomElement {
         <doc-header title="@flag — Feature Flags" subtitle="Decorator-driven feature flags with @flag, <loom-flag>, and MockFlags — no backend required."></doc-header>
 
         <section>
+          <p>Toggle a flag and watch what re-renders. Nothing subscribes and nothing polls — the flag is reactive, so reading it in a template is the entire wiring. The interesting case is the last one, where a flag flips while a component is mid-list.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

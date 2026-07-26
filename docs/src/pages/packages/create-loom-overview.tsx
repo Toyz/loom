@@ -12,6 +12,11 @@ export default class PageCreateLoomOverview extends LoomElement {
         <doc-header title="@toyz/create-loom" subtitle="Scaffold a new Loom + TypeScript + Vite project in seconds."></doc-header>
 
         <section>
+          <p>Getting decorators, JSX and TypeScript configured together is the least interesting part of starting a project and the easiest to get subtly wrong — stage-3 versus legacy decorators, the JSX import source, and the <span class="ic">accessor</span> keyword all have to agree.</p>
+          <p>The scaffolder emits a project where they already do. Everything it generates is ordinary configuration you can read and change; there is nothing hidden behind a CLI afterwards.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Usage</h2>
           </div>

@@ -12,6 +12,11 @@ export default class PageAnalyticsTesting extends LoomElement {
         <doc-header title="Analytics Testing" subtitle="MockAnalytics — drop-in test transport with assertions."></doc-header>
 
         <section>
+          <p>"Did this action fire the right event, with the right payload" is a real assertion, and it is usually made by spying on a global or reading a network log after the fact.</p>
+          <p><span class="ic">MockAnalytics</span> records events in memory and exposes them for assertion. No network, no globals, and the events are the same objects the real transport would have received.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Import</h2>
           </div>

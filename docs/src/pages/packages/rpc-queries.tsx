@@ -12,6 +12,11 @@ export default class PageRpcQueries extends LoomElement {
         <doc-header title="@rpc — Queries" subtitle="Auto-fetching, reactive queries with SWR caching and pattern matching."></doc-header>
 
         <section>
+          <p>A read is not a write. It can be issued speculatively, served from cache, retried without consequence, and deduplicated when three components ask for the same thing in the same tick. Treating reads and writes the same means giving up all of that or hand-rolling it per call site.</p>
+          <p><span class="ic">@rpc</span> declares a read. It fetches on mount, caches by key, and revalidates in the background while showing what it already has, so the second visit to a screen is not a loading spinner.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Basic Usage</h2>
           </div>

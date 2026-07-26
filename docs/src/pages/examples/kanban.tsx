@@ -14,6 +14,10 @@ export default class ExampleKanban extends LoomElement {
         <doc-header title="Kanban Board" subtitle="Drag & drop task management with @store persistence, @draggable/@dropzone selectors, and @dynamicCss."></doc-header>
 
         <section>
+          <p>Drag and drop across columns, persisted. The part worth reading is the payload: a card moves between columns as data rather than as a DOM node, so the drop handler never touches the element that was dragged.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

@@ -13,6 +13,10 @@ export default class ExampleTiming extends LoomElement {
         <doc-header title="Timing Decorators" subtitle="Interactive demos for @interval, @timeout, @debounce, @throttle, and @animationFrame."></doc-header>
 
         <section>
+          <p>The five timing decorators running side by side, each with a live counter. Type into the debounce and throttle fields to see the difference the descriptions only assert: throttle fires immediately and again at the end, debounce fires once when you stop.</p>
+        </section>
+
+        <section>
           <timing-showcase></timing-showcase>
         </section>
 

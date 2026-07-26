@@ -13,6 +13,10 @@ export default class ExampleTodo extends LoomElement {
         <doc-header title="Todo List" subtitle="A persistent todo list using @store with LocalAdapter, @computed, and @styles."></doc-header>
 
         <section>
+          <p>A todo list is the standard example because it exercises the awkward parts: a list that reorders, an item edited in place, and state that has to survive a reload. Reload the page — the list is still here, because <span class="ic">@store</span> is backed by a storage adapter.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

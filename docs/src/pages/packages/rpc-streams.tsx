@@ -12,6 +12,11 @@ export default class PageRpcStreams extends LoomElement {
         <doc-header title="@stream — Streams" subtitle="Server-push streams via WebSocket, SSE, or any async transport — decorator-driven and lifecycle-aware."></doc-header>
 
         <section>
+          <p>Request and response cannot express a server that keeps talking. Polling for it wastes a request per interval and still shows data that is up to one interval stale.</p>
+          <p>A stream is a call that yields many values over time. It needs a transport that can push — a WebSocket or SSE — and it needs to unsubscribe when the component goes away, which is the part that is easy to forget and expensive to miss.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Overview</h2>
           </div>

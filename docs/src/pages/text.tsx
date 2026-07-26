@@ -12,6 +12,11 @@ export default class PageText extends LoomElement {
         <doc-header title="text()" subtitle="Zero-allocation HTML entity decoder for safe JSX rendering."></doc-header>
 
         <section>
+          <p>JSX escapes text by design — that is what stops a username from becoming a script tag. It also means content that legitimately contains entities, typically anything that has been through a CMS or an RSS feed, renders as the literal characters <span class="ic">&amp;amp;lt;</span> rather than as the character it encodes.</p>
+          <p><span class="ic">text()</span> decodes those without opening the hole back up. It handles the named and numeric entities that actually occur, and it returns a string rather than markup, so the result is still escaped on the way into the DOM. Reach for it when the source is untrusted and the entities are real; reach for nothing at all when you control the string.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Overview</h2>
           </div>

@@ -13,6 +13,10 @@ export default class ExampleThemeSwitcher extends LoomElement {
         <doc-header title="Theme Switcher" subtitle="A dark/light toggle using @reactive, @styles, and loom-icon."></doc-header>
 
         <section>
+          <p>A theme toggle done with custom properties rather than two stylesheets: one reactive field flips an attribute on the host, and the cascade does the rest. No component below re-renders when the theme changes.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

@@ -13,6 +13,10 @@ export default class ExampleEventBus extends LoomElement {
         <doc-header title="EventBus" subtitle="Interactive playground for once(), waitFor(), cancel(), and event inheritance."></doc-header>
 
         <section>
+          <p>The typed bus on its own, without components in the way. Fire events and watch subscribers receive them, including the one-shot and awaited forms — useful when the question is what the bus does rather than how a component uses it.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

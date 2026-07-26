@@ -13,6 +13,10 @@ export default class ExampleRpc extends LoomElement {
         <doc-header title="@rpc — Type-Safe RPC" subtitle="Declarative server calls with @rpc queries and @mutate mutations, powered by MockTransport — no server required."></doc-header>
 
         <section>
+          <p>A working client against a mock transport: queries that cache and revalidate, a mutation that invalidates them, and a stream that keeps pushing. Nothing here talks to a real server, which is the point — the same code runs against one by swapping the transport.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

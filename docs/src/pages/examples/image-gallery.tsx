@@ -29,6 +29,10 @@ export default class PageExampleImageGallery extends LoomElement {
         <doc-header title="Image Gallery" subtitle="A responsive grid of <loom-image> elements — each one lazy-loads on scroll and is cached in memory. Images served by <a href=&quot;https://rgba.lol&quot; target=&quot;_blank&quot;>rgba.lol</a>."></doc-header>
 
         <section>
+          <p>A grid where only the visible images have loaded. Scroll and watch the network panel: images request as they approach the viewport, and each one holds its space beforehand so nothing below it jumps.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

@@ -12,6 +12,11 @@ export default class PageRpcOverview extends LoomElement {
         <doc-header title="@toyz/loom-rpc" subtitle="Type-safe, decorator-driven RPC — server-agnostic, transport-swappable."></doc-header>
 
         <section>
+          <p>The gap between a typed server and a typed client is usually a hand-written fetch wrapper: a URL built by string concatenation, a body cast to <span class="ic">any</span>, and a response asserted to the type you hope it is. None of it is checked, and all of it breaks silently when the server changes.</p>
+          <p>Loom RPC closes the gap with the server's own types. You declare methods, the client is typed from the declaration, and a signature change is a compile error rather than a runtime surprise. The transport is pluggable and the server can be anything — nothing here assumes a particular framework.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Install</h2>
           </div>

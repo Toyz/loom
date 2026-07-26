@@ -13,6 +13,10 @@ export default class ExampleClock extends LoomElement {
         <doc-header title="Live Clock" subtitle="A real-time clock using @reactive, @interval, and @styles."></doc-header>
 
         <section>
+          <p>The smallest component that is still doing something real: one reactive field, one <span class="ic">@interval</span>, one stylesheet. It is worth reading because of what is absent — no teardown, no <span class="ic">clearInterval</span>, and no lifecycle method. Navigate away and the timer stops.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

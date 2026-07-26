@@ -12,6 +12,11 @@ export default class PageRpcMutations extends LoomElement {
         <doc-header title="@mutate — Mutations" subtitle="Manual, type-safe server writes with loading and error tracking."></doc-header>
 
         <section>
+          <p>A write is the opposite of a read on every axis that matters: it must not fire on its own, it must not be retried blindly, and it invalidates cached reads that are now wrong.</p>
+          <p><span class="ic">@mutate</span> is therefore explicit — nothing happens until you call it — and it tracks its own loading and error state so the button that triggered it can disable itself without a second field.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Overview</h2>
           </div>

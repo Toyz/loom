@@ -13,6 +13,11 @@ export default class PageDebugging extends LoomElement {
         <doc-header title="Debugging" subtitle="Zero-install component inspection. No browser extension needed — just import and go."></doc-header>
 
         <section>
+          <p>Debugging a web component means answering questions the DOM inspector cannot: which reactive fields does this element hold, what is subscribed to them, and why did that render happen when nothing visible changed.</p>
+          <p>Loom answers them from the console with no extension installed. A development build exposes a global hook that can list mounted components, dump an element's reactive state, and trace what a render actually read.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>inspect()</h2>
           </div>

@@ -11,6 +11,11 @@ export default class PageElementDecorators extends LoomElement {
       <div>
         <doc-header title="Decorators" subtitle="Quick reference for all element decorators. Click any decorator for full documentation."></doc-header>
 
+        <section>
+          <p>Every decorator that applies to a component, on one page, grouped by what it does rather than alphabetically. Use it to find the name you half-remember; each entry links to the page that documents the behaviour and the footguns.</p>
+          <p>Two things are worth knowing before you scan the list. What a decorator attaches to — class, field, <span class="ic">accessor</span> or method — is part of its contract and not interchangeable. And a decorator that wraps your method only runs when you call it, while one that registers a hook runs on its own.</p>
+        </section>
+
         {/* ═══════════ Registration ═══════════ */}
 
         <section>

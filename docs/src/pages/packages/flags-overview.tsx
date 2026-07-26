@@ -12,6 +12,11 @@ export default class PageFlagsOverview extends LoomElement {
         <doc-header title="@toyz/loom-flags" subtitle="Feature flags for Loom — decorator-driven with real-time reactive updates."></doc-header>
 
         <section>
+          <p>A feature flag read once at startup is a configuration constant with extra steps. The value of a flag is that it can change while the app is running — for a rollout, a kill switch, or a per-user experiment — and that means anything reading it has to re-render when it flips.</p>
+          <p>Loom's flags are reactive for exactly that reason. Read one in a template and the component updates when the value changes, with no subscription to wire up or tear down.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Install</h2>
           </div>

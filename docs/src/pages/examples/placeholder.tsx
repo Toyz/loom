@@ -13,6 +13,10 @@ export default class ExamplePlaceholder extends LoomElement {
         <doc-header title="&lt;loom-placeholder&gt; — Placeholder Images" subtitle="Solid-color placeholder images powered by <a href=&quot;https://rgba.lol&quot; target=&quot;_blank&quot; style={{ color: &quot;var(--accent)&quot; }}>rgba.lol</a> — adjust color, size, and format in real time."></doc-header>
 
         <section>
+          <p>Three placeholder strategies side by side, all holding their space before content arrives. Resize the window: the layout does not shift when the real images land, because the boxes were already the right size.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

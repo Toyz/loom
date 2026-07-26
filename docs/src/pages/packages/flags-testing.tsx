@@ -12,6 +12,11 @@ export default class PageFlagsTesting extends LoomElement {
         <doc-header title="Testing Feature Flags" subtitle="MockFlags — drop-in test provider with assertions, no backend required."></doc-header>
 
         <section>
+          <p>A flag that can only be set by a backend is a flag your tests cannot control, so the off path gets tested and the on path ships unexercised.</p>
+          <p><span class="ic">MockFlags</span> is a provider you set directly. Flip a flag mid-test and everything reading it re-renders, which is how you assert both sides of the branch in the same file.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Setup</h2>
           </div>

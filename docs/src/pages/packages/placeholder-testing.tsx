@@ -12,6 +12,11 @@ export default class PagePlaceholderTesting extends LoomElement {
         <doc-header title="Placeholder Testing" subtitle="MockPlaceholder — drop-in test provider with assertions."></doc-header>
 
         <section>
+          <p>A placeholder that reaches the network is a test that fails when the network does, and a snapshot that changes when a remote service does.</p>
+          <p><span class="ic">MockPlaceholder</span> resolves locally and deterministically, so the assertion is about your layout rather than about someone else's uptime.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Import</h2>
           </div>

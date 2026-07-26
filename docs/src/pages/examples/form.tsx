@@ -13,6 +13,10 @@ export default class ExampleForm extends LoomElement {
         <doc-header title="Contact Form" subtitle="Bidirectional form binding with @form, toTrimmed, and validation."></doc-header>
 
         <section>
+          <p>A form with validation, transforms and dirty tracking, all from one declaration. Type into a field and leave it empty to see the error appear; note that the submit button knows whether the form is valid without anything computing that separately.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Live Demo</h2>
           </div>

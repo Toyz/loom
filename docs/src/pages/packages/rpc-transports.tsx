@@ -12,6 +12,11 @@ export default class PageRpcTransports extends LoomElement {
         <doc-header title="Transports" subtitle="Pluggable transport layer — swap HTTP, WebSocket, or mock with one DI line."></doc-header>
 
         <section>
+          <p>How a call reaches the server is not the same question as what the call means. Conflating them is what makes an RPC layer impossible to test: the only way to exercise it is to run a server.</p>
+          <p>A transport is the seam. The same typed client runs over HTTP in production, over a WebSocket where you need push, and over a mock in tests, with no change at the call site.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>RpcTransport</h2>
           </div>

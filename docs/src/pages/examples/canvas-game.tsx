@@ -13,6 +13,10 @@ export default class ExampleCanvasGame extends LoomElement {
         <doc-header title="Canvas Game" subtitle="A playable breakout clone built with <loom-canvas>, @animationFrame, and @reactive."></doc-header>
 
         <section>
+          <p>A playable breakout clone in one component. Physics and paint are separate <span class="ic">@animationFrame</span> layers so the simulation always finishes before anything draws, and both share the one render loop the rest of the page is using.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

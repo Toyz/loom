@@ -13,6 +13,10 @@ export default class ExampleAnalytics extends LoomElement {
         <doc-header title="@track — Event Tracking" subtitle="Decorator-driven analytics with @track and MockAnalytics — no backend required."></doc-header>
 
         <section>
+          <p>Every button below fires a decorated method, and the event it produced appears in the log beside it. Watch what the payload contains: the decorator captures the arguments, so the event carries the data without the method mentioning analytics at all.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>

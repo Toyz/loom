@@ -13,6 +13,10 @@ export default class ExampleAttributes extends LoomElement {
         <doc-header title="Attributes" subtitle="Custom attribute controllers — behavior and rendered components attached to any element."></doc-header>
 
         <section>
+          <p>Attribute controllers attached to markup that knows nothing about them. The tooltip, the ripple and the counter below are plain elements with an attribute added — no wrapper component, no custom tag. Inspect them and you will find the original markup unchanged.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Demo</h2>
           </div>
