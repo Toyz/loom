@@ -62,6 +62,7 @@ export const DECORATOR_HELP: Record<string, DecoratorHelp> = {
   dropzone: { summary: "Accepts drops and hands the transferred data to the method.", to: "/decorators/dnd" },
   fullscreen: { summary: "Binds a boolean field to the element's fullscreen state.", to: "/decorators/fullscreen" },
   media: { summary: "Binds a boolean field to a media query.", to: "/decorators/media" },
+  permission: { summary: "Binds a field to a browser permission state. unsupported is not the same as denied.", to: "/decorators/permission" },
   portal: { summary: "Renders part of the template into a different place in the DOM.", to: "/decorators/portal" },
   slot: { summary: "Exposes assigned slot children as a reactive array.", to: "/element/overview" },
   form: { summary: "Binds a form's fields, validation and dirty state to the component.", to: "/element/forms" },

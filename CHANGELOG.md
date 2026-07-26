@@ -58,6 +58,17 @@ existing suite could not see.
   binding are synchronous, so `app.get()` works the instant the class is
   registered; a `LoomLifecycle.start()` is awaited in the background.
   `app.start()` itself is still one-shot.
+- **`@permission`** — reactive Permissions API state, in the shape of
+  `@media`: resolves on connect, re-renders on change, unsubscribes on
+  disconnect. Asking for a permission already denied wastes the ask — the
+  prompt never appears, the API rejects, and there is no way to re-request
+  from script — so a component can now answer that before it acts. An absent
+  `navigator.permissions` and a `query()` that rejects for a name the engine
+  does not implement both report `"unsupported"` rather than being collapsed
+  into `"denied"`: denied means stop, unsupported means the browser will not
+  say in advance, so attempt it and handle the failure. Disconnecting before
+  the async query resolves attaches no listener and writes nothing to the
+  detached element.
 - **`LoomEvent<T>` payload events.** An event that is only a bag of data no
   longer needs a constructor written for it: declare the payload as a type
   parameter and it arrives as `.data`. `T` defaults to `void`, so every

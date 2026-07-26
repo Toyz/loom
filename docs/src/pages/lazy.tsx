@@ -323,6 +323,12 @@ class LazyDecoratorPortal extends LoomElement { }
 @searchable({ title: "Typed Symbols", section: "Decorators", icon: "key", to: "/decorators/symbols", keywords: ["LoomSymbol", "createSymbol", "symbol", "metadata", "typed", "registry", "SYMBOL_REGISTRY"], summary: "Type-safe symbol metadata with LoomSymbol<T>." })
 class LazyDecoratorSymbols extends LoomElement { }
 
+@route("/permission", { group: DecoratorsGroup })
+@component("page-decorator-permission")
+@lazy(() => import("./decorators/permission"))
+@searchable({ title: "Permission", section: "Decorators", icon: "shield-check", to: "/decorators/permission", keywords: ["permission", "permissions", "geolocation", "notifications", "camera", "microphone", "clipboard"], summary: "Reactive browser permission state, before you trigger the API that needs it." })
+class LazyDecoratorPermission extends LoomElement { }
+
 @route("/media", { group: DecoratorsGroup })
 @component("page-decorator-media")
 @lazy(() => import("./decorators/media"))
