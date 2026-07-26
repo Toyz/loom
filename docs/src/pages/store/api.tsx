@@ -42,8 +42,8 @@ export default class PageFetch extends LoomElement {
               <tr><td><span class="ic">.data</span></td><td>Resolved data (<code>T | undefined</code>)</td></tr>
               <tr><td><span class="ic">.error</span></td><td>Error from the last fetch attempt</td></tr>
               <tr><td><span class="ic">.loading</span></td><td><code>true</code> only while there is nothing to show — the first fetch, before any data</td></tr>
-              <tr><td><span class="ic">.fetching</span></td><td><code>true</code> whenever a request is in flight, including a background refetch that already has data</td></tr>
-              <tr><td><span class="ic">.stale</span></td><td><code>true</code> after <code>staleTime</code> has elapsed</td></tr>
+              <tr><td><span class="ic">.fetching</span></td><td><code>true</code> whenever a request is in flight, including a refetch that already has data. Optional in the type, but always provided by <code>@api</code>.</td></tr>
+              <tr><td><span class="ic">.stale</span></td><td><code>true</code> once <code>staleTime</code> has elapsed. A signal to act on — it does not refetch by itself.</td></tr>
               <tr><td><span class="ic">.refetch()</span></td><td>Manually re-run the fetch</td></tr>
               <tr><td><span class="ic">.invalidate()</span></td><td>Mark stale + trigger refetch</td></tr>
               <tr><td><span class="ic">.match({'{'}ok, err, loading?{'}'})</span></td><td>Tri-state pattern match — <code>loading</code> is optional</td></tr>
@@ -64,7 +64,7 @@ export default class PageFetch extends LoomElement {
               <tr><td><code>key</code></td><td><code>(el) =&gt; string</code></td><td>Dynamic key — when it changes, abort + refetch.</td></tr>
               <tr><td><code>use</code></td><td><code>string[]</code></td><td>Named interceptors to run <strong>before</strong> each fetch.</td></tr>
               <tr><td><code>pipe</code></td><td><code>string[]</code></td><td>Named interceptors to run <strong>after</strong> fetch (response transformers).</td></tr>
-              <tr><td><code>staleTime</code></td><td><code>number</code></td><td>ms before data is considered stale (default: 0).</td></tr>
+              <tr><td><code>staleTime</code></td><td><code>number</code></td><td>ms before <code>.stale</code> flips to true (default: 0). Does not trigger a refetch.</td></tr>
               <tr><td><code>retry</code></td><td><code>number</code></td><td>Retry count with exponential backoff (default: 0).</td></tr>
               <tr><td><code>enabled</code></td><td><code>(el) =&gt; boolean</code></td><td>Gate the request. Nothing is fetched while this returns false.</td></tr>
             </tbody>

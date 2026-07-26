@@ -6,6 +6,44 @@ A correctness and hardening pass over the whole framework. Several features in
 this list had never worked at all; the rest are bugs the type checker and the
 existing suite could not see.
 
+### Added
+
+- **`@hotkey` methods carry their printed shortcut.** The combo was already
+  parsed, and `mod` already resolved to Meta on Mac and Ctrl elsewhere, in
+  order to decide what to match — but nothing exposed that result, so any UI
+  showing the shortcut had to retype it. That second copy could not be correct
+  on both platforms at once. `hotkeyLabel(method)` returns the first combo
+  printed for the current platform, `hotkeyLabels(method)` returns them all.
+  Mac uses Apple's modifier order with no separators; elsewhere the parts join
+  with `+`. Named keys print as names, so `escape` reads `Esc`.
+- **`ApiOptions.enabled` gates a request.** The initial fetch was
+  unconditional and runs when the accessor is first read — during the first
+  render — so a query whose URL depends on a prop that arrives later fired
+  once against `undefined`. While the gate is shut nothing is requested and
+  the state reports `loading: false` with no data, because a request that has
+  not been made is not one that is pending. It goes out on the first render
+  after the gate opens.
+- **`ApiState.fetching`.** Already tracked internally and never exposed.
+  `loading` is false once data exists, so there was no way to show a
+  background revalidation without blanking the screen. `loading` means "there
+  is nothing to render yet"; `fetching` means "what you are looking at may be
+  about to change". Optional in the type, because `ApiState` is a structural
+  contract that packages outside this repo implement against whichever
+  version of loom they depend on; loom's own `@api` always provides it.
+
+### Documentation
+
+- **`staleTime` does not revalidate.** Both the Fetch and RPC Queries pages
+  described stale-while-revalidate: that a read past `staleTime` triggers a
+  background refetch. It does not. `checkStale()` flips a boolean and nothing
+  acts on it — a query re-runs when its arguments change, or when `refetch()`
+  or `invalidate()` is called. The pages now say so, and `.stale` is
+  described as a signal to act on.
+- **`@inject` is not a parameter decorator.** Three pages showed it on
+  constructor and factory parameters. Stage-3 decorators have no parameter
+  form and the reader for it was deleted in this release, so those samples
+  could never have run; they resolve from the container instead.
+
 ### Breaking
 
 - **Guards returning `LoomResult.err(new Error(...))` now block navigation.**

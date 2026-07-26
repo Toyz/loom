@@ -9,7 +9,7 @@ export default class PageRpcQueries extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="@rpc — Queries" subtitle="Auto-fetching, reactive queries with SWR caching and pattern matching."></doc-header>
+        <doc-header title="@rpc — Queries" subtitle="Reactive queries that fetch on mount, re-run when their arguments change, and cache by key."></doc-header>
 
         <section>
           <p>A read is not a write. It can be issued speculatively, served from cache, retried without consequence, and deduplicated when three components ask for the same thing in the same tick. Treating reads and writes the same means giving up all of that or hand-rolling it per call site.</p>
@@ -57,18 +57,25 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>fn</code></td><td>(el) =&gt; Args</td><td><code>[]</code></td><td>Extract procedure args from element state. Re-evaluates on reactive changes.</td></tr>
-              <tr><td><code>staleTime</code></td><td>number</td><td><code>0</code></td><td>SWR cache duration in ms. After this time, data is marked stale.</td></tr>
+              <tr><td><code>staleTime</code></td><td>number</td><td><code>0</code></td><td>ms before <code>.stale</code> flips to true. Does not trigger a refetch on its own.</td></tr>
               <tr><td><code>eager</code></td><td>boolean</td><td><code>true</code></td><td>Whether to fetch immediately on connect. Set to <code>false</code> for on-demand queries.</td></tr>
               <tr><td><code>retry</code></td><td>number</td><td><code>0</code></td><td>Number of retries on failure with exponential backoff (200ms, 400ms, 800ms...).</td></tr>
             </tbody>
           </table>
         </doc-section>
-        <doc-section heading="SWR Caching">
+        <doc-section heading="Staleness">
           <p>
-            Set <span class="ic">staleTime</span> to enable stale-while-revalidate caching.
-            After <span class="ic">staleTime</span> milliseconds, the next read marks data
-            as stale and triggers a background refetch — the old data remains visible until
-            the new data arrives.
+            <span class="ic">staleTime</span> is how long data is considered fresh. Once it
+            has elapsed, the next read flips <span class="ic">.stale</span> to
+            <span class="ic">true</span> and the cached data stays visible.
+          </p>
+          <p class="warning">
+            Marking data stale does not refetch it. Nothing revalidates on its own — a query
+            re-runs when its arguments change, or when you call
+            <span class="ic">.refetch()</span> or <span class="ic">.invalidate()</span>.
+            Treat <span class="ic">.stale</span> as a signal to act on, typically by calling
+            <span class="ic">.refetch()</span> when the component regains focus or the user
+            asks for fresh data.
           </p>
           <code-block lang="ts" code={`@rpc(UserRouter, "listUsers", {
   staleTime: 60_000,  // cache for 1 minute
