@@ -1,63 +1,62 @@
 /**
  * Guides — Hydration  /guides/hydration
  *
- * Documentation for Declarative Shadow DOM (DSD) hydration.
+ * Declarative Shadow DOM. Every claim here was read out of
+ * src/element/element.ts and tests/dsd-hydration.test.ts — in particular the
+ * fact that there is no hydration algorithm at all, which the previous copy
+ * described as if there were one.
  */
 import { LoomElement } from "@toyz/loom";
 
 export default class PageGuidesHydration extends LoomElement {
-    update() {
-        return (
-            <div>
-                <doc-header title="Hydration" subtitle="Instant FCP with Declarative Shadow DOM — zero extra dependencies."></doc-header>
+  update() {
+    return (
+      <div>
+        <doc-header
+          title="Hydration"
+          subtitle="The server paints it, the browser attaches it, and Loom adopts what is already there."
+        ></doc-header>
 
         <section>
-          <p>A client-rendered component shows nothing until its JavaScript has downloaded, parsed and run. Server-rendering the markup fixes the blank screen and introduces the harder problem: the shadow root does not exist in HTML, so there has been nothing to server-render into.</p>
-          <p>Declarative Shadow DOM closes that gap. The server emits the shadow content as markup, the browser attaches it before any script runs, and Loom adopts the existing tree instead of rebuilding it. First paint does not wait for the bundle, and there is no framework runtime involved in getting it on screen.</p>
+          <p>A client-rendered component shows nothing until its JavaScript has downloaded, parsed and run. Server-rendering the markup fixes the blank screen and introduces the harder problem: a shadow root is created by script, so there has historically been nothing for the server to render into.</p>
+          <p>Declarative Shadow DOM closes that gap. The server emits the shadow content as ordinary markup, the browser attaches it during parse, and Loom reuses it rather than building its own. The pixels arrive before the bundle does, and no framework code was involved in putting them there.</p>
           <punch-matrix
-            columns="PAINTS BEFORE JS RUNS,NEEDS A SERVER,REBUILDS THE TREE"
+            columns="PAINTS BEFORE JS,NEEDS A SERVER,DISCARDS SERVER MARKUP,CAN MISMATCH"
             rows={[
-              { name: "client render", punches: "REBUILDS THE TREE", note: "Blank until the bundle has parsed" },
-              { name: "declarative shadow DOM", punches: "PAINTS BEFORE JS RUNS,NEEDS A SERVER", note: "Loom adopts the markup already there" },
+              { name: "client render", punches: "DISCARDS SERVER MARKUP", note: "Blank until the bundle has parsed" },
+              { name: "declarative shadow DOM", punches: "PAINTS BEFORE JS,NEEDS A SERVER", note: "Loom morphs against the markup already there" },
             ]}
           ></punch-matrix>
+          <p class="note">
+            The last column is empty on purpose. Hydration mismatch is a whole
+            category of bug in frameworks that diff a virtual tree against
+            server HTML and give up when the two disagree. It does not exist
+            here, for the reason in <span class="ic">How it works</span> below.
+          </p>
         </section>
 
-                <doc-section heading="Overview">
-                        <p>
-                            Loom supports <strong>Declarative Shadow DOM (DSD)</strong> hydration out of the box.
-                            Write a <span class="ic">{"<template shadowrootmode=\"open\">"}</span> in your HTML and
-                            the browser paints the shadow DOM <em>before any JavaScript loads</em>. When Loom's JS
-                            arrives, it <strong>hydrates</strong> the existing shadow root — wiring up event listeners,
-                            reactive bindings, and the trace engine — without destroying or re-rendering the pre-painted content.
-                        </p>
-                        <div class="dec-desc" style={{ marginTop: "0.75rem" }}>
-                            This is entirely internal to <span class="ic">@toyz/loom</span> — no extra packages to install,
-                            no SSG framework, and no build plugins.
-                        </div>
-                </doc-section>
-                <doc-section heading="Basic Usage">
-                        <p>
-                            Add a <span class="ic">{"<template shadowrootmode=\"open\">"}</span> inside your custom element
-                            in the HTML. The browser instantly creates a shadow root with the template content — no JS needed.
-                        </p>
-                        <code-block lang="html" code={`<!-- index.html — pre-rendered shell -->
-<my-counter>
+        <doc-section heading="Basic usage">
+          <p>
+            Put a <span class="ic">{`<template shadowrootmode="open">`}</span> inside the custom
+            element in your HTML. The browser turns it into a real shadow root while parsing,
+            with no script involved.
+          </p>
+          <code-block lang="html" caption="index.html — served pre-rendered" code={`<my-counter>
   <template shadowrootmode="open">
     <style>
       :host { display: block; font-family: sans-serif; }
-      .count { font-size: 2rem; color: var(--accent); }
+      .count { font-size: 2rem; }
     </style>
     <p class="count">0</p>
     <button>Increment</button>
   </template>
 </my-counter>`}></code-block>
 
-                        <p>
-                            Your Loom component doesn't change at all. When it mounts, Loom detects the existing
-                            shadow root and <strong>morphs</strong> against it instead of rendering from scratch:
-                        </p>
-                        <code-block lang="ts" code={`@component("my-counter")
+          <p>
+            The component itself is unchanged. There is no hydrate entry point and no
+            server-versus-client branch to write:
+          </p>
+          <code-block lang="ts" code={`@component("my-counter")
 class MyCounter extends LoomElement {
   @reactive accessor count = 0;
 
@@ -70,72 +69,124 @@ class MyCounter extends LoomElement {
     );
   }
 }`}></code-block>
-                </doc-section>
-                <doc-section heading="How It Works">
-                        <p>
-                            Three things happen under the hood:
-                        </p>
-                    <table class="api-table">
-                        <thead>
-                            <tr><th>Phase</th><th>What Happens</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>1. Browser Parse</strong></td>
-                                <td>
-                                    The browser sees <code>{"<template shadowrootmode=\"open\">"}</code> and creates a shadow root
-                                    with the template content. The user sees the pre-rendered UI immediately — <strong>zero JS required</strong>.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>2. Constructor</strong></td>
-                                <td>
-                                    When <code>customElements.define()</code> upgrades the element, LoomElement's constructor detects
-                                    the existing <code>this.shadowRoot</code> and reuses it instead of calling <code>attachShadow()</code>.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>3. Hydration</strong></td>
-                                <td>
-                                    On <code>connectedCallback</code>, Loom calls <code>update()</code> and <strong>morphs</strong> the
-                                    result against the existing shadow DOM. Since the HTML matches, the morph is a no-op — but event
-                                    listeners and reactive bindings get wired up.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </doc-section>
-                <doc-section heading="When to Use">
-                    <div class="grid">
-                        <div class="card">
-                            <h3><loom-icon name="check" size={16} color="var(--text-muted)"></loom-icon> Great For</h3>
-                            <ul>
-                                <li>App shells, nav bars, and hero sections</li>
-                                <li>Above-the-fold content that must paint instantly</li>
-                                <li>Static or server-rendered pages using web components</li>
-                                <li>Progressive enhancement — works before JS loads</li>
-                            </ul>
-                        </div>
-                        <div class="card">
-                            <h3><loom-icon name="x" size={16} color="var(--text-muted)"></loom-icon> Not Needed For</h3>
-                            <ul>
-                                <li>Below-the-fold components (lazy load instead)</li>
-                                <li>Highly dynamic content that changes on every load</li>
-                                <li>Components only shown after user interaction</li>
-                                <li>Internal/admin dashboards where FCP isn't critical</li>
-                            </ul>
-                        </div>
-                    </div>
-                </doc-section>
-                <doc-section heading="Browser Support">
-                        <p>
-                            Declarative Shadow DOM is supported in all modern browsers: <strong>Chrome 111+</strong>, <strong>Firefox 123+</strong>, <strong>Safari 16.4+</strong>, and <strong>Edge 111+</strong>.
-                            In older browsers without DSD support, the <code>{"<template>"}</code> is ignored and Loom
-                            falls back to normal client-side rendering — no breakage, just no pre-paint benefit.
-                        </p>
-                </doc-section>
-                <doc-nav></doc-nav>
-            </div>
-        );
-    }
+        </doc-section>
+
+        <doc-section heading="How it works">
+          <p>
+            There is no hydration algorithm. That is the whole design, and it is worth being
+            precise about, because it is what removes an entire class of bug.
+          </p>
+          <table class="api-table">
+            <thead>
+              <tr><th>Phase</th><th>What happens</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Parse</td>
+                <td>
+                  The browser sees the template and attaches a shadow root containing it.
+                  The user is looking at the finished UI, and not a line of Loom has run.
+                </td>
+              </tr>
+              <tr>
+                <td>Upgrade</td>
+                <td>
+                  When the element is defined, <span class="ic">LoomElement</span>'s constructor
+                  finds a <span class="ic">shadowRoot</span> already present and keeps it, instead
+                  of calling <span class="ic">attachShadow()</span>. That is the entire
+                  hydration-specific code path — one branch.
+                </td>
+              </tr>
+              <tr>
+                <td>First render</td>
+                <td>
+                  <span class="ic">update()</span> runs and its result is morphed against the
+                  shadow root, exactly as it would be on any later render. Matching nodes are
+                  left alone and the listeners and bindings attach to them.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="tip">
+            Because the first render is an ordinary morph and not a comparison against an
+            expected tree, server markup that disagrees with <span class="ic">update()</span> is
+            simply corrected. There is no mismatch warning because there is no mismatch
+            check — the morph does what it always does. Stale or approximate server HTML
+            degrades into a small DOM patch rather than a thrown error or a blanked component.
+          </p>
+        </doc-section>
+
+        <doc-section heading="Two things that will catch you">
+          <p class="caution">
+            The mode must be <span class="ic">open</span>. A closed declarative shadow root is
+            not exposed as <span class="ic">this.shadowRoot</span>, so Loom cannot find it, calls <span class="ic">attachShadow()</span> on an element that already has one, and the
+            constructor throws. Use <span class="ic">shadowrootmode="open"</span>.
+          </p>
+          <p class="warning">
+            Styles can ship twice. A <span class="ic">&lt;style&gt;</span> inside the template
+            stays in the shadow root, and <span class="ic">@styles</span> adds a constructable
+            sheet on top of it — both are live, and the adopted sheet wins on equal specificity.
+            Keep the inline copy to what the first paint actually needs, and let the component
+            own the rest.
+          </p>
+        </doc-section>
+
+        <doc-section heading="Choosing between them">
+          <p>
+            The question is never "is pre-painting good" — it is whether this particular
+            markup is worth putting in the initial document, which it makes larger for
+            everyone.
+          </p>
+          <table class="api-table">
+            <thead>
+              <tr>
+                <th>The component is</th>
+                <th>Use</th>
+                <th>Because</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A shell, nav, or hero above the fold</td>
+                <td><code>DSD</code></td>
+                <td>It is the first thing seen, and it is the same for everyone</td>
+              </tr>
+              <tr>
+                <td>Below the fold</td>
+                <td><code>@lazy</code></td>
+                <td>Pre-painting what nobody has scrolled to only costs bytes</td>
+              </tr>
+              <tr>
+                <td>Behind a click that has not happened</td>
+                <td><code>@lazy</code></td>
+                <td>Same reason, and the module can arrive during the click</td>
+              </tr>
+              <tr>
+                <td>Different for every user</td>
+                <td>Neither</td>
+                <td>Per-user HTML cannot be cached at the edge, which was the point</td>
+              </tr>
+              <tr>
+                <td>Meaningless without JavaScript</td>
+                <td>Neither</td>
+                <td>A pre-painted control that cannot yet be used is worse than nothing</td>
+              </tr>
+            </tbody>
+          </table>
+        </doc-section>
+
+        <doc-section heading="Browser support">
+          <p>
+            Chrome and Edge 111+, Safari 16.4+, Firefox 123+. Older browsers ignore the
+            template entirely: Loom finds no shadow root, attaches one, and renders on the
+            client as usual. The page still works — it just loses the early paint, which is
+            the correct way for a progressive enhancement to fail.
+          </p>
+        </doc-section>
+
+        <doc-nav></doc-nav>
+      </div>
+    );
+  }
 }

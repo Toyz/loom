@@ -79,22 +79,11 @@ const styles = css`
   }
 
   /* ── Callouts ── */
-  .callout {
-    background: var(--accent-glow);
-    border: 1px solid var(--accent-dim);
-    border-radius: var(--radius-md);
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    margin-top: var(--space-4);
-    display: flex; align-items: flex-start; gap: var(--space-3);
-  }
-  .callout strong { color: var(--accent); }
-
   .result-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
+    background: var(--ground-sunk);
+    border: 1px solid var(--warp-lit);
+    border-radius: 0;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
     padding: var(--space-6);
     text-align: center;
     margin-top: var(--space-4);
@@ -181,8 +170,7 @@ export const todos = new CollectionStore<Todo>([], {
   key: "app:todos",
   storage: new LocalAdapter(),
 });`}></code-block>
-          <div class="callout">
-            <loom-icon name="zap" size="16" style="color: var(--accent); flex-shrink: 0; margin-top: 2px;"></loom-icon>
+          <doc-notification type="note">
             <div>
               <strong>CollectionStore</strong> extends <span class="ic">Reactive&lt;T[]&gt;</span> with
               <span class="ic">.add()</span>, <span class="ic">.remove()</span>,
@@ -190,7 +178,7 @@ export const todos = new CollectionStore<Todo>([], {
               The <span class="ic">LocalAdapter</span> persists every change to
               <span class="ic">localStorage</span> automatically.
             </div>
-          </div>
+          </doc-notification>
         </div>
 
         {/* ─── Step 2 ─── */}
@@ -201,19 +189,41 @@ export const todos = new CollectionStore<Todo>([], {
             <h2>Build the Component</h2>
           </div>
           <p>Create <span class="ic">src/todo-app.tsx</span>:</p>
-          <code-block lang="ts" code={`import { LoomElement, component, reactive, watch } from "@toyz/loom";
-import { todos, Todo } from "./store";
+          <code-block lang="ts" code={`import { LoomElement, component, reactive, css, styles } from "@toyz/loom";
+import { todos } from "./store";
+
+// Built and parsed once for the whole app, not once per render.
+const sheet = css\`
+  :host { display: block; max-width: 480px; margin: 48px auto; font-family: system-ui; }
+  h1    { font-size: 1.5rem; margin-bottom: 16px; font-weight: 700; }
+  .row  { display: flex; gap: 8px; margin-bottom: 20px; }
+  input {
+    flex: 1; padding: 10px 14px;
+    border: 1px solid #33322a; border-radius: 8px;
+    background: #14140f; color: #e6e1d3;
+    font-size: 14px; outline: none;
+  }
+  input:focus { border-color: #c4472f; }
+  button {
+    padding: 10px 18px; border-radius: 8px; border: none;
+    background: #c4472f; color: #f5f1e6;
+    cursor: pointer; font-weight: 600; font-size: 14px;
+  }
+  .todo {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid #33322a;
+  }
+  .todo:last-child { border-bottom: none; }
+  .done .label { text-decoration: line-through; opacity: 0.45; }
+  .label { flex: 1; cursor: pointer; }
+  .del { background: none; border: none; color: #6d6858; cursor: pointer; font-size: 18px; }
+  .empty { color: #6d6858; font-style: italic; padding: 24px 0; text-align: center; }
+\`;
 
 @component("todo-app")
+@styles(sheet)
 export class TodoApp extends LoomElement {
   @reactive accessor input = "";
-  @reactive accessor items: Todo[] = [];
-
-  // Re-render when the store changes
-  @watch(todos)
-  onTodos(items: Todo[]) {
-    this.items = items;
-  }
 
   add() {
     if (!this.input.trim()) return;
@@ -231,47 +241,9 @@ export class TodoApp extends LoomElement {
   }
 
   update() {
-    this.css\`
-      :host { display: block; max-width: 480px; margin: 48px auto; font-family: system-ui; }
-      h1    { font-size: 1.5rem; margin-bottom: 16px; font-weight: 700; }
-
-      .row  { display: flex; gap: 8px; margin-bottom: 20px; }
-      input {
-        flex: 1; padding: 10px 14px;
-        border: 1px solid #2a2a3a; border-radius: 8px;
-        background: #111118; color: #e8e8f0;
-        font-size: 14px; outline: none;
-        transition: border-color 0.15s;
-      }
-      input:focus { border-color: #818cf8; }
-
-      button  {
-        padding: 10px 18px; border-radius: 8px; border: none;
-        background: #818cf8; color: #fff;
-        cursor: pointer; font-weight: 600; font-size: 14px;
-        transition: background 0.15s;
-      }
-      button:hover { background: #6366f1; }
-
-      .todo {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 12px 0; border-bottom: 1px solid #1e1e2a;
-        cursor: pointer; transition: opacity 0.15s;
-      }
-      .todo:last-child { border-bottom: none; }
-      .done .label { text-decoration: line-through; opacity: 0.45; }
-      .label  { flex: 1; }
-
-      .del {
-        background: none; border: none; color: #666;
-        font-size: 18px; cursor: pointer; padding: 0 4px;
-        opacity: 0; transition: opacity 0.15s, color 0.15s;
-      }
-      .todo:hover .del { opacity: 1; }
-      .del:hover { color: #f87171; }
-
-      .empty  { color: #555; font-style: italic; padding: 24px 0; text-align: center; }
-    \`;
+    // Reading the store here is the subscription: the trace records it,
+    // so any change re-renders this component and nothing else.
+    const items = todos.value;
 
     return (
       <div>
@@ -285,9 +257,9 @@ export class TodoApp extends LoomElement {
           />
           <button onClick={() => this.add()}>Add</button>
         </div>
-        {this.items.length === 0
+        {items.length === 0
           ? <div class="empty">No todos yet — add one above!</div>
-          : this.items.map(t => (
+          : items.map(t => (
               <div
                 class={\`todo \${t.done ? "done" : ""}\`}
                 loom-key={t.id}
@@ -303,13 +275,15 @@ export class TodoApp extends LoomElement {
     );
   }
 }`}></code-block>
-          <div class="callout">
-            <loom-icon name="zap" size="16" style="color: var(--accent); flex-shrink: 0; margin-top: 2px;"></loom-icon>
+          <doc-notification type="note">
             <div>
-              <strong>@watch(todos)</strong> replaces manual <span class="ic">subscribe</span> calls.
-              Loom auto-subscribes on connect and cleans up on disconnect — no manual teardown needed.
+              Nothing subscribes to the store. Reading <span class="ic">todos.value</span> inside
+              <span class="ic">update()</span> <em>is</em> the subscription — the trace records
+              which reactives a render read, so a change re-renders exactly the components that
+              read it and nothing else. There is no teardown to write, and no local copy of the
+              list to keep in step.
             </div>
-          </div>
+          </doc-notification>
         </div>
 
         {/* ─── Step 3 ─── */}
