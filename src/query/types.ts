@@ -62,8 +62,14 @@ export interface ApiState<T, E = Error> {
    * `loading` is for "there is nothing to render yet"; this is for "what you
    * are looking at may be about to change". A spinner that blanks the screen
    * on every refetch is the bug this distinction prevents.
+   *
+   * Optional because ApiState is a structural contract that packages outside
+   * this repo implement -- loom-rpc's RpcQuery extends it, compiled against
+   * whichever version of loom it depends on. Making a new member required is
+   * a breaking change to every one of those, for a field they cannot have
+   * known to add. Loom's own @api always provides it.
    */
-  readonly fetching: boolean;
+  readonly fetching?: boolean;
   /** True when staleTime has elapsed since last successful fetch */
   readonly stale: boolean;
   /** Manually re-execute the fetch */
