@@ -16,11 +16,7 @@ export default class PageElementIcon extends LoomElement {
           <p><span class="ic">loom-icon</span> keeps a registry: register an icon's path data once by name, then reference it by name anywhere. The element renders into the light DOM, so <span class="ic">currentColor</span> and the surrounding cascade reach it without piercing a boundary. <span class="ic">fill</span> and <span class="ic">strokeWidth</span> are separate props from <span class="ic">color</span>, so a filled icon and a stroked one can come from the same registry.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               <span class="ic">&lt;loom-icon&gt;</span> is a built-in custom element for rendering inline SVG icons.
               Icons are registered by name, rendered into shadow DOM, and styled via CSS custom properties.
@@ -30,13 +26,8 @@ export default class PageElementIcon extends LoomElement {
             to avoid side effects. Import it explicitly to register the element:
           </doc-notification>
           <code-block lang="ts" code={`import { LoomIcon } from "@toyz/loom/element/icon";`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
-            <h2>Registering Icons</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Registering Icons">
             <p>
               Register icons with <span class="ic">LoomIcon.register()</span> for single icons or <span class="ic">LoomIcon.registerAll()</span> for batch registration:
             </p>
@@ -53,26 +44,16 @@ LoomIcon.registerAll({
             Register icons early in your app's entry point — before any component that uses
             <span class="ic">&lt;loom-icon&gt;</span> renders.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
-            <h2>Usage</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Usage">
             <p>Use the element in JSX or HTML with the <span class="ic">name</span> attribute:</p>
             <code-block lang="ts" code={`// In JSX
 <loom-icon name="home" size={20} color="var(--text-muted)"></loom-icon>
 
 // In HTML
 <loom-icon name="search" size="16" color="#888"></loom-icon>`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
-            <h2>API</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="API">
           <table class="api-table">
             <thead><tr><th>Attribute / Property</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -81,13 +62,8 @@ LoomIcon.registerAll({
               <tr><td><code>color</code></td><td>string</td><td>CSS color for the icon (default: currentColor)</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
-            <h2>Static Methods</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Static Methods">
           <table class="api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
             <tbody>
@@ -95,13 +71,8 @@ LoomIcon.registerAll({
               <tr><td><code>LoomIcon.registerAll(map)</code></td><td>Register multiple icons at once</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <loom-icon name="puzzle" size={20} color="var(--text-muted)"></loom-icon>
-            <h2>IconResolver</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="IconResolver">
             <p>
               For external icon packs (Heroicons, Lucide, etc.), register an <span class="ic">IconResolver</span> via DI.
               The resolver is tried <strong>first</strong> — if it returns <span class="ic">null</span>, the static registry is used as fallback.
@@ -112,13 +83,8 @@ LoomIcon.registerAll({
             <span class="ic">IconResolver</span> is optional. Existing apps using <span class="ic">LoomIcon.register()</span> continue
             to work without any changes.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
-            <h2>Styling</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Styling">
             <p>
               Icons inherit <span class="ic">currentColor</span> by default, so they respond to the parent's
               text color. Override with the <span class="ic">color</span> attribute or CSS:
@@ -129,7 +95,7 @@ LoomIcon.registerAll({
 
 /* Or set explicitly */
 <loom-icon name="bolt" color="var(--text-muted)"></loom-icon>`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

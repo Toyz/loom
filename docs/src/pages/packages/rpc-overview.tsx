@@ -14,6 +14,14 @@ export default class PageRpcOverview extends LoomElement {
         <section>
           <p>The gap between a typed server and a typed client is usually a hand-written fetch wrapper: a URL built by string concatenation, a body cast to <span class="ic">any</span>, and a response asserted to the type you hope it is. None of it is checked, and all of it breaks silently when the server changes.</p>
           <p>Loom RPC closes the gap with the server's own types. You declare methods, the client is typed from the declaration, and a signature change is a compile error rather than a runtime surprise. The transport is pluggable and the server can be anything — nothing here assumes a particular framework.</p>
+          <punch-matrix
+            columns="FIRES ON MOUNT,CACHED,MANY VALUES,INVALIDATES CACHE"
+            rows={[
+              { name: "@rpc", punches: "FIRES ON MOUNT,CACHED", note: "A read: safe to retry and deduplicate" },
+              { name: "@mutate", punches: "INVALIDATES CACHE", note: "A write: never fires on its own" },
+              { name: "@stream", punches: "FIRES ON MOUNT,MANY VALUES", note: "Needs a transport that can push" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="Install">

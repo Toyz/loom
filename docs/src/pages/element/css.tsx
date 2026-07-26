@@ -14,6 +14,14 @@ export default class PageElementCSS extends LoomElement {
         <section>
           <p>Every instance of a component adopting the same stylesheet should share one <span class="ic">CSSStyleSheet</span> object, not parse its own copy. That is what constructable stylesheets are for, and it is the difference between a thousand rows costing one style parse and costing a thousand.</p>
           <p>The <span class="ic">css</span> tag builds and caches those sheets by their text, so two call sites producing identical CSS share one object. Styles come in two kinds: static sheets adopted once at connect via <span class="ic">@styles</span>, and <span class="ic">@dynamicCss</span>, which re-evaluates a method whenever the reactive fields it reads change. Reach for the second only when a value genuinely cannot be a custom property.</p>
+          <punch-matrix
+            columns="SHARED SHEET,RE-EVALUATES ON STATE,PER INSTANCE,SURVIVES A MORPH"
+            rows={[
+              { name: "@styles(sheet)", punches: "SHARED SHEET,SURVIVES A MORPH", note: "One CSSStyleSheet for every instance" },
+              { name: "style attribute", punches: "PER INSTANCE", note: "Re-applied by the morph on every render" },
+              { name: "@dynamicCss", punches: "RE-EVALUATES ON STATE,PER INSTANCE,SURVIVES A MORPH", note: "Rebuilt when a reactive field it read changes" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="The css`` Tagged Template">

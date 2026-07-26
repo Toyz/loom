@@ -13,6 +13,15 @@ export default class PageRouterRoutes extends LoomElement {
         <section>
           <p>A route is a pattern and a component. The pattern's job is to be unambiguous, which is harder than it looks the moment two of them can match the same URL — <span class="ic">/user/:id</span> and <span class="ic">/user/new</span> both match <span class="ic">/user/new</span>.</p>
           <p>Loom matches in registration order, first match wins. That is worth knowing because it makes the outcome depend on import order: whichever module was imported first gets asked first. Declare the specific pattern before the general one.</p>
+          <punch-matrix
+            columns="MATCHES EXACTLY,CAPTURES A VALUE,SPANS MANY SEGMENTS"
+            rows={[
+              { name: `"/users"`, punches: "MATCHES EXACTLY", note: "Static, and declared before the dynamic one" },
+              { name: `"/users/:id"`, punches: "CAPTURES A VALUE", note: "One segment, bound to a route prop" },
+              { name: `"/files/*"`, punches: "SPANS MANY SEGMENTS", note: "Wildcard, value discarded" },
+              { name: `"/files/*path"`, punches: "CAPTURES A VALUE,SPANS MANY SEGMENTS", note: "Wildcard, captured under a name" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="@route">

@@ -14,6 +14,13 @@ export default class PageGuidesHydration extends LoomElement {
         <section>
           <p>A client-rendered component shows nothing until its JavaScript has downloaded, parsed and run. Server-rendering the markup fixes the blank screen and introduces the harder problem: the shadow root does not exist in HTML, so there has been nothing to server-render into.</p>
           <p>Declarative Shadow DOM closes that gap. The server emits the shadow content as markup, the browser attaches it before any script runs, and Loom adopts the existing tree instead of rebuilding it. First paint does not wait for the bundle, and there is no framework runtime involved in getting it on screen.</p>
+          <punch-matrix
+            columns="PAINTS BEFORE JS RUNS,NEEDS A SERVER,REBUILDS THE TREE"
+            rows={[
+              { name: "client render", punches: "REBUILDS THE TREE", note: "Blank until the bundle has parsed" },
+              { name: "declarative shadow DOM", punches: "PAINTS BEFORE JS RUNS,NEEDS A SERVER", note: "Loom adopts the markup already there" },
+            ]}
+          ></punch-matrix>
         </section>
 
                 <doc-section heading="Overview">

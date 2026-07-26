@@ -16,10 +16,7 @@ export default class PageText extends LoomElement {
           <p><span class="ic">text()</span> decodes those without opening the hole back up. It handles the named and numeric entities that actually occur, and it returns a string rather than markup, so the result is still escaped on the way into the DOM. Reach for it when the source is untrusted and the entities are real; reach for nothing at all when you control the string.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               Decodes common HTML entities (<span class="ic">&amp;lt;</span>, <span class="ic">&amp;gt;</span>,
               <span class="ic">&amp;amp;</span>, etc.) back to their literal characters. Use when rendering
@@ -29,17 +26,11 @@ export default class PageText extends LoomElement {
               <strong>Safe by design:</strong> The decoded string is inserted as a text node —
               the browser cannot interpret it as HTML. No sanitizer needed.
             </doc-notification>
-        </section>
+        </doc-section>
 
-        <section>
-          <div class="group-header">
-            <h2>Usage</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">text(escaped: string): string</div>
-            <div class="dec-desc">
-              Decodes HTML entities and returns a plain string.
-            </div>
+        <doc-section heading="Usage">
+          <api-entry sig="text(escaped: string): string">
+            <p>Decodes HTML entities and returns a plain string.</p>
             <code-block lang="ts" code={`import { text } from "@toyz/loom";
 
 @component("chat-message")
@@ -53,13 +44,10 @@ class ChatMessage extends LoomElement {
     return <p>{text(this.message)}</p>;
   }
 }`}></code-block>
-          </div>
-        </section>
+          </api-entry>
+        </doc-section>
 
-        <section>
-          <div class="group-header">
-            <h2>Supported Entities</h2>
-          </div>
+        <doc-section heading="Supported Entities">
           <table class="api-table">
             <thead><tr><th>Entity</th><th>Decoded</th><th>Name</th></tr></thead>
             <tbody>
@@ -73,26 +61,21 @@ class ChatMessage extends LoomElement {
               <tr><td><code>&amp;#x60;</code></td><td><code>`</code></td><td>Backtick</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
 
-        <section>
-          <div class="group-header">
-            <h2>Why not innerHTML?</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-desc">
-              <span class="ic">text()</span> is a pure regex replacement — <strong>zero DOM allocation</strong>.
-              No <span class="ic">DOMParser</span>, no <span class="ic">&lt;textarea&gt;</span> hack,
-              no hidden element creation. It works in Web Workers, SSR contexts, and
-              anywhere JavaScript runs.
-            </div>
+        <doc-section heading="Why not innerHTML?">
+          <p>
+            <span class="ic">text()</span> is a pure regex replacement — <strong>zero DOM allocation</strong>.
+            No <span class="ic">DOMParser</span>, no <span class="ic">&lt;textarea&gt;</span> hack,
+            no hidden element creation. It works in Web Workers, SSR contexts, and
+            anywhere JavaScript runs.
+          </p>
             <code-block lang="ts" code={`// Does NOT double-decode
 text("&amp;lt;")  // → "&lt;" (not "<")
 
 // Unknown entities pass through
 text("&nbsp;")     // → "&nbsp;" (unchanged)`}></code-block>
-          </div>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

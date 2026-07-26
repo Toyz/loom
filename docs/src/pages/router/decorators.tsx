@@ -13,6 +13,14 @@ export default class PageRouterDecorators extends LoomElement {
 
         <section>
           <p>The router's decorators split by what they attach to: the class gets the route or the group, and methods get the guards and the lifecycle hooks. Nothing here needs the router instance, which is what lets a route be declared in the same file as the component and stay there.</p>
+          <punch-matrix
+            columns="ON A CLASS,ON A METHOD,ADDS A PREFIX,CAN BLOCK NAVIGATION"
+            rows={[
+              { name: "@route(path, opts?)", punches: "ON A CLASS", note: "Binds the component to a URL" },
+              { name: "@guard(name?)", punches: "ON A METHOD,CAN BLOCK NAVIGATION", note: "Runs before the route renders" },
+              { name: "@group(prefix, opts?)", punches: "ON A CLASS,ADDS A PREFIX", note: "Shared prefix and shared guards" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="@route">

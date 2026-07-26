@@ -16,15 +16,25 @@ export default class PageRouterRouteData extends LoomElement {
         <section>
           <p>Reading the current route inside a component means finding the router, asking it for its state, and re-reading whenever it changes. Doing that in every routed component is the boilerplate this page exists to remove.</p>
           <p>Route props are declared as fields and filled in by the outlet on match. They come from the URL, so they are strings — a transform converts them at the boundary. When a key is genuinely absent the field returns to the default you declared, rather than to an empty string that a numeric prop would coerce to zero.</p>
+          <punch-matrix
+            columns="FROM PATH,FROM QUERY,FROM META,WHOLE OBJECT"
+            rows={[
+              { name: `@prop({ param: "name" })`, punches: "FROM PATH", note: "One named path segment" },
+              { name: "@prop({ params })", punches: "FROM PATH,WHOLE OBJECT", note: "Every path segment at once" },
+              { name: `@prop({ query: "name" })`, punches: "FROM QUERY", note: "One query-string key" },
+              { name: "@prop({ query: routeQuery })", punches: "FROM QUERY,WHOLE OBJECT", note: "The whole query string" },
+              { name: `@prop({ meta: "key" })`, punches: "FROM META", note: "One key of the route's meta" },
+              { name: "@prop({ meta: routeMeta })", punches: "FROM META,WHOLE OBJECT", note: "Route meta merged with its group's" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="Route Params">
-          <div class="feature-entry">
-            <div class="dec-sig">@prop({"{"} param: "name" {"}"})</div>
-            <div class="dec-desc">
+          <api-entry sig={`@prop({ param: "name" })`}>
+            <p>
               Pick a single <span class="ic">:param</span> from the URL path.
               The property is reactive — navigation updates it automatically:
-            </div>
+            </p>
             <code-block lang="ts" code={`@route("/users/:id")
 @component("page-user")
 class PageUser extends LoomElement {
@@ -34,14 +44,12 @@ class PageUser extends LoomElement {
     return <h1>User: {this.userId}</h1>;
   }
 }`}></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">@prop({"{"} params {"}"})</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig={`@prop({ params })`}>
+            <p>
               Decompose <strong>all</strong> route params into a single object. Useful when you
               have multiple dynamic segments:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { params } from "@toyz/loom/router";
 
 @route("/org/:orgId/team/:teamId")
@@ -59,14 +67,13 @@ class PageTeam extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
+          </api-entry>
         </doc-section>
         <doc-section heading="Query Strings">
-          <div class="feature-entry">
-            <div class="dec-sig">@prop({"{"} query: "name" {"}"})</div>
-            <div class="dec-desc">
+          <api-entry sig={`@prop({ query: "name" })`}>
+            <p>
               Pick a single <span class="ic">?key=value</span> from the URL query string:
-            </div>
+            </p>
             <code-block lang="ts" code={`@route("/settings")
 @component("page-settings")
 class PageSettings extends LoomElement {
@@ -86,14 +93,12 @@ class PageSettings extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">@prop({"{"} query: routeQuery {"}"})</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig={`@prop({ query: routeQuery })`}>
+            <p>
               Decompose <strong>all</strong> query params into a single object.
               Import the <span class="ic">routeQuery</span> sentinel from the router:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { routeQuery } from "@toyz/loom/router";
 
 @route("/search")
@@ -113,16 +118,15 @@ class PageSearch extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
+          </api-entry>
         </doc-section>
         <doc-section heading="Route Metadata">
-          <div class="feature-entry">
-            <div class="dec-sig">@prop({"{"}  meta: "key" {"}"})</div>
-            <div class="dec-desc">
+          <api-entry sig={`@prop({ meta: "key" })`}>
+            <p>
               Pick a single value from the route's <span class="ic">meta</span> object.
               Meta is set on <span class="ic">@route</span> and <span class="ic">@group</span>,
               and group meta is inherited by child routes:
-            </div>
+            </p>
             <code-block lang="ts" code={`@route("/admin/settings", {
   group: AdminGroup,
   meta: { layout: "sidebar", role: "admin" }
@@ -140,14 +144,12 @@ class PageAdminSettings extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">@prop({"{"}  meta: routeMeta {"}"})</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig={`@prop({ meta: routeMeta })`}>
+            <p>
               Decompose <strong>all</strong> route metadata into a single object.
               Import the <span class="ic">routeMeta</span> sentinel from the router:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { routeMeta } from "@toyz/loom/router";
 
 @route("/dashboard", { meta: { theme: "dark", analytics: "dash" } })
@@ -160,7 +162,7 @@ class PageDashboard extends LoomElement {
     return <div data-theme={this.allMeta.theme as string}>Dashboard</div>;
   }
 }`}></code-block>
-          </div>
+          </api-entry>
         </doc-section>
         <doc-section heading="@transform">
             <p>

@@ -12,6 +12,14 @@ export default class PageStoreSignals extends LoomElement {
         <section>
           <p>TC39 Signals are on track for the language itself. When they land, code written against a framework's private reactive object will need rewriting; code written against the standard will not.</p>
           <p><span class="ic">@signal</span> is Loom's bet on that. The accessor reads and writes the plain value so templates stay ergonomic, while the backing Signal is exposed as <span class="ic">this.$signal_&lt;field&gt;</span> for anything outside the component — including libraries that have never heard of Loom.</p>
+          <punch-matrix
+            columns="PLAIN VALUE ACCESSOR,IS A TC39 SIGNAL,LAZY"
+            rows={[
+              { name: "@reactive", punches: "PLAIN VALUE ACCESSOR", note: "Loom's own reactive primitive" },
+              { name: "@signal", punches: "PLAIN VALUE ACCESSOR,IS A TC39 SIGNAL", note: "Readable from outside via $signal_<field>" },
+              { name: "SignalComputed", punches: "IS A TC39 SIGNAL,LAZY", note: "Recomputes only when a dependency changed" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="Overview">

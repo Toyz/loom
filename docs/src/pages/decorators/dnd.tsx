@@ -12,6 +12,13 @@ export default class PageDecoratorDnd extends LoomElement {
         <section>
           <p>HTML5 drag and drop is an API with a trap in it: the drop target does nothing unless you call <span class="ic">preventDefault()</span> on <span class="ic">dragover</span>, an event you otherwise have no reason to handle. Miss it and the drop silently never fires, with no error to explain why.</p>
           <p><span class="ic">@draggable</span> and <span class="ic">@dropzone</span> handle the required event dance and leave you the two parts that carry meaning: what the payload is, and what to do when it lands. The payload is serialised from the method's return value, so a drop between components moves data rather than DOM nodes.</p>
+          <punch-matrix
+            columns="DRAG SOURCE,DROP TARGET,SERIALISES PAYLOAD,READS PAYLOAD"
+            rows={[
+              { name: "@draggable(options?)", punches: "DRAG SOURCE,SERIALISES PAYLOAD", note: "The return value becomes the payload" },
+              { name: "@dropzone(options?)", punches: "DROP TARGET,READS PAYLOAD", note: "Handles the required dragover dance for you" },
+            ]}
+          ></punch-matrix>
         </section>
 
                 <doc-section heading="Quick Start">

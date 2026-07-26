@@ -12,6 +12,14 @@ export default class PageJsx extends LoomElement {
         <section>
           <p>Loom's JSX has no virtual DOM. <span class="ic">jsx()</span> creates real elements immediately, so what <span class="ic">update()</span> returns is a live DOM tree, not a description of one. There is no diff of two object graphs, because there is only ever one graph.</p>
           <p>Re-rendering therefore has to reconcile new DOM against mounted DOM, and Loom does it in three tiers. If no dependency the render read has changed, it skips entirely. If the change only affects text or attributes bound to a closure, it patches those nodes directly and never rebuilds the tree. Only a structural change — different elements, a reordered list — falls through to a full morph.</p>
+          <punch-matrix
+            columns="CHECKS DEPENDENCIES,RE-RUNS RENDER,PATCHES NODES,REBUILDS THE TREE"
+            rows={[
+              { name: "Tier 1 — skip", punches: "CHECKS DEPENDENCIES", note: "Nothing the render read has changed" },
+              { name: "Tier 2 — fast patch", punches: "CHECKS DEPENDENCIES,RE-RUNS RENDER,PATCHES NODES", note: "Only bound text and attributes moved" },
+              { name: "Tier 3 — full morph", punches: "CHECKS DEPENDENCIES,RE-RUNS RENDER,PATCHES NODES,REBUILDS THE TREE", note: "The shape of the tree changed" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="How It Works">

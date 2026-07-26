@@ -12,6 +12,14 @@ export default class PageStoreDecorator extends LoomElement {
         <section>
           <p><span class="ic">@reactive</span> notices assignment to the field. It does not notice <span class="ic">this.form.name = "x"</span>, because the field still holds the same object — nothing was assigned to it. The usual workaround is to reassign a fresh copy on every edit, which is easy to forget in exactly the place it matters.</p>
           <p><span class="ic">@store</span> makes the object itself reactive, to any depth. Mutating a nested field schedules a render. You pay for it with a proxy on every property access, so it is the right default for a form or a settings object and the wrong one for a large array you only ever replace wholesale.</p>
+          <punch-matrix
+            columns="TRACKS ASSIGNMENT,TRACKS NESTED MUTATION,PERSISTS,PROXY OVERHEAD"
+            rows={[
+              { name: "@reactive", punches: "TRACKS ASSIGNMENT", note: "Reassign the field to trigger a render" },
+              { name: "@store", punches: "TRACKS ASSIGNMENT,TRACKS NESTED MUTATION,PROXY OVERHEAD", note: "Mutating a nested field is enough" },
+              { name: "@store + adapter", punches: "TRACKS ASSIGNMENT,TRACKS NESTED MUTATION,PERSISTS,PROXY OVERHEAD", note: "Rehydrates on construction" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="Overview">

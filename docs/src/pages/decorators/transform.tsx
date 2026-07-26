@@ -14,6 +14,14 @@ export default class PageDecoratorTransform extends LoomElement {
         <section>
           <p>Attributes are strings. Every one of them, always — <span class="ic">count="3"</span> arrives as <span class="ic">"3"</span>, and <span class="ic">disabled="false"</span> arrives as the string <span class="ic">"false"</span>, which is truthy. Hand-parsing that in <span class="ic">attributeChangedCallback</span> is where the off-by-one type bugs live.</p>
           <p>A transform runs on the way in, converting the incoming value once before it reaches your field. The seven built-ins cover the common conversions, and <span class="ic">createTransform</span> covers the rest. All of them apply to an <span class="ic">accessor</span>, not a plain field — that is a hard requirement of how stage-3 decorators intercept a write, not a style preference.</p>
+          <punch-matrix
+            columns="RUNS ON WRITE,VALIDATES SHAPE,REQUIRES ACCESSOR"
+            rows={[
+              { name: "@transform(fn)", punches: "RUNS ON WRITE,REQUIRES ACCESSOR", note: "Any function, applied on the way in" },
+              { name: "typed(schema)", punches: "VALIDATES SHAPE", note: "A schema, not a decorator" },
+              { name: "@typedTransformer(schema)", punches: "RUNS ON WRITE,VALIDATES SHAPE,REQUIRES ACCESSOR", note: "The two combined" },
+            ]}
+          ></punch-matrix>
         </section>
 
         {/* ═══════════ @transform ═══════════ */}

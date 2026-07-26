@@ -43,11 +43,10 @@ export default class PageElementObserver extends LoomElement {
           </table>
         </doc-section>
         <doc-section heading="ResizeObserver">
-          <div class="feature-entry">
-            <div class="dec-sig">@observer("resize", opts?)</div>
-            <div class="dec-desc">
+          <api-entry sig={`@observer("resize", opts?)`}>
+            <p>
               Fires the decorated method whenever the element's size changes. Each call receives a single <code>ResizeObserverEntry</code> — Loom iterates the entries array for you.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
 import { observer } from "@toyz/loom/element";
 
@@ -66,7 +65,7 @@ class ResponsiveCard extends LoomElement {
     return <div class={this.layout}>...</div>;
   }
 }`}></code-block>
-          </div>
+          </api-entry>
             <p>
               Pass <code>ResizeObserverOptions</code> as the second argument to control which box model to observe:
             </p>
@@ -76,12 +75,11 @@ onResize(entry: ResizeObserverEntry) {
 }`}></code-block>
         </doc-section>
         <doc-section heading="IntersectionObserver">
-          <div class="feature-entry">
-            <div class="dec-sig">@observer("intersection", opts?)</div>
-            <div class="dec-desc">
+          <api-entry sig={`@observer("intersection", opts?)`}>
+            <p>
               Fires the decorated method when the element enters or exits the viewport (or a custom root).
               Each call receives a single <code>IntersectionObserverEntry</code>.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
 import { observer } from "@toyz/loom/element";
 
@@ -104,21 +102,20 @@ class LazyImage extends LoomElement {
       : <div class="placeholder" />;
   }
 }`}></code-block>
-          </div>
+          </api-entry>
           <doc-notification type="tip">
             Use <code>rootMargin</code> to start loading elements <strong>before</strong> they
             enter the viewport — great for preloading images and heavy content.
           </doc-notification>
         </doc-section>
         <doc-section heading="MutationObserver">
-          <div class="feature-entry">
-            <div class="dec-sig">@observer("mutation", opts)</div>
-            <div class="dec-desc">
+          <api-entry sig={`@observer("mutation", opts)`}>
+            <p>
               Fires the decorated method when child nodes, attributes, or character data change.
               Each call receives a single <code>MutationRecord</code>.
               The <span class="ic">options</span> argument is <strong>required</strong> for mutation observers
               — you must specify at least one of <code>childList</code>, <code>attributes</code>, or <code>characterData</code>.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
 import { observer } from "@toyz/loom/element";
 
@@ -141,7 +138,7 @@ class SlotCounter extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
+          </api-entry>
         </doc-section>
         <doc-section heading="Custom Target">
             <p>

@@ -14,6 +14,14 @@ export default class PageRpcTransports extends LoomElement {
         <section>
           <p>How a call reaches the server is not the same question as what the call means. Conflating them is what makes an RPC layer impossible to test: the only way to exercise it is to run a server.</p>
           <p>A transport is the seam. The same typed client runs over HTTP in production, over a WebSocket where you need push, and over a mock in tests, with no change at the call site.</p>
+          <punch-matrix
+            columns="REQUEST AND RESPONSE,SERVER PUSH,NO NETWORK"
+            rows={[
+              { name: "HttpTransport", punches: "REQUEST AND RESPONSE", note: "Ordinary calls over HTTP" },
+              { name: "WebSocket transport", punches: "REQUEST AND RESPONSE,SERVER PUSH", note: "Required for @stream" },
+              { name: "MockTransport", punches: "REQUEST AND RESPONSE,NO NETWORK", note: "The real client, typed the same, in tests" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="RpcTransport">

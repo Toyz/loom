@@ -80,7 +80,7 @@ class BookmarkStore extends CollectionStore<Bookmark> {
 @inject(AuthService) auth!: AuthService;
 
 // Constructor parameter
-constructor(@inject(Config) cfg: Config) { ... }
+// resolve in the constructor body: app.get(Config)
 
 // In a component
 @component("user-profile")
@@ -103,21 +103,21 @@ class UserProfile extends LoomElement {
             <code-block lang="ts" code={`@service
 class Boot {
   @factory(ChatClient)
-  createChat(@inject(NatsConn) nc: NatsConn) {
+  createChat() {
+    const nc = app.get(NatsConn);
     return new ChatClient(nc);
   }
 }`}></code-block>
           </api-entry>
         </doc-section>
         <doc-section heading="LoomLifecycle">
-          <div class="feature-entry">
-            <div class="dec-sig">{'LoomLifecycle<"start" | "stop" | "suspend" | "resume">'}</div>
-            <div class="dec-desc">
+          <api-entry sig={`LoomLifecycle<"start" | "stop" | "suspend" | "resume">`}>
+            <p>
               Services that implement <span class="ic">LoomLifecycle</span> have their <span class="ic">start()</span> / <span class="ic">stop()</span> methods called
               automatically by <span class="ic">app.start()</span> / <span class="ic">app.stop()</span>,
               and <span class="ic">suspend()</span> / <span class="ic">resume()</span> fired
               automatically on <span class="ic">visibilitychange</span> (tab hidden / visible).
-            </div>
+            </p>
             <code-block lang="ts" code={`import type { LoomLifecycle } from "@toyz/loom";
 
 @service("ws")
@@ -162,8 +162,7 @@ router.start(); // ← no longer needed
 // After
 app.use(new LoomRouter({ mode: "history" }));
 app.start(); // router.start() called automatically`}></code-block>
-          </div>
-
+          </api-entry>
           <table class="api-table">
             <thead><tr><th>Hook</th><th>Called by</th><th>Order</th></tr></thead>
             <tbody>

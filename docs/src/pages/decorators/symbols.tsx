@@ -61,13 +61,12 @@ if (SERVICE_NAME.has(ctor)) {
         {/* ═══════════ createSymbol ═══════════ */}
 
         <doc-section heading="createSymbol">
-          <div class="feature-entry">
-            <div class="dec-sig">{`createSymbol<T>(name: string): LoomSymbol<T>`}</div>
-            <div class="dec-desc">
+          <api-entry sig={`createSymbol<T>(name: string): LoomSymbol<T>`}>
+            <p>
               Creates and registers a <span class="ic">LoomSymbol</span> in the global <span class="ic">SYMBOL_REGISTRY</span>.
               If a symbol with the same name already exists, returns the existing one — preventing
               duplicates across hot reloads or multiple imports.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { createSymbol } from "@toyz/loom";
 
 // Plugin authors: define typed metadata symbols
@@ -78,7 +77,7 @@ const FLAG_META  = createSymbol<FlagEntry[]>("flags:gated");
 const a = createSymbol("my:thing");
 const b = createSymbol("my:thing");
 console.log(a === b);  // true`}></code-block>
-          </div>
+          </api-entry>
         </doc-section>
         {/* ═══════════ API Reference ═══════════ */}
 
@@ -117,19 +116,18 @@ console.log(a === b);  // true`}></code-block>
         {/* ═══════════ SYMBOL_REGISTRY ═══════════ */}
 
         <doc-section heading="SYMBOL_REGISTRY">
-          <div class="feature-entry">
-            <div class="dec-sig">{`SYMBOL_REGISTRY: Map<string, LoomSymbol>`}</div>
-            <div class="dec-desc">
+          <api-entry sig={`SYMBOL_REGISTRY: Map<string, LoomSymbol>`}>
+            <p>
               Global registry of all created symbols. Used by <span class="ic">inspect()</span> to enumerate
               component metadata. Every <span class="ic">createSymbol()</span> call auto-registers here.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { SYMBOL_REGISTRY } from "@toyz/loom";
 
 // Enumerate all registered symbols
 for (const [name, sym] of SYMBOL_REGISTRY) {
   console.log(name, sym.from(myComponent));
 }`}></code-block>
-          </div>
+          </api-entry>
         </doc-section>
         {/* ═══════════ Core Symbols ═══════════ */}
 

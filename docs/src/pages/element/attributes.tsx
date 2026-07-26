@@ -17,6 +17,13 @@ export default class PageElementAttributes extends LoomElement {
         <section>
           <p>A custom element requires you to own the tag. That is fine for markup you write, and useless for markup you do not: HTML rendered from Markdown, a CMS payload, a third-party widget, or a table you cannot wrap without breaking its layout.</p>
           <p>An attribute controller inverts it. You register an attribute name, and any element in the document carrying that attribute gets a controller instance — with lifecycle, reactive state, and its own render output — for exactly as long as the attribute is present. The element keeps its own tag and its own semantics; you are attaching behaviour to it rather than replacing it.</p>
+          <punch-matrix
+            columns="OWNS A TAG,ATTACHES TO EXISTING MARKUP,HAS LIFECYCLE,CAN RENDER"
+            rows={[
+              { name: "LoomElement", punches: "OWNS A TAG,HAS LIFECYCLE,CAN RENDER", note: "You control the markup" },
+              { name: "LoomAttribute", punches: "ATTACHES TO EXISTING MARKUP,HAS LIFECYCLE,CAN RENDER", note: "The element keeps its own tag" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <section>

@@ -62,48 +62,41 @@ const tag = createDecorator<[string]>((ctor, name) => {
 
         <doc-section heading="State">
 
-          <div class="feature-entry" id="reactive">
-            <div class="dec-sig">@reactive</div>
-            <div class="dec-desc">
+          <api-entry sig="@reactive" id="reactive">
+            <p>
               Internal reactive state backed by <span class="ic">Reactive&lt;T&gt;</span>.
               Changes schedule batched <span class="ic">update()</span> via microtask.
-            </div>
+            </p>
             <code-block lang="ts" code={`@reactive accessor count = 0;
 @reactive accessor userName = "";
 @reactive accessor items: string[] = [];`}></code-block>
-          </div>
-
-          <div class="feature-entry" id="prop">
-            <div class="dec-sig">@prop</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="@prop" id="prop">
+            <p>
               External property. Auto-parses HTML attributes (number, boolean, string)
               and accepts any type via JSX. Uses <span class="ic">@reactive</span> under the hood.
-            </div>
+            </p>
             <code-block lang="ts" code={`@prop accessor label = "Count";   // <my-counter label="Clicks">
 @prop accessor initial = 0;       // parsed as number
 @prop accessor disabled = false;  // parsed as boolean`}></code-block>
-          </div>
-
-          <div class="feature-entry" id="computed">
-            <div class="dec-sig">@computed</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="@computed" id="computed">
+            <p>
               Cached derived value on a getter. Re-computed only when <span class="ic">@reactive</span> dependencies trigger a re-render.
-            </div>
+            </p>
             <code-block lang="ts" code={`@computed
 get displayName() {
   return \`\${this.firstName} \${this.lastName}\`;
 }`}></code-block>
-          </div>
-
-          <div class="feature-entry" id="watch">
-            <div class="dec-sig">@watch(field: string)</div>
+          </api-entry>
+          <api-entry sig="@watch(field: string)" id="watch">
             <div class="dec-sig">@watch(store: Reactive)</div>
             <div class="dec-sig">@watch(Service, "prop"?)</div>
-            <div class="dec-desc">
+            <p>
               Reacts to state changes. Handler receives <span class="ic">(value, prev)</span>.
               For stores and services, auto-calls <span class="ic">scheduleUpdate()</span> and
               cleans up on disconnect.
-            </div>
+            </p>
             <code-block lang="ts" code={`// Local @reactive field
 @watch("count")
 onCount(val: number, prev: number) { }
@@ -119,16 +112,14 @@ onTodos(items: Todo[], prev: Todo[]) { }
 // DI-resolved service property
 @watch(ThemeService, "theme")
 onTheme(val: string, prev: string) { }`}></code-block>
-          </div>
-
-          <div class="feature-entry" id="readonly">
-            <div class="dec-sig">@readonly</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="@readonly" id="readonly">
+            <p>
               Composable immutability. Freezes the value after the first set — subsequent
               assignments throw. Objects and arrays are <span class="ic">Object.freeze()</span>'d
               in the getter. Stack with <span class="ic">@reactive</span> or <span class="ic">@prop</span>
               by placing <span class="ic">@readonly</span> first (outermost).
-            </div>
+            </p>
             <code-block lang="ts" code={`// Set once, locked forever
 @readonly @reactive accessor id = crypto.randomUUID();
 
@@ -137,7 +128,7 @@ onTheme(val: string, prev: string) { }`}></code-block>
 
 // Standalone — frozen after init
 @readonly accessor config = { theme: "dark" };`}></code-block>
-          </div>
+          </api-entry>
         </doc-section>
         {/* ═══════════ See Also ═══════════ */}
 

@@ -14,6 +14,14 @@ export default class PageElementLog extends LoomElement {
         <section>
           <p>Debug logging that ships is usually a <span class="ic">console.log</span> someone forgot, and debug logging that does not ship is usually deleted before it was useful twice. Neither gives you the two things you actually want at 3am: which arguments went in, and how long the call took.</p>
           <p><span class="ic">@log</span> wraps the method and records both. The transport is pluggable, so the same declaration writes to the console in development and to whatever you use in production — or to nothing at all.</p>
+          <punch-matrix
+            columns="LOGS ARGUMENTS,LOGS DURATION,SETS LEVEL,CUSTOM TRANSPORT"
+            rows={[
+              { name: "@log", punches: "LOGS ARGUMENTS,LOGS DURATION", note: "The default" },
+              { name: "@log(level)", punches: "LOGS ARGUMENTS,LOGS DURATION,SETS LEVEL", note: "Same, at a chosen level" },
+              { name: "@log(options)", punches: "LOGS ARGUMENTS,LOGS DURATION,SETS LEVEL,CUSTOM TRANSPORT", note: "Full control, including where it goes" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="Quick Start">

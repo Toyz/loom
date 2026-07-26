@@ -12,6 +12,13 @@ export default class PageStoreReactive extends LoomElement {
         <section>
           <p>A <span class="ic">Reactive</span> is one value plus the list of things watching it. Assigning notifies the watchers; reading inside a render records a dependency, which is how Loom knows that a given change cannot possibly affect a given component and skips its render entirely.</p>
           <p>Change detection is identity-based, with one deliberate exception: <span class="ic">NaN</span>. Under a plain <span class="ic">!==</span> comparison a field holding <span class="ic">NaN</span> looks different from itself on every assignment and re-renders forever, so the check treats it as unchanged.</p>
+          <punch-matrix
+            columns="ONE VALUE,CRUD HELPERS,PERSISTS"
+            rows={[
+              { name: `Reactive<T>`, punches: "ONE VALUE", note: "Get, set, subscribe" },
+              { name: `CollectionStore<T>`, punches: "CRUD HELPERS,PERSISTS", note: "A keyed collection with an adapter behind it" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="Reactive&lt;T&gt;">

@@ -13,6 +13,14 @@ export default class PageRouterNavigation extends LoomElement {
         <section>
           <p>An SPA link has to be a real <span class="ic">&lt;a href&gt;</span> — so it can be middle-clicked, copied, opened in a new tab, and read by a crawler — while still not reloading the page on a plain left click. A <span class="ic">div</span> with an onClick fails every one of those.</p>
           <p><span class="ic">&lt;loom-link&gt;</span> renders a real anchor with a real href and intercepts only the clicks it should: plain left clicks, with no modifier held. Anything else is left to the browser, which is what the user was asking for.</p>
+          <punch-matrix
+            columns="REAL ANCHOR,NEW HISTORY ENTRY,REPLACES CURRENT,OPENS IN A NEW TAB"
+            rows={[
+              { name: `<loom-link to>`, punches: "REAL ANCHOR,NEW HISTORY ENTRY,OPENS IN A NEW TAB", note: "Middle-click and copy-link both work" },
+              { name: "router.go(path)", punches: "NEW HISTORY ENTRY", note: "Programmatic, back button returns" },
+              { name: "router.replace()", punches: "REPLACES CURRENT", note: "Back skips the page you left" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="&lt;loom-link&gt;">

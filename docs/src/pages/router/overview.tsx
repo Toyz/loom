@@ -13,6 +13,13 @@ export default class PageRouterOverview extends LoomElement {
         <section>
           <p>Routing is mostly one question asked repeatedly: given this URL, which component, and is this person allowed to see it. Everything else — params, query, transitions, code splitting — hangs off that.</p>
           <p>Loom answers it with decorators on the component itself, so a route lives next to the thing it renders rather than in a table somewhere else that has to be kept in sync. It runs in hash or history mode, and the choice affects your server config rather than your code.</p>
+          <punch-matrix
+            columns="CLEAN URLS,NEEDS SERVER CONFIG,WORKS FROM A FILE"
+            rows={[
+              { name: "hash mode", punches: "WORKS FROM A FILE", note: "Everything after # is never sent to the server" },
+              { name: "history mode", punches: "CLEAN URLS,NEEDS SERVER CONFIG", note: "Every route must fall back to index.html" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <doc-section heading="Setup">
