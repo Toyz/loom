@@ -77,7 +77,7 @@ class LoomOutlet extends LoomElement {
       // Force update — route data changed but reactive setters may not
       // have fired (e.g. unbound params set via setAttribute, or
       // components that rely on @onRouteEnter to read params).
-      (this._currentEl as unknown as Schedulable).scheduleUpdate?.();
+      (this._currentEl as unknown as Schedulable).scheduleUpdate?.(true);
       return;
     }
 

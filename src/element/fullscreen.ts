@@ -47,7 +47,7 @@ export function fullscreen(opts?: FullscreenOptions) {
         const handler = () => {
           const isFs = document.fullscreenElement === el;
           this[storageKey] = isFs;
-          this.scheduleUpdate?.();
+          this.scheduleUpdate?.(true);
         };
 
         document.addEventListener("fullscreenchange", handler);

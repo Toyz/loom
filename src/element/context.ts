@@ -148,7 +148,7 @@ export function provide<T>(key: (new () => T) | string | symbol) {
                 }
 
                 // Schedule re-render
-                (self as unknown as Schedulable).scheduleUpdate?.();
+                (self as unknown as Schedulable).scheduleUpdate?.(true);
             },
         };
     };
@@ -187,7 +187,7 @@ export function consume<T>(key: (new () => T) | string | symbol) {
                     const wasConnected = host[unsub_.key] !== undefined;
                     host[storage.key] = value;
                     host[unsub_.key] = unsubscribe;
-                    host.scheduleUpdate?.();
+                    host.scheduleUpdate?.(true);
 
                     // Provider disconnected — try to find a higher one
                     if (value === undefined && wasConnected) {

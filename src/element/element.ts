@@ -7,9 +7,16 @@ import { app } from "../app";
 import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, releaseTrace, type TraceDeps } from "../trace";
 import { hasRegisteredAttributes, observeAttributes } from "./attribute";
 
-/** Structural type for objects that support Loom's render scheduling */
+/**
+ * Structural type for objects that support Loom's render scheduling.
+ *
+ * `force` bypasses the trace-based skip checks. Pass it when the state that
+ * changed is NOT backed by a `Reactive` — context values, media queries, slot
+ * assignments — because the dirty-dependency check has no way to see those and
+ * would drop the render.
+ */
 export interface Schedulable {
-  scheduleUpdate?: () => void;
+  scheduleUpdate?: (force?: boolean) => void;
 }
 
 export abstract class LoomElement extends HTMLElement {
@@ -20,6 +27,12 @@ export abstract class LoomElement extends HTMLElement {
   private cleanups: (() => void)[] = [];
   /** @internal — dependency tracking for traced template projection */
   __traceDeps: TraceDeps | null = null;
+  /**
+   * @internal — callbacks run after every render pass (fast-patch, first
+   * render and full render alike). Used by @portal to mount teleported output
+   * without monkey-patching _flushUpdate. Undefined until something registers.
+   */
+  __afterUpdate?: Array<() => void>;
 
   constructor() {
     super();
@@ -128,9 +141,18 @@ export abstract class LoomElement extends HTMLElement {
   }
 
   disconnectedCallback(): void {
-    // Run all track() cleanups (includes decorator-registered cleanups)
-    for (let i = 0; i < this.cleanups.length; i++) this.cleanups[i]();
-    this.cleanups.length = 0;
+    // Swap the list out FIRST: a throwing cleanup must not skip the rest, and
+    // must not leave them queued to run a second time on the next disconnect.
+    // A cleanup that calls track() lands in the fresh array, not this one.
+    const cleanups = this.cleanups;
+    this.cleanups = [];
+    for (let i = 0; i < cleanups.length; i++) {
+      try {
+        cleanups[i]();
+      } catch (e) {
+        console.error("[Loom] cleanup threw during disconnect", e);
+      }
+    }
     // Release trace deps back to pool
     if (this.__traceDeps) {
       releaseTrace(this.__traceDeps);
@@ -164,17 +186,26 @@ export abstract class LoomElement extends HTMLElement {
 
   private _updateScheduled = false;
   private _hasUpdated = false;
+  private _forceUpdate = false;
 
   private _flushUpdate = (): void => {
     this._updateScheduled = false;
+    // Consume the force flag before shouldUpdate() so an explicit
+    // `shouldUpdate() === false` still wins — that is the documented opt-out.
+    const forced = this._forceUpdate;
+    this._forceUpdate = false;
     // Skip shouldUpdate() call if not overridden (avoids virtual method dispatch)
     if (this.shouldUpdate !== LoomElement.prototype.shouldUpdate && !this.shouldUpdate()) return;
 
-    // Tier 1 — SKIP: no traced dependency changed
-    if (this.__traceDeps && !hasDirtyDeps(this.__traceDeps)) return;
+    // Tier 1 — SKIP: no traced dependency changed.
+    // hasDirtyDeps only sees Reactive versions, and returns false for an empty
+    // version map, so a component driven purely by non-Reactive state (@consume,
+    // @media, @fullscreen, @slot, @suspend) would never render again after its
+    // first paint. Those callers pass force.
+    if (!forced && this.__traceDeps && !hasDirtyDeps(this.__traceDeps)) return;
 
     // Tier 2 — FAST PATCH: all dirty deps have bindings
-    if (this.__traceDeps && canFastPatch(this.__traceDeps)) {
+    if (!forced && this.__traceDeps && canFastPatch(this.__traceDeps)) {
       const dirtyKeys = COMPUTED_DIRTY.from(this) as symbol[] | undefined;
       if (dirtyKeys) {
         for (let i = 0; i < dirtyKeys.length; i++) {
@@ -183,6 +214,7 @@ export abstract class LoomElement extends HTMLElement {
       }
       applyBindings(this.__traceDeps);
       refreshSnapshots(this.__traceDeps);
+      this._runAfterUpdate();
       return;
     }
 
@@ -195,8 +227,15 @@ export abstract class LoomElement extends HTMLElement {
     this._fullRender();
   };
 
-  /** Called by @reactive setters — batches via microtask */
-  scheduleUpdate(): void {
+  /**
+   * Called by @reactive setters — batches via microtask.
+   *
+   * @param force Bypass the trace-based skip/fast-patch checks. Required when
+   *   the changed state is not backed by a `Reactive`, since the dirty-check
+   *   cannot observe it. `shouldUpdate()` still applies.
+   */
+  scheduleUpdate(force = false): void {
+    if (force) this._forceUpdate = true;
     if (this._updateScheduled) return;
     this._updateScheduled = true;
     queueMicrotask(this._flushUpdate);
@@ -207,9 +246,10 @@ export abstract class LoomElement extends HTMLElement {
    * Shadow root is empty so we appendChild directly instead of diffing.
    */
   private _firstRender(): void {
-    // Skip shouldUpdate() call if not overridden (avoids virtual method dispatch)
-    if (this.shouldUpdate !== LoomElement.prototype.shouldUpdate && !this.shouldUpdate()) return;
-
+    // No shouldUpdate() check here: _firstRender is only reachable from
+    // _flushUpdate, which already called it. Calling it twice per first render
+    // broke side-effecting overrides — LoomVirtual.shouldUpdate() calls
+    // invalidate(), so every measurement pass was thrown away twice.
     startTrace();
     const result = this.update();
     // Capture trace BEFORE appendChild — appendChild triggers child connectedCallback
@@ -245,6 +285,7 @@ export abstract class LoomElement extends HTMLElement {
         if (typeof cleanup === "function") this.cleanups.push(cleanup);
       }
     }
+    this._runAfterUpdate();
   }
 
   /**
@@ -283,6 +324,21 @@ export abstract class LoomElement extends HTMLElement {
           const cleanup = fuhooks[i](this);
           if (typeof cleanup === "function") this.cleanups.push(cleanup);
         }
+      }
+    }
+
+    this._runAfterUpdate();
+  }
+
+  /** @internal — run post-render callbacks registered in __afterUpdate. */
+  private _runAfterUpdate(): void {
+    const hooks = this.__afterUpdate;
+    if (!hooks) return;
+    for (let i = 0; i < hooks.length; i++) {
+      try {
+        hooks[i]();
+      } catch (e) {
+        console.error("[Loom] afterUpdate hook threw", e);
       }
     }
   }

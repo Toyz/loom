@@ -40,7 +40,7 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
 
           const updateSlotted = () => {
             host[storage.key] = slotEl.assignedElements({ flatten: true });
-            host.scheduleUpdate?.();
+            host.scheduleUpdate?.(true);
           };
 
           updateSlotted();

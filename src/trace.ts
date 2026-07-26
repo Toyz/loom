@@ -21,12 +21,18 @@ import type { Reactive } from "./store/reactive";
 
 /** A single Reactive→DOM binding created during traced update() */
 export interface Binding {
-  /** The set of reactives that trigger this binding */
+  /**
+   * The set of reactives that trigger this binding. Mutable: a conditional
+   * closure reads different reactives depending on the branch it takes, so
+   * applyBindings re-traces the patcher and swaps this set.
+   */
   reactives: Set<Reactive<any>>;
   /** The DOM node to patch */
   target: Node | Element;
   /** The closure that updates the DOM (re-evaluates the binding) */
   patcher: () => void;
+  /** @internal — applyBindings dedup marker (generation counter) */
+  __ran?: number;
 }
 
 /** Dependency set: the Reactives that were read during a single update() call */
@@ -67,6 +73,18 @@ const _bindingsPool: Map<Reactive<any>, Binding[]>[] = [];
 
 function acquireSet(): Set<Reactive<any>> {
   return _depsPool.pop() ?? new Set();
+}
+
+/**
+ * Return a dependency Set to the pool.
+ *
+ * applyBindings acquires one per re-traced patcher; without this the pool
+ * would drain on every fast-patch and the zero-alloc design would quietly
+ * stop working.
+ */
+export function releaseSet(s: Set<Reactive<any>>): void {
+  s.clear();
+  _depsPool.push(s);
 }
 function acquireVersions(): Map<Reactive<any>, number> {
   return _versionsPool.pop() ?? new Map();
@@ -207,37 +225,99 @@ export function canFastPatch(trace: TraceDeps | null): boolean {
 
 /**
  * Apply all dirty bindings.
- * Only patches bindings for deps that actually changed.
- * Uses a Set to deduplicate patchers (one binding might depend on multiple changed reactives).
+ *
+ * Only patches bindings for deps that actually changed, and re-traces each
+ * patcher so a conditional closure picks up reactives it did not read on the
+ * previous pass. Without the re-trace, `{() => this.flag ? this.a : this.b}`
+ * captures {flag, a} at first render and never learns about `b`; flipping the
+ * flag then renders b's value once and the node goes permanently stale.
+ *
+ * The unchanged-deps case is the overwhelmingly common one (an unconditional
+ * `{() => this.count}` never changes its dep set), so it must stay
+ * allocation-free: the captured Set goes straight back to the pool.
  */
-/** Pooled buffer for applyBindings — avoids array allocation per call */
-const _toRunBuf: Array<() => void> = [];
-
 export function applyBindings(trace: TraceDeps): void {
   // Monotonic generation counter for per-call dedup (avoids Set allocation)
   const gen = ++_applyGen;
-  _toRunBuf.length = 0;
+  // Local, not a shared module buffer: patchers run arbitrary user closures,
+  // which can re-enter applyBindings.
+  const toRun: Binding[] = [];
 
   for (const [r, ver] of trace.versions) {
     if (r.peekVersion() !== ver) {
       const bindings = trace.bindings.get(r);
       if (bindings) {
         for (let i = 0; i < bindings.length; i++) {
-          const p = bindings[i].patcher as (() => void) & { __ran?: number };
-          if (p.__ran !== gen) {
-            p.__ran = gen;
-            _toRunBuf.push(p);
+          const b = bindings[i];
+          if (b.__ran !== gen) {
+            b.__ran = gen;
+            toRun.push(b);
           }
         }
       }
     }
   }
 
-  // Execute unique patchers
-  for (let i = 0; i < _toRunBuf.length; i++) {
-    _toRunBuf[i]();
+  // Execute unique patchers under a sub-trace, then rebind if their deps moved
+  for (let i = 0; i < toRun.length; i++) {
+    const b = toRun[i];
+    startSubTrace();
+    try {
+      b.patcher();
+    } finally {
+      rebind(trace, b, endSubTrace());
+    }
   }
-  _toRunBuf.length = 0;
+}
+
+/** Fast path: same size and same members → nothing to do, recycle the Set. */
+function sameDeps(a: Set<Reactive<any>>, b: Set<Reactive<any>>): boolean {
+  if (a.size !== b.size) return false;
+  for (const r of a) if (!b.has(r)) return false;
+  return true;
+}
+
+/**
+ * Swap a binding's dependency set, keeping the trace's reverse index
+ * (`bindings`), dep set and version snapshots consistent.
+ */
+function rebind(trace: TraceDeps, b: Binding, next: Set<Reactive<any>>): void {
+  if (sameDeps(next, b.reactives)) {
+    releaseSet(next);
+    return;
+  }
+
+  // Detach from reactives it no longer reads
+  for (const r of b.reactives) {
+    if (next.has(r)) continue;
+    const list = trace.bindings.get(r);
+    if (!list) continue;
+    const idx = list.indexOf(b);
+    if (idx >= 0) list.splice(idx, 1);
+    // Must DELETE an emptied entry, not leave it present: canFastPatch only
+    // tests `bindings.has(r)`, so an empty-but-present list would claim the
+    // dep is patchable, patch nothing, refresh snapshots, and silently swallow
+    // the morph that was actually needed.
+    if (list.length === 0) trace.bindings.delete(r);
+  }
+
+  // Attach to newly-read reactives
+  for (const r of next) {
+    if (b.reactives.has(r)) continue;
+    let list = trace.bindings.get(r);
+    if (!list) {
+      list = [];
+      trace.bindings.set(r, list);
+    }
+    list.push(b);
+    // hasDirtyDeps/canFastPatch iterate `versions`; refreshSnapshots iterates
+    // `deps`. A new dep must be in both or it is invisible to one of them.
+    trace.deps.add(r);
+    trace.versions.set(r, r.peekVersion());
+  }
+
+  releaseSet(b.reactives);
+  b.reactives = next;
 }
 
 /**

@@ -107,18 +107,18 @@ export function suspend() {
     return function (this: any, ...args: any[]) {
       this.loading = true;
       this.error = null;
-      this.scheduleUpdate?.();
+      this.scheduleUpdate?.(true);
       return Promise.resolve()
         .then(() => method.call(this, ...args))
         .then((result: any) => {
           this.loading = false;
-          this.scheduleUpdate?.();
+          this.scheduleUpdate?.(true);
           return result;
         })
         .catch((err: Error) => {
           this.loading = false;
           this.error = err;
-          this.scheduleUpdate?.();
+          this.scheduleUpdate?.(true);
         });
     };
   };

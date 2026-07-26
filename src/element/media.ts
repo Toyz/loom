@@ -41,12 +41,12 @@ export function media(query: string) {
 
         // Set initial value from current match state
         this[storageKey] = mql.matches;
-        this.scheduleUpdate?.();
+        this.scheduleUpdate?.(true);
 
         // Listen for changes
         const handler = (e: MediaQueryListEvent) => {
           this[storageKey] = e.matches;
-          this.scheduleUpdate?.();
+          this.scheduleUpdate?.(true);
         };
 
         mql.addEventListener("change", handler);
