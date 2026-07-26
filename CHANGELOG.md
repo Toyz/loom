@@ -58,6 +58,23 @@ existing suite could not see.
   binding are synchronous, so `app.get()` works the instant the class is
   registered; a `LoomLifecycle.start()` is awaited in the background.
   `app.start()` itself is still one-shot.
+- **`LoomEvent<T>` payload events.** An event that is only a bag of data no
+  longer needs a constructor written for it: declare the payload as a type
+  parameter and it arrives as `.data`. `T` defaults to `void`, so every
+  existing subclass is unaffected — the classic form is still right when an
+  event has behaviour rather than just fields.
+- **Derived dedup keys.** With a payload declared, `static dedupe = true`
+  builds the frame-scoped dedup key from every field, and a list of names
+  builds it from only those — for payloads carrying an incidental timestamp
+  or request id that should not make two events distinct. Opt-in on purpose:
+  deduping by default would silently drop the second of two identical
+  commands. The key is namespaced by a per-class token rather than the class
+  name, because the bus keeps one dedup set across all event types and a
+  minifier rewrites names — the same hazard that makes `keepNames` matter.
+  Benchmarked: `bus.emit` for an event with no dedup is unchanged (7.36M/s
+  against a 7.22M/s baseline), because the resolved spec is cached per class
+  rather than read off the constructor on every emit. A first attempt did
+  read it every time and cost 12%.
 - **`ApiStale` on the bus.** `.stale` and `.fetching` only tell the component
   that owns the accessor; anything else that wants to react — a sync
   indicator, a cache layer, a second view — has no reference to it. The

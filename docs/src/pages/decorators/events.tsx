@@ -321,8 +321,67 @@ class Page extends LoomElement {
   }
 }`}></code-block>
         </doc-section>
+        <doc-section heading="Payload events">
+          <p>
+            An event that is only a bag of data does not need a constructor written for it.
+            Declare the payload as a type parameter and the constructor comes with it, reachable
+            as <span class="ic">.data</span>.
+          </p>
+          <code-block lang="ts" code={PAYLOAD_EVENT}></code-block>
+          <p class="note">
+            The classic form — your own constructor and your own fields — is unchanged and still
+            the right choice when the event has behaviour or computed members. The type
+            parameter defaults to <span class="ic">void</span>, so nothing that already extends
+            <span class="ic"> LoomEvent</span> is affected.
+          </p>
+
+          <h3>Deriving the dedup key</h3>
+          <p>
+            With a payload declared, frame-scoped dedup can come from it rather than from a
+            hand-written template string. <span class="ic">static dedupe = true</span> uses every
+            field; a list of names uses only those, which is what you want when the payload
+            carries something incidental like a timestamp or request id that should not make two
+            events distinct.
+          </p>
+          <code-block lang="ts" code={DEDUPE_EVENT}></code-block>
+          <p class="caution">
+            It is opt-in on purpose. Deduping every event by default would silently drop the
+            second of two identical commands — "increment" twice in one flush is two
+            increments, not one.
+          </p>
+          <p class="note">
+            The derived key is namespaced by a per-class token rather than the class name,
+            because the bus keeps one dedup set for every event type and a minifier rewrites
+            class names. That is the same hazard that makes <span class="ic">keepNames</span>
+            matter at build time.
+          </p>
+        </doc-section>
+
         <doc-nav></doc-nav>
       </div>
     );
   }
 }
+
+const PAYLOAD_EVENT = `import { LoomEvent } from "@toyz/loom";
+
+// No constructor, no field declarations.
+class ThemeChanged extends LoomEvent<{ theme: string }> {}
+
+bus.emit(new ThemeChanged({ theme: "dark" }));
+
+@on(ThemeChanged)
+onTheme(e: ThemeChanged) {
+  document.documentElement.dataset.theme = e.data.theme;
+}`;
+
+const DEDUPE_EVENT = `// Every field takes part
+class Sync extends LoomEvent<{ id: string }> {
+  static override dedupe = true;
+}
+
+// Only docId does: two saves of the same doc in one flush collapse,
+// even though \`at\` differs
+class Saved extends LoomEvent<{ docId: string; at: number }> {
+  static override dedupe = ["docId"] as const;
+}`;
