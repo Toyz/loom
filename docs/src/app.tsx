@@ -152,8 +152,8 @@ const styles = css`
     right: 0;
     z-index: 150;
     height: 56px;
-    background: var(--bg-surface, #121218);
-    border-bottom: 1px solid var(--border-subtle, #1e1e2a);
+    background: var(--bg-surface, var(--ground-sunk));
+    border-bottom: 1px solid var(--border-subtle, var(--warp));
     align-items: center;
     padding: 0 16px;
     gap: 12px;
@@ -162,7 +162,7 @@ const styles = css`
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent, #818cf8), var(--rose, #f472b6));
+    background: linear-gradient(135deg, var(--accent, var(--thread)), var(--rose, var(--thread)));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -173,7 +173,7 @@ const styles = css`
     width: 16px;
     height: 16px;
     fill: none;
-    stroke: #fff;
+    stroke: var(--text-primary);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -182,7 +182,7 @@ const styles = css`
     font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: var(--text-primary, #e8e8f0);
+    color: var(--text-primary, var(--text-primary));
     margin: 0;
     flex: 1;
   }
@@ -193,7 +193,7 @@ const styles = css`
     border: none;
     border-radius: 8px;
     background: transparent;
-    color: var(--text-secondary, #9898ad);
+    color: var(--text-secondary, var(--text-secondary));
     cursor: pointer;
     align-items: center;
     justify-content: center;
@@ -202,8 +202,8 @@ const styles = css`
     flex-shrink: 0;
   }
   .hamburger:hover {
-    background: var(--bg-hover, #22222e);
-    color: var(--text-primary, #e8e8f0);
+    background: var(--bg-hover, var(--ground-hover));
+    color: var(--text-primary, var(--text-primary));
   }
   .hamburger svg {
     width: 20px;
@@ -223,7 +223,7 @@ const styles = css`
     border: none;
     border-radius: 8px;
     background: transparent;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     cursor: pointer;
     align-items: center;
     justify-content: center;
@@ -232,8 +232,8 @@ const styles = css`
     transition: background 0.15s ease, color 0.15s ease;
   }
   .sidebar-close:hover {
-    background: var(--bg-hover, #22222e);
-    color: var(--text-primary, #e8e8f0);
+    background: var(--bg-hover, var(--ground-hover));
+    color: var(--text-primary, var(--text-primary));
   }
   .sidebar-close svg {
     width: 18px;
@@ -271,8 +271,8 @@ const styles = css`
     left: 0;
     bottom: 0;
     width: 280px;
-    background: var(--bg-surface, #121218);
-    border-right: 1px solid var(--border-subtle, #1e1e2a);
+    background: var(--bg-surface, var(--ground-sunk));
+    border-right: 1px solid var(--border-subtle, var(--warp));
     display: flex;
     flex-direction: column;
     overflow: hidden;

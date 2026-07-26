@@ -15,8 +15,7 @@ export default class PageTesting extends LoomElement {
         <section>
           <h2>Setup</h2>
           <p>
-            Loom ships a test harness at{" "}
-            <span class="ic">@toyz/loom/testing</span>. It works with Vitest
+            Loom ships a test harness at <span class="ic">@toyz/loom/testing</span>. It works with Vitest
             and happy-dom to mount, render, interact with, and tear down
             components in isolation.
           </p>
@@ -28,8 +27,7 @@ import { afterEach } from "vitest";
 afterEach(() => cleanup());`}
           ></code-block>
           <p>
-            Call <span class="ic">cleanup()</span> in{" "}
-            <span class="ic">afterEach</span> to remove all mounted components
+            Call <span class="ic">cleanup()</span> in <span class="ic">afterEach</span> to remove all mounted components
             and prevent DOM leakage between tests.
           </p>
         </section>
@@ -38,9 +36,7 @@ afterEach(() => cleanup());`}
           <h2>fixture&lt;T&gt;(tag, attrs?)</h2>
           <p>
             Mount a registered component by tag name. Returns the element after
-            its first render completes (microtask-flushed). The generic{" "}
-            <span class="ic">T</span> types the returned element — no{" "}
-            <span class="ic">as any</span> needed.
+            its first render completes (microtask-flushed). The generic <span class="ic">T</span> types the returned element — no <span class="ic">as any</span> needed.
           </p>
           <code-block
             lang="ts"
@@ -59,11 +55,9 @@ expect(el.shadow.textContent).toContain("5");`}
 ): Promise<Rendered<T>>`}
           ></code-block>
           <p>
-            <span class="ic">Rendered&lt;T&gt;</span> is{" "}
-            <span class="ic">
+            <span class="ic">Rendered&lt;T&gt;</span> is <span class="ic">
               T &amp; {"{"} shadow: ShadowRoot {"}"}
-            </span>{" "}
-            — guarantees <span class="ic">.shadow</span> access for DOM
+            </span> — guarantees <span class="ic">.shadow</span> access for DOM
             assertions.
           </p>
         </section>
@@ -89,9 +83,7 @@ expect(el.shadow.querySelector("slot[name=footer]")).toBeTruthy();`}
         <section>
           <h2>cleanup()</h2>
           <p>
-            Removes all containers created by <span class="ic">fixture()</span>{" "}
-            / <span class="ic">fixtureHTML()</span>. Triggers{" "}
-            <span class="ic">disconnectedCallback</span> on every mounted
+            Removes all containers created by <span class="ic">fixture()</span> / <span class="ic">fixtureHTML()</span>. Triggers <span class="ic">disconnectedCallback</span> on every mounted
             element, running all <span class="ic">track()</span> cleanups.
           </p>
           <code-block
@@ -107,8 +99,7 @@ cleanup(); // all fixtures removed, disconnectedCallback fired`}
           <h2>nextRender(el)</h2>
           <p>
             Wait for the next scheduled update to complete. Returns a promise
-            that resolves after the component's{" "}
-            <span class="ic">scheduleUpdate()</span> microtask fires.
+            that resolves after the component's <span class="ic">scheduleUpdate()</span> microtask fires.
           </p>
           <code-block
             lang="ts"

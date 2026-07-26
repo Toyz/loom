@@ -43,29 +43,29 @@ const notifStyles = css`
   /* ── Note (indigo / accent) ── */
   :host([type="note"]) {
     background: var(--accent-glow, rgba(129, 140, 248, 0.12));
-    border: 1px solid var(--accent-dim, #6366b0);
-    color: var(--text-secondary, #9898ad);
+    border: 1px solid var(--accent-dim, var(--thread-dim));
+    color: var(--text-secondary, var(--text-secondary));
   }
 
   /* ── Tip (emerald) ── */
   :host([type="tip"]) {
     background: rgba(52, 211, 153, 0.12);
     border: 1px solid rgba(52, 211, 153, 0.35);
-    color: var(--text-secondary, #9898ad);
+    color: var(--text-secondary, var(--text-secondary));
   }
 
   /* ── Warning (amber) ── */
   :host([type="warning"]) {
     background: rgba(251, 191, 36, 0.1);
     border: 1px solid rgba(251, 191, 36, 0.3);
-    color: var(--text-secondary, #9898ad);
+    color: var(--text-secondary, var(--text-secondary));
   }
 
   /* ── Caution (rose) ── */
   :host([type="caution"]) {
     background: rgba(244, 114, 182, 0.1);
     border: 1px solid rgba(244, 114, 182, 0.3);
-    color: var(--text-secondary, #9898ad);
+    color: var(--text-secondary, var(--text-secondary));
   }
 
   /* Slotted inline elements */
@@ -76,7 +76,7 @@ const notifStyles = css`
     padding: 0.15em 0.4em;
     border-radius: 4px;
     background: rgba(129, 140, 248, 0.1);
-    color: var(--accent, #818cf8);
+    color: var(--accent, var(--thread));
   }
 
   ::slotted(code) {
@@ -86,7 +86,7 @@ const notifStyles = css`
     padding: 0.15em 0.4em;
     border-radius: 4px;
     background: rgba(129, 140, 248, 0.1);
-    color: var(--accent, #818cf8);
+    color: var(--accent, var(--thread));
   }
 
   ::slotted(loom-link) {
@@ -94,7 +94,7 @@ const notifStyles = css`
   }
 
   ::slotted(strong) {
-    color: var(--accent, #818cf8);
+    color: var(--accent, var(--thread));
   }
 
   ::slotted(loom-icon) {

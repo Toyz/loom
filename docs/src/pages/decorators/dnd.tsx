@@ -43,8 +43,7 @@ export default class PageDecoratorDnd extends LoomElement {
                     <div class="feature-entry">
                         <div class="dec-sig">@dropzone(options?)</div>
                         <div class="dec-desc">
-                            Method decorator. Wires <code>dragover</code>/<code>dragleave</code>/<code>drop</code> with proper
-                            <code>preventDefault()</code>. The method receives the transferred data string and the <code>DragEvent</code>.
+                            Method decorator. Wires <code>dragover</code>/<code>dragleave</code>/<code>drop</code> with proper <code>preventDefault()</code>. The method receives the transferred data string and the <code>DragEvent</code>.
                         </div>
                     </div>
                     <div class="feature-entry">

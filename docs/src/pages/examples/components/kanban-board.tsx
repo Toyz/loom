@@ -127,7 +127,7 @@ const sheet = css`
   .card:hover .del { opacity: 1; }
   .del:hover {
     background: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
+    color: var(--thread);
   }
 
   /* ── Add card ── */
@@ -138,7 +138,7 @@ const sheet = css`
   .add-row input {
     flex: 1; padding: 0.45rem 0.65rem;
     border: 1px solid var(--border, #333); border-radius: 6px;
-    background: var(--surface, #16161e); color: var(--text, #e0e0e0);
+    background: var(--surface, #16161e); color: var(--text, var(--text-primary));
     font-size: 0.8rem; outline: none;
     transition: border-color 0.2s;
   }
@@ -152,7 +152,7 @@ const sheet = css`
     display: inline-flex; align-items: center; justify-content: center;
     width: 30px; height: 30px;
     border: none; border-radius: 6px;
-    background: var(--accent, #a78bfa); color: #fff;
+    background: var(--accent, #a78bfa); color: var(--text-primary);
     cursor: pointer; transition: opacity 0.15s;
   }
   .add-btn:hover { opacity: 0.85; }
@@ -182,7 +182,7 @@ const sheet = css`
     transition: color 0.15s, background 0.15s;
   }
   .reset-btn:hover {
-    color: #ef4444; background: rgba(239, 68, 68, 0.08);
+    color: var(--thread); background: rgba(239, 68, 68, 0.08);
   }
 `;
 

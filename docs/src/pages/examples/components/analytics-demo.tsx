@@ -41,7 +41,7 @@ const demoStyles = css`
   .panel h3 {
     margin: 0 0 1rem;
     font-size: 0.95rem;
-    color: #34d399;
+    color: var(--ok);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -92,12 +92,12 @@ const demoStyles = css`
   .action-label {
     font-weight: 600;
     font-size: 0.85rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
   }
 
   .action-event {
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-muted);
     font-family: "JetBrains Mono", "Fira Code", monospace;
   }
 
@@ -137,7 +137,7 @@ const demoStyles = css`
 
   button.danger {
     background: rgba(239,68,68,0.1);
-    color: #fca5a5;
+    color: var(--thread);
     border-color: rgba(239,68,68,0.2);
   }
 
@@ -161,7 +161,7 @@ const demoStyles = css`
 
   .theme-badge.light {
     background: rgba(251,191,36,0.15);
-    color: #fbbf24;
+    color: var(--warn);
   }
 
   .log-panel {
@@ -195,13 +195,13 @@ const demoStyles = css`
   }
 
   .event-name {
-    color: #34d399;
+    color: var(--ok);
     font-weight: 600;
     white-space: nowrap;
   }
 
   .event-meta {
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 0.7rem;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -237,7 +237,7 @@ const demoStyles = css`
     align-items: center;
     gap: 0.35rem;
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-muted);
   }
 
   .stat-dot {
@@ -247,9 +247,9 @@ const demoStyles = css`
     display: inline-block;
   }
 
-  .stat-dot.green { background: #34d399; }
+  .stat-dot.green { background: var(--ok); }
   .stat-dot.blue { background: #6366f1; }
-  .stat-dot.orange { background: #fb923c; }
+  .stat-dot.orange { background: var(--warn); }
 
   .btn-row {
     display: flex;

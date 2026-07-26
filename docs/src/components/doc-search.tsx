@@ -23,7 +23,7 @@ const style = css`
   }
   :host(.open) {
     display: flex;
-    color: var(--text-primary, #e8e8f0);
+    color: var(--text-primary, var(--text-primary));
   }
 
   .backdrop {
@@ -41,7 +41,7 @@ const style = css`
     width: min(560px, calc(100vw - 32px));
     max-height: min(480px, 70vh);
     background: var(--bg-surface, #16161e);
-    border: 1px solid var(--border-subtle, #2a2a3a);
+    border: 1px solid var(--border-subtle, var(--warp-lit));
     border-radius: 16px;
     box-shadow:
       0 25px 60px rgba(0, 0, 0, 0.5),
@@ -67,30 +67,30 @@ const style = css`
     align-items: center;
     gap: 10px;
     padding: 14px 18px;
-    border-bottom: 1px solid var(--border-subtle, #1e1e2a);
+    border-bottom: 1px solid var(--border-subtle, var(--warp));
   }
   .search-icon {
     flex-shrink: 0;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
   }
   .search-input {
     flex: 1;
     background: none;
     border: none;
     outline: none;
-    color: var(--text-primary, #e8e8f0);
+    color: var(--text-primary, var(--text-primary));
     font-size: 0.95rem;
     font-family: inherit;
-    caret-color: var(--accent, #818cf8);
+    caret-color: var(--accent, var(--thread));
   }
   .search-input::placeholder {
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
   }
   .esc-hint {
     font-size: 0.625rem;
     font-family: var(--font-mono, "JetBrains Mono", monospace);
-    color: var(--text-muted, #5e5e74);
-    border: 1px solid var(--border-subtle, #1e1e2a);
+    color: var(--text-muted, var(--text-muted));
+    border: 1px solid var(--border-subtle, var(--warp));
     padding: 2px 6px;
     border-radius: 4px;
     white-space: nowrap;
@@ -109,7 +109,7 @@ const style = css`
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     padding: 8px 12px 4px;
     opacity: 0.7;
   }
@@ -124,7 +124,7 @@ const style = css`
   }
   .result-item:hover,
   .result-item.active {
-    background: var(--bg-hover, #22222e);
+    background: var(--bg-hover, var(--ground-hover));
   }
   .result-item.active {
     background: rgba(129, 140, 248, 0.12);
@@ -142,12 +142,12 @@ const style = css`
   }
   .result-title {
     font-size: 0.85rem;
-    color: var(--text-primary, #e8e8f0);
+    color: var(--text-primary, var(--text-primary));
     font-weight: 500;
   }
   .result-summary {
     font-size: 0.7rem;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     line-height: 1.4;
     margin-top: 1px;
     white-space: nowrap;
@@ -157,7 +157,7 @@ const style = css`
   .result-section {
     margin-left: auto;
     font-size: 0.7rem;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     white-space: nowrap;
     flex-shrink: 0;
     margin-top: 2px;
@@ -166,7 +166,7 @@ const style = css`
   .no-results {
     text-align: center;
     padding: 32px 16px;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     font-size: 0.85rem;
   }
 
@@ -176,9 +176,9 @@ const style = css`
     align-items: center;
     gap: 16px;
     padding: 10px 18px;
-    border-top: 1px solid var(--border-subtle, #1e1e2a);
+    border-top: 1px solid var(--border-subtle, var(--warp));
     font-size: 0.625rem;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
   }
   .footer kbd {
     display: inline-flex;
@@ -187,7 +187,7 @@ const style = css`
     min-width: 18px;
     height: 18px;
     padding: 0 4px;
-    border: 1px solid var(--border-subtle, #1e1e2a);
+    border: 1px solid var(--border-subtle, var(--warp));
     border-radius: 4px;
     font-family: var(--font-mono, "JetBrains Mono", monospace);
     font-size: 0.5625rem;

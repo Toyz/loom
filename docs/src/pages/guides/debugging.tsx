@@ -117,8 +117,7 @@ const tracked = ctor[SYMBOL_REGISTRY.get("analytics:track")];
           <div class="feature-entry">
             <div class="dec-sig">createSymbol(name): symbol</div>
             <div class="dec-desc">
-              Create a symbol that is automatically registered in the global{" "}
-              <span class="ic">SYMBOL_REGISTRY</span>. Use this in your own
+              Create a symbol that is automatically registered in the global <span class="ic">SYMBOL_REGISTRY</span>. Use this in your own
               decorators or plugins so <span class="ic">inspect()</span> picks
               up your metadata automatically:
             </div>
@@ -153,9 +152,7 @@ export function cache(ttl: number) {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              All first-party Loom packages register their decorator metadata via{" "}
-              <span class="ic">createSymbol()</span>. This means{" "}
-              <span class="ic">inspect()</span> shows everything:
+              All first-party Loom packages register their decorator metadata via <span class="ic">createSymbol()</span>. This means <span class="ic">inspect()</span> shows everything:
             </div>
           </div>
           <table class="api-table">

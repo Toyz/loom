@@ -37,7 +37,7 @@ const bubbleSheet = css`
     position: fixed;
     transform: translateX(-50%);
     background: var(--surface-2, #1e1e2e);
-    color: var(--text, #e2e8f0);
+    color: var(--text, var(--text-primary));
     border: 1px solid var(--accent, #a78bfa);
     padding: 4px 10px;
     border-radius: 8px;
@@ -101,7 +101,7 @@ const sheet = css`
     border-radius: 8px;
     border: 1px solid var(--border, #333);
     background: var(--surface, #12121a);
-    color: var(--text, #e2e8f0);
+    color: var(--text, var(--text-primary));
     box-sizing: border-box;
   }
   .reveal {
@@ -109,7 +109,7 @@ const sheet = css`
     color: var(--text-muted, #888);
     transition: color 0.3s;
   }
-  .reveal.seen { color: var(--emerald, #34d399); }
+  .reveal.seen { color: var(--emerald, var(--ok)); }
   .count { color: var(--accent, #a78bfa); font-variant-numeric: tabular-nums; }
 `;
 

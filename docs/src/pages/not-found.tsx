@@ -46,7 +46,7 @@ const styles = css`
     gap: var(--space-2);
     padding: var(--space-3) var(--space-6);
     background: var(--accent);
-    color: #fff;
+    color: var(--text-primary);
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
     font-weight: 600;

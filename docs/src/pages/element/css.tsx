@@ -18,8 +18,7 @@ export default class PageElementCSS extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              Loom provides a <span class="ic">css</span> tagged template literal that creates a
-              <span class="ic">CSSStyleSheet</span> object. The sheet is parsed once and cached — subsequent
+              Loom provides a <span class="ic">css</span> tagged template literal that creates a <span class="ic">CSSStyleSheet</span> object. The sheet is parsed once and cached — subsequent
               calls with the same template return the same instance.
             </div>
             <code-block lang="ts" code={`import { css } from "@toyz/loom";

@@ -20,8 +20,8 @@ const sheet = css`
     color: var(--text-muted, #666);
     font-size: 0.85rem;
     font-family: var(--font-mono, 'JetBrains Mono', monospace);
-    background: #0d0d14;
-    border: 1px solid var(--border-subtle, #1e1e2a);
+    background: var(--ground-sunk);
+    border: 1px solid var(--border-subtle, var(--warp));
     border-radius: var(--radius-md, 8px);
     animation: pulse 2s ease-in-out infinite;
   }
@@ -31,7 +31,7 @@ const sheet = css`
   }
   .error {
     padding: 1rem;
-    color: #f87171;
+    color: var(--thread);
     font-size: 0.85rem;
     background: rgba(248, 113, 113, 0.08);
     border: 1px solid rgba(248, 113, 113, 0.2);

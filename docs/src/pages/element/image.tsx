@@ -125,9 +125,7 @@ export default class PageElementImage extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              When an image fails to load, <span class="ic">&lt;loom-image&gt;</span> first tries the{" "}
-              <span class="ic">fallback</span> URL (if set). If both fail, the <span class="ic">error</span>{" "}
-              slot is shown — either your custom content or a default broken-image icon.
+              When an image fails to load, <span class="ic">&lt;loom-image&gt;</span> first tries the <span class="ic">fallback</span> URL (if set). If both fail, the <span class="ic">error</span> slot is shown — either your custom content or a default broken-image icon.
             </div>
             <code-block lang="tsx" code={ERROR_HANDLING}></code-block>
           </div>

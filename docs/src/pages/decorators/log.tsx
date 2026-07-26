@@ -33,17 +33,13 @@ export default class PageElementLog extends LoomElement {
           <div class="feature-entry">
             <div class="dec-sig">@log(level)</div>
             <div class="dec-desc">
-              Log with a specific level: <span class="ic">"debug"</span>,{" "}
-              <span class="ic">"info"</span>, <span class="ic">"warn"</span>,{" "}
-              or <span class="ic">"error"</span>.
+              Log with a specific level: <span class="ic">"debug"</span>, <span class="ic">"info"</span>, <span class="ic">"warn"</span>, or <span class="ic">"error"</span>.
             </div>
           </div>
           <div class="feature-entry">
             <div class="dec-sig">@log(options)</div>
             <div class="dec-desc">
-              Full options object with <span class="ic">level</span>,{" "}
-              <span class="ic">label</span>, <span class="ic">includeArgs</span>,{" "}
-              and <span class="ic">skipArgs</span>.
+              Full options object with <span class="ic">level</span>, <span class="ic">label</span>, <span class="ic">includeArgs</span>, and <span class="ic">skipArgs</span>.
             </div>
           </div>
           <div class="feature-entry">
@@ -69,8 +65,7 @@ export default class PageElementLog extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              Every <span class="ic">@log</span> call sends a structured{" "}
-              <span class="ic">LogEntry</span> to the transport:
+              Every <span class="ic">@log</span> call sends a structured <span class="ic">LogEntry</span> to the transport:
             </div>
             <code-block lang="ts" code={LOG_ENTRY}></code-block>
           </div>
@@ -84,8 +79,7 @@ export default class PageElementLog extends LoomElement {
           <div class="feature-entry">
             <div class="dec-sig">LogTransport (abstract)</div>
             <div class="dec-desc">
-              Implement this class and register via DI. Same pattern as{" "}
-              <span class="ic">RpcTransport</span> in loom-rpc.
+              Implement this class and register via DI. Same pattern as <span class="ic">RpcTransport</span> in loom-rpc.
             </div>
             <code-block lang="ts" code={TRANSPORT}></code-block>
           </div>
@@ -134,8 +128,7 @@ export default class PageElementLog extends LoomElement {
             <li>Errors always log at <span class="ic">"error"</span> level regardless of configured level</li>
           </ul>
           <doc-notification type="note">
-            Zero-config safe — if no <span class="ic">LogTransport</span> is registered,{" "}
-            <span class="ic">@log</span> is a transparent pass-through with no overhead.
+            Zero-config safe — if no <span class="ic">LogTransport</span> is registered, <span class="ic">@log</span> is a transparent pass-through with no overhead.
           </doc-notification>
         </section>
         <doc-nav></doc-nav>

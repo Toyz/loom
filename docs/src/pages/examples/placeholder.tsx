@@ -18,8 +18,7 @@ export default class ExamplePlaceholder extends LoomElement {
             <h2>Demo</h2>
           </div>
           <p>
-            Pick a color, drag the sliders, and watch{" "}
-            <span class="ic">&lt;loom-placeholder&gt;</span> render a live image
+            Pick a color, drag the sliders, and watch <span class="ic">&lt;loom-placeholder&gt;</span> render a live image
             from <span class="ic">RgbaPlaceholder</span>.
           </p>
           <placeholder-demo></placeholder-demo>

@@ -40,11 +40,11 @@ const sheet = css`
     color: #111;
   }
   button:hover { opacity: 0.85; }
-  .btn-ping    { background: var(--amber, #fbbf24); }
-  .btn-click   { background: var(--cyan, #22d3ee); }
-  .btn-once    { background: var(--rose, #f472b6); }
-  .btn-wait    { background: var(--emerald, #34d399); }
-  .btn-cancel  { background: var(--accent, #818cf8); color: #fff; }
+  .btn-ping    { background: var(--amber, var(--warn)); }
+  .btn-click   { background: var(--cyan, var(--indigo)); }
+  .btn-once    { background: var(--rose, var(--thread)); }
+  .btn-wait    { background: var(--emerald, var(--ok)); }
+  .btn-cancel  { background: var(--accent, var(--thread)); color: var(--text-primary); }
   .btn-clear   { background: #444; color: #ccc; }
   .log {
     background: #111; border-radius: 8px; padding: 0.75rem;

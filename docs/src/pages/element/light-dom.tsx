@@ -19,10 +19,8 @@ export default class PageElementLightDom extends LoomElement {
           <div class="feature-entry">
             <div class="dec-desc">
               By default, every Loom component creates a shadow root for style isolation. This is ideal
-              for complex, reusable widgets — but leaf components like <strong>buttons</strong>,{" "}
-              <strong>icons</strong>, and <strong>badges</strong> often <em>want</em> to inherit styles
-              from their parent. Pass <span class="ic">{`{ shadow: false }`}</span> to{" "}
-              <span class="ic">@component</span> to render directly into the host element.
+              for complex, reusable widgets — but leaf components like <strong>buttons</strong>, <strong>icons</strong>, and <strong>badges</strong> often <em>want</em> to inherit styles
+              from their parent. Pass <span class="ic">{`{ shadow: false }`}</span> to <span class="ic">@component</span> to render directly into the host element.
             </div>
             <code-block lang="ts" code={`@component("my-button", { shadow: false })
 class MyButton extends LoomElement {
@@ -42,9 +40,7 @@ class MyButton extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              When <span class="ic">shadow: false</span> is set, Loom skips{" "}
-              <span class="ic">attachShadow()</span> in the constructor. Instead,{" "}
-              <span class="ic">this.shadow</span> points to the host element itself.
+              When <span class="ic">shadow: false</span> is set, Loom skips <span class="ic">attachShadow()</span> in the constructor. Instead, <span class="ic">this.shadow</span> points to the host element itself.
               All existing APIs work unchanged:
             </div>
           </div>

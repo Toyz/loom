@@ -20,7 +20,7 @@ const sheet = css`
   .todo-input input {
     flex: 1; padding: 0.75rem 1rem;
     border: 1px solid var(--border, #333); border-radius: 8px;
-    background: var(--surface-2, #1e1e2e); color: var(--text, #e0e0e0);
+    background: var(--surface-2, #1e1e2e); color: var(--text, var(--text-primary));
     font-size: 0.95rem; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
@@ -32,7 +32,7 @@ const sheet = css`
   .add-btn {
     display: inline-flex; align-items: center; gap: 0.35rem;
     padding: 0.65rem 1.25rem; border: none; border-radius: 8px;
-    background: var(--accent, #a78bfa); color: #fff;
+    background: var(--accent, #a78bfa); color: var(--text-primary);
     font-weight: 600; font-size: 0.9rem;
     cursor: pointer; transition: opacity 0.15s, transform 0.1s;
     white-space: nowrap;
@@ -52,10 +52,10 @@ const sheet = css`
   }
   .filters button:hover {
     border-color: var(--accent, #a78bfa);
-    color: var(--text, #e0e0e0);
+    color: var(--text, var(--text-primary));
   }
   .filters button.active {
-    background: var(--accent, #a78bfa); color: #fff;
+    background: var(--accent, #a78bfa); color: var(--text-primary);
     border-color: var(--accent, #a78bfa);
   }
 
@@ -109,7 +109,7 @@ const sheet = css`
   .todo-item:hover .del { opacity: 1; }
   .del:hover {
     background: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
+    color: var(--thread);
   }
 
   /* ── Footer ── */
@@ -129,7 +129,7 @@ const sheet = css`
     transition: color 0.15s, background 0.15s;
   }
   .clear-btn:hover {
-    color: #ef4444; background: rgba(239, 68, 68, 0.08);
+    color: var(--thread); background: rgba(239, 68, 68, 0.08);
   }
 
   /* ── Empty state ── */

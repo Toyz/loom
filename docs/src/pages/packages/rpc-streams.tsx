@@ -17,16 +17,11 @@ export default class PageRpcStreams extends LoomElement {
             <h2>Overview</h2>
           </div>
           <p>
-            <span class="ic">@stream</span> is the push counterpart to{" "}
-            <span class="ic">@rpc</span>. Instead of a one-shot request, it opens a
-            long-lived connection through the registered{" "}
-            <span class="ic">RpcTransport</span> and delivers events as an{" "}
-            <span class="ic">AsyncIterable</span>.
+            <span class="ic">@stream</span> is the push counterpart to <span class="ic">@rpc</span>. Instead of a one-shot request, it opens a
+            long-lived connection through the registered <span class="ic">RpcTransport</span> and delivers events as an <span class="ic">AsyncIterable</span>.
           </p>
           <p>
-            The transport must implement <span class="ic">stream()</span>{" "}
-            (e.g. a WebSocket or SSE transport). <span class="ic">HttpTransport</span>
-            {" "}handles regular HTTP calls only.
+            The transport must implement <span class="ic">stream()</span> (e.g. a WebSocket or SSE transport). <span class="ic">HttpTransport</span> handles regular HTTP calls only.
           </p>
         </section>
 
@@ -73,8 +68,7 @@ class ChatFeed extends LoomElement {
             <h2>Direct Iteration</h2>
           </div>
           <p>
-            <span class="ic">RpcStream&lt;T&gt;</span> implements{" "}
-            <span class="ic">AsyncIterable&lt;T&gt;</span> directly — ideal for services
+            <span class="ic">RpcStream&lt;T&gt;</span> implements <span class="ic">AsyncIterable&lt;T&gt;</span> directly — ideal for services
             or any non-component context.
           </p>
           <code-block lang="ts" code={`// In a @service — iterate directly, no decorator needed
@@ -154,9 +148,7 @@ leaveRoom() {
             <h2>Transport — Implementing stream()</h2>
           </div>
           <p>
-            Extend <span class="ic">RpcTransport</span> and implement the optional{" "}
-            <span class="ic">stream()</span> method to return an{" "}
-            <span class="ic">AsyncIterable&lt;T&gt;</span>. The framework drives teardown
+            Extend <span class="ic">RpcTransport</span> and implement the optional <span class="ic">stream()</span> method to return an <span class="ic">AsyncIterable&lt;T&gt;</span>. The framework drives teardown
             via the iterator protocol when <span class="ic">.close()</span> is called.
           </p>
           <code-block lang="ts" code={`import { RpcTransport } from "@toyz/loom-rpc";

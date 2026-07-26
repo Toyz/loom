@@ -33,8 +33,7 @@ export default class PageStoreSignals extends LoomElement {
           <div class="feature-entry">
             <div class="dec-desc">
               Works like <span class="ic">@reactive</span> but backed by a <span class="ic">SignalState&lt;T&gt;</span>.
-              The accessor exposes the raw value for ergonomic templates. The backing Signal is exposed as
-              <span class="ic">this.$signal_&lt;field&gt;</span> for interop with external Signal-based code.
+              The accessor exposes the raw value for ergonomic templates. The backing Signal is exposed as <span class="ic">this.$signal_&lt;field&gt;</span> for interop with external Signal-based code.
             </div>
             <code-block lang="ts" code={`import { component, LoomElement } from "@toyz/loom";
 import { signal } from "@toyz/loom/store";

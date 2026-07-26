@@ -150,8 +150,7 @@ class MyCounter extends LoomElement {
                     </div>
                     <div class="feature-entry">
                         <div class="dec-desc">
-                            Declarative Shadow DOM is supported in all modern browsers:{" "}
-                            <strong>Chrome 111+</strong>, <strong>Firefox 123+</strong>, <strong>Safari 16.4+</strong>, and <strong>Edge 111+</strong>.
+                            Declarative Shadow DOM is supported in all modern browsers: <strong>Chrome 111+</strong>, <strong>Firefox 123+</strong>, <strong>Safari 16.4+</strong>, and <strong>Edge 111+</strong>.
                             In older browsers without DSD support, the <code>{"<template>"}</code> is ignored and Loom
                             falls back to normal client-side rendering — no breakage, just no pre-paint benefit.
                         </div>

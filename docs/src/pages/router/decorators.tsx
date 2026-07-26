@@ -141,8 +141,7 @@ class UserSettings extends LoomElement { }
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              <span class="ic">@subdomain</span>, <span class="ic">@domain</span>, and{" "}
-              <span class="ic">@tld</span> are set-and-forget auto-accessor decorators that
+              <span class="ic">@subdomain</span>, <span class="ic">@domain</span>, and <span class="ic">@tld</span> are set-and-forget auto-accessor decorators that
               parse <span class="ic">window.location.hostname</span> once at construction time.
               No reactive backing, no connect hooks — ideal for multi-tenant apps that branch
               on the subdomain.

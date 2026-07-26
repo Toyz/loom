@@ -151,8 +151,7 @@ class Boot {
           <div class="feature-entry">
             <div class="dec-sig">{'LoomLifecycle<"start" | "stop" | "suspend" | "resume">'}</div>
             <div class="dec-desc">
-              Services that implement <span class="ic">LoomLifecycle</span> have their{" "}
-              <span class="ic">start()</span> / <span class="ic">stop()</span> methods called
+              Services that implement <span class="ic">LoomLifecycle</span> have their <span class="ic">start()</span> / <span class="ic">stop()</span> methods called
               automatically by <span class="ic">app.start()</span> / <span class="ic">app.stop()</span>,
               and <span class="ic">suspend()</span> / <span class="ic">resume()</span> fired
               automatically on <span class="ic">visibilitychange</span> (tab hidden / visible).
@@ -169,8 +168,7 @@ class WebSocketService implements LoomLifecycle<"start" | "stop" | "suspend" | "
   resume()  { this.ws = new WebSocket("/ws"); } // tab visible
 }`}></code-block>
             <div class="dec-desc" style="margin-top: 1rem;">
-              The generic parameter enforces which hooks are declared. Hooks not in{" "}
-              <span class="ic">T</span> become <span class="ic">never</span> — calling them is a
+              The generic parameter enforces which hooks are declared. Hooks not in <span class="ic">T</span> become <span class="ic">never</span> — calling them is a
               compile-time error.
             </div>
             <code-block lang="ts" code={`// Only declares "start" — stop() does not exist in the type
@@ -190,9 +188,8 @@ class DatabaseService implements LoomLifecycle<"start" | "stop"> {
   }
 }`}></code-block>
             <div class="dec-desc" style="margin-top: 1rem;">
-              <span class="ic">LoomRouter</span> implements{" "}
-              {'LoomLifecycle<"start" | "stop">'}
-              {" "}— registering it via <span class="ic">app.use(router)</span> is enough.
+              <span class="ic">LoomRouter</span> implements {'LoomLifecycle<"start" | "stop">'}
+               — registering it via <span class="ic">app.use(router)</span> is enough.
               The explicit <span class="ic">router.start()</span> call in <span class="ic">main.ts</span> is no longer needed.
             </div>
             <code-block lang="ts" code={`// Before

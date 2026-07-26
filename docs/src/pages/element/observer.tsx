@@ -46,8 +46,7 @@ export default class PageElementObserver extends LoomElement {
           <div class="feature-entry">
             <div class="dec-sig">@observer("resize", opts?)</div>
             <div class="dec-desc">
-              Fires the decorated method whenever the element's size changes. Each call receives a single
-              <code>ResizeObserverEntry</code> — Loom iterates the entries array for you.
+              Fires the decorated method whenever the element's size changes. Each call receives a single <code>ResizeObserverEntry</code> — Loom iterates the entries array for you.
             </div>
             <code-block lang="ts" code={`import { LoomElement, component } from "@toyz/loom";
 import { observer } from "@toyz/loom/element";

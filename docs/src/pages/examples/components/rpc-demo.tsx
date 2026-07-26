@@ -170,7 +170,7 @@ const demoStyles = css`
     justify-content: center;
     font-weight: 700;
     font-size: 0.85rem;
-    color: #fff;
+    color: var(--text-primary);
     flex-shrink: 0;
   }
 
@@ -182,12 +182,12 @@ const demoStyles = css`
   .user-name {
     font-weight: 600;
     font-size: 0.85rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
   }
 
   .user-email {
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-muted);
   }
 
   .role-badge {
@@ -203,12 +203,12 @@ const demoStyles = css`
 
   .role-badge.admin {
     background: rgba(251,146,60,0.15);
-    color: #fb923c;
+    color: var(--warn);
   }
 
   .role-badge.member {
     background: rgba(52,211,153,0.15);
-    color: #34d399;
+    color: var(--ok);
   }
 
   .role-badge:hover {
@@ -235,7 +235,7 @@ const demoStyles = css`
     border-radius: 8px;
     background: rgba(239,68,68,0.1);
     border: 1px solid rgba(239,68,68,0.2);
-    color: #f87171;
+    color: var(--thread);
     font-size: 0.85rem;
   }
 
@@ -267,20 +267,20 @@ const demoStyles = css`
     justify-content: center;
     font-weight: 700;
     font-size: 1.5rem;
-    color: #fff;
+    color: var(--text-primary);
     margin: 0 auto 1rem;
   }
 
   .detail-name {
     font-weight: 700;
     font-size: 1.15rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
   }
 
   .detail-email {
     font-size: 0.85rem;
-    color: #64748b;
+    color: var(--text-muted);
     margin-bottom: 1rem;
   }
 
@@ -321,7 +321,7 @@ const demoStyles = css`
 
   button.danger {
     background: rgba(239,68,68,0.1);
-    color: #f87171;
+    color: var(--thread);
     border-color: rgba(239,68,68,0.2);
   }
 
@@ -347,9 +347,9 @@ const demoStyles = css`
     vertical-align: middle;
   }
 
-  .status-dot.green { background: #34d399; }
-  .status-dot.yellow { background: #fbbf24; }
-  .status-dot.red { background: #f87171; }
+  .status-dot.green { background: var(--ok); }
+  .status-dot.yellow { background: var(--warn); }
+  .status-dot.red { background: var(--thread); }
 
   .log-panel {
     grid-column: 1 / -1;
@@ -366,9 +366,9 @@ const demoStyles = css`
     line-height: 1.6;
   }
 
-  .log-entry { color: #64748b; }
+  .log-entry { color: var(--text-muted); }
   .log-entry .method { color: #a78bfa; }
-  .log-entry .args { color: #34d399; }
+  .log-entry .args { color: var(--ok); }
   .log-entry .time { color: #475569; }
 
   /* ── Stream panel ── */
@@ -395,17 +395,17 @@ const demoStyles = css`
   }
 
   .stream-user { color: #a78bfa; font-weight: 600; min-width: 70px; }
-  .stream-text { color: #94a3b8; }
+  .stream-text { color: var(--text-secondary); }
 
   .stream-status {
     display: inline-flex; align-items: center; gap: 0.35rem;
     font-size: 0.7rem; padding: 0.15rem 0.55rem;
     border-radius: 999px; font-weight: 600;
   }
-  .stream-status.idle      { background: rgba(100,116,139,0.15); color: #64748b; }
-  .stream-status.streaming { background: rgba(52,211,153,0.15);  color: #34d399; }
-  .stream-status.closed    { background: rgba(251,191,36,0.15);  color: #fbbf24; }
-  .stream-status.error     { background: rgba(239,68,68,0.15);   color: #f87171; }
+  .stream-status.idle      { background: rgba(100,116,139,0.15); color: var(--text-muted); }
+  .stream-status.streaming { background: rgba(52,211,153,0.15);  color: var(--ok); }
+  .stream-status.closed    { background: rgba(251,191,36,0.15);  color: var(--warn); }
+  .stream-status.error     { background: rgba(239,68,68,0.15);   color: var(--thread); }
 
   .s-dot {
     width: 6px; height: 6px; border-radius: 50%;
@@ -597,10 +597,8 @@ class RpcDemo extends LoomElement {
           {/* Stream Feed */}
           <div class="panel stream-panel">
             <h3>
-              Live Stream{" "}
-              <span class="badge">@stream + @onStream</span>
-              {" "}
-              <span class={`stream-status ${this.chatFeed?.status ?? "idle"}`}>
+              Live Stream <span class="badge">@stream + @onStream</span>
+               <span class={`stream-status ${this.chatFeed?.status ?? "idle"}`}>
                 {this.chatFeed?.status === "streaming" && <span class="s-dot"></span>}
                 {this.chatFeed?.status ?? "idle"}
               </span>

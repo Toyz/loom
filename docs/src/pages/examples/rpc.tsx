@@ -18,8 +18,7 @@ export default class ExampleRpc extends LoomElement {
             <h2>Demo</h2>
           </div>
           <p>
-            This component uses <span class="ic">@toyz/loom-rpc</span> with a{" "}
-            <span class="ic">MockTransport</span> that simulates network latency.
+            This component uses <span class="ic">@toyz/loom-rpc</span> with a <span class="ic">MockTransport</span> that simulates network latency.
             Click users to load details, toggle roles with <span class="ic">@mutate</span>,
             and watch the transport log.
           </p>

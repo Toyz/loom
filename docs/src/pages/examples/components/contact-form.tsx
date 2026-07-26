@@ -25,36 +25,36 @@ const sheet = css`
   }
   .field label {
     font-size: 0.82rem; font-weight: 600;
-    color: var(--text-secondary, #9898ad);
+    color: var(--text-secondary, var(--text-secondary));
     text-transform: uppercase; letter-spacing: 0.06em;
   }
   .field input,
   .field textarea {
     padding: 0.75rem 1rem;
-    border: 1px solid var(--border, #2a2a3a); border-radius: 8px;
-    background: var(--surface-2, #16161e); color: var(--text, #e8e8f0);
+    border: 1px solid var(--border, var(--warp-lit)); border-radius: 8px;
+    background: var(--surface-2, #16161e); color: var(--text, var(--text-primary));
     font-size: 0.95rem; font-family: inherit; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     resize: vertical;
   }
   .field input::placeholder,
   .field textarea::placeholder {
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
   }
   .field input:focus,
   .field textarea:focus {
-    border-color: var(--accent, #818cf8);
+    border-color: var(--accent, var(--thread));
     box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
   }
   .field textarea { min-height: 100px; }
 
   .field .error-msg {
-    font-size: 0.78rem; color: #f87171;
+    font-size: 0.78rem; color: var(--thread);
     display: flex; align-items: center; gap: 0.25rem;
   }
   .field input.invalid,
   .field textarea.invalid {
-    border-color: #f87171;
+    border-color: var(--thread);
     box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
   }
 
@@ -64,7 +64,7 @@ const sheet = css`
   .submit-btn {
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 0.7rem 1.5rem; border: none; border-radius: 8px;
-    background: var(--accent, #818cf8); color: #fff;
+    background: var(--accent, var(--thread)); color: var(--text-primary);
     font-weight: 600; font-size: 0.92rem;
     cursor: pointer; transition: opacity 0.15s, transform 0.1s;
   }
@@ -75,22 +75,22 @@ const sheet = css`
   }
 
   .reset-btn {
-    padding: 0.7rem 1.25rem; border: 1px solid var(--border, #2a2a3a);
+    padding: 0.7rem 1.25rem; border: 1px solid var(--border, var(--warp-lit));
     border-radius: 8px; background: transparent;
     color: var(--text-muted, #888); font-size: 0.85rem;
     cursor: pointer; transition: all 0.15s;
   }
   .reset-btn:hover {
-    border-color: var(--text-secondary, #9898ad);
-    color: var(--text, #e8e8f0);
+    border-color: var(--text-secondary, var(--text-secondary));
+    color: var(--text, var(--text-primary));
   }
 
   .status {
     display: flex; gap: 1rem; flex-wrap: wrap;
     padding: 0.75rem 1rem;
     border-radius: 8px; background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border-subtle, #1e1e2a);
-    font-size: 0.82rem; color: var(--text-muted, #5e5e74);
+    border: 1px solid var(--border-subtle, var(--warp));
+    font-size: 0.82rem; color: var(--text-muted, var(--text-muted));
     font-family: var(--font-mono, monospace);
   }
   .status .tag {
@@ -102,14 +102,14 @@ const sheet = css`
     width: 6px; height: 6px; border-radius: 50%;
     display: inline-block;
   }
-  .status .dot.on { background: #34d399; }
+  .status .dot.on { background: var(--ok); }
   .status .dot.off { background: #6b7280; }
 
   .toast {
     padding: 0.75rem 1rem; border-radius: 8px;
     background: rgba(52, 211, 153, 0.1);
     border: 1px solid rgba(52, 211, 153, 0.3);
-    color: #34d399; font-size: 0.85rem;
+    color: var(--ok); font-size: 0.85rem;
     animation: fadeIn 0.3s ease-out;
   }
   @keyframes fadeIn {

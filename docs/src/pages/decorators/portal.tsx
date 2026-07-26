@@ -29,8 +29,7 @@ export default class PageDecoratorPortal extends LoomElement {
                         <div class="dec-sig">@portal(target?, options?)</div>
                         <div class="dec-desc">
                             Method decorator. The return value is morphed into a container
-                            appended at <span class="ic">target</span>. Return{" "}
-                            <span class="ic">null</span> or <span class="ic">false</span> to
+                            appended at <span class="ic">target</span>. Return <span class="ic">null</span> or <span class="ic">false</span> to
                             clear the portal content.
                         </div>
                     </div>

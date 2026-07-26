@@ -19,8 +19,7 @@ export default class ExampleForm extends LoomElement {
           </div>
           <p>
             Type in the fields below — validation runs in real-time, and the
-            status bar at the bottom shows <span class="ic">.valid</span> and{" "}
-            <span class="ic">.dirty</span> state.
+            status bar at the bottom shows <span class="ic">.valid</span> and <span class="ic">.dirty</span> state.
           </p>
           <contact-form></contact-form>
         </section>

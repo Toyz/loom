@@ -97,12 +97,12 @@ const demoStyles = css`
   .flag-label {
     font-weight: 600;
     font-size: 0.85rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
   }
 
   .flag-key {
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-muted);
     font-family: "JetBrains Mono", "Fira Code", monospace;
   }
 
@@ -125,7 +125,7 @@ const demoStyles = css`
 
   .toggle-btn.off {
     background: rgba(239,68,68,0.1);
-    color: #fca5a5;
+    color: var(--thread);
     border-color: rgba(239,68,68,0.2);
   }
 
@@ -178,11 +178,11 @@ const demoStyles = css`
     display: inline-block;
   }
 
-  .dot.green { background: #34d399; }
-  .dot.red { background: #f87171; }
+  .dot.green { background: var(--ok); }
+  .dot.red { background: var(--thread); }
 
   .gated-text {
-    color: #94a3b8;
+    color: var(--text-secondary);
     font-size: 0.85rem;
   }
 

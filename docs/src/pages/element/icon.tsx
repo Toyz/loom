@@ -36,8 +36,7 @@ export default class PageElementIcon extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              Register icons with <span class="ic">LoomIcon.register()</span> for single icons or
-              <span class="ic">LoomIcon.registerAll()</span> for batch registration:
+              Register icons with <span class="ic">LoomIcon.register()</span> for single icons or <span class="ic">LoomIcon.registerAll()</span> for batch registration:
             </div>
             <code-block lang="ts" code={`// Single icon
 LoomIcon.register("home", '<path d="M3 12l9-9 9 9..." />');

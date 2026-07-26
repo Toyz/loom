@@ -18,8 +18,7 @@ export default class ExampleAnalytics extends LoomElement {
             <h2>Demo</h2>
           </div>
           <p>
-            This component uses <span class="ic">@toyz/loom-analytics</span> with{" "}
-            <span class="ic">MockAnalytics</span> as the transport.
+            This component uses <span class="ic">@toyz/loom-analytics</span> with <span class="ic">MockAnalytics</span> as the transport.
             Click actions to fire <span class="ic">@track</span> events,
             toggle the theme accessor, and watch events stream into the log.
           </p>

@@ -21,8 +21,7 @@ export default class PageResult extends LoomElement {
             <div class="dec-desc">
               JavaScript's <span class="ic">try/catch</span> is invisible in the
               type system — a function that throws looks identical to one that
-              doesn't. <span class="ic">LoomResult</span> makes errors{" "}
-              <strong>visible, typed, and composable</strong>.
+              doesn't. <span class="ic">LoomResult</span> makes errors <strong>visible, typed, and composable</strong>.
             </div>
             <code-block
               lang="ts"
@@ -81,8 +80,7 @@ const result = await LoomResult.fromPromise(
           <div class="feature-entry">
             <div class="dec-desc">
               The <span class="ic">.ok</span> boolean is a discriminant —
-              TypeScript narrows <span class="ic">.data</span> and{" "}
-              <span class="ic">.error</span> automatically:
+              TypeScript narrows <span class="ic">.data</span> and <span class="ic">.error</span> automatically:
             </div>
             <code-block
               lang="ts"
@@ -108,8 +106,7 @@ if (r.ok) {
           <div class="feature-entry">
             <div class="dec-sig">unwrap() / unwrap_or()</div>
             <div class="dec-desc">
-              Extract the value — <span class="ic">unwrap()</span> throws on Err,{" "}
-              <span class="ic">unwrap_or()</span> returns a fallback.
+              Extract the value — <span class="ic">unwrap()</span> throws on Err, <span class="ic">unwrap_or()</span> returns a fallback.
             </div>
             <code-block
               lang="ts"
@@ -172,8 +169,7 @@ const friendly = result.map_err(e => \`Failed: \${e.message}\`);`}
           <div class="feature-entry">
             <div class="dec-desc">
               The match object isn't fixed — <strong>each layer adds
-              optional branches</strong>. The base <span class="ic">{"{ ok, err }"}</span>{" "}
-              is always required (guarantees exhaustiveness), and
+              optional branches</strong>. The base <span class="ic">{"{ ok, err }"}</span> is always required (guarantees exhaustiveness), and
               specializations extend it with opt-in states.
             </div>
 
@@ -202,8 +198,7 @@ this.team.match({
           <div class="feature-entry">
             <div class="dec-desc">
               Each implementation checks for its optional branches first,
-              then falls through to the base <span class="ic">ok</span> / <span class="ic">err</span>{" "}
-              contract. It's a priority chain:
+              then falls through to the base <span class="ic">ok</span> / <span class="ic">err</span> contract. It's a priority chain:
             </div>
 
             <code-block
@@ -265,8 +260,7 @@ update() {
           <div class="feature-entry">
             <div class="dec-sig">@form — Validate as Result</div>
             <div class="dec-desc">
-              <span class="ic">validate()</span> returns{" "}
-              <span class="ic">LoomResult&lt;T, errors&gt;</span> — no more
+              <span class="ic">validate()</span> returns <span class="ic">LoomResult&lt;T, errors&gt;</span> — no more
               boolean checks:
             </div>
             <code-block
@@ -289,8 +283,7 @@ onSubmit() {
           <div class="feature-entry">
             <div class="dec-sig">DI — Safe Lookups</div>
             <div class="dec-desc">
-              <span class="ic">app.maybe()</span> returns a Result instead of{" "}
-              <span class="ic">undefined</span>:
+              <span class="ic">app.maybe()</span> returns a Result instead of <span class="ic">undefined</span>:
             </div>
             <code-block
               lang="ts"
@@ -309,8 +302,7 @@ app.maybe(MyService).match({
           <div class="feature-entry">
             <div class="dec-sig">@guard — Result-Based Guards</div>
             <div class="dec-desc">
-              Route guards can return{" "}
-              <span class="ic">LoomResult&lt;void, string&gt;</span> where the
+              Route guards can return <span class="ic">LoomResult&lt;void, string&gt;</span> where the
               error string is the redirect path:
             </div>
             <code-block

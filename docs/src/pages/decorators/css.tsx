@@ -18,8 +18,7 @@ export default class PageDecoratorCSS extends LoomElement {
             <div class="dec-desc">
               <span class="ic">@css</span> turns a method into a reactive stylesheet generator.
               The method returns a CSS string that is adopted into the component's shadow root.
-              When any <span class="ic">@reactive</span>, <span class="ic">@store</span>, or <span class="ic">@signal</span>
-              value read during the method changes, the styles are automatically re-evaluated
+              When any <span class="ic">@reactive</span>, <span class="ic">@store</span>, or <span class="ic">@signal</span> value read during the method changes, the styles are automatically re-evaluated
               and updated in-place via <span class="ic">CSSStyleSheet.replaceSync()</span>.
             </div>
             <code-block lang="ts" code={`import { dynamicCss } from "@toyz/loom";`}></code-block>

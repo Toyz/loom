@@ -21,9 +21,9 @@ const sheet = css`
     transition: background 0.2s;
   }
   .icon-wrap.dark { background: #312e81; }
-  .icon-wrap.light { background: #fef3c7; }
+  .icon-wrap.light { background: var(--card); }
   .info { flex: 1; }
-  .label { font-size: 1.05rem; font-weight: 500; color: var(--text, #e0e0e0); }
+  .label { font-size: 1.05rem; font-weight: 500; color: var(--text, var(--text-primary)); }
   .hint { color: var(--text-muted, #888); font-size: 0.8rem; margin-top: 0.15rem; }
   .badge {
     padding: 0.2rem 0.6rem; border-radius: 999px;
@@ -31,7 +31,7 @@ const sheet = css`
     text-transform: uppercase; letter-spacing: 0.05em;
   }
   .badge.dark { background: #312e81; color: #a78bfa; }
-  .badge.light { background: #fef3c7; color: #92400e; }
+  .badge.light { background: var(--card); color: #92400e; }
 `;
 
 @component("theme-toggle")

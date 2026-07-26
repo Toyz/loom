@@ -28,9 +28,7 @@ export default class PageRpcOverview extends LoomElement {
             <h2>How It Works</h2>
           </div>
           <p>
-            LoomRPC adds three decorator pairs — <span class="ic">@rpc</span> for queries,{" "}
-            <span class="ic">@mutate</span> for mutations, and{" "}
-            <span class="ic">@stream</span> / <span class="ic">@onStream</span> for server-push
+            LoomRPC adds three decorator pairs — <span class="ic">@rpc</span> for queries, <span class="ic">@mutate</span> for mutations, and <span class="ic">@stream</span> / <span class="ic">@onStream</span> for server-push
             streams. All are type-safe auto-accessor decorators that talk to the server through a
             swappable <span class="ic">RpcTransport</span>.
           </p>
@@ -85,8 +83,7 @@ app.use(RpcTransport, new HttpTransport());
 
 app.start();`}></code-block>
           <p>
-            Transports are registered via Loom's DI container. Swap to{" "}
-            <span class="ic">MockTransport</span> for testing, <span class="ic">WsTransport</span> for
+            Transports are registered via Loom's DI container. Swap to <span class="ic">MockTransport</span> for testing, <span class="ic">WsTransport</span> for
             WebSocket — one line change, zero component modifications.
           </p>
         </section>

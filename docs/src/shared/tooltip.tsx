@@ -20,7 +20,7 @@ const tooltipStyles = css`
     border-radius: 6px;
     font-size: 0.65rem;
     font-weight: 500;
-    color: #e0e0e0;
+    color: var(--text-primary);
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;

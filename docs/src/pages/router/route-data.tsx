@@ -179,8 +179,7 @@ class PageDashboard extends LoomElement {
           </div>
           <div class="feature-entry">
             <div class="dec-desc">
-              Route params and query strings are always strings from the URL. Use{" "}
-              <span class="ic">@transform</span> to parse them into typed values:
+              Route params and query strings are always strings from the URL. Use <span class="ic">@transform</span> to parse them into typed values:
             </div>
             <code-block lang="ts" code={`import { transform } from "@toyz/loom/transform";
 

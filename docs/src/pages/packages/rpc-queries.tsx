@@ -97,8 +97,7 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
             <h2>RpcQuery&lt;TArgs, TReturn&gt;</h2>
           </div>
           <p>
-            Every <span class="ic">@rpc</span> accessor is an <span class="ic">RpcQuery&lt;TArgs, TReturn&gt;</span>{" "}
-            — a typed, reactive state container with pattern matching and Result combinators.
+            Every <span class="ic">@rpc</span> accessor is an <span class="ic">RpcQuery&lt;TArgs, TReturn&gt;</span> — a typed, reactive state container with pattern matching and Result combinators.
             <span class="ic">ApiState&lt;T&gt;</span> is also accepted for backwards compatibility.
           </p>
           <table class="api-table">

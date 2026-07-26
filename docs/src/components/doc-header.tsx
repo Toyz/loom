@@ -109,14 +109,14 @@ const styles = css`
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     margin: 0;
   }
 
   .toc-count {
     font-size: 0.6rem;
     font-weight: 600;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     background: rgba(255, 255, 255, 0.04);
     padding: 1px 6px;
     border-radius: 8px;
@@ -125,7 +125,7 @@ const styles = css`
 
   .toc-chevron {
     font-size: 0.7rem;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     transition: transform 0.25s ease;
     line-height: 1;
   }

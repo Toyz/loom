@@ -25,17 +25,17 @@ const sheet = css`
     align-items: center;
     font-family: "JetBrains Mono", monospace;
     font-size: 0.9rem;
-    color: var(--text-secondary, #9898ad);
+    color: var(--text-secondary, var(--text-secondary));
   }
-  .hud .label { color: var(--text-muted, #5e5e74); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
-  .hud .value { color: var(--accent, #818cf8); font-size: 1.4rem; font-weight: 700; }
+  .hud .label { color: var(--text-muted, var(--text-muted)); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .hud .value { color: var(--accent, var(--thread)); font-size: 1.4rem; font-weight: 700; }
   .canvas-container {
     width: 100%;
     max-width: 600px;
     aspect-ratio: 3 / 2;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid var(--border, #2a2a3a);
+    border: 1px solid var(--border, var(--warp-lit));
     background: #0a0a14;
     cursor: none;
   }
@@ -51,20 +51,20 @@ const sheet = css`
   button {
     padding: 0.5rem 1.25rem;
     border-radius: 8px;
-    border: 1px solid var(--border, #2a2a3a);
+    border: 1px solid var(--border, var(--warp-lit));
     background: var(--surface-2, #1a1a2e);
-    color: var(--text, #e8e8f0);
+    color: var(--text, var(--text-primary));
     font-size: 0.85rem;
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
   button:hover {
-    background: var(--accent, #818cf8);
-    border-color: var(--accent, #818cf8);
-    color: #fff;
+    background: var(--accent, var(--thread));
+    border-color: var(--accent, var(--thread));
+    color: var(--text-primary);
   }
   .msg {
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     font-size: 0.8rem;
   }
 `;

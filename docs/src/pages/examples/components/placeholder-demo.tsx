@@ -67,7 +67,7 @@ const demoStyles = css`
   .control-label {
     font-weight: 600;
     font-size: 0.8rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     min-width: 60px;
   }
 
@@ -90,7 +90,7 @@ const demoStyles = css`
   .value-display {
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--text-secondary);
     min-width: 40px;
     text-align: right;
   }
@@ -166,7 +166,7 @@ const demoStyles = css`
 
   select {
     background: rgba(255,255,255,0.06);
-    color: #e2e8f0;
+    color: var(--text-primary);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 6px;
     padding: 0.35rem 0.5rem;

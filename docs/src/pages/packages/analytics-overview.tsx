@@ -32,8 +32,7 @@ export default class PageAnalyticsOverview extends LoomElement {
             analytics events through a swappable <span class="ic">AnalyticsTransport</span>.
           </p>
           <p>
-            Apply <span class="ic">@track</span> to <strong>classes</strong> (fire on mount),{" "}
-            <strong>methods</strong> (fire after invocation), or <strong>accessors</strong> (fire
+            Apply <span class="ic">@track</span> to <strong>classes</strong> (fire on mount), <strong>methods</strong> (fire after invocation), or <strong>accessors</strong> (fire
             on set). One decorator, three targets, zero boilerplate.
           </p>
         </section>
@@ -69,8 +68,7 @@ import { PostHogTransport } from "./transports/posthog";
 app.use(AnalyticsTransport, new PostHogTransport());
 app.start();`}></code-block>
           <p>
-            Transports are registered via Loom's DI container. Swap to{" "}
-            <span class="ic">MockAnalytics</span> for testing — one line change.
+            Transports are registered via Loom's DI container. Swap to <span class="ic">MockAnalytics</span> for testing — one line change.
           </p>
         </section>
 

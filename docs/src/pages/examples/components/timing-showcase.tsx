@@ -133,7 +133,7 @@ const sheet = css`
   .ball {
     width: 24px; height: 24px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #a78bfa, #c084fc);
+    background: linear-gradient(135deg, #a78bfa, var(--thread));
     position: absolute;
     will-change: transform;
     box-shadow: 0 0 12px rgba(167, 139, 250, 0.4);

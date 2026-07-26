@@ -24,14 +24,14 @@ const lifecycleStyles = css`
     transition: background 0.15s ease;
   }
   .lc-step:hover {
-    background: var(--bg-hover, #1a1a24);
+    background: var(--bg-hover, var(--ground-raised));
   }
 
-  .lc-step.indigo  { border-left-color: var(--accent, #818cf8); }
-  .lc-step.emerald { border-left-color: var(--emerald, #34d399); }
-  .lc-step.amber   { border-left-color: var(--amber, #fbbf24); }
-  .lc-step.cyan    { border-left-color: var(--cyan, #22d3ee); }
-  .lc-step.rose    { border-left-color: var(--rose, #f472b6); }
+  .lc-step.indigo  { border-left-color: var(--accent, var(--thread)); }
+  .lc-step.emerald { border-left-color: var(--emerald, var(--ok)); }
+  .lc-step.amber   { border-left-color: var(--amber, var(--warn)); }
+  .lc-step.cyan    { border-left-color: var(--cyan, var(--indigo)); }
+  .lc-step.rose    { border-left-color: var(--rose, var(--thread)); }
 
   .lc-num {
     width: 20px;
@@ -44,16 +44,16 @@ const lifecycleStyles = css`
     font-weight: 700;
     flex-shrink: 0;
   }
-  .lc-step.indigo  .lc-num { background: rgba(129,140,248,0.12); color: var(--accent, #818cf8); }
-  .lc-step.emerald .lc-num { background: rgba(52,211,153,0.12);  color: var(--emerald, #34d399); }
-  .lc-step.amber   .lc-num { background: rgba(251,191,36,0.12);  color: var(--amber, #fbbf24); }
-  .lc-step.cyan    .lc-num { background: rgba(34,211,238,0.12);  color: var(--cyan, #22d3ee); }
-  .lc-step.rose    .lc-num { background: rgba(244,114,182,0.12); color: var(--rose, #f472b6); }
+  .lc-step.indigo  .lc-num { background: rgba(129,140,248,0.12); color: var(--accent, var(--thread)); }
+  .lc-step.emerald .lc-num { background: rgba(52,211,153,0.12);  color: var(--emerald, var(--ok)); }
+  .lc-step.amber   .lc-num { background: rgba(251,191,36,0.12);  color: var(--amber, var(--warn)); }
+  .lc-step.cyan    .lc-num { background: rgba(34,211,238,0.12);  color: var(--cyan, var(--indigo)); }
+  .lc-step.rose    .lc-num { background: rgba(244,114,182,0.12); color: var(--rose, var(--thread)); }
 
   .lc-hook {
     font-family: var(--font-mono, monospace);
     font-size: 0.8125rem;
-    color: var(--text-primary, #e8e8f0);
+    color: var(--text-primary, var(--text-primary));
     font-weight: 500;
     white-space: nowrap;
     min-width: 180px;
@@ -61,7 +61,7 @@ const lifecycleStyles = css`
 
   .lc-desc {
     font-size: 0.75rem;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
   }
 
   .lc-sep {
@@ -75,14 +75,14 @@ const lifecycleStyles = css`
     content: '';
     flex: 1;
     height: 1px;
-    background: var(--border-subtle, #1e1e2a);
+    background: var(--border-subtle, var(--warp));
   }
   .lc-sep span {
     font-size: 0.625rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--text-muted, #5e5e74);
+    color: var(--text-muted, var(--text-muted));
     white-space: nowrap;
   }
 `;

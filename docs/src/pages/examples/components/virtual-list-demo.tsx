@@ -63,7 +63,7 @@ const sheet = css`
     padding: 0.15rem 0.5rem;
     border-radius: 4px;
     background: var(--accent-glow, #1a1a2e);
-    color: var(--accent, #c084fc);
+    color: var(--accent, var(--thread));
     border: 1px solid var(--accent-dim, #333);
   }
 `;

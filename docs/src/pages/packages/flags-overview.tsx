@@ -28,9 +28,7 @@ export default class PageFlagsOverview extends LoomElement {
             <h2>How It Works</h2>
           </div>
           <p>
-            LoomFlags provides two APIs — a <span class="ic">@flag</span> decorator and a{" "}
-            <span class="ic">&lt;loom-flag&gt;</span> component — both powered by a swappable{" "}
-            <span class="ic">FlagProvider</span>.
+            LoomFlags provides two APIs — a <span class="ic">@flag</span> decorator and a <span class="ic">&lt;loom-flag&gt;</span> component — both powered by a swappable <span class="ic">FlagProvider</span>.
           </p>
           <ul>
             <li><span class="ic">@flag</span> on <strong>classes</strong> — injects a reactive <span class="ic">flagEnabled</span> boolean</li>
@@ -121,9 +119,7 @@ class PremiumWidget extends LoomElement { ... }`}></code-block>
           </div>
           <p>
             Flags are <strong>live</strong>. When a provider calls <span class="ic">set()</span>,
-            a <span class="ic">FlagChanged</span> event fires on the Loom bus. Every{" "}
-            <span class="ic">@flag</span> decorator and <span class="ic">&lt;loom-flag&gt;</span>{" "}
-            component re-evaluates automatically:
+            a <span class="ic">FlagChanged</span> event fires on the Loom bus. Every <span class="ic">@flag</span> decorator and <span class="ic">&lt;loom-flag&gt;</span> component re-evaluates automatically:
           </p>
           <code-block lang="ts" code={`// WebSocket pushes flag change
 socket.on("flag:update", ({ flag, enabled }) => {

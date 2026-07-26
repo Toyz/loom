@@ -62,7 +62,7 @@ const sheet = css`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--accent, #818cf8);
+    background: var(--accent, var(--thread));
     animation: pulse 1s infinite ease-in-out;
   }
 
@@ -98,7 +98,7 @@ const sheet = css`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--accent, #818cf8);
+    background: var(--accent, var(--thread));
     color: white;
     display: inline-flex;
     align-items: center;
@@ -112,7 +112,7 @@ const sheet = css`
   .role { font-size: 0.75rem; opacity: 0.5; margin-top: 0.25rem; }
 
   .error {
-    color: #f87171;
+    color: var(--thread);
     padding: 1rem;
     border-radius: 8px;
     background: rgba(248, 113, 113, 0.08);

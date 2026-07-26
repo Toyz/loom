@@ -110,8 +110,7 @@ class EditProfile extends LoomElement {
           </div>
           <p>
             The <span class="ic">Args</span> and <span class="ic">Return</span> types are inferred
-            from the contract class. You only need to specify the <span class="ic">RpcMutator</span>{" "}
-            type annotation on the accessor for TypeScript to enforce correct usage:
+            from the contract class. You only need to specify the <span class="ic">RpcMutator</span> type annotation on the accessor for TypeScript to enforce correct usage:
           </p>
           <code-block lang="ts" code={`class UserRouter {
   updateRole(id: string, role: "admin" | "member"): User {

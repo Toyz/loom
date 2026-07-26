@@ -68,8 +68,7 @@ export default class PageElementHotkey extends LoomElement {
                             </tbody>
                         </table>
                         <doc-notification type="note">
-                            Use <span class="ic">mod</span> for cross-platform shortcuts — it maps to{" "}
-                            <span class="ic">⌘ Cmd</span> on macOS and <span class="ic">Ctrl</span> everywhere else.
+                            Use <span class="ic">mod</span> for cross-platform shortcuts — it maps to <span class="ic">⌘ Cmd</span> on macOS and <span class="ic">Ctrl</span> everywhere else.
                         </doc-notification>
                     </div>
                 </section>

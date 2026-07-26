@@ -26,8 +26,7 @@ export default class PageDecoratorFullscreen extends LoomElement {
                         <div class="dec-sig">@fullscreen(options?)</div>
                         <div class="dec-desc">
                             Accessor decorator. Setting to <code>true</code> calls <code>requestFullscreen()</code>,
-                            <code>false</code> calls <code>exitFullscreen()</code>. Listens for <code>fullscreenchange</code>
-                            events to stay in sync.
+                            <code>false</code> calls <code>exitFullscreen()</code>. Listens for <code>fullscreenchange</code> events to stay in sync.
                         </div>
                     </div>
                     <div class="feature-entry">

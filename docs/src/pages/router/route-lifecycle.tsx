@@ -18,8 +18,7 @@ export default class PageRouteLifecycle extends LoomElement {
             <div class="dec-sig">@onRouteEnter</div>
             <div class="dec-desc">
               Marks a method to run when the route becomes active. The method
-              receives the matched route <span class="ic">params</span> and the merged
-              <span class="ic">meta</span> from the route and its group chain.
+              receives the matched route <span class="ic">params</span> and the merged <span class="ic">meta</span> from the route and its group chain.
             </div>
             <code-block lang="ts" code={`import { onRouteEnter } from "@toyz/loom/router";
 

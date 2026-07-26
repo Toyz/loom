@@ -63,10 +63,7 @@ const draft = new Reactive("", {
           <div class="feature-entry">
             <div class="dec-sig">@persist</div>
             <div class="dec-desc">
-              Single-value auto-accessor backed by <span class="ic">Reactive{"<T>"}</span>{" "}
-              with automatic persistence. Uses the same <span class="ic">StorageAdapter</span>{" "}
-              interface as <span class="ic">@store</span> — same hydration, JSON round-trip,{" "}
-              and debounced write-through.
+              Single-value auto-accessor backed by <span class="ic">Reactive{"<T>"}</span> with automatic persistence. Uses the same <span class="ic">StorageAdapter</span> interface as <span class="ic">@store</span> — same hydration, JSON round-trip, and debounced write-through.
             </div>
             <code-block lang="ts" code={`import { persist } from "@toyz/loom";
 
@@ -96,9 +93,7 @@ accessor theme = "dark";`}></code-block>
 
           <div class="feature-entry">
             <div class="dec-desc" style="margin-top: 1rem;">
-              Values are hydrated from storage on first access — if a stored value exists,{" "}
-              it takes precedence over the initializer. Changes are debounced and flushed{" "}
-              via microtask so rapid writes result in a single storage write.
+              Values are hydrated from storage on first access — if a stored value exists, it takes precedence over the initializer. Changes are debounced and flushed via microtask so rapid writes result in a single storage write.
             </div>
             <code-block lang="ts" code={`// Persisted counter — survives page reloads
 @persist accessor visitCount = 0;

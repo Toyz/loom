@@ -35,8 +35,7 @@ export default class PageRpcTransports extends LoomElement {
             <h2>HttpTransport</h2>
           </div>
           <p>
-            The built-in transport — <span class="ic">POST</span> JSON to{" "}
-            <span class="ic">/rpc/&#123;Router&#125;/&#123;Method&#125;</span>.
+            The built-in transport — <span class="ic">POST</span> JSON to <span class="ic">/rpc/&#123;Router&#125;/&#123;Method&#125;</span>.
           </p>
           <code-block lang="ts" code={`import { RpcTransport, HttpTransport } from "@toyz/loom-rpc";
 
@@ -66,8 +65,7 @@ app.use(RpcTransport, new HttpTransport("/api/rpc", {
             <h2>Wire Protocol</h2>
           </div>
           <p>
-            <span class="ic">HttpTransport</span> sends a JSON body with an <span class="ic">args</span>{" "}
-            array. Any backend that follows this convention works — Go, Rust, Python, Express, Hono,
+            <span class="ic">HttpTransport</span> sends a JSON body with an <span class="ic">args</span> array. Any backend that follows this convention works — Go, Rust, Python, Express, Hono,
             Cloudflare Workers.
           </p>
           <code-block lang="text" code={`POST /rpc/{RouterName}/{MethodName}
@@ -105,8 +103,7 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
           </div>
           <p>
             Extend <span class="ic">RpcTransport</span> to implement WebSocket, gRPC-Web, or any
-            protocol. One DI swap and every <span class="ic">@rpc</span> and{" "}
-            <span class="ic">@mutate</span> in the app uses the new transport.
+            protocol. One DI swap and every <span class="ic">@rpc</span> and <span class="ic">@mutate</span> in the app uses the new transport.
           </p>
           <code-block lang="ts" code={`class WsTransport extends RpcTransport {
   private pending = new Map\<string, {
