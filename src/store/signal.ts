@@ -36,7 +36,7 @@
  */
 
 import { Reactive, type Subscriber } from "./reactive";
-import { __getActiveDeps } from "../trace";
+import { startSubTrace, endSubTrace } from "../trace";
 import { REACTIVES, WATCHERS, EMITTERS, localSymbol } from "../decorators/symbols";
 import { bus } from "../bus";
 import type { Schedulable } from "../element/element";
@@ -105,9 +105,10 @@ export class SignalState<T> implements Signal<T> {
  * A read-only computed Signal. Lazily evaluates a callback,
  * caches the result, and integrates with Loom's trace engine.
  *
- * Dependencies are tracked automatically: any SignalState.get()
- * or Reactive.value access during the callback is recorded.
- * When dependencies change, the cached value is invalidated.
+ * Dependencies are tracked automatically: the callback runs inside a
+ * sub-trace, so any SignalState.get() or Reactive.value access it performs is
+ * recorded. When those dependencies change, the cached value is invalidated.
+ * This works standalone as well as inside a component's update().
  *
  * The backing Reactive participates in Loom's trace engine,
  * so components reading this computed will re-render when it
@@ -170,59 +171,47 @@ export class SignalComputed<T> implements Signal<T> {
     // Tear down old dependency subscriptions
     this.dispose();
 
-    // Intercept Reactive.value reads during callback.
-    // We create a temporary "spy" set to capture which Reactives are accessed.
-    const capturedDeps = new Set<Reactive<any>>();
-
-    // Save the current trace deps (if we're inside a component's update())
-    const parentDeps = __getActiveDeps();
-
-    // We use a manual interception approach: we want to observe
-    // which Reactive.value calls happen during _cb(). The trace
-    // engine already records into activeDeps, so if a parent trace
-    // is active, those reads will be captured there. But we also
-    // need them for our own invalidation.
+    // Run the callback under its OWN sub-trace.
     //
-    // Strategy: subscribe to every Reactive that was in the parent
-    // trace after evaluation. For stand-alone usage (no trace active),
-    // we must detect deps via subscription-based invalidation.
+    // This used to read __getActiveDeps() — the *parent* trace — which was
+    // wrong twice over: with no trace active it captured nothing at all, so a
+    // standalone computed never invalidated and `.get()` returned the first
+    // value forever; and inside a component's update() it captured every
+    // Reactive the component had read, not just the ones the callback touched.
     //
-    // The simplest correct approach: evaluate, and use a subscription
-    // on the source signals that the user explicitly manages.
-
-    const newValue = this._cb();
-
-    // If called within a Loom trace, the parent deps now contain
-    // our transitive dependencies. Grab them for self-invalidation.
-    if (parentDeps) {
-      for (const dep of parentDeps) {
-        capturedDeps.add(dep);
-      }
+    // endSubTrace() also merges the captured deps back into the parent trace,
+    // so a component reading `computed.get()` still tracks the sources
+    // transitively.
+    let newValue: T;
+    let captured: Set<Reactive<any>>;
+    startSubTrace();
+    try {
+      newValue = this._cb();
+    } finally {
+      captured = endSubTrace();
     }
 
-    // Subscribe to all captured deps for invalidation
-    for (const dep of capturedDeps) {
+    // Subscribe to the callback's own deps for invalidation
+    for (const dep of captured) {
       const unsub = dep.subscribe(() => {
-        if (!this._dirty) {
-          this._dirty = true;
-          // Eagerly recompute and propagate if value changed
-          const old = this._reactive.peek();
-          this._recompute();
-          if (!this._equals(old, this._reactive.peek())) {
-            // notify() triggers dependent components' scheduleUpdate
-            this._reactive.notify();
-          }
-        }
+        if (this._dirty) return;
+        this._dirty = true;
+        // _recompute()'s set() already bumps the version and notifies
+        // subscribers when the value actually changed — an extra notify()
+        // here made every downstream @watch/@emit fire twice per change.
+        this._recompute();
       });
       this._unsubs.push(unsub);
     }
 
-    // Update cached value
+    // Clear the dirty flag BEFORE set(): a subscriber that reads .get() from
+    // inside the notify would otherwise re-enter _recompute() forever.
+    this._dirty = false;
+
     const prev = this._reactive.peek();
     if (!this._equals(prev, newValue)) {
       this._reactive.set(newValue);
     }
-    this._dirty = false;
   }
 }
 

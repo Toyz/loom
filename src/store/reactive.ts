@@ -28,8 +28,10 @@ export type Updater<T> = T | ((prev: T) => T);
 export class Reactive<T> {
   private _value: T;
   private _subs: Subscriber<T>[] = [];
-  /** Reused snapshot for notify — avoids Array.from allocation per set()/notify() */
+  /** Reused snapshot for notify — avoids an allocation per set()/notify() */
   private _notifyScratch: Subscriber<T>[] = [];
+  /** True while a dispatch is iterating _notifyScratch */
+  private _notifyBusy = false;
   private _key?: string;
   private _storage?: StorageAdapter;
   /** Pre-computed persist flag — avoids double property check on every set() */
@@ -38,8 +40,12 @@ export class Reactive<T> {
   private _version = 0;
   /** Debounced persistence — coalesces N mutations into 1 storage write per microtask */
   private _persistScheduled = false;
+  /** Set by clear() to make an already-queued flush a no-op */
+  private _persistCancelled = false;
   private _flushPersist = (): void => {
     this._persistScheduled = false;
+    if (this._persistCancelled) { this._persistCancelled = false; return; }
+    if (!this._persists) return;
     this._storage!.set(this._key!, JSON.stringify(this._value));
   };
 
@@ -85,7 +91,17 @@ export class Reactive<T> {
     const prev = this._value;
     this._value =
       typeof next === "function" ? (next as (prev: T) => T)(prev) : next;
-    if (this._value !== prev) {
+    // Change detection with NaN handling. Plain `!==` reported NaN → NaN as a
+    // change, so a NaN-valued Reactive bumped its version and notified on
+    // every write — an unbounded re-render loop.
+    //
+    // `Object.is` expresses this directly but measured 15-59% slower on the
+    // set() benchmarks (it is SameValue, not a single machine compare). The
+    // self-comparison below keeps `!==` as the short-circuiting fast path and
+    // only pays extra on a real change: if both sides are NaN then neither
+    // self-equals, so the guard collapses to false.
+    const v = this._value;
+    if (v !== prev && (v === v || prev === prev)) {
       this._version++;
       if (this._persists && !this._persistScheduled) {
         this._persistScheduled = true;
@@ -124,24 +140,58 @@ export class Reactive<T> {
     this._notifySubscribers(this._value);
   }
 
-  /** Copy subscriber refs into scratch then invoke — safe if a handler unsubscribes mid-loop */
+  /**
+   * Copy subscriber refs into scratch then invoke — safe if a handler
+   * unsubscribes mid-loop.
+   *
+   * Two reentrancy rules, both load-bearing when a subscriber writes back into
+   * this same Reactive (e.g. a clamping `@watch`):
+   *   - the nested call must NOT reuse `_notifyScratch`, or the outer loop
+   *     resumes over a buffer the inner call overwrote;
+   *   - `this._value` must be re-read per subscriber, not hoisted, or later
+   *     subscribers are handed a value that is already stale.
+   * Depth 0 — the overwhelmingly common case — keeps the zero-alloc path.
+   */
   private _notifySubscribers(prev: T): void {
     const subs = this._subs;
     const n = subs.length;
     if (n === 0) return;
-    let buf = this._notifyScratch;
-    if (buf.length < n) buf = this._notifyScratch = new Array(n);
+    // Claim the scratch buffer for the duration of the dispatch; a re-entrant
+    // notify allocates its own so it cannot clobber the array this frame is
+    // iterating. The flag is a separate boolean rather than nulling
+    // _notifyScratch, which would make that field polymorphic (array|null)
+    // and measured ~35% slower. No try/finally either — unwinding it per
+    // dispatch cost ~13%, and a throwing subscriber only forfeits buffer
+    // reuse, never correctness.
+    const reentrant = this._notifyBusy;
+    let buf: Subscriber<T>[];
+    if (reentrant) {
+      buf = new Array<Subscriber<T>>(n);
+    } else {
+      buf = this._notifyScratch;
+      if (buf.length < n) buf = this._notifyScratch = new Array<Subscriber<T>>(n);
+      this._notifyBusy = true;
+    }
     for (let i = 0; i < n; i++) buf[i] = subs[i]!;
-    const v = this._value;
-    for (let i = 0; i < n; i++) buf[i]!(v, prev);
+    for (let i = 0; i < n; i++) buf[i]!(this._value, prev);
+    if (!reentrant) this._notifyBusy = false;
   }
 
-  /** Clear persisted data and reset to a value */
+  /**
+   * Clear persisted data and reset to a value.
+   *
+   * Resets first so subscribers observe the new value, then removes the key
+   * and cancels any debounced write. Doing it the other way round left the
+   * queued microtask to re-create the key one tick later, so `clear()` only
+   * appeared to work when `resetTo` happened to equal the current value (which
+   * made the inner `set()` a no-op that scheduled nothing).
+   */
   clear(resetTo: T): void {
+    this.set(resetTo);
     if (this._key && this._storage) {
       this._storage.remove(this._key);
+      if (this._persistScheduled) this._persistCancelled = true;
     }
-    this.set(resetTo);
   }
 
   /** Swap the storage medium at runtime (e.g. upgrade from local to remote) */
@@ -149,6 +199,11 @@ export class Reactive<T> {
     // Persist current value to new storage
     this._key = persist.key;
     this._storage = persist.storage;
+    // Without this, _persists stays false for a Reactive constructed without
+    // persistence, so set() never schedules a write and the value is stored
+    // exactly once here and then drifts forever.
+    this._persists = true;
+    this._persistCancelled = false;
     this._storage.set(this._key, JSON.stringify(this._value));
   }
 }

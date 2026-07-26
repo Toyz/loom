@@ -372,3 +372,120 @@ describe("@signal decorator", () => {
     expect(el2.count).toBe(0);
   });
 });
+
+// ── SignalComputed invalidation (regression) ──
+//
+// _recompute() used to derive its dependency set from __getActiveDeps() — the
+// PARENT trace. With no trace active that set is null, so a standalone
+// computed captured zero deps and never invalidated; inside a component's
+// update() it over-captured every Reactive the component had read. It also
+// called notify() after _recompute()'s set() had already notified, so every
+// downstream subscriber fired twice per change.
+
+describe("SignalComputed — invalidation", () => {
+  it("re-evaluates after a source change (standalone, no active trace)", () => {
+    const count = new SignalState(2);
+    const doubled = new SignalComputed(() => count.get() * 2);
+
+    expect(doubled.get()).toBe(4);
+    count.set(3);
+    expect(doubled.get()).toBe(6);
+  });
+
+  it("recomputes only when a dependency actually changed", () => {
+    const a = new SignalState(1);
+    const cb = vi.fn(() => a.get() + 1);
+    const comp = new SignalComputed(cb);
+
+    comp.get();
+    expect(cb).toHaveBeenCalledTimes(1);
+
+    comp.get();
+    comp.get();
+    expect(cb).toHaveBeenCalledTimes(1); // memoized
+
+    a.set(2);
+    expect(comp.get()).toBe(3);
+  });
+
+  it("notifies subscribers exactly once per source change", () => {
+    const src = new SignalState(1);
+    const comp = new SignalComputed(() => src.get() * 10);
+    const sub = vi.fn();
+
+    comp.subscribe(sub);
+    src.set(2);
+
+    expect(sub).toHaveBeenCalledTimes(1);
+    expect(comp.get()).toBe(20);
+  });
+
+  it("does not notify when the computed result is unchanged", () => {
+    const src = new SignalState(1);
+    const comp = new SignalComputed(() => src.get() > 0);
+    const sub = vi.fn();
+
+    comp.subscribe(sub);
+    src.set(2); // still > 0 → same computed value
+
+    expect(sub).not.toHaveBeenCalled();
+  });
+
+  it("propagates through a chain of computeds", () => {
+    const base = new SignalState(1);
+    const plusOne = new SignalComputed(() => base.get() + 1);
+    const timesTen = new SignalComputed(() => plusOne.get() * 10);
+
+    expect(timesTen.get()).toBe(20);
+    base.set(4);
+    expect(plusOne.get()).toBe(5);
+    expect(timesTen.get()).toBe(50);
+  });
+
+  it("captures only its own deps, not the surrounding trace's", () => {
+    const used = new SignalState(1);
+    const unrelated = new Reactive(100);
+
+    startTrace();
+    void unrelated.value;                                  // read by the "component"
+    const comp = new SignalComputed(() => used.get() * 2);
+    comp.get();
+    endTrace();
+
+    const sub = vi.fn();
+    comp.subscribe(sub);
+
+    unrelated.set(200);                                    // must NOT invalidate
+    expect(sub).not.toHaveBeenCalled();
+
+    used.set(5);                                           // must invalidate
+    expect(sub).toHaveBeenCalledTimes(1);
+    expect(comp.get()).toBe(10);
+  });
+
+  it("merges its deps into an enclosing trace so components stay dirty", () => {
+    const src = new SignalState(1);
+    const comp = new SignalComputed(() => src.get() * 2);
+
+    startTrace();
+    comp.get();
+    const trace = endTrace();
+
+    expect(hasDirtyDeps(trace)).toBe(false);
+    src.set(9);
+    expect(hasDirtyDeps(trace)).toBe(true);
+  });
+
+  it("dispose() stops invalidation", () => {
+    const src = new SignalState(1);
+    const comp = new SignalComputed(() => src.get() + 1);
+    comp.get();
+
+    comp.dispose();
+    const sub = vi.fn();
+    comp.subscribe(sub);
+    src.set(50);
+
+    expect(sub).not.toHaveBeenCalled();
+  });
+});
