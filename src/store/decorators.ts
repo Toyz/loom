@@ -8,7 +8,7 @@
  * @persist  — Single-value persistent accessor (auto-accessor)
  */
 
-import { REACTIVES, PROPS, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, TRANSFORMS, localSymbol } from "../decorators/symbols";
+import { REACTIVES, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, localSymbol } from "../decorators/symbols";
 import { Reactive } from "./reactive";
 import { bus } from "../bus";
 import type { PersistOptions, StorageAdapter } from "./storage";

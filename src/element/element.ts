@@ -1,7 +1,7 @@
 import { bus, type Constructor, type Handler } from "../bus";
 import { type LoomEvent } from "../event";
 import { type CSSValue, adoptCSS } from "../css";
-import { COMPUTED_DIRTY, REACTIVES, getConnectHooks, FIRST_UPDATED_HOOKS } from "../decorators/symbols";
+import { COMPUTED_DIRTY, REACTIVES, getConnectHooks } from "../decorators/symbols";
 import { morph } from "../morph";
 import { app } from "../app";
 import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, releaseTrace, type TraceDeps } from "../trace";
@@ -278,13 +278,6 @@ export abstract class LoomElement extends HTMLElement {
 
     this._hasUpdated = true;
     this.firstUpdated();
-    const hooks = FIRST_UPDATED_HOOKS.from(this) as Array<(el: LoomElement) => (() => void) | void> | undefined;
-    if (hooks) {
-      for (let i = 0; i < hooks.length; i++) {
-        const cleanup = hooks[i](this);
-        if (typeof cleanup === "function") this.cleanups.push(cleanup);
-      }
-    }
     this._runAfterUpdate();
   }
 
@@ -316,15 +309,6 @@ export abstract class LoomElement extends HTMLElement {
     if (!this._hasUpdated) {
       this._hasUpdated = true;
       this.firstUpdated();
-      // Run decorator-registered first-updated hooks (from @form, etc.)
-      // These fire after the first morph(), so shadow DOM content exists.
-      const fuhooks = FIRST_UPDATED_HOOKS.from(this) as Array<(el: LoomElement) => (() => void) | void> | undefined;
-      if (fuhooks) {
-        for (let i = 0; i < fuhooks.length; i++) {
-          const cleanup = fuhooks[i](this);
-          if (typeof cleanup === "function") this.cleanups.push(cleanup);
-        }
-      }
     }
 
     this._runAfterUpdate();

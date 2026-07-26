@@ -16,7 +16,7 @@
  */
 
 import { renderLoop } from "./render-loop";
-import { INJECT_PARAMS, ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols";
+import { ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols";
 import { createDecorator } from "./decorators/create";
 import { bus, type Constructor, type Handler } from "./bus";
 import type { LoomEvent } from "./event";
@@ -200,16 +200,6 @@ class LoomApp {
     return [...this.providers.keys()];
   }
 
-  /** Resolve @inject parameter metadata for a constructor or method. */
-  private resolveParams(proto: any, method: string): any[] {
-    const meta: { method: string; index: number; key: any }[] =
-      proto?.[INJECT_PARAMS.key] ?? [];
-    const params = meta
-      .filter((m) => m.method === method)
-      .sort((a, b) => a.index - b.index);
-    return params.map((m) => this.get(m.key));
-  }
-
   // ── Lifecycle ──
 
   /**
@@ -225,8 +215,10 @@ class LoomApp {
     // 1. Instantiate @service singletons and wire @on handlers
     for (const Svc of this.services) {
       if (!this.providers.has(Svc)) {
-        const args = this.resolveParams(Svc.prototype, "constructor");
-        this.providers.set(Svc, new Svc(...args));
+        // No constructor injection: TC39 stage-3 has no parameter decorators,
+        // so INJECT_PARAMS was never written and resolveParams() always
+        // returned []. Property injection via `@inject(Key) accessor` works.
+        this.providers.set(Svc, new Svc());
       }
       // Also register by @service("name") string key for name-based injection
       const svcName: string | undefined = Svc[SERVICE_NAME.key];

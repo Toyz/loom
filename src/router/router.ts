@@ -9,9 +9,8 @@ import { bus } from "../bus";
 import { type RouterMode, HashMode, HistoryMode } from "./mode";
 import { matchRoute, guardRegistry, buildPath } from "./route";
 import { LoomResult } from "../result";
-import { GUARD_HANDLERS } from "./decorators";
 import { RouteChanged } from "./events";
-import { INJECT_PARAMS, ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
+import { ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
 import { app } from "../app";
 import type { LoomLifecycle } from "../lifecycle";
 
@@ -286,19 +285,18 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
    * Run guards for the target route.
    *
    * Checks named guards from @route({ guards: [...] }) first,
-   * then falls back to @guard methods on the component prototype.
-   * Resolves @inject params on guard methods from the DI container.
+   * @guard registers into the global guardRegistry, so route entries name the
+   * guards they need. (There was also a GUARD_HANDLERS prototype-guard path,
+   * but nothing ever wrote that symbol — it has been removed rather than
+   * activated, since making it live would silently start blocking navigations
+   * in existing apps.)
    */
   private async _checkGuards(path: string): Promise<boolean | string> {
     const match = matchRoute(path);
     if (!match) return true; // No route = no guards
 
-    // Collect guards to run: named guards from route entry + prototype guards
     const namedGuards = match.entry.guards ?? [];
-    const protoGuards: string[] = match.entry.ctor.prototype?.[GUARD_HANDLERS] ?? [];
-
-    // No guards at all = allow
-    if (namedGuards.length === 0 && protoGuards.length === 0) return true;
+    if (namedGuards.length === 0) return true;
 
     // Build RouteInfo — passed as arg 0 to every guard
     const routeInfo: RouteInfo = {
@@ -316,28 +314,7 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
         continue;
       }
 
-      const args = this._resolveGuardInjectParams(reg.method, reg.key);
-      const result = await reg.method.apply(null, [routeInfo, ...args]);
-      if (result instanceof LoomResult) {
-        // `as` binds tighter than `??`, so `result.error as string ?? false`
-        // returned the Error object itself for err(new Error(...)). Callers
-        // test only `=== false` and `typeof === "string"`, so it matched
-        // neither and the navigation was ALLOWED. A non-string error blocks.
-        if (!result.ok) return typeof result.error === "string" ? result.error : false;
-        continue;
-      }
-      if (result === false) return false;
-      if (typeof result === "string") return result;
-    }
-
-    // 2. Run legacy @guard methods on the component prototype
-    const proto = match.entry.ctor.prototype;
-    for (const key of protoGuards) {
-      // Skip if already run as a named guard
-      if (namedGuards.some((n) => guardRegistry.get(n)?.key === key)) continue;
-
-      const args = this._resolveGuardInjectParams(proto, key);
-      const result = await proto[key].apply(proto, [routeInfo, ...args]);
+      const result = await reg.method.call(null, routeInfo);
       if (result instanceof LoomResult) {
         // `as` binds tighter than `??`, so `result.error as string ?? false`
         // returned the Error object itself for err(new Error(...)). Callers
@@ -353,28 +330,4 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
     return true;
   }
 
-  /**
-   * Resolve @inject parameters for a guard method.
-   *
-   * Guards receive `RouteInfo` as arg 0 (prepended by _checkGuards),
-   * so @inject indices are offset by −1 to build a clean args array
-   * that gets spread *after* routeInfo.
-   */
-  private _resolveGuardInjectParams(proto: object, method: string): unknown[] {
-    const injectMeta: Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }> =
-      (INJECT_PARAMS.from(proto) as Array<{ method: string; index: number; key: new (...args: unknown[]) => unknown }>) ?? [];
-    const methodParams = injectMeta
-      .filter((m) => m.method === method)
-      .sort((a, b) => a.index - b.index);
-
-    if (methodParams.length === 0) return [];
-
-    const args: unknown[] = [];
-    for (const param of methodParams) {
-      // index 0 = routeInfo (prepended), so @inject index N maps to args[N-1]
-      const adjusted = param.index > 0 ? param.index - 1 : 0;
-      args[adjusted] = app.get(param.key);
-    }
-    return args;
-  }
 }

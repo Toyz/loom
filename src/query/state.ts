@@ -9,7 +9,6 @@ import type { ApiState, ApiOptions, ApiCtx, InterceptRegistration } from "./type
 import { interceptRegistry } from "./registry";
 import { app } from "../app";
 import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
-import { INJECT_PARAMS } from "../decorators/symbols";
 import { LoomResult } from "../result";
 
 
@@ -76,9 +75,7 @@ export function createApiState<T>(
           continue;
         }
 
-        // Resolve @inject params (same pattern as @guard in router)
-        const args = resolveInjectParams(reg.method, reg.key);
-        const result = await reg.method.call(null, ctx, ...args);
+        const result = await reg.method.call(null, ctx);
 
         if (result === false) {
           error = new Error(`Interceptor "${name}" blocked the request`);
@@ -116,8 +113,7 @@ export function createApiState<T>(
               continue;
             }
             ctx.response = data as any; // expose raw result to transformer
-            const args = resolveInjectParams(reg.method, reg.key);
-            const result = await reg.method.call(null, ctx, ...args);
+            const result = await reg.method.call(null, ctx);
             if (result !== undefined) {
               data = result;
             }
@@ -184,23 +180,6 @@ export function createApiState<T>(
     }
   }
 
-  // Resolve @inject params for interceptor methods
-  function resolveInjectParams(method: Function, methodKey: string): any[] {
-    const proto = method;
-    const injectMeta: Array<{ method: string; index: number; key: any }> =
-      (proto as any)[INJECT_PARAMS.key] ?? [];
-    const methodParams = injectMeta
-      .filter((m) => m.method === methodKey)
-      .sort((a, b) => a.index - b.index);
-
-    if (methodParams.length === 0) return [];
-
-    const args: any[] = [];
-    for (const param of methodParams) {
-      args[param.index] = app.get(param.key);
-    }
-    return args;
-  }
 
   const state: ApiState<T> = {
     get ok() {

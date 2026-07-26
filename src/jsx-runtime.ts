@@ -6,8 +6,6 @@
  */
 
 import {
-  LOOM_EVENTS,
-  LOOM_PROPS,
   LOOM_KEY_ATTR,
   loomEventProxy,
   type LoomEventMap,

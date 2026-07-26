@@ -428,11 +428,6 @@ function getKey(node: Node | undefined | null): string | null {
   return readLoomKey(node as Element);
 }
 
-function isKeep(node: Node): boolean {
-  if (node.nodeType !== Node.ELEMENT_NODE) return false;
-  return (node as Element).hasAttribute("loom-keep");
-}
-
 function canMorph(old: Node, next: Node): boolean {
   // Same node type
   if (old.nodeType !== next.nodeType) return false;

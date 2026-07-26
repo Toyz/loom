@@ -12,6 +12,11 @@ import { createDecorator } from "../decorators/create";
 import { routes, routeByName, guardRegistry, compilePattern, GROUP_META, ROUTE_GROUP, type RouteEntry, type GroupMeta } from "./route";
 
 export const ROUTE_PATH = Symbol("loom:route:path");
+/**
+ * @deprecated Never written by any decorator; @guard registers into the global
+ * guardRegistry instead. Kept only so existing imports keep resolving; will be
+ * removed in 1.0.
+ */
 export const GUARD_HANDLERS = Symbol("loom:route:guards");
 
 // ── @group (class decorator via createDecorator) ──

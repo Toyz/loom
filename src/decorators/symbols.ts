@@ -110,6 +110,11 @@ export const CATCH_HANDLER = createSymbol("catch");
 export const CATCH_HANDLERS = createSymbol("catch:named");
 export const MOUNT_HANDLERS = createSymbol("mount");
 export const UNMOUNT_HANDLERS = createSymbol("unmount");
+/**
+ * @deprecated Never written, and unimplementable: TC39 stage-3 decorators have
+ * no parameter decorators. Use property injection — `@inject(Key) accessor`.
+ * Kept only so existing imports keep resolving; will be removed in 1.0.
+ */
 export const INJECT_PARAMS = createSymbol("inject:params");
 export const ROUTE_PROPS = createSymbol("route:props");
 export const TRANSFORMS = createSymbol("transforms");
@@ -150,5 +155,10 @@ export function addConnectHook(host: object, hook: ConnectHook): void {
 export function getConnectHooks(host: object): ConnectHook[] | undefined {
   return CONNECT_HOOKS.from(host) as ConnectHook[] | undefined;
 }
+/**
+ * @deprecated Never written by any decorator. Override `firstUpdated()` on the
+ * component instead. Kept only so existing imports keep resolving; will be
+ * removed in 1.0.
+ */
 export const FIRST_UPDATED_HOOKS = createSymbol("first-updated:hooks");
 export const SERVICE_NAME = createSymbol<string>("service:name");
