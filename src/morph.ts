@@ -33,10 +33,31 @@ export type LoomPropMap = Record<string, unknown>;
 export interface LoomNode {
   __loomEvents?: LoomEventMap;
   __loomProps?: LoomPropMap;
+  /** Value each __loomProps key held before Loom first wrote it — restored on removal */
+  __loomPropPrior?: LoomPropMap;
   __loomRawHTML?: boolean;
   __childTemplate?: Node | Node[];
   /** Mirrors `loom-key` when set via JSX or patchAttributes — undefined means fall back to getAttribute */
   __loomKey?: string;
+}
+
+// ── Morph hooks ──
+
+/** Called for every morphed element pair, after props are patched. */
+export type MorphHook = (old: Element, next: Element) => void;
+
+const _morphHooks: MorphHook[] = [];
+
+/**
+ * @internal — register a per-element expando transfer.
+ *
+ * Used by @attribute to forward `__loomAttrArgs` from the freshly-built JSX
+ * element onto the live one. Lives here rather than in attribute.ts because
+ * attribute.ts imports morph, and the dependency must not go both ways. Costs
+ * one length check per element when nothing is registered.
+ */
+export function registerMorphHook(fn: MorphHook): void {
+  _morphHooks.push(fn);
 }
 
 // ── Public API ──
@@ -185,11 +206,13 @@ function morphNode(old: Node, next: Node): void {
     // Patch event listeners
     patchEvents(oldEl, nextEl);
 
-    // Patch special DOM properties
-    patchProperties(oldEl as HTMLElement, nextEl as HTMLElement);
-
-    // Patch JSX-set JS properties (items, estimatedHeight, etc.)
+    // Patch JSX-set JS properties (value, checked, items, estimatedHeight, …)
     patchJSProps(oldEl as HTMLElement, nextEl as HTMLElement);
+
+    // Per-element expando transfer registered by opt-in features (@attribute)
+    if (_morphHooks.length > 0) {
+      for (let i = 0; i < _morphHooks.length; i++) _morphHooks[i](oldEl, nextEl);
+    }
 
     // innerHTML / rawHTML — if the new element used rawHTML, just slam it
     // The JSX runtime sets a __loomRawHTML marker
@@ -206,22 +229,21 @@ function morphNode(old: Node, next: Node): void {
       return;
     }
 
-    // Snapshot childNodes — childNodes is a LIVE NodeList.
-    // When morphChildren appends children from nextEl to oldEl,
-    // the live list shrinks mid-iteration, skipping every other child.
+    // Snapshot childNodes — childNodes is a LIVE NodeList. When morphChildren
+    // appends children from nextEl to oldEl the live list shrinks
+    // mid-iteration, skipping every other child.
+    //
+    // A per-call array, not a shared pooled buffer: morphNode() recurses, so
+    // the buffer could not be reused anyway — the old code copied it into a
+    // freshly allocated `{length: n}` object with integer keys, which V8 puts
+    // in a slow dictionary backing store. That was two copies plus an
+    // allocation to produce something slower than this, and the pooled buffer
+    // also retained detached DOM nodes after the morph finished.
     const nextChildren = nextEl.childNodes;
     const len = nextChildren.length;
-    if (len > _snapshotBuf.length) _snapshotBuf.length = len;
-    for (let i = 0; i < len; i++) _snapshotBuf[i] = nextChildren[i]!;
-    // Copy into a fixed ArrayLike — nested morphNode() reuses _snapshotBuf; parent morphChildren
-    // must not read live buffer slots that children overwrite mid-loop.
-    const snapshot = { length: len } as ArrayLike<Node>;
-    for (let i = 0; i < len; i++) (snapshot as unknown as Record<number, Node>)[i] = _snapshotBuf[i]!;
+    const snapshot = new Array<Node>(len);
+    for (let i = 0; i < len; i++) snapshot[i] = nextChildren[i]!;
     morphChildren(oldEl, snapshot, len);
-    // Shrink buffer if it grew past cap (from a one-off large list)
-    if (_snapshotBuf.length > _SNAPSHOT_CAP) {
-      _snapshotBuf.length = _SNAPSHOT_CAP;
-    }
   }
 }
 
@@ -312,20 +334,19 @@ function patchEvents(old: Element, next: Element): void {
   }
 }
 
-// ── DOM property patching ──
-
-const PROP_KEYS = ["value", "checked", "selected", "indeterminate"] as const;
-
-function patchProperties(old: HTMLElement, next: HTMLElement): void {
-  for (let i = 0; i < PROP_KEYS.length; i++) {
-    const key = PROP_KEYS[i];
-    if (key in next && (old as unknown as Record<string, unknown>)[key] !== (next as unknown as Record<string, unknown>)[key]) {
-      (old as unknown as Record<string, unknown>)[key] = (next as unknown as Record<string, unknown>)[key];
-    }
-  }
-}
-
 // ── JSX JS-property patching ──
+//
+// There used to be a separate patchProperties() that copied value/checked/
+// selected/indeterminate whenever `key in next`. That test is true for ANY
+// <input>/<option> regardless of what the template declared, so every full
+// morph reset the live element to the freshly-created one's defaults and wiped
+// whatever the user had typed or ticked. jsx() now records those keys in
+// __loomProps when — and only when — the template actually set them, so
+// patchJSProps below is the single path and undeclared form state is left
+// alone.
+
+/** Form-state properties that must never be reset to undefined on removal. */
+const FORM_PROP_KEYS = new Set(["value", "checked", "selected", "indeterminate"]);
 
 function patchJSProps(old: HTMLElement, next: HTMLElement): void {
   const newProps: LoomPropMap | undefined = (next as unknown as LoomNode).__loomProps;
@@ -334,10 +355,38 @@ function patchJSProps(old: HTMLElement, next: HTMLElement): void {
   if (!newProps && !oldProps) return;
   const op: LoomPropMap = oldProps ?? Object.create(null);
 
-  // Remove old props not in new
+  // Remove props the template no longer declares. Dropping the bookkeeping
+  // entry alone left the live JS property set — a child component kept
+  // rendering `items` after the parent stopped passing it — so restore the
+  // value the element had before Loom first wrote that key.
+  let removed: string[] | null = null;
   for (const key in op) {
     if (!newProps || !(key in newProps)) {
-      delete op[key];
+      (removed ??= []).push(key);
+    }
+  }
+  if (removed) {
+    const prior = (old as unknown as LoomNode).__loomPropPrior;
+    setReadonlyBypass(true);
+    try {
+      for (let i = 0; i < removed.length; i++) {
+        const key = removed[i];
+        if (prior && key in prior) {
+          (old as unknown as Record<string, unknown>)[key] = prior[key];
+          delete prior[key];
+        } else if (!FORM_PROP_KEYS.has(key)) {
+          // No recorded prior (the element was appended, never morphed, so we
+          // never saw its pristine value). Clearing is still right for data
+          // props — otherwise a child keeps rendering the array its parent
+          // stopped passing. Form props are exempt: assigning undefined to
+          // `value` stringifies to "undefined", and a control the template no
+          // longer drives should simply become uncontrolled.
+          (old as unknown as Record<string, unknown>)[key] = undefined;
+        }
+        delete op[key];
+      }
+    } finally {
+      setReadonlyBypass(false);
     }
   }
 
@@ -346,6 +395,13 @@ function patchJSProps(old: HTMLElement, next: HTMLElement): void {
     setReadonlyBypass(true);
     try {
       for (const key in newProps) {
+        // Capture the pre-Loom value once, the first time we write this key,
+        // so removal can put it back.
+        if (!(key in op)) {
+          let prior = (old as unknown as LoomNode).__loomPropPrior;
+          if (!prior) { prior = Object.create(null); (old as unknown as LoomNode).__loomPropPrior = prior!; }
+          if (!(key in prior!)) prior![key] = (old as unknown as Record<string, unknown>)[key];
+        }
         if ((old as unknown as Record<string, unknown>)[key] !== newProps[key]) {
           (old as unknown as Record<string, unknown>)[key] = newProps[key];
         }
@@ -388,11 +444,6 @@ function canMorph(old: Node, next: Node): boolean {
   }
   return false;
 }
-
-/** Pooled snapshot buffer — grows to match the largest childNodes list, avoids per-element allocation */
-let _snapshotBuf: Node[] = [];
-/** Cap for snapshot buffer — prevents unbounded growth from one-off large lists */
-const _SNAPSHOT_CAP = 256;
 
 /** Pooled keyed Map — avoids allocation per keyed morph */
 const _keyedPool: Map<string, Element>[] = [];

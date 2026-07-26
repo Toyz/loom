@@ -29,6 +29,53 @@ const SVG_TAGS = new Set([
 const PROP_KEYS = new Set(["value", "checked", "selected", "indeterminate"]);
 
 /**
+ * Record a JS property Loom set, so morph knows to patch it on the live
+ * element — and, for PROP_KEYS, so morph knows it may touch that property at
+ * all. Anything not recorded here is user/browser state morph must not clobber.
+ */
+function trackProp(el: Element, key: string, val: unknown): void {
+  const n = el as unknown as LoomNode;
+  let tracked = n.__loomProps;
+  if (!tracked) { tracked = Object.create(null); n.__loomProps = tracked!; }
+  tracked![key] = val;
+}
+
+/**
+ * Write one already-evaluated prop value onto an element.
+ *
+ * Used by the closure-binding branch for both the initial application and the
+ * patcher, so the two can never disagree about where a given key belongs
+ * (className vs class attribute, style object vs string, PROP_KEYS as JS
+ * properties, booleans as attribute presence).
+ */
+function applyProp(el: HTMLElement | SVGElement, key: string, val: unknown, isSVG: boolean): void {
+  if (key === "className" || key === "class") {
+    if (isSVG) el.setAttribute("class", '' + val);
+    else (el as HTMLElement).className = '' + val;
+  } else if (key === "style") {
+    if (val && typeof val === "object") Object.assign((el as HTMLElement).style, val);
+    else el.setAttribute("style", '' + val);
+  } else if (key === "htmlFor") {
+    el.setAttribute("for", '' + val);
+  } else if (PROP_KEYS.has(key)) {
+    (el as unknown as Record<string, unknown>)[key] = val;
+    trackProp(el, key, val);
+  } else if (typeof val === "boolean") {
+    if (key === "draggable" || key === "contentEditable" || key === "spellcheck") {
+      el.setAttribute(key, val ? "true" : "false");
+    } else {
+      val ? el.setAttribute(key, "") : el.removeAttribute(key);
+    }
+  } else if (val == null) {
+    el.removeAttribute(key);
+  } else {
+    const s = '' + val;
+    el.setAttribute(key, s);
+    if (key === LOOM_KEY_ATTR) (el as unknown as LoomNode).__loomKey = s;
+  }
+}
+
+/**
  * Cache event type strings: "onClick" → "click", "onInput" → "input"
  * Avoids allocating a new .slice(2).toLowerCase() string per jsx() call.
  */
@@ -41,7 +88,7 @@ const _eventTypeCache: Record<string, string> = {};
 const _elCache: Record<string, HTMLElement> = {};
 const _svgCache: Record<string, SVGElement> = {};
 
-function acquireElement(tag: string, isSVG: boolean): HTMLElement | SVGElement {
+function acquireElement(tag: string, isSVG: boolean, isCustom: boolean): HTMLElement | SVGElement {
   if (isSVG) {
     let tmpl = _svgCache[tag];
     if (!tmpl) { tmpl = document.createElementNS(SVG_NS, tag) as SVGElement; _svgCache[tag] = tmpl; }
@@ -49,7 +96,8 @@ function acquireElement(tag: string, isSVG: boolean): HTMLElement | SVGElement {
   }
   // Custom elements (tag contains hyphen) MUST use createElement — cloneNode
   // does NOT call the custom element constructor, breaking shadow DOM, reactivity, etc.
-  if (tag.indexOf('-') !== -1) return document.createElement(tag);
+  // The hyphen test is passed in so jsx() computes it once per call.
+  if (isCustom) return document.createElement(tag);
   let tmpl = _elCache[tag];
   if (!tmpl) { tmpl = document.createElement(tag); _elCache[tag] = tmpl; }
   return tmpl.cloneNode(false) as HTMLElement;
@@ -69,7 +117,8 @@ export function jsx(
     fc === 103 || fc === 105 || fc === 108 || fc === 109 ||   // g,i,l,m
     fc === 112 || fc === 114 || fc === 115 || fc === 116 ||   // p,r,s,t
     fc === 117) && SVG_TAGS.has(tag);                         // u
-  const el = acquireElement(tag, isSVG);
+  const isCustom = tag.indexOf('-') !== -1;
+  const el = acquireElement(tag, isSVG, isCustom);
 
   if (props) for (const key in props) {
     const val = props[key];
@@ -94,41 +143,25 @@ export function jsx(
       val(el);
     } else if (key === "style" && typeof val === "object") {
       Object.assign((el as HTMLElement).style, val);
-    } else if (key === "className" || key === "class") {
-      if (typeof val === "function") {
-        // Closure binding for class
-        startSubTrace();
-        try {
-          const res = val();
-          if (isSVG) el.setAttribute("class", '' + res);
-          else (el as HTMLElement).className = '' + res;
-
-          const deps = endSubTrace();
-          if (deps.size > 0) {
-            addBinding(deps, el, () => {
-              const v = val();
-              if (isSVG) el.setAttribute("class", '' + v);
-              else (el as HTMLElement).className = '' + v;
-            });
-          }
-        } catch (e) {
-          console.error("Loom: Error executing class binding", e);
-          endSubTrace();
-        }
+    } else if ((key === "className" || key === "class") && typeof val !== "function") {
+      if (isSVG) {
+        el.setAttribute("class", val as string);
       } else {
-        if (isSVG) {
-          el.setAttribute("class", val as string);
-        } else {
-          (el as HTMLElement).className = val as string;
-        }
+        (el as HTMLElement).className = val as string;
       }
     } else if (key === "htmlFor") {
       el.setAttribute("for", val as string);
     } else if (key === "rawHTML" || key === "innerHTML") {
       el.innerHTML = val as string;
       (el as unknown as LoomNode).__loomRawHTML = true;
-    } else if (PROP_KEYS.has(key)) {
+    } else if (PROP_KEYS.has(key) && typeof val !== "function") {
+      // Functions fall through to the closure branch below; applyProp routes
+      // the evaluated result back here.
       (el as unknown as Record<string, unknown>)[key] = val;
+      // Declare it, so morph patches this property on re-render. Undeclared
+      // value/checked/selected/indeterminate belong to the user, not the
+      // template, and morph must leave them alone.
+      trackProp(el, key, val);
     } else if (typeof val === "boolean") {
       // Enumerated attrs (draggable, contentEditable, spellcheck) need "true"/"false" strings.
       // Empty string means "auto" for these, not "true".
@@ -138,36 +171,41 @@ export function jsx(
         val ? el.setAttribute(key, "") : el.removeAttribute(key);
       }
     } else if (typeof val === "object" || typeof val === "function") {
-      // Non-primitive values (arrays, objects) — set as JS property
-      (el as unknown as Record<string, unknown>)[key] = val;
-      // Track for morph diffing (so morph copies them to the existing element)
-      let tracked: LoomPropMap | undefined = (el as unknown as LoomNode).__loomProps;
-      if (!tracked) { tracked = Object.create(null); (el as unknown as LoomNode).__loomProps = tracked!; }
-      tracked![key] = val;
-    } else {
-      // Check for closure binding: class={() => this.theme}
-      if (typeof val === "function") {
+      // Closure binding — `title={() => this.label}`, `class={() => ...}`.
+      //
+      // Peeled off INSIDE this branch on purpose: it already tests
+      // `typeof val === "function"`, so the common object/property path pays
+      // no extra check. A separate branch earlier in the chain would tax every
+      // prop of every element of every render.
+      //
+      // Arity 0 distinguishes a binding from a template function, mirroring
+      // the `children.length > 0` rule in appendChildren, so
+      // `renderItem={(item) => ...}` stays a JS property. Custom elements are
+      // excluded because they legitimately take zero-arg callback props.
+      if (typeof val === "function" && (val as Function).length === 0 && !isCustom) {
         startSubTrace();
         try {
-          const res = val();
-          const s = '' + res;
-          el.setAttribute(key, s);
-          if (key === LOOM_KEY_ATTR) (el as unknown as LoomNode).__loomKey = s;
+          applyProp(el, key, (val as () => unknown)(), isSVG);
           const deps = endSubTrace();
           if (deps.size > 0) {
-            addBinding(deps, el, () => el.setAttribute(key, '' + val()));
+            addBinding(deps, el, () => applyProp(el, key, (val as () => unknown)(), isSVG));
           }
         } catch (e) {
-          // Fallback or error handling for failed binding execution
-          console.error(`Loom: Error executing binding for attribute '${key}'`, e);
-          el.setAttribute(key, "");
+          console.error(`Loom: Error executing binding for '${key}'`, e);
           endSubTrace(); // Ensure trace stack is popped
         }
       } else {
-        const s = '' + val;
-        el.setAttribute(key, s);
-        if (key === LOOM_KEY_ATTR) (el as unknown as LoomNode).__loomKey = s;
+        // Non-primitive values (arrays, objects, callbacks) — set as JS property
+        (el as unknown as Record<string, unknown>)[key] = val;
+        // Track for morph diffing (so morph copies them to the existing element)
+        let tracked: LoomPropMap | undefined = (el as unknown as LoomNode).__loomProps;
+        if (!tracked) { tracked = Object.create(null); (el as unknown as LoomNode).__loomProps = tracked!; }
+        tracked![key] = val;
       }
+    } else {
+      const s = '' + val;
+      el.setAttribute(key, s);
+      if (key === LOOM_KEY_ATTR) (el as unknown as LoomNode).__loomKey = s;
     }
   }
 

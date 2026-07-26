@@ -15,6 +15,11 @@ const cssCache = new Map<string, CSSStyleSheet>();
  * V8 trick: TemplateStringsArray is always the same frozen object for the
  * same source-level template literal. Use it as a fast identity key to skip
  * String.raw() entirely on cache hits.
+ *
+ * Only valid for templates with NO interpolation. The strings array is shared
+ * across every evaluation of a given call site regardless of the values, so a
+ * parameterized helper — `const themed = (c) => css`:host{color:${c}}`` —
+ * would return the first call's sheet forever.
  */
 const _identityCache = new WeakMap<TemplateStringsArray, CSSStyleSheet>();
 
@@ -32,19 +37,24 @@ export function css(
   strings: TemplateStringsArray,
   ...values: CSSValue[]
 ): CSSStyleSheet {
-  // Fast path: identity check on the TemplateStringsArray object
-  let sheet = _identityCache.get(strings);
-  if (sheet) return sheet;
+  // Fast path: identity check on the TemplateStringsArray object.
+  // Sound only when nothing is interpolated — see the note on _identityCache.
+  const isStatic = values.length === 0;
+  if (isStatic) {
+    const hit = _identityCache.get(strings);
+    if (hit) return hit;
+  }
 
-  // Slow path: build string and check the string cache
+  // Build the string and check the text cache. Interpolated templates dedupe
+  // here instead: same resulting CSS text -> same CSSStyleSheet.
   const text = String.raw(strings, ...values);
-  sheet = cssCache.get(text);
+  let sheet = cssCache.get(text);
   if (!sheet) {
     sheet = new CSSStyleSheet();
     sheet.replaceSync(text);
     cssCache.set(text, sheet);
   }
-  _identityCache.set(strings, sheet);
+  if (isStatic) _identityCache.set(strings, sheet);
   return sheet;
 }
 

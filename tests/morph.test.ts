@@ -192,17 +192,38 @@ describe("morph()", () => {
     }
   });
 
-  it("patches DOM properties (value, checked)", () => {
+  // These two replace a single older test that asserted morph copies `value`
+  // whenever the property exists on the new element. `"value" in next` is true
+  // for every <input>, so that behavior wiped whatever the user had typed on
+  // any full re-render. jsx() now records value/checked/selected/indeterminate
+  // in __loomProps only when the template actually declared them, and morph
+  // patches exactly those.
+  it("patches DOM properties the template declared (value, checked)", () => {
     const shadow = createHost();
     const input = document.createElement("input");
     (input as HTMLInputElement).value = "old";
+    (input as any).__loomProps = { value: "old" };
     shadow.appendChild(input);
 
     const input2 = document.createElement("input");
     (input2 as HTMLInputElement).value = "new";
+    (input2 as any).__loomProps = { value: "new" };
     morph(shadow, input2);
 
     expect((shadow.firstChild as HTMLInputElement).value).toBe("new");
+  });
+
+  it("leaves undeclared form state alone (uncontrolled input)", () => {
+    const shadow = createHost();
+    const input = document.createElement("input");
+    shadow.appendChild(input);
+    (shadow.firstChild as HTMLInputElement).value = "user typed this";
+
+    // Re-render produces a fresh <input> with no declared value.
+    const input2 = document.createElement("input");
+    morph(shadow, input2);
+
+    expect((shadow.firstChild as HTMLInputElement).value).toBe("user typed this");
   });
 
   it("patches JS properties via __loomProps", () => {

@@ -137,7 +137,7 @@ describe("baseline: uncontrolled form state survives morph (Phase 5)", () => {
     return document.createElement("div").attachShadow({ mode: "open" });
   }
 
-  it.fails("preserves a user-typed value when JSX declared no value prop", () => {
+  it("preserves a user-typed value when JSX declared no value prop", () => {
     const root = shadow();
 
     const initial = document.createElement("div");
@@ -159,7 +159,7 @@ describe("baseline: uncontrolled form state survives morph (Phase 5)", () => {
     expect(root.querySelector("input")!.value).toBe("hello");
   });
 
-  it.fails("preserves a user-toggled checkbox the template never declared", () => {
+  it("preserves a user-toggled checkbox the template never declared", () => {
     const root = shadow();
 
     const mk = (label: string) => {
