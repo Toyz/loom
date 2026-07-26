@@ -20,7 +20,7 @@ export default class ExampleEventBus extends LoomElement {
           <div class="group-header">
             <h2>Demo</h2>
           </div>
-          <p class="hint" style="margin-bottom:0.75rem;color:var(--text-muted);font-size:0.85rem;">
+          <p class="hint">
             Try emitting events, setting up once/waitFor listeners, and watching inheritance + cancellation in the log.
           </p>
           <eventbus-demo></eventbus-demo>

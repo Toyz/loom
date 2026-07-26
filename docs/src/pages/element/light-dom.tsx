@@ -93,7 +93,7 @@ class MyButton extends LoomElement {
 @styles(btnStyles)
 class MyButton extends LoomElement { ... }`}></code-block>
 
-          <div class="callout">
+          <div class="note">
             <strong>Note:</strong> Use the component's tag name (e.g. <code>my-button</code>) instead
             of <code>:host</code> in your CSS selectors. The <code>:host</code> pseudo-class only works inside shadow DOM.
           </div>

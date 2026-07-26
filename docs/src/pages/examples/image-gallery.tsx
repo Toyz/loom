@@ -36,7 +36,7 @@ export default class PageExampleImageGallery extends LoomElement {
           <div class="group-header">
             <h2>Demo</h2>
           </div>
-          <p class="hint" style="margin-bottom:0.5rem;color:var(--text-muted);font-size:0.85rem;">
+          <p class="hint">
             Navigate away and come back — cached images load instantly.
           </p>
           <style>{`

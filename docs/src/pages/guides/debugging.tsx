@@ -209,7 +209,7 @@ export function cache(ttl: number) {
         </section>
 
         <section>
-          <div class="callout">
+          <div class="note">
             <strong>Tip:</strong> Add <span class="ic">installGlobalHook()</span> behind
             an <span class="ic">import.meta.env.DEV</span> guard so it tree-shakes out of
             production builds.

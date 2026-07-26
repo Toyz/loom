@@ -3,91 +3,8 @@
  *
  * @mount, @unmount, @catch_, @suspend, firstUpdated, shouldUpdate
  */
-import { LoomElement, css, styles as applyStyles } from "@toyz/loom";
+import { LoomElement } from "@toyz/loom";
 
-const lifecycleStyles = css`
-  .lc-flow {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-    margin: 1rem 0;
-  }
-
-  .lc-step {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.625rem 0.875rem;
-    background: var(--bg-surface, #13131a);
-    border-radius: var(--radius-sm, 6px);
-    border-left: 3px solid transparent;
-    transition: background 0.15s ease;
-  }
-  .lc-step:hover {
-    background: var(--bg-hover, var(--ground-raised));
-  }
-
-  .lc-step.indigo  { border-left-color: var(--accent, var(--thread)); }
-  .lc-step.emerald { border-left-color: var(--emerald, var(--ok)); }
-  .lc-step.amber   { border-left-color: var(--amber, var(--warn)); }
-  .lc-step.cyan    { border-left-color: var(--cyan, var(--indigo)); }
-  .lc-step.rose    { border-left-color: var(--rose, var(--thread)); }
-
-  .lc-num {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.625rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .lc-step.indigo  .lc-num { background: rgba(129,140,248,0.12); color: var(--accent, var(--thread)); }
-  .lc-step.emerald .lc-num { background: rgba(52,211,153,0.12);  color: var(--emerald, var(--ok)); }
-  .lc-step.amber   .lc-num { background: rgba(251,191,36,0.12);  color: var(--amber, var(--warn)); }
-  .lc-step.cyan    .lc-num { background: rgba(34,211,238,0.12);  color: var(--cyan, var(--indigo)); }
-  .lc-step.rose    .lc-num { background: rgba(244,114,182,0.12); color: var(--rose, var(--thread)); }
-
-  .lc-hook {
-    font-family: var(--font-mono, monospace);
-    font-size: 0.8125rem;
-    color: var(--text-primary, var(--text-primary));
-    font-weight: 500;
-    white-space: nowrap;
-    min-width: 180px;
-  }
-
-  .lc-desc {
-    font-size: 0.75rem;
-    color: var(--text-muted, var(--text-muted));
-  }
-
-  .lc-sep {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.125rem 0;
-  }
-  .lc-sep::before,
-  .lc-sep::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border-subtle, var(--warp));
-  }
-  .lc-sep span {
-    font-size: 0.625rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted, var(--text-muted));
-    white-space: nowrap;
-  }
-`;
-
-@applyStyles(lifecycleStyles)
 export default class PageElementLifecycle extends LoomElement {
   update() {
     return (
@@ -293,49 +210,22 @@ class CanvasWrapper extends LoomElement {
             <h2>Full Lifecycle Order</h2>
           </div>
 
-          <div class="lc-flow">
-            <div class="lc-step indigo">
-              <div class="lc-num">1</div>
-              <span class="lc-hook">constructor()</span>
-              <span class="lc-desc">Element created — shadow root attached, no DOM yet</span>
-            </div>
-            <div class="lc-step emerald">
-              <div class="lc-num">2</div>
-              <span class="lc-hook">@mount</span>
-              <span class="lc-desc">Connected to DOM — setup subscriptions, adopt styles</span>
-            </div>
-            <div class="lc-step amber">
-              <div class="lc-num">3</div>
-              <span class="lc-hook">shouldUpdate()</span>
-              <span class="lc-desc">Gate check — return false to skip render</span>
-            </div>
-            <div class="lc-step cyan">
-              <div class="lc-num">4</div>
-              <span class="lc-hook">update()</span>
-              <span class="lc-desc">First render — return JSX, DOM is morphed</span>
-            </div>
-            <div class="lc-step emerald">
-              <div class="lc-num">5</div>
-              <span class="lc-hook">firstUpdated()</span>
-              <span class="lc-desc">One-time — shadow DOM is fully populated</span>
-            </div>
-
-            <div class="lc-sep"><span>re-render loop</span></div>
-
-            <div class="lc-step amber">
-              <div class="lc-num">6</div>
-              <span class="lc-hook">shouldUpdate() → update()</span>
-              <span class="lc-desc">On each @reactive change — morphs only what changed</span>
-            </div>
-
-            <div class="lc-sep"><span>disconnect</span></div>
-
-            <div class="lc-step rose">
-              <div class="lc-num">7</div>
-              <span class="lc-hook">@unmount</span>
-              <span class="lc-desc">Disconnected from DOM — cleanup timers, close connections</span>
-            </div>
-          </div>
+          <table class="api-table">
+            <thead>
+              <tr><th>#</th><th>Hook</th><th>When</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><code>constructor()</code></td><td>Element created — shadow root attached, no DOM yet</td></tr>
+              <tr><td>2</td><td><code>@mount</code></td><td>Connected to the DOM — set up subscriptions, adopt styles</td></tr>
+              <tr><td>3</td><td><code>shouldUpdate()</code></td><td>Gate check — return false to skip the render</td></tr>
+              <tr><td>4</td><td><code>update()</code></td><td>First render — return JSX, the DOM is morphed</td></tr>
+              <tr><td>5</td><td><code>firstUpdated()</code></td><td>Once only — the shadow DOM is fully populated</td></tr>
+              <tr><td colSpan={3} class="phase">re-render loop</td></tr>
+              <tr><td>6</td><td><code>shouldUpdate() → update()</code></td><td>On each reactive change — morphs only what changed</td></tr>
+              <tr><td colSpan={3} class="phase">disconnect</td></tr>
+              <tr><td>7</td><td><code>@unmount</code></td><td>Disconnected — clear timers, close connections</td></tr>
+            </tbody>
+          </table>
         </section>
         <doc-nav></doc-nav>
       </div>

@@ -20,7 +20,7 @@ export default class ExampleVirtualList extends LoomElement {
           <div class="group-header">
             <h2>Demo</h2>
           </div>
-          <p class="hint" style="margin-bottom:0.75rem;color:var(--text-muted);font-size:0.85rem;">
+          <p class="hint">
             Switch between sizes — the list only renders what's visible. Scroll to see dynamic measurement in action.
           </p>
           <virtual-list-demo></virtual-list-demo>

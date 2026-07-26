@@ -21,7 +21,7 @@ export default class ExampleKanban extends LoomElement {
           <div class="group-header">
             <h2>Demo</h2>
           </div>
-          <p class="hint" style="margin-bottom:0.75rem;color:var(--text-muted);font-size:0.85rem;">
+          <p class="hint">
             Drag cards between columns. Press <kbd style="background:var(--surface-2);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.75rem;">N</kbd> to focus input. Data persists via localStorage.
           </p>
           <kanban-board></kanban-board>

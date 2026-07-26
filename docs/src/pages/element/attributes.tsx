@@ -20,7 +20,7 @@ export default class PageElementAttributes extends LoomElement {
         </section>
 
         <section>
-          <p class="lead">
+          <p>
             <span class="ic">LoomAttribute</span> is to attributes what <span class="ic">LoomElement</span> is
             to tags. Instead of registering a custom element, you register a custom <em> attribute</em>. Whenever an element gains that attribute — rendered by
             Loom's JSX, hydrated from Declarative Shadow DOM, or hand-written in HTML —

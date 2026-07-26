@@ -285,6 +285,46 @@ export const docStyles = css`
     margin-bottom: var(--space-2, 0.5rem);
   }
 
+  /* A spanning row that labels a phase inside a sequence table. */
+  .api-table td.phase {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted, #6d6858);
+    background: rgba(0, 0, 0, 0.22);
+    padding-left: var(--space-3, 0.75rem);
+  }
+
+  /* ── Grid of cards ──
+     For a page that genuinely presents parallel options. Same surface as
+     everything else: no radius, hairline warp rule, no tinted fill. These
+     were previously per-page class names with no CSS behind them at all,
+     so they rendered as bare stacked divs. */
+
+  .grid {
+    display: grid;
+    gap: var(--space-4, 1rem);
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    margin-bottom: var(--space-5, 1.25rem);
+  }
+  .card {
+    background: var(--ground-raised, #1c1c15);
+    border: 1px solid var(--warp, #33322a);
+    padding: var(--space-4, 1rem);
+  }
+  .card h3, .card h4 { margin-top: 0; margin-bottom: var(--space-2, 0.5rem); }
+  .card p { font-size: var(--text-sm, 0.8125rem); }
+  .card p:last-child, .card ul:last-child { margin-bottom: 0; }
+
+  /* A one-line instruction above a demo. Quieter than a callout, which is
+     why pages kept reaching for an inline style= to fake it. */
+  .hint {
+    font-size: var(--text-sm, 0.8125rem);
+    color: var(--text-muted, #6d6858);
+    margin-bottom: var(--space-3, 0.75rem);
+  }
+
   /* ── Badge ── */
 
   .badge {
