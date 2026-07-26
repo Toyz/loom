@@ -5,6 +5,7 @@
  *   <code-block lang="ts" code={`const x = 1;`}></code-block>
  */
 import { LoomElement, component, prop, reactive, debounce, css, mount } from "@toyz/loom";
+import { DECORATOR_HELP } from "../data/decorator-help";
 
 /* ── Per-language tokenizer rules ── */
 
@@ -131,6 +132,16 @@ function highlight(code: string, lang = "ts"): string {
     .map(t => {
       const escaped = escapeHtml(t.text);
       if (t.type === "space" || t.type === "plain") return escaped;
+      // Decorator tokens we can explain carry the doc-tip attribute, which the
+      // <doc-tip> @attribute controller picks up and turns into a popover.
+      // Only tokens with an entry get it — a tooltip that says nothing is
+      // worse than no tooltip.
+      if (t.type === "decorator") {
+        const key = t.text.replace(/^@/, "");
+        if (DECORATOR_HELP[key]) {
+          return `<span class="tok-decorator" doc-tip="${key}">${escaped}</span>`;
+        }
+      }
       return `<span class="tok-${t.type}">${escaped}</span>`;
     })
     .join("");
@@ -310,6 +321,18 @@ const styles = css`
      The decorator is the loudest token on purpose: it is the punch. */
   .tok-keyword    { color: #b98b6a; }
   .tok-decorator  { color: #d9603f; font-weight: 600; }
+  /* Explained decorators advertise themselves as hoverable. */
+  .tok-decorator[doc-tip] {
+    cursor: help;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in srgb, #d9603f 45%, transparent);
+  }
+  .tok-decorator[doc-tip]:hover,
+  .tok-decorator[doc-tip]:focus-visible {
+    text-decoration-color: #d9603f;
+    outline: none;
+  }
   .tok-string     { color: #93a86a; }
   .tok-comment    { color: #6d6858; font-style: italic; }
   .tok-type       { color: #8fa9c4; }

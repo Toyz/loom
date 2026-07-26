@@ -22,8 +22,7 @@ export default class PageElementTiming extends LoomElement {
           <p>
             A timer outliving its component is the classic web component leak: the element
             is gone, the callback still fires, and it writes to a detached DOM or a store
-            nobody is reading. These decorators exist so you never write the matching{" "}
-            <span class="ic">clear</span> call — teardown is registered at the same moment
+            nobody is reading. These decorators exist so you never write the matching <span class="ic">clear</span> call — teardown is registered at the same moment
             the timer starts.
           </p>
           <p>
@@ -136,8 +135,7 @@ class ToastMessage extends LoomElement {
           <div class="feature-entry">
             <div class="dec-sig">@debounce(ms: number)</div>
             <div class="dec-desc">
-              Replaces the method with a version that waits for <span class="ic">ms</span>{" "}
-              of silence before running. Each call cancels the pending one, so a burst
+              Replaces the method with a version that waits for <span class="ic">ms</span> of silence before running. Each call cancels the pending one, so a burst
               produces exactly one execution — with the arguments of the <em>last</em> call.
             </div>
             <code-block lang="ts" code={`@component("user-search")
@@ -152,8 +150,7 @@ class UserSearch extends LoomElement {
 }`}></code-block>
             <p class="note">
               Debounce delays <em>everything</em>, including the first call. If the UI
-              should react at once and then settle, you want{" "}
-              <span class="ic">@throttle</span>.
+              should react at once and then settle, you want <span class="ic">@throttle</span>.
             </p>
           </div>
         </section>
@@ -197,10 +194,8 @@ class ScrollProgress extends LoomElement {
               @animationFrame | @animationFrame(layer) | @animationFrame(options)
             </div>
             <div class="dec-desc">
-              Joins the shared render loop. The method receives{" "}
-              <span class="ic">(dt, timestamp)</span> — <span class="ic">dt</span> is
-              seconds since the previous frame, <span class="ic">timestamp</span> is the raw{" "}
-              <span class="ic">requestAnimationFrame</span> value in milliseconds.
+              Joins the shared render loop. The method receives <span class="ic">(dt, timestamp)</span> — <span class="ic">dt</span> is
+              seconds since the previous frame, <span class="ic">timestamp</span> is the raw <span class="ic">requestAnimationFrame</span> value in milliseconds.
             </div>
             <code-block lang="ts" code={`@component("particle-field")
 class ParticleField extends LoomElement {
@@ -226,16 +221,14 @@ class ParticleField extends LoomElement {
             <p>
               Every <span class="ic">@animationFrame</span> in the application shares a
               single <span class="ic">requestAnimationFrame</span> callback. A hundred
-              animated components cost one rAF, not a hundred.{" "}
-              <span class="ic">layer</span> orders callbacks within a frame — lower runs
+              animated components cost one rAF, not a hundred. <span class="ic">layer</span> orders callbacks within a frame — lower runs
               first — which is how you guarantee physics has finished before anything
               paints.
             </p>
 
             <h3>fps is a cap, and only below 60</h3>
             <p>
-              <span class="ic">fps</span> applies only when it is above 0 and{" "}
-              <strong>below 60</strong>. Passing <span class="ic">{`{ fps: 60 }`}</span> or
+              <span class="ic">fps</span> applies only when it is above 0 and <strong>below 60</strong>. Passing <span class="ic">{`{ fps: 60 }`}</span> or
               higher is silently ignored and the callback runs every frame. The limiter
               subtracts its budget from an accumulator rather than resetting it, so a 30fps
               callback holds cadence instead of drifting slow.
@@ -243,8 +236,7 @@ class ParticleField extends LoomElement {
 
             <p class="caution">
               <span class="ic">dt</span> is <strong>0 on the first frame</strong> — there is
-              no previous timestamp to subtract. Anything shaped like{" "}
-              <span class="ic">distance / dt</span> divides by zero on frame one.
+              no previous timestamp to subtract. Anything shaped like <span class="ic">distance / dt</span> divides by zero on frame one.
               Multiplying by <span class="ic">dt</span> is safe: the object simply does not
               move for one frame.
             </p>
@@ -305,8 +297,7 @@ class ParticleField extends LoomElement {
           <div class="specimen">
             <span class="label">Complete component</span>
             <p>
-              Nothing elided. Drop this into a project with{" "}
-              <span class="ic">@toyz/loom</span> installed and it runs.
+              Nothing elided. Drop this into a project with <span class="ic">@toyz/loom</span> installed and it runs.
             </p>
           </div>
           <code-block lang="tsx" code={`import { LoomElement, component, reactive, debounce, throttle } from "@toyz/loom";

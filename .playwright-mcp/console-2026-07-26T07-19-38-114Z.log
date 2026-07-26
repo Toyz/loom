@@ -1,6 +1,0 @@
-[   85645ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:5173/src/pages/home.tsx?t=1785050463676:0
-[  107626ms] ReferenceError: INSTALL_CMD is not defined
-    at PageHome.update (http://localhost:5173/src/pages/home.tsx?t=1785050485578:368:64)
-    at PageHome._firstRender (http://localhost:5173/@fs/mnt/data/source/repos/loom/src/element/element.ts:179:25)
-    at _flushUpdate (http://localhost:5173/@fs/mnt/data/source/repos/loom/src/element/element.ts:155:12)
-[  124239ms] The requested module '/@fs/mnt/data/source/repos/loom/src/index.ts' does not provide an export named 'clipboard'
