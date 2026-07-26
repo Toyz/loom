@@ -10,7 +10,12 @@ export default class PageElementOverview extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="LoomElement" subtitle="The base class for every Loom web component."></doc-header>
+        <doc-header title="LoomElement" subtitle="One method to override, and a decorator for everything else. No virtual DOM in between."></doc-header>
+
+        <section>
+          <p>A raw web component makes you write the plumbing yourself: <span class="ic">observedAttributes</span>, an <span class="ic">attributeChangedCallback</span> that parses strings by hand, a render call you remember to make, and a matching teardown for every listener and timer you started. Most of that code is identical in every component, and the parts that differ are the parts people get wrong.</p>
+          <p><span class="ic">LoomElement</span> reduces it to one method. You write <span class="ic">update()</span> returning DOM; everything else is declared with a decorator and torn down for you when the element disconnects. There is no virtual DOM in between — <span class="ic">update()</span> builds real nodes, and a re-render morphs the existing tree in place rather than replacing it.</p>
+        </section>
 
         <section>
           <div class="group-header">

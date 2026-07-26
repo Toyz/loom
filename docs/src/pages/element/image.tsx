@@ -13,6 +13,11 @@ export default class PageElementImage extends LoomElement {
         <doc-header title="&lt;loom-image&gt;" subtitle="Lazy-loaded images with an in-memory cache, customizable placeholder, and smooth fade-in — powered by @observer(&quot;intersection&quot;)."></doc-header>
 
         <section>
+          <p>A grid of images loads every one of them at once, including the ninety below the fold, and each arrives by popping into place at whatever moment the network delivers it. The fix is always the same three parts — defer the load until the image is near the viewport, hold the space before it arrives, and fade rather than snap.</p>
+          <p><span class="ic">loom-image</span> is those three parts as one element. It defers via <span class="ic">@observer("intersection")</span>, caches decoded URLs in memory so a second use is instant, and renders a placeholder until the real image is ready. Changing <span class="ic">src</span> restarts the cycle rather than leaving the old image in place.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Quick Start</h2>

@@ -9,7 +9,12 @@ export default class PageElementLazy extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Lazy Loading" subtitle="Defer component module loading until first mount with @lazy."></doc-header>
+        <doc-header title="Lazy Loading" subtitle="Keep fifty routes out of the initial bundle. The placeholder is a real element until the module lands."></doc-header>
+
+        <section>
+          <p>Every component you register ships in the initial bundle, whether or not the user ever navigates to it. For a docs site or an admin panel with fifty routes, most of that code is downloaded and parsed to render a page nobody opened.</p>
+          <p><span class="ic">@lazy</span> registers a placeholder element that knows how to fetch the real implementation. The module loads on first mount, the real class takes over, and any attributes and route props set in the meantime are forwarded to it. Until then the element is a real, connected node — so layout does not shift when the implementation arrives.</p>
+        </section>
 
         <section>
           <div class="group-header">

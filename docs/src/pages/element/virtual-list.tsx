@@ -7,7 +7,12 @@ export default class PageVirtualList extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Virtual List" subtitle="Render thousands of items efficiently with windowed virtualization."></doc-header>
+        <doc-header title="Virtual List" subtitle="Render the rows in the viewport and none of the others. Heights are measured, not assumed."></doc-header>
+
+        <section>
+          <p>Ten thousand rows is ten thousand elements, ten thousand style resolutions and a layout pass over all of them. The browser is not slow at this because your framework is inefficient; it is slow because you asked it to lay out ten thousand things the user cannot see.</p>
+          <p>Windowing renders only the rows that intersect the viewport plus a small overscan, and translates them into position so the scrollbar still reflects the full list. <span class="ic">loom-virtual</span> measures row heights as they render, so rows do not have to be uniform, and keeps those measurements across appends instead of discarding them.</p>
+        </section>
 
         <section>
           <div class="group-header">

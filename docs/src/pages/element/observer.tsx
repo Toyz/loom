@@ -9,7 +9,12 @@ export default class PageElementObserver extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Observer" subtitle="Auto-managed ResizeObserver, IntersectionObserver, and MutationObserver with lifecycle cleanup."></doc-header>
+        <doc-header title="Observer" subtitle="Resize, intersection and mutation observers that disconnect themselves."></doc-header>
+
+        <section>
+          <p>The three DOM observers all share the same failure mode: they hold a strong reference to their callback, and their callback closes over your element. Forget one <span class="ic">disconnect()</span> and the element is never collected — it keeps receiving entries, keeps writing to a detached tree, and keeps the whole component graph alive.</p>
+          <p><span class="ic">@observer</span> creates the observer on connect and disconnects it on disconnect, in the same declaration. The three kinds differ in what they watch: <span class="ic">resize</span> for box size, <span class="ic">intersection</span> for viewport overlap, <span class="ic">mutation</span> for subtree changes. Loom hands your method one entry at a time rather than the raw array.</p>
+        </section>
 
         <section>
           <div class="group-header">

@@ -9,7 +9,12 @@ export default class PageElementQueries extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="DOM Queries" subtitle="Lazy shadow DOM selectors via decorators."></doc-header>
+        <doc-header title="DOM Queries" subtitle="Live shadow-root lookups that cannot go stale, because nothing is cached."></doc-header>
+
+        <section>
+          <p>Querying the shadow root by hand goes wrong in two directions. Query too early — in the constructor or <span class="ic">connect</span> — and the template has not rendered, so you get <span class="ic">null</span>. Query once and cache the node, and the reference goes stale the moment a morph replaces that element.</p>
+          <p><span class="ic">@query</span> and <span class="ic">@queryAll</span> sidestep both by reading on every access. The accessor is a live lookup, not a stored node, so it is correct after any render and there is nothing to invalidate. The cost is a <span class="ic">querySelector</span> per read, which is why the parameterized form pre-compiles its selector at decoration time rather than building it per call.</p>
+        </section>
 
         <section>
           <div class="group-header">

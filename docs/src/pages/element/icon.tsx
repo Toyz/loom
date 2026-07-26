@@ -9,7 +9,12 @@ export default class PageElementIcon extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Icon" subtitle="SVG icon system with lazy registration."></doc-header>
+        <doc-header title="Icon" subtitle="A name-keyed SVG registry that renders in the light DOM, so the page cascade reaches it."></doc-header>
+
+        <section>
+          <p>Icon fonts break at arbitrary font sizes and cannot be multi-coloured; sprite sheets need a build step and a fetch. Inlining SVG per use site avoids both and costs you duplicated markup for every repeat of the same icon.</p>
+          <p><span class="ic">loom-icon</span> keeps a registry: register an icon's path data once by name, then reference it by name anywhere. The element renders into the light DOM, so <span class="ic">currentColor</span> and the surrounding cascade reach it without piercing a boundary. <span class="ic">fill</span> and <span class="ic">strokeWidth</span> are separate props from <span class="ic">color</span>, so a filled icon and a stroked one can come from the same registry.</p>
+        </section>
 
         <section>
           <div class="group-header">

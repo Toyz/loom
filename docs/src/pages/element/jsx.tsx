@@ -10,6 +10,11 @@ export default class PageJsx extends LoomElement {
         <doc-header title="JSX &amp; Morphing" subtitle="Zero virtual DOM — JSX compiles directly to DOM nodes, and Loom morphs in-place."></doc-header>
 
         <section>
+          <p>Loom's JSX has no virtual DOM. <span class="ic">jsx()</span> creates real elements immediately, so what <span class="ic">update()</span> returns is a live DOM tree, not a description of one. There is no diff of two object graphs, because there is only ever one graph.</p>
+          <p>Re-rendering therefore has to reconcile new DOM against mounted DOM, and Loom does it in three tiers. If no dependency the render read has changed, it skips entirely. If the change only affects text or attributes bound to a closure, it patches those nodes directly and never rebuilds the tree. Only a structural change — different elements, a reordered list — falls through to a full morph.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>

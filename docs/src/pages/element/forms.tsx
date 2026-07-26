@@ -9,7 +9,12 @@ export default class PageElementForms extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Forms" subtitle="Typed form state with transforms, validation, and explicit binding via @form."></doc-header>
+        <doc-header title="Forms" subtitle="Values, errors, validity and dirty state as one object that cannot drift out of step."></doc-header>
+
+        <section>
+          <p>Form state is four things that have to stay consistent: the current values, the per-field errors, whether the whole form is valid, and whether the user has touched it. Keeping those in four separate reactive fields means every input handler updates four things, and the one you forget is the one that breaks the submit button.</p>
+          <p><span class="ic">@form</span> declares them once as a single <span class="ic">FormState</span>. It exposes <span class="ic">data</span>, <span class="ic">errors</span>, <span class="ic">valid</span> and <span class="ic">dirty</span> as read-only views, and <span class="ic">bind(field)</span> returns the event handler that keeps them in step. Binding is explicit — you attach it to the input yourself — so the form never guesses which control maps to which field.</p>
+        </section>
 
         <section>
           <div class="group-header">

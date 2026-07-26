@@ -10,7 +10,12 @@ export default class PageCanvas extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="&lt;loom-canvas&gt;" subtitle="A built-in canvas web component with auto-resize, DPR-aware scaling, and per-frame draw callbacks via Loom's RenderLoop."></doc-header>
+        <doc-header title="&lt;loom-canvas&gt;" subtitle="DPR-correct sizing and a draw callback on the shared render loop."></doc-header>
+
+        <section>
+          <p>Getting a canvas correct on a modern display is more work than it looks: size the backing store to <span class="ic">devicePixelRatio</span>, scale the context to match, redo both on every resize, and drive the draw from a frame loop you remember to cancel. Skip the DPR step and everything you draw is blurry on every laptop made in the last decade.</p>
+          <p><span class="ic">loom-canvas</span> does the sizing and rescaling, and calls your draw method from Loom's shared render loop — the same one <span class="ic">@animationFrame</span> uses, so a canvas and the components around it stay on one <span class="ic">requestAnimationFrame</span> rather than competing for frames.</p>
+        </section>
 
         <section>
           <div class="group-header">

@@ -9,7 +9,12 @@ export default class PageElementCSS extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="CSS" subtitle="Scoped styles via tagged template literals, the @styles decorator, and CSSStyleSheet."></doc-header>
+        <doc-header title="CSS" subtitle="Constructable stylesheets, shared by text, adopted once per component."></doc-header>
+
+        <section>
+          <p>Every instance of a component adopting the same stylesheet should share one <span class="ic">CSSStyleSheet</span> object, not parse its own copy. That is what constructable stylesheets are for, and it is the difference between a thousand rows costing one style parse and costing a thousand.</p>
+          <p>The <span class="ic">css</span> tag builds and caches those sheets by their text, so two call sites producing identical CSS share one object. Styles come in two kinds: static sheets adopted once at connect via <span class="ic">@styles</span>, and <span class="ic">@dynamicCss</span>, which re-evaluates a method whenever the reactive fields it reads change. Reach for the second only when a value genuinely cannot be a custom property.</p>
+        </section>
 
         <section>
           <div class="group-header">

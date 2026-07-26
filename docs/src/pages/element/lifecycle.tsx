@@ -92,7 +92,12 @@ export default class PageElementLifecycle extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Lifecycle" subtitle="Hooks for setup, teardown, error handling, and async loading."></doc-header>
+        <doc-header title="Lifecycle" subtitle="Hooks for setup, teardown, errors and async loading -- and which of them run once per element rather than once per connect."></doc-header>
+
+        <section>
+          <p>The single most common lifecycle bug in web components is assuming <span class="ic">connectedCallback</span> runs once. It runs every time the element enters the DOM, and moving an element — <span class="ic">appendChild</span> to a new parent, a reorder inside a morph — disconnects and reconnects it. Setup written as "run once" silently runs three times.</p>
+          <p>Loom's hooks are explicit about which side of that line they sit on. <span class="ic">@mount</span> and <span class="ic">@unmount</span> pair up per connection. <span class="ic">firstUpdated</span> runs after the first render only. <span class="ic">@suspend</span> and <span class="ic">@catch</span> wrap async work and errors so a failed load renders a state instead of a blank element.</p>
+        </section>
 
         <section>
           <div class="group-header">

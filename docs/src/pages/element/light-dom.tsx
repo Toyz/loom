@@ -9,7 +9,12 @@ export default class PageElementLightDom extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Light DOM" subtitle="Skip shadow DOM encapsulation for leaf components that should inherit parent styles."></doc-header>
+        <doc-header title="Light DOM" subtitle="Opt out of the shadow boundary for leaf components, and give up scoping to get the cascade."></doc-header>
+
+        <section>
+          <p>Shadow DOM's encapsulation is a feature right up until the component is a leaf that should look like its surroundings. An icon, a badge, a table cell: styling those from the page means piercing the boundary with custom properties or <span class="ic">::part</span> for every property you might ever want to change.</p>
+          <p><span class="ic">{`@component("x-tag", { shadow: false })`}</span> renders into the light DOM instead. The component inherits the page cascade for free, and gives up scoping in exchange — its selectors are now global, and <span class="ic">@styles</span> no longer isolates anything. Use it for leaves, not for anything that owns layout.</p>
+        </section>
 
         <section>
           <div class="group-header">
