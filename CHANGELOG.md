@@ -23,6 +23,16 @@ existing suite could not see.
   the state reports `loading: false` with no data, because a request that has
   not been made is not one that is pending. It goes out on the first render
   after the gate opens.
+- **`@service` works bare.** It was built with `createDecorator`, which always
+  produces a factory, so the runtime called bare `@service` as
+  `service(TheClass, context)` and got back the inner decorator function — and
+  a class decorator's return value replaces the class. The class silently
+  became an anonymous arrow function: `new TheClass()` threw "is not a
+  constructor" and `.name` was empty, which is why the container reported "no
+  provider for " with nothing after it. Both `@service` and `@service("Name")`
+  now work; the DI docs showed the bare form throughout. No other class
+  decorator is affected, because every one of them takes a required first
+  argument and so cannot be written bare.
 - **`@fetch`** — `@api` for the common case: a URL, optional params, JSON out.
   It goes through `ctx.fetch`, so `@intercept` handlers actually apply; a bare
   `fetch()` inside a hand-written `fn` bypasses the context and silently drops
@@ -48,6 +58,14 @@ existing suite could not see.
   binding are synchronous, so `app.get()` works the instant the class is
   registered; a `LoomLifecycle.start()` is awaited in the background.
   `app.start()` itself is still one-shot.
+- **`staleTime` now revalidates.** It marked data stale and stopped there, so
+  "stale-while-revalidate" was only the first half — the flag sat true until
+  something else changed the key, and both docs pages described the behaviour
+  that did not exist. A stale read now refetches in the background: the cached
+  data stays on screen, `fetching` goes true, and the new value replaces it.
+  Exactly one request goes out however many times the accessor is read. Set
+  `revalidate: false` to keep the old flag-only behaviour. `@rpc` in loom-rpc
+  is unchanged and still marks without refetching.
 - **`ApiState.fetching`.** Already tracked internally and never exposed.
   `loading` is false once data exists, so there was no way to show a
   background revalidation without blanking the screen. `loading` means "there

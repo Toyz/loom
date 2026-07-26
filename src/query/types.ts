@@ -115,6 +115,14 @@ export interface ApiOptions<T, El = any> {
   pipe?: string[];
   /** Milliseconds before data is considered stale (default: 0 = always stale) */
   staleTime?: number;
+  /**
+   * Revalidate in the background once `staleTime` has elapsed (default: true).
+   *
+   * This is the "while-revalidate" half of stale-while-revalidate: the cached
+   * data stays on screen, `fetching` goes true, and the new data replaces it
+   * when it lands. Set false to keep `.stale` as a flag you act on yourself.
+   */
+  revalidate?: boolean;
   /** Number of retries on failure with exponential backoff (default: 0) */
   retry?: number;
   /**

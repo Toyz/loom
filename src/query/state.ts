@@ -29,6 +29,7 @@ export function createApiState<T>(
   let fetching = false;
 
   const staleTime = opts.staleTime ?? 0;
+  const revalidate = opts.revalidate ?? true;
   const maxRetries = opts.retry ?? 0;
 
   /** Whether a request is allowed right now. No gate declared means always. */
@@ -204,11 +205,24 @@ export function createApiState<T>(
     }
   }
 
-  /** Check if stale */
+  /**
+   * Mark data stale once staleTime has elapsed, and revalidate.
+   *
+   * Marking alone was the whole of the old behaviour, which made "stale-while-
+   * revalidate" only the first half: nothing ever refetched, so the flag sat
+   * true until something else happened to change the key. The refetch is
+   * deferred for the same reason checkKey()'s is -- this runs inside a getter
+   * read during a traced render, and starting the fetch synchronously would
+   * re-enter that render.
+   *
+   * Only one goes out: runFetch() clears `stale` and sets `fetching`, and the
+   * `fetching` guard covers the window before the microtask runs.
+   */
   function checkStale(): void {
     if (staleTime > 0 && lastFetchTime > 0 && !stale) {
       if (Date.now() - lastFetchTime > staleTime) {
         stale = true;
+        if (revalidate && !fetching) queueMicrotask(runFetch);
       }
     }
   }

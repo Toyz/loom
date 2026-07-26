@@ -411,13 +411,37 @@ export type { LoomApp };
  * class UserService { ... }
  * ```
  */
-export const service = createDecorator<[name?: string]>((ctor, name?) => {
-  if (name) (ctor as any)[SERVICE_NAME.key] = name;
-  // Duplicate guard — skip if already queued
-  if (!(app as any).services.includes(ctor)) {
-    app.registerService(ctor);
+function applyService(ctor: any, name?: string): void {
+  if (name) ctor[SERVICE_NAME.key] = name;
+  app.registerService(ctor); // registerService already dedupes
+}
+
+/**
+ * Usable bare or called: `@service` and `@service("Name")` both work.
+ *
+ * It cannot be built with createDecorator, which always produces a factory.
+ * Under that shape, bare `@service` is invoked by the runtime as
+ * `service(TheClass, context)` and returns the *inner* decorator function —
+ * and a class decorator's return value replaces the class. So the class
+ * silently became an anonymous arrow function: `new TheClass()` threw "is not
+ * a constructor", and `.name` was empty, which is why the container reported
+ * "no provider for " with nothing after it.
+ *
+ * Every other class decorator here takes a required first argument, so none of
+ * them can be written bare and none is affected.
+ */
+export function service(name?: string): (ctor: any, context: ClassDecoratorContext) => void;
+export function service(ctor: any, context: ClassDecoratorContext): void;
+export function service(a?: any, b?: any): any {
+  // Direct use: the runtime calls a class decorator as (value, context).
+  if (typeof a === "function" && b && typeof b === "object" && b.kind === "class") {
+    applyService(a);
+    return; // returning nothing leaves the class as it is
   }
-}, { class: true });
+  // Factory use: @service("Name")
+  const name = a as string | undefined;
+  return (ctor: any) => { applyService(ctor, name); };
+}
 
 /**
  * Resolve the display name for a service class.

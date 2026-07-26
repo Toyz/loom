@@ -69,13 +69,12 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
             has elapsed, the next read flips <span class="ic">.stale</span> to
             <span class="ic">true</span> and the cached data stays visible.
           </p>
-          <p class="warning">
-            Marking data stale does not refetch it. Nothing revalidates on its own — a query
-            re-runs when its arguments change, or when you call
-            <span class="ic">.refetch()</span> or <span class="ic">.invalidate()</span>.
-            Treat <span class="ic">.stale</span> as a signal to act on, typically by calling
-            <span class="ic">.refetch()</span> when the component regains focus or the user
-            asks for fresh data.
+          <p class="note">
+            <span class="ic">@rpc</span> marks data stale but does not revalidate on its own —
+            a query re-runs when its arguments change, or when you call
+            <span class="ic">.refetch()</span> or <span class="ic">.invalidate()</span>. This
+            differs from <span class="ic">@api</span> and <span class="ic">@fetch</span>, where
+            a stale read triggers a background refetch.
           </p>
           <code-block lang="ts" code={`@rpc(UserRouter, "listUsers", {
   staleTime: 60_000,  // cache for 1 minute
