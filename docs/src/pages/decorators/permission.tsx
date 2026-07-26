@@ -7,23 +7,26 @@
  */
 import { LoomElement } from "@toyz/loom";
 
-const QUICK = `import { permission, Permission, type LoomPermissionState } from "@toyz/loom/element";
+const QUICK = `import {
+  permission, Permission, PermissionState,
+  isBlocked, willPrompt,
+  type LoomPermissionState,
+} from "@toyz/loom/element";
 
 @component("location-button")
 class LocationButton extends LoomElement {
   @permission(Permission.Geolocation)
-  accessor geo: LoomPermissionState = "prompt";
+  accessor geo: LoomPermissionState = PermissionState.Prompt;
 
   update() {
-    // Denied is a dead end: only site settings can undo it, so offering a
-    // button that will always fail is worse than saying so.
-    if (this.geo === "denied") {
+    // A dead end: only site settings can undo it, so a button that will
+    // always fail is worse than saying so.
+    if (isBlocked(this.geo)) {
       return <p>Location is blocked for this site. Change it in site settings.</p>;
     }
-    // Unsupported means "cannot tell" — try it and handle the failure.
     return (
       <button onClick={() => this.locate()}>
-        {this.geo === "prompt" ? "Use my location" : "Refresh location"}
+        {willPrompt(this.geo) ? "Use my location" : "Refresh location"}
       </button>
     );
   }
@@ -38,6 +41,18 @@ accessor clip: LoomPermissionState = "prompt";
 // Raw string: for anything newer than the registry
 @permission("compute-pressure")
 accessor cpu: LoomPermissionState = "prompt";`;
+
+const PREDICATE_EXAMPLE = `import { PermissionState, isBlocked, canAttempt } from "@toyz/loom/element";
+
+// Either style, no literals
+if (this.geo === PermissionState.Denied) { /* ... */ }
+if (isBlocked(this.geo))                  { /* ... */ }
+
+// Includes "unsupported": the browser would not say in advance,
+// which is not the same as refusing
+if (canAttempt(this.geo)) {
+  this.locate();
+}`;
 
 export default class PageDecoratorPermission extends LoomElement {
   update() {
@@ -123,6 +138,30 @@ export default class PageDecoratorPermission extends LoomElement {
             Being in the list is not a promise that an engine implements it — support varies
             widely, and that is precisely what <span class="ic">"unsupported"</span> is for.
           </doc-notification>
+        </doc-section>
+
+        <doc-section heading="Comparing without literals">
+          <p>
+            <span class="ic">PermissionState</span> holds the four values, so a comparison does
+            not depend on a string literal any more than the name does.
+          </p>
+          <p>
+            The predicates go further and encode the rules rather than leaving them to be
+            re-derived at each call site. <span class="ic">canAttempt</span> is the one worth
+            reaching for: it includes <span class="ic">"unsupported"</span>, because a browser
+            declining to answer in advance is not a browser saying no — and treating it as no
+            is how a feature ends up disabled on engines where it would have worked.
+          </p>
+          <code-block lang="ts" code={PREDICATE_EXAMPLE}></code-block>
+          <table class="api-table">
+            <thead><tr><th>Helper</th><th>True for</th><th>Use it to</th></tr></thead>
+            <tbody>
+              <tr><td><code>isGranted(s)</code></td><td><code>granted</code></td><td>Proceed with no interruption</td></tr>
+              <tr><td><code>willPrompt(s)</code></td><td><code>prompt</code></td><td>Explain before the browser asks</td></tr>
+              <tr><td><code>isBlocked(s)</code></td><td><code>denied</code></td><td>Stop, and point at site settings</td></tr>
+              <tr><td><code>canAttempt(s)</code></td><td>everything except <code>denied</code></td><td>Decide whether to offer the control at all</td></tr>
+            </tbody>
+          </table>
         </doc-section>
 
         <doc-section heading="unsupported is not denied">

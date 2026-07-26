@@ -97,6 +97,65 @@ export type PermissionKey = (typeof Permission)[keyof typeof Permission];
 export type PermissionNameLike = PermissionKey | PermissionName | (string & {});
 
 
+
+/**
+ * The four states, so a comparison does not depend on a literal either.
+ *
+ * ```ts
+ * if (this.geo === PermissionState.Denied) { ... }
+ * ```
+ *
+ * Note this shadows the DOM lib's `PermissionState` type in any module that
+ * imports it. That is intended: Loom's set has a fourth member the DOM type
+ * does not, and in a module using this decorator Loom's is the one you want.
+ * The type is exported as {@link LoomPermissionState}.
+ */
+export const PermissionState = {
+  Granted: "granted",
+  Denied: "denied",
+  Prompt: "prompt",
+  /** No answer available — see {@link LoomPermissionState}. */
+  Unsupported: "unsupported",
+} as const;
+
+/* ── Predicates ──
+   The rules these encode are the whole reason the four states are not three.
+   Written out at each call site they get re-derived, and "unsupported" is the
+   one people get wrong: it is not a refusal. */
+
+/** Granted outright — proceed with no interruption. */
+export function isGranted(state: LoomPermissionState): boolean {
+  return state === "granted";
+}
+
+/**
+ * A dead end. Nothing in the page can undo this — only site settings — so
+ * offer an explanation rather than a control that cannot work.
+ */
+export function isBlocked(state: LoomPermissionState): boolean {
+  return state === "denied";
+}
+
+/**
+ * Using the API will raise a prompt. The moment to say why you are asking,
+ * before the browser asks, which is the difference between a granted
+ * permission and a dismissed one.
+ */
+export function willPrompt(state: LoomPermissionState): boolean {
+  return state === "prompt";
+}
+
+/**
+ * Worth attempting: everything except a refusal.
+ *
+ * Deliberately includes `"unsupported"`. The browser declining to answer in
+ * advance is not the browser saying no, and treating it as no is how a
+ * feature gets disabled on engines where it would have worked.
+ */
+export function canAttempt(state: LoomPermissionState): boolean {
+  return state !== "denied";
+}
+
 /**
  * @permission(name) — accessor decorator.
  *

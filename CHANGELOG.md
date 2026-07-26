@@ -72,7 +72,11 @@ existing suite could not see.
   site does not depend on remembering a string, while a raw string still
   works — the parameter is deliberately not typed as lib.dom's
   `PermissionName`, whose union omits names browsers do implement, such as
-  `clipboard-read`.
+  `clipboard-read`. `PermissionState` covers the comparison side, and
+  `isGranted` / `willPrompt` / `isBlocked` / `canAttempt` encode the rules
+  rather than leaving them to be re-derived — `canAttempt` deliberately
+  includes `"unsupported"`, since a browser declining to answer in advance is
+  not a browser refusing.
 - **`LoomEvent<T>` payload events.** An event that is only a bag of data no
   longer needs a constructor written for it: declare the payload as a type
   parameter and it arrives as `.data`. `T` defaults to `void`, so every

@@ -9,7 +9,11 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { LoomElement, component } from "../src/index";
 import { cleanup } from "../src/testing";
-import { permission, Permission, type LoomPermissionState } from "../src/element/permission";
+import {
+  permission, Permission, PermissionState,
+  isGranted, isBlocked, willPrompt, canAttempt,
+  type LoomPermissionState,
+} from "../src/element/permission";
 
 const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms));
 
@@ -259,5 +263,71 @@ describe("Permission registry", () => {
   it("has no duplicate values", () => {
     const values = Object.values(Permission);
     expect(new Set(values).size).toBe(values.length);
+  });
+});
+
+describe("PermissionState + predicates", () => {
+  it("holds the wire strings the API returns", () => {
+    expect(PermissionState.Granted).toBe("granted");
+    expect(PermissionState.Denied).toBe("denied");
+    expect(PermissionState.Prompt).toBe("prompt");
+    expect(PermissionState.Unsupported).toBe("unsupported");
+  });
+
+  it("compares against a decorated field", async () => {
+    const f = fakeStatus("denied");
+    setPermissions({ query: vi.fn().mockResolvedValue(f.status) });
+
+    const tag = nextTag();
+    @component(tag)
+    class Host extends LoomElement {
+      @permission(Permission.Geolocation)
+      accessor geo: LoomPermissionState = PermissionState.Prompt;
+      update() { return document.createTextNode(this.geo); }
+    }
+
+    customElements.define(tag, Host);
+    const el = document.createElement(tag) as Host;
+    document.body.appendChild(el);
+    await tick(10);
+
+    expect(el.geo === PermissionState.Denied).toBe(true);
+    expect(isBlocked(el.geo)).toBe(true);
+    el.remove();
+  });
+
+  it("isGranted is only granted", () => {
+    expect(isGranted("granted")).toBe(true);
+    for (const s of ["denied", "prompt", "unsupported"] as const) {
+      expect(isGranted(s)).toBe(false);
+    }
+  });
+
+  it("isBlocked is only denied", () => {
+    expect(isBlocked("denied")).toBe(true);
+    for (const s of ["granted", "prompt", "unsupported"] as const) {
+      expect(isBlocked(s)).toBe(false);
+    }
+  });
+
+  it("willPrompt is only prompt", () => {
+    expect(willPrompt("prompt")).toBe(true);
+    for (const s of ["granted", "denied", "unsupported"] as const) {
+      expect(willPrompt(s)).toBe(false);
+    }
+  });
+
+  it("canAttempt covers unsupported — the rule people get wrong", () => {
+    expect(canAttempt("granted")).toBe(true);
+    expect(canAttempt("prompt")).toBe(true);
+    // The browser declining to answer is not the browser saying no.
+    expect(canAttempt("unsupported")).toBe(true);
+    expect(canAttempt("denied")).toBe(false);
+  });
+
+  it("canAttempt is exactly the negation of isBlocked", () => {
+    for (const s of ["granted", "denied", "prompt", "unsupported"] as const) {
+      expect(canAttempt(s)).toBe(!isBlocked(s));
+    }
   });
 });
