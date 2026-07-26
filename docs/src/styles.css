@@ -85,6 +85,16 @@
   --leading-tight: 1.1;
   --leading-normal: 1.65;
 
+  /* Page geometry — declared once so the shell, the right rail and the
+     feed track all resolve the same column edge. Custom properties cross
+     shadow boundaries, which is how <doc-header> can position a fixed rail
+     against a column laid out by the app shell. */
+  --nav-w: 280px;
+  --page-gap: min(6vw, 88px);
+  --page-w: 832px;
+  /* Where the text column ends and the void begins. */
+  --column-end: calc(var(--nav-w) + var(--page-gap) + var(--page-w));
+
   /* Spacing */
   --space-1: 0.25rem;
   --space-2: 0.5rem;

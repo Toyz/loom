@@ -539,10 +539,26 @@ const styles = css`
 
   /* ─────────── Main Content ─────────── */
 
+  /* Two columns: the text, and the punched index in the void beside it.
+     Laid out rather than positioned — an earlier version put the rail at a
+     left offset computed from the page-geometry tokens and it printed
+     straight through the code blocks, because those tokens cannot know the
+     real rendered column edge. Flex does. */
   main {
     margin-left: 280px;
     flex: 1;
     min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  main > .page { flex: 0 1 auto; }
+
+  /* Below this there is no void to put an index in, and the inline TOC in
+     the header already covers that case. */
+  doc-rail { display: none; }
+  @media (min-width: 1400px) {
+    doc-rail { display: block; padding-top: 56px; }
   }
   /* The content sits against a warp edge rather than floating centred in
      empty space. The rule is the loom's selvedge — the finished edge the
@@ -557,9 +573,9 @@ const styles = css`
      Plex Sans, and ~92 columns of 13px mono, which is wider than any code
      sample in the docs. Text and code end on the same line. */
   .page {
-    max-width: 832px;
+    max-width: var(--page-w, 832px);
     margin: 0;
-    margin-left: min(6vw, 88px);
+    margin-left: var(--page-gap, min(6vw, 88px));
     padding: 56px 56px 96px 56px;
     position: relative;
   }
@@ -748,6 +764,7 @@ export class DocsApp extends LoomElement {
           <div class="page">
             <loom-outlet styles={[docStyles, scrollbar]}></loom-outlet>
           </div>
+          <doc-rail></doc-rail>
         </main>
         <doc-search></doc-search>
       </div>

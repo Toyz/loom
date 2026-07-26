@@ -9,7 +9,8 @@
  * Each TOC entry shows the section's loom-icon with its original color.
  * TOC is collapsible — starts expanded, click header to toggle.
  */
-import { LoomElement, component, prop, reactive, css, styles as applyStyles, mount, observer } from "@toyz/loom";
+import { LoomElement, component, prop, reactive, css, styles as applyStyles, mount, observer, on } from "@toyz/loom";
+import { PageSections, ActiveSection, type PageSection } from "../events";
 import { navOrder } from "../data/nav-order";
 import { ICON_COLORS } from "../data/icon-colors";
 
@@ -187,6 +188,12 @@ const styles = css`
     filter: brightness(1.25);
   }
 
+  /* <doc-rail> takes over above this width; two copies of the same index
+     on one screen is noise. */
+  @media (min-width: 1400px) {
+    .toc { display: none; }
+  }
+
   @media (max-width: 768px) {
     h1 { font-size: 1.75rem; }
     .subtitle { font-size: 1rem; }
@@ -203,6 +210,9 @@ export class DocHeader extends LoomElement {
   @reactive accessor tocEntries: TocEntry[] = [];
   @reactive accessor tocOpen = true;
   @reactive accessor pageIcon = "";
+  private _sections: PageSection[] = [];
+  private _activeId = "";
+  private _raf = 0;
   @reactive accessor iconColor = "var(--accent, #818cf8)";
 
   @mount
@@ -236,6 +246,7 @@ export class DocHeader extends LoomElement {
     // .group-header keep working through the second selector.
     const nodes = root.querySelectorAll("doc-section[heading], .group-header");
     const entries: TocEntry[] = [];
+    const sections: PageSection[] = [];
 
     nodes.forEach((node) => {
       const isSection = node.tagName === "DOC-SECTION";
@@ -253,9 +264,65 @@ export class DocHeader extends LoomElement {
       const iconColor = iconEl?.getAttribute("color") || "var(--text-muted)";
 
       entries.push({ id, label: text, icon, iconColor });
+      sections.push({ id, label: text, el: node as HTMLElement });
     });
 
     this.tocEntries = entries;
+    this._sections = sections;
+    // The rail cannot see into this shadow root, so it is told rather than
+    // left to go looking. Sending the nodes means it never has to resolve an
+    // id across a boundary.
+    this.emit(new PageSections(sections));
+    this.pickActive();
+  }
+
+  /**
+   * Decide which section the reader is in and broadcast it.
+   *
+   * Not simply "the last heading above the reading line": on a short page the
+   * final sections can never cross that line, because there is nothing below
+   * them left to scroll, so clicking the last entry highlighted the wrong
+   * one. Once the page is at the bottom, the answer is the last section
+   * actually on screen.
+   */
+  private pickActive() {
+    const secs = this._sections;
+    if (!secs.length) return;
+
+    const line = 150;
+    const doc = document.documentElement;
+    const atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 4;
+
+    let id = secs[0]!.id;
+    if (atBottom) {
+      for (const s of secs) {
+        if (s.el.getBoundingClientRect().top < window.innerHeight) id = s.id;
+      }
+    } else {
+      for (const s of secs) {
+        if (s.el.getBoundingClientRect().top <= line) id = s.id;
+        else break;
+      }
+    }
+
+    if (id === this._activeId) return;
+    this._activeId = id;
+    this.emit(new ActiveSection(id));
+  }
+
+  @on(window, "scroll")
+  onScroll() {
+    // One read per frame; the handler only measures a handful of rects.
+    if (this._raf) return;
+    this._raf = requestAnimationFrame(() => {
+      this._raf = 0;
+      this.pickActive();
+    });
+  }
+
+  @on(window, "resize")
+  onResize() {
+    this.pickActive();
   }
 
   scrollToSection(id: string) {
@@ -304,6 +371,7 @@ export class DocHeader extends LoomElement {
             </div>
           </div>
         ) : null}
+
       </div>
     );
   }

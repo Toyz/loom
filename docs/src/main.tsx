@@ -6,7 +6,8 @@ import "./icons";       // register icons before any component uses them
 import "./components/code-block";  // syntax-highlighted code blocks
 import "./components/source-block"; // live source from GitHub raw API
 import "./components/doc-header";   // page header with auto-generated TOC
-import "./components/doc-nav";      // prev/next page navigation
+import "./components/doc-nav";
+import "./components/doc-rail";      // right-hand punched index      // prev/next page navigation
 import "./components/doc-notification"; // callout/alert banners
 import "./components/doc-section";     // <doc-section> + <api-entry> page skeleton
 import "./components/punch-matrix";     // the punch matrix (signature element)
