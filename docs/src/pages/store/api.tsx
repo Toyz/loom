@@ -167,6 +167,42 @@ export default class PageFetch extends LoomElement {
           </table>
         </doc-section>
 
+        {/* ── ApiStale ── */}
+        <doc-section heading="Reacting to staleness elsewhere">
+          <p>
+            <span class="ic">.stale</span> and <span class="ic">.fetching</span> only tell the
+            component that owns the accessor. Anything else that wants to react — a sync
+            indicator in a toolbar, a cache layer, a second view that should refresh alongside —
+            has no reference to it.
+          </p>
+          <p>
+            So the transition is announced on the bus, and you subscribe the same way you
+            subscribe to anything else. The event carries the resolved cache key, which for
+            <span class="ic">@fetch</span> is the requested URL, so matching on a path prefix
+            works.
+          </p>
+          <code-block lang="ts" code={STALE_EVENT}></code-block>
+          <table class="api-table">
+            <thead><tr><th>Field</th><th>What it holds</th></tr></thead>
+            <tbody>
+              <tr><td><code>name</code></td><td>The accessor's name, e.g. <code>"user"</code></td></tr>
+              <tr><td><code>key</code></td><td>The resolved cache key — the URL, with params, for <code>@fetch</code></td></tr>
+              <tr><td><code>host</code></td><td>The component the accessor lives on</td></tr>
+            </tbody>
+          </table>
+          <doc-notification type="note">
+            It fires once per stale transition, not once per read, and it fires whether or not
+            the query revalidates — with <span class="ic">revalidate: false</span> this event is
+            the signal, and with the default it announces that a background refetch is starting.
+          </doc-notification>
+          <p class="caution">
+            The event is emitted from a microtask, never synchronously from the getter. A
+            handler that reads <span class="ic">.data</span> or calls
+            <span class="ic">scheduleUpdate()</span> would otherwise run inside the render that
+            triggered it, and re-enter it.
+          </p>
+        </doc-section>
+
         {/* ── Interceptors ── */}
         <doc-section heading="Interceptors">
           <api-entry sig="@intercept()">
@@ -290,6 +326,21 @@ class UserCard extends LoomElement {
       ok: (u) => <p>{u.name}{this.user.fetching ? " (refreshing)" : ""}</p>,
       err: (e) => <p>{e.message}</p>,
     });
+  }
+}`;
+
+const STALE_EVENT = `import { ApiStale } from "@toyz/loom/query";
+
+@component("sync-indicator")
+class SyncIndicator extends LoomElement {
+  @reactive accessor refreshing = false;
+
+  @on(ApiStale)
+  onStale(e: ApiStale) {
+    // key is the requested URL for @fetch, so match on a prefix
+    if (e.key?.startsWith("/api/users")) {
+      this.refreshing = true;
+    }
   }
 }`;
 

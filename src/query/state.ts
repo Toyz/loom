@@ -10,6 +10,8 @@ import { interceptRegistry } from "./registry";
 import { app } from "../app";
 import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
 import { LoomResult } from "../result";
+import { bus } from "../bus";
+import { ApiStale } from "./events";
 
 
 /** Create an ApiState<T> instance bound to a host element */
@@ -222,7 +224,13 @@ export function createApiState<T>(
     if (staleTime > 0 && lastFetchTime > 0 && !stale) {
       if (Date.now() - lastFetchTime > staleTime) {
         stale = true;
-        if (revalidate && !fetching) queueMicrotask(runFetch);
+        const shouldRefetch = revalidate && !fetching;
+        // One microtask for both: announcing and refetching are the same
+        // transition, and neither may run synchronously from this getter.
+        queueMicrotask(() => {
+          bus.emit(new ApiStale(apiName ?? "", lastKey, host));
+          if (shouldRefetch && !fetching) runFetch();
+        });
       }
     }
   }

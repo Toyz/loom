@@ -5,6 +5,9 @@
 // Types
 export type { ApiCtx, ApiState, ApiOptions, InterceptRegistration } from "./types";
 
+// Events
+export { ApiStale } from "./events";
+
 // Core factory
 export { createApiState } from "./state";
 

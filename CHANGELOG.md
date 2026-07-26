@@ -58,6 +58,16 @@ existing suite could not see.
   binding are synchronous, so `app.get()` works the instant the class is
   registered; a `LoomLifecycle.start()` is awaited in the background.
   `app.start()` itself is still one-shot.
+- **`ApiStale` on the bus.** `.stale` and `.fetching` only tell the component
+  that owns the accessor; anything else that wants to react — a sync
+  indicator, a cache layer, a second view — has no reference to it. The
+  transition is now announced as a bus event carrying the accessor name, the
+  resolved cache key (the URL, with params, for `@fetch`) and the host, so
+  `@on(ApiStale)` can match on a path prefix. Fires once per transition rather
+  than per read, and fires whether or not the query revalidates. Emitted from
+  a microtask, never synchronously from the getter: a handler that reads
+  `.data` or calls `scheduleUpdate()` would otherwise run inside the render
+  that triggered it and re-enter it.
 - **`staleTime` now revalidates.** It marked data stale and stopped there, so
   "stale-while-revalidate" was only the first half — the flag sat true until
   something else changed the key, and both docs pages described the behaviour
