@@ -36,10 +36,15 @@
   /* Card stock — olive-tinted buff, not warm cream.
      Deliberately dimmer than real paper: this is a dark UI, and a bright panel
      of any size is a flashbang. Stock is for SMALL artifacts only — a few rows
-     at a time. Anything page-sized uses --ground-sunk instead. */
-  --card:          #b9b099;
-  --card-edge:     #a1977e;
-  --card-ink:      #16150f;
+     at a time. Anything page-sized uses --ground-sunk instead.
+
+     Held at ~5:1 against the ground rather than the ~9:1 real stock would
+     want. That is the floor, not a preference: the ink has to clear 4.5:1
+     against the stock, so dimming the stock further starts costing legibility
+     on the card instead of buying comfort off it. */
+  --card:          #8f8873;
+  --card-edge:     #7c7561;
+  --card-ink:      #14130d;
 
   /* Warp — hairline rules; the fixed threads content is woven across */
   --warp:          #33322a;

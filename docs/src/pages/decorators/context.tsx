@@ -11,9 +11,13 @@ export default class PageDecoratorContext extends LoomElement {
             <div>
                 <doc-header title="@provide / @consume" subtitle="Cross-shadow-DOM data sharing with class-based keys. Same pattern as @service."></doc-header>
 
+        <section>
+          <p>Passing a value down through attributes stops working the moment a shadow boundary sits between the two components. The value has to be re-declared on every intermediate element, each of which has no interest in it, and any component that forgets to forward it breaks the chain silently.</p>
+          <p><span class="ic">@provide</span> and <span class="ic">@consume</span> pass values along the DOM tree instead of through it, crossing shadow roots on the way. The key is a class rather than a string, so the compiler checks both ends and two features cannot collide on the same name. A consumer re-renders when the value it is reading changes.</p>
+        </section>
+
                 <section>
                     <div class="group-header">
-                        <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Quick Start</h2>
                     </div>
                     <code-block lang="ts" code={QUICK_START}></code-block>
@@ -21,7 +25,6 @@ export default class PageDecoratorContext extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>API</h2>
                     </div>
                     <div class="feature-entry">
@@ -58,7 +61,6 @@ export default class PageDecoratorContext extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Examples</h2>
                     </div>
                     <code-block lang="ts" code={EXAMPLES}></code-block>
@@ -66,7 +68,6 @@ export default class PageDecoratorContext extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>How It Works</h2>
                     </div>
                     <ul>

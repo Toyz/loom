@@ -14,7 +14,6 @@ export default class ExamplePlaceholder extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Demo</h2>
           </div>
           <p>
@@ -26,7 +25,6 @@ export default class ExamplePlaceholder extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
             <h2>What This Shows</h2>
           </div>
           <ul>
@@ -39,7 +37,6 @@ export default class ExamplePlaceholder extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="clipboard" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Provider Setup</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -50,7 +47,6 @@ app.use(PlaceholderProvider, new RgbaPlaceholder());`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Source</h2>
           </div>
           <source-block file="docs/src/pages/examples/components/placeholder-demo.tsx"></source-block>

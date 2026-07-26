@@ -17,11 +17,15 @@ export default class PageDecoratorsOverview extends LoomElement {
       <div>
         <doc-header title="Decorators" subtitle="36 core decorators. createDecorator is the foundation — every built-in decorator is built on it."></doc-header>
 
+        <section>
+          <p>Loom is built on TC39 stage-3 decorators — the standard ones, not the legacy TypeScript flavour, so there is no <span class="ic">experimentalDecorators</span> flag and no parameter decorators anywhere in the API. Every decorator here attaches to a class, a field, an <span class="ic">accessor</span>, or a method, and the one it attaches to is part of its contract.</p>
+          <p>They divide into three jobs. Some declare state the renderer should watch. Some register a side effect and its teardown in the same line, so a timer or listener cannot outlive the element. The rest replace a method with a wrapped version. Knowing which of the three you are using explains most of the surprises — a wrapper only runs when you call it, a registration runs on its own.</p>
+        </section>
+
         {/* ═══════════ Foundation ═══════════ */}
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>createDecorator</h2>
           </div>
           <div class="feature-entry">
@@ -63,7 +67,6 @@ const tag = createDecorator<[string]>((ctor, name) => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>State</h2>
           </div>
 
@@ -149,7 +152,6 @@ onTheme(val: string, prev: string) { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>More Decorators</h2>
           </div>
           <table class="api-table">

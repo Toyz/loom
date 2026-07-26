@@ -13,7 +13,6 @@ export default class PageAnalyticsOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Install</h2>
           </div>
           <code-block lang="bash" code={`npm install @toyz/loom-analytics`}></code-block>
@@ -24,7 +23,6 @@ export default class PageAnalyticsOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <p>
@@ -39,7 +37,6 @@ export default class PageAnalyticsOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>1. Create a Transport</h2>
           </div>
           <code-block lang="ts" code={`import { AnalyticsTransport } from "@toyz/loom-analytics";
@@ -57,7 +54,6 @@ class PostHogTransport extends AnalyticsTransport {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>2. Register via DI</h2>
           </div>
           <code-block lang="ts" code={`// main.tsx
@@ -74,7 +70,6 @@ app.start();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>3. Decorate</h2>
           </div>
           <code-block lang="tsx" code={`import { track } from "@toyz/loom-analytics";
@@ -96,7 +91,6 @@ class Settings extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Metadata</h2>
           </div>
           <p>

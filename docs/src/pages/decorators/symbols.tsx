@@ -12,11 +12,15 @@ export default class PageDecoratorsSymbols extends LoomElement {
       <div>
         <doc-header title="Typed Symbols" subtitle="LoomSymbol<T> wraps native symbols with type-safe metadata access. Every piece of Loom metadata flows through this system."></doc-header>
 
+        <section>
+          <p>Decorators need somewhere to record what they were told, and the class is the obvious place. Storing it as a string-keyed property means two libraries can collide, and a subclass silently shares its parent's array — mutate it in the child and the parent's metadata changes too.</p>
+          <p><span class="ic">LoomSymbol&lt;T&gt;</span> wraps a native symbol with a typed accessor for reading and writing that metadata. It reads through the prototype chain, so a subclass sees what its parent declared, and its copy-on-write helpers make the value own to the subclass before mutating it — which is what keeps sibling subclasses from sharing one Map.</p>
+        </section>
+
         {/* ═══════════ Problem ═══════════ */}
 
         <section>
           <div class="group-header">
-            <loom-icon name="alert-circle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>The Problem</h2>
           </div>
           <div class="feature-entry">
@@ -39,7 +43,6 @@ const val = (ctor as any)[MY_META];  // any`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield-check" size={20} color="var(--text-muted)"></loom-icon>
             <h2>LoomSymbol&lt;T&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -71,7 +74,6 @@ if (SERVICE_NAME.has(ctor)) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="plus-circle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>createSymbol</h2>
           </div>
           <div class="feature-entry">
@@ -98,7 +100,6 @@ console.log(a === b);  // true`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--amethyst)"></loom-icon>
             <h2>API</h2>
           </div>
 
@@ -146,7 +147,6 @@ console.log(a === b);  // true`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="database" size={20} color="var(--text-muted)"></loom-icon>
             <h2>SYMBOL_REGISTRY</h2>
           </div>
           <div class="feature-entry">
@@ -168,7 +168,6 @@ for (const [name, sym] of SYMBOL_REGISTRY) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Core Symbols</h2>
           </div>
           <div class="feature-entry">

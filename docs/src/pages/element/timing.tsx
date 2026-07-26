@@ -32,36 +32,16 @@ export default class PageElementTiming extends LoomElement {
             browser tab is hidden.
           </p>
 
-          <punch-card
-            name="@interval"
+          <punch-matrix
             columns="SELF-FIRES,WRAPS,RUNS HIDDEN,FRAME-SYNCED"
-            punches="SELF-FIRES,RUNS HIDDEN"
-            note="Repeats until disconnect"
-          ></punch-card>
-          <punch-card
-            name="@timeout"
-            columns="SELF-FIRES,WRAPS,RUNS HIDDEN,FRAME-SYNCED"
-            punches="SELF-FIRES,RUNS HIDDEN"
-            note="Fires once per connect"
-          ></punch-card>
-          <punch-card
-            name="@debounce"
-            columns="SELF-FIRES,WRAPS,RUNS HIDDEN,FRAME-SYNCED"
-            punches="WRAPS,RUNS HIDDEN"
-            note="Waits for quiet, then runs once"
-          ></punch-card>
-          <punch-card
-            name="@throttle"
-            columns="SELF-FIRES,WRAPS,RUNS HIDDEN,FRAME-SYNCED"
-            punches="WRAPS,RUNS HIDDEN"
-            note="Leading edge, plus a trailing call"
-          ></punch-card>
-          <punch-card
-            name="@animationFrame"
-            columns="SELF-FIRES,WRAPS,RUNS HIDDEN,FRAME-SYNCED"
-            punches="SELF-FIRES,FRAME-SYNCED"
-            note="Shares one rAF loop with every other component"
-          ></punch-card>
+            rows={[
+              { name: "@interval", punches: "SELF-FIRES,RUNS HIDDEN", note: "Repeats until disconnect" },
+              { name: "@timeout", punches: "SELF-FIRES,RUNS HIDDEN", note: "Fires once per connect" },
+              { name: "@debounce", punches: "WRAPS,RUNS HIDDEN", note: "Waits for quiet, then runs once" },
+              { name: "@throttle", punches: "WRAPS,RUNS HIDDEN", note: "Leading edge, plus a trailing call" },
+              { name: "@animationFrame", punches: "SELF-FIRES,FRAME-SYNCED", note: "Shares one rAF loop with every other component" },
+            ]}
+          ></punch-matrix>
 
           <p class="note">
             Only <span class="ic">@animationFrame</span> stops when the tab is hidden,

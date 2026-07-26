@@ -38,11 +38,18 @@ const matrixStyles = css`
     margin: var(--space-5) 0 var(--space-6);
   }
 
-  /* Card stock, used once for the whole set rather than once per row. */
+  /* Same surface as <code-block>, down to the token.
+     A light slab this size is a glare panel on a dark page, and dimming the
+     stock only made it a duller glare panel -- the problem was the area, not
+     the value. The card now sits on the code block's ground with the code
+     block's border, its row-label column is the code block's gutter, and a
+     punch is the same thread red as a marked line in the gutter. Two elements
+     that both mean "here is a grid of marked positions" should not be two
+     different objects. */
   .card {
-    background: var(--card);
-    color: var(--card-ink);
-    border: 1px solid var(--card-edge);
+    background: var(--ground-sunk);
+    color: var(--text-primary);
+    border: 1px solid var(--warp-lit);
     clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
     overflow-x: auto;
   }
@@ -63,26 +70,28 @@ const matrixStyles = css`
     font-size: 0.5625rem;
     font-weight: 500;
     letter-spacing: 0.11em;
-    color: color-mix(in srgb, var(--card-ink) 50%, transparent);
-    border-bottom: 1px solid color-mix(in srgb, var(--card-ink) 20%, transparent);
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--warp-lit);
     vertical-align: bottom;
   }
 
-  /* Row label column */
+  /* Row label column — the code block's gutter, in the same tone. */
   th.row-name, td.row-name {
     text-align: left;
     padding-left: 16px;
     width: 1%;
+    background: rgba(0, 0, 0, 0.22);
+    border-right: 1px solid var(--warp);
   }
 
   tbody tr + tr td {
-    border-top: 1px solid color-mix(in srgb, var(--card-ink) 10%, transparent);
+    border-top: 1px solid var(--warp);
   }
 
   .name {
     font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--card-ink);
+    color: var(--text-primary);
     letter-spacing: -0.01em;
   }
   .note {
@@ -91,22 +100,23 @@ const matrixStyles = css`
     font-family: var(--font-sans);
     font-size: 0.6875rem;
     font-weight: 400;
-    color: color-mix(in srgb, var(--card-ink) 55%, transparent);
+    color: var(--text-muted);
   }
 
-  /* An unpunched position: the printed guide on blank stock. */
+  /* The position is a <loom-icon name="punch">, the same element the code
+     block's gutter uses, so there is one punch in the system rather than a
+     drawn one here and a CSS box there. */
   .pos {
-    display: inline-block;
-    width: 10px;
-    height: 13px;
-    border: 1px solid color-mix(in srgb, var(--card-ink) 22%, transparent);
-    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: color-mix(in srgb, var(--text-muted) 62%, transparent);
   }
-  /* Punched: material removed, so the machine's ground shows through. */
+  /* Punched. Thread red, because that is already what "this line is marked"
+     means in the gutter of every code block on the page. A second accent for
+     the same idea would just be a second thing to learn. */
   .pos[data-punched] {
-    background: var(--ground);
-    border-color: var(--ground);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.55);
+    color: var(--thread);
   }
 `;
 
@@ -154,7 +164,14 @@ export default class PunchMatrix extends LoomElement {
                   </td>
                   {cols.map((c) => (
                     <td aria-label={`${c}: ${isOn(c) ? "yes" : "no"}`}>
-                      <span class="pos" data-punched={isOn(c)}></span>
+                      <span class="pos" data-punched={isOn(c)}>
+                        <loom-icon
+                          name="punch"
+                          size={17}
+                          strokeWidth={1.15}
+                          fill={isOn(c) ? "currentColor" : "none"}
+                        ></loom-icon>
+                      </span>
                     </td>
                   ))}
                 </tr>

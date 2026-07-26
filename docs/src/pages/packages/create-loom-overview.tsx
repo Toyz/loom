@@ -13,7 +13,6 @@ export default class PageCreateLoomOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="terminal" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Usage</h2>
           </div>
           <code-block lang="bash" code={`npm create @toyz/loom my-app
@@ -27,7 +26,6 @@ npm run dev`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="signpost" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Current Directory</h2>
           </div>
           <p>
@@ -38,7 +36,6 @@ npm run dev`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="archive" size={20} color="var(--text-muted)"></loom-icon>
             <h2>What You Get</h2>
           </div>
           <code-block lang="text" code={`my-app/
@@ -54,7 +51,6 @@ npm run dev`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="package" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Dependencies</h2>
           </div>
           <table class="api-table">
@@ -70,7 +66,6 @@ npm run dev`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Starter Component</h2>
           </div>
           <p>
@@ -106,7 +101,6 @@ export class App extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>TSConfig</h2>
           </div>
           <p>

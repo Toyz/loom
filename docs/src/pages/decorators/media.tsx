@@ -9,9 +9,13 @@ export default class PageDecoratorMedia extends LoomElement {
             <div>
                 <doc-header title="@media" subtitle="Reactive media query binding. Auto-syncs a boolean accessor with matchMedia — updates on viewport or preference changes."></doc-header>
 
+        <section>
+          <p>Reading a media query in JavaScript takes four steps that are easy to do three of: match the query, read the initial value, listen for changes, and remove the listener on teardown. Skipping the third gives you a component that is correct until the window is resized.</p>
+          <p><span class="ic">@media</span> collapses it to a boolean field bound to the query. It is right on first render and stays right, and it re-renders when the match changes. Use it for behaviour that has to differ — rendering a different component, not painting a different colour, which is a CSS media query's job.</p>
+        </section>
+
                 <section>
                     <div class="group-header">
-                        <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Quick Start</h2>
                     </div>
                     <code-block lang="ts" code={QUICK_START}></code-block>
@@ -19,7 +23,6 @@ export default class PageDecoratorMedia extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>API</h2>
                     </div>
                     <div class="feature-entry">
@@ -45,7 +48,6 @@ export default class PageDecoratorMedia extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Examples</h2>
                     </div>
                     <code-block lang="ts" code={EXAMPLES}></code-block>
@@ -53,7 +55,6 @@ export default class PageDecoratorMedia extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>How It Works</h2>
                     </div>
                     <ul>

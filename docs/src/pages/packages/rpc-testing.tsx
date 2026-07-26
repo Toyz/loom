@@ -13,7 +13,6 @@ export default class PageRpcTesting extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Setup</h2>
           </div>
           <p>
@@ -29,7 +28,6 @@ app.use(RpcTransport, transport);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Static Mocks</h2>
           </div>
           <p>
@@ -44,7 +42,6 @@ app.use(RpcTransport, transport);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Dynamic Mocks</h2>
           </div>
           <p>
@@ -64,7 +61,6 @@ transport.mock(UserRouter, "listUsers", () => [
 
         <section>
           <div class="group-header">
-            <loom-icon name="alert-triangle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Error Mocks</h2>
           </div>
           <p>
@@ -79,7 +75,6 @@ transport.mock(UserRouter, "listUsers", () => [
 
         <section>
           <div class="group-header">
-            <loom-icon name="clock" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Delay Simulation</h2>
           </div>
           <p>
@@ -94,7 +89,6 @@ transport.delay(UserRouter, "listUsers", 200);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="check-circle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Assertions</h2>
           </div>
           <p>
@@ -113,7 +107,6 @@ console.log(transport.history);
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">
@@ -132,7 +125,6 @@ console.log(transport.history);
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Full Test Example</h2>
           </div>
           <code-block lang="ts" code={`import { describe, it, expect } from "vitest";

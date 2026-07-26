@@ -201,18 +201,19 @@ const styles = css`
      Decorative only in the sense that it is redundant with the code itself, so
      it is hidden from assistive tech. */
   /* Code and gutter are laid out side by side and share one line grid.
-     The holes are GLYPHS in a <pre> with the same font and line-height as the
-     code, which is the only way they stay aligned: an absolutely positioned
-     column with a hard-coded line box drifted about 1px per line and was ~10px
-     out by the bottom of a short snippet. */
+     The positions were glyphs in a <pre> because that was the only way they
+     stayed aligned -- an absolutely positioned column with a hard-coded line
+     box drifted ~1px per line and was ~10px out by the bottom of a snippet.
+     They are <loom-icon> now, and alignment is kept the same way it was won:
+     each position is a 22px-tall box, the exact line-height of the code, with
+     the icon centred in it. The grid is enforced by the row, not by the glyph
+     metrics of whatever font happened to load. */
   .body {
     display: flex;
     align-items: stretch;
   }
 
   .gutter {
-    /* The gutter is a <pre> as well, so it must be excluded from the code
-       column's flex rule or it grows to fill half the block. */
     flex: 0 0 auto;
     width: auto;
     margin: 0;
@@ -221,20 +222,19 @@ const styles = css`
     border-right: 1px solid var(--warp, #33322a);
     border-radius: 0;
     background: rgba(0, 0, 0, 0.22);
-    color: var(--warp-lit, #4a4839);
-    font-family: var(--font-mono, monospace);
-    font-size: 13px;
-    line-height: 22px;
+    color: color-mix(in srgb, var(--text-muted, #6d6858) 55%, transparent);
     user-select: none;
     overflow: visible;
   }
-  .gutter b {
-    display: block;
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 22px;
+  /* One row per line of code. Height must equal the code's line-height. */
+  .gutter .pos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
   }
-  .gutter b.on { color: var(--thread, #c4472f); }
+  .gutter .pos loom-icon { display: flex; }
+  .gutter .pos.on { color: var(--thread, #c4472f); }
 
   /* Only the code column flexes; min-width lets it shrink so long lines
      scroll inside the block instead of widening the page. */
@@ -408,9 +408,18 @@ export class CodeBlock extends LoomElement {
           >{() => label}</button>
         </div>
         <div class="body">
-          <pre class="gutter" aria-hidden="true">
-            {punched.map((on) => <b class={on ? "on" : ""}>{on ? "\u25A0" : "\u25A1"}</b>)}
-          </pre>
+          <div class="gutter" aria-hidden="true">
+            {punched.map((on) => (
+              <span class={on ? "pos on" : "pos"}>
+                <loom-icon
+                  name="punch"
+                  size={14}
+                  strokeWidth={1.15}
+                  fill={on ? "currentColor" : "none"}
+                ></loom-icon>
+              </span>
+            ))}
+          </div>
           <pre><code rawHTML={html}></code></pre>
         </div>
         {foots.length ? (

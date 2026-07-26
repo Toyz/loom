@@ -14,11 +14,18 @@ export default class PageElementObserver extends LoomElement {
         <section>
           <p>The three DOM observers all share the same failure mode: they hold a strong reference to their callback, and their callback closes over your element. Forget one <span class="ic">disconnect()</span> and the element is never collected — it keeps receiving entries, keeps writing to a detached tree, and keeps the whole component graph alive.</p>
           <p><span class="ic">@observer</span> creates the observer on connect and disconnects it on disconnect, in the same declaration. The three kinds differ in what they watch: <span class="ic">resize</span> for box size, <span class="ic">intersection</span> for viewport overlap, <span class="ic">mutation</span> for subtree changes. Loom hands your method one entry at a time rather than the raw array.</p>
+          <punch-matrix
+            columns="BOX SIZE,VIEWPORT,SUBTREE,FIRES ON OBSERVE"
+            rows={[
+              { name: "resize", punches: "BOX SIZE,FIRES ON OBSERVE", note: "Content box and border box" },
+              { name: "intersection", punches: "VIEWPORT,FIRES ON OBSERVE", note: "Overlap with a root, by ratio" },
+              { name: "mutation", punches: "SUBTREE", note: "Children, attributes, character data" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -45,7 +52,6 @@ export default class PageElementObserver extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>ResizeObserver</h2>
           </div>
           <div class="feature-entry">
@@ -85,7 +91,6 @@ onResize(entry: ResizeObserverEntry) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="eye" size={20} color="var(--text-muted)"></loom-icon>
             <h2>IntersectionObserver</h2>
           </div>
           <div class="feature-entry">
@@ -125,7 +130,6 @@ class LazyImage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="search" size={20} color="var(--text-muted)"></loom-icon>
             <h2>MutationObserver</h2>
           </div>
           <div class="feature-entry">
@@ -163,7 +167,6 @@ class SlotCounter extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Target</h2>
           </div>
           <div class="feature-entry">
@@ -199,7 +202,6 @@ class ParentWatcher extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Multiple Observers</h2>
           </div>
           <div class="feature-entry">
@@ -229,7 +231,6 @@ class SmartPanel extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Lifecycle</h2>
           </div>
           <div class="feature-entry">
@@ -253,7 +254,6 @@ class SmartPanel extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <div class="feature-entry">

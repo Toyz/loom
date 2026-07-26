@@ -202,13 +202,10 @@ const styles = css`
     color: var(--thread);
   }
   /* A filled position, matching the punched rows on the card above. */
-  .punch .mark::before {
-    content: '';
-    width: 7px;
-    height: 10px;
+  .punch .mark loom-icon {
+    display: flex;
     flex-shrink: 0;
-    background: var(--thread);
-    transform: translateY(1px);
+    align-self: center;
   }
   .punch p {
     margin: 0;
@@ -385,7 +382,7 @@ export default class PageHome extends LoomElement {
           <div class="punch-list">
             {PUNCHES.map((p) => (
               <div class="punch">
-                <span class="mark">{p.mark}</span>
+                <span class="mark"><loom-icon name="punch" size={14} strokeWidth={1.15} fill="currentColor"></loom-icon>{p.mark}</span>
                 <p>{p.text}</p>
               </div>
             ))}

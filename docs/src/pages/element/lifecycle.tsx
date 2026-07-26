@@ -97,11 +97,20 @@ export default class PageElementLifecycle extends LoomElement {
         <section>
           <p>The single most common lifecycle bug in web components is assuming <span class="ic">connectedCallback</span> runs once. It runs every time the element enters the DOM, and moving an element — <span class="ic">appendChild</span> to a new parent, a reorder inside a morph — disconnects and reconnects it. Setup written as "run once" silently runs three times.</p>
           <p>Loom's hooks are explicit about which side of that line they sit on. <span class="ic">@mount</span> and <span class="ic">@unmount</span> pair up per connection. <span class="ic">firstUpdated</span> runs after the first render only. <span class="ic">@suspend</span> and <span class="ic">@catch</span> wrap async work and errors so a failed load renders a state instead of a blank element.</p>
+          <punch-matrix
+            columns="PER CONNECT,ONCE PER ELEMENT,ASYNC-AWARE,RUNS ON ERROR"
+            rows={[
+              { name: "@mount", punches: "PER CONNECT", note: "After the element connects" },
+              { name: "@unmount", punches: "PER CONNECT", note: "When it disconnects" },
+              { name: "firstUpdated", punches: "ONCE PER ELEMENT", note: "After the first render only" },
+              { name: "@suspend", punches: "PER CONNECT,ASYNC-AWARE", note: "Renders loading and error states" },
+              { name: "@catch", punches: "RUNS ON ERROR", note: "Catches a throw from render or @api" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@mount</h2>
           </div>
           <div class="feature-entry">
@@ -119,7 +128,6 @@ setup() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="upload" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@unmount</h2>
           </div>
           <div class="feature-entry">
@@ -137,7 +145,6 @@ teardown() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@catch_</h2>
           </div>
           <div class="feature-entry">
@@ -156,7 +163,6 @@ class MyWidget extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="clock" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@suspend</h2>
           </div>
           <div class="feature-entry">
@@ -177,7 +183,6 @@ async fetchUser() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Combined Example</h2>
           </div>
           <div class="feature-entry">
@@ -229,7 +234,6 @@ class UserCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>firstUpdated()</h2>
           </div>
           <div class="feature-entry">
@@ -254,7 +258,6 @@ class MyEl extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="filter" size={20} color="var(--text-muted)"></loom-icon>
             <h2>shouldUpdate()</h2>
           </div>
           <div class="feature-entry">
@@ -293,7 +296,6 @@ class CanvasWrapper extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Full Lifecycle Order</h2>
           </div>
 

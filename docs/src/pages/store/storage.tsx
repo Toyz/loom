@@ -11,7 +11,6 @@ export default class PageStoreStorage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>StorageAdapter Interface</h2>
           </div>
           <div class="feature-entry">
@@ -25,11 +24,18 @@ export default class PageStoreStorage extends LoomElement {
   remove(key: string): void;
 }`}></code-block>
           </div>
+          <punch-matrix
+            columns="SURVIVES RELOAD,SURVIVES TAB CLOSE,SIZE CAPPED,NEEDS BROWSER"
+            rows={[
+              { name: "MemoryStorage", punches: "", note: "In-process; gone when the tab is" },
+              { name: "SessionAdapter", punches: "SURVIVES RELOAD,SIZE CAPPED,NEEDS BROWSER", note: "Per tab, cleared when it closes" },
+              { name: "LocalAdapter", punches: "SURVIVES RELOAD,SURVIVES TAB CLOSE,SIZE CAPPED,NEEDS BROWSER", note: "Shared across tabs on the origin" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <section>
           <div class="group-header">
-            <loom-icon name="package" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Built-in Adapters</h2>
           </div>
           <table class="api-table">
@@ -57,7 +63,6 @@ const draft = new Reactive("", {
 
         <section>
           <div class="group-header">
-            <loom-icon name="save" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@persist</h2>
           </div>
           <div class="feature-entry">
@@ -107,7 +112,6 @@ connectedCallback() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Adapter</h2>
           </div>
           <div class="feature-entry">
@@ -142,7 +146,6 @@ const store = new Reactive([], {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Swapping at Runtime</h2>
           </div>
           <div class="feature-entry">

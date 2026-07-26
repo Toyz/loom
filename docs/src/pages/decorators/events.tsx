@@ -11,11 +11,23 @@ export default class PageDecoratorEvents extends LoomElement {
       <div>
         <doc-header title="Events" subtitle="Typed, class-based events and declarative event decorators."></doc-header>
 
+        <section>
+          <p>Components need two different things from an event system, and conflating them is the usual source of confusion. One is a message published to whoever is listening, anywhere in the app. The other is a callback a parent hands to a child.</p>
+          <p><span class="ic">@on</span> and <span class="ic">@emit</span> are the first: a typed bus keyed by event class, subscribed for exactly as long as the element is connected. <span class="ic">@event</span> is the second — it declares a typed callback prop. It stores a function; it does not dispatch a <span class="ic">CustomEvent</span>, so nothing outside the component can listen for it and it does not bubble.</p>
+          <punch-matrix
+            columns="TYPED,ON THE BUS,AUTO-UNSUBSCRIBES"
+            rows={[
+              { name: "@on", punches: "TYPED,ON THE BUS,AUTO-UNSUBSCRIBES", note: "Subscribes while connected" },
+              { name: "@emit", punches: "TYPED,ON THE BUS", note: "Publishes when the field changes" },
+              { name: "@event", punches: "TYPED", note: "A callback prop -- it dispatches nothing" },
+            ]}
+          ></punch-matrix>
+        </section>
+
         {/* ═══════════ Define ═══════════ */}
 
         <section>
           <div class="group-header">
-            <loom-icon name="broadcast" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Define Events</h2>
           </div>
           <div class="feature-entry">
@@ -43,7 +55,6 @@ export class ThemeChanged extends LoomEvent {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>LoomEvent Static API</h2>
           </div>
           <div class="feature-entry">
@@ -78,7 +89,6 @@ console.log(e.timestamp); // Date.now() at construction`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="filter" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Frame-Scoped Deduplication</h2>
           </div>
           <div class="feature-entry">
@@ -109,7 +119,6 @@ ThemeChanged.dispatch("dark");
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Listen &amp; Emit</h2>
           </div>
           <div class="feature-entry">
@@ -133,7 +142,6 @@ unsub();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@on Decorator</h2>
           </div>
 
@@ -177,7 +185,6 @@ onSubmit(e: Event) { e.preventDefault(); this.save(); }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@emit Decorator</h2>
           </div>
           <div class="feature-entry">
@@ -203,7 +210,6 @@ accessor selectedIndex = 0;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="cube" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Via LoomApp</h2>
           </div>
           <div class="feature-entry">
@@ -224,7 +230,6 @@ app.emit(new ThemeChanged("dark"));`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>useBus()</h2>
           </div>
           <div class="feature-entry">
@@ -245,7 +250,6 @@ useBus(testBus);
 
         <section>
           <div class="group-header">
-            <loom-icon name="target" size={20} color="var(--text-muted)"></loom-icon>
             <h2>once() &amp; @on.once</h2>
           </div>
           <div class="feature-entry">
@@ -271,7 +275,6 @@ handleAuth(e: AuthComplete) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="clock" size={20} color="var(--text-muted)"></loom-icon>
             <h2>waitFor()</h2>
           </div>
           <div class="feature-entry">
@@ -295,7 +298,6 @@ try {
 
         <section>
           <div class="group-header">
-            <loom-icon name="x-circle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Cancellable Events</h2>
           </div>
           <div class="feature-entry">
@@ -320,7 +322,6 @@ bus.on(FormSubmit, (e) => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="git-branch" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Event Inheritance</h2>
           </div>
           <div class="feature-entry">
@@ -354,7 +355,6 @@ bus.emit(new ClickEvent("button", 10, 20));`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Example: Cross-Component Communication</h2>
           </div>
           <div class="feature-entry">

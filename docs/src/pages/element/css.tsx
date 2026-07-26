@@ -18,7 +18,6 @@ export default class PageElementCSS extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>The css`` Tagged Template</h2>
           </div>
           <div class="feature-entry">
@@ -38,7 +37,6 @@ const styles = css\`
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@styles Decorator</h2>
           </div>
           <div class="feature-entry">
@@ -80,7 +78,6 @@ class MyForm extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Inline Styles in update()</h2>
           </div>
           <div class="feature-entry">
@@ -114,7 +111,6 @@ class MyCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <table class="api-table">
@@ -130,7 +126,6 @@ class MyCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>:host and Scoping</h2>
           </div>
           <div class="feature-entry">
@@ -150,7 +145,6 @@ class MyCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Dynamic Values</h2>
           </div>
           <div class="feature-entry">
@@ -178,7 +172,6 @@ class ThemeCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

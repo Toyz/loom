@@ -18,7 +18,6 @@ export default class PageRouterGuards extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@guard</h2>
           </div>
           <div class="feature-entry">
@@ -52,11 +51,21 @@ class Guards {
   }
 }`}></code-block>
           </div>
+          <punch-matrix
+            columns="ALLOWS,BLOCKS,REDIRECTS"
+            rows={[
+              { name: "true", punches: "ALLOWS", note: "Navigation proceeds" },
+              { name: "false", punches: "BLOCKS", note: "Navigation is abandoned where it stands" },
+              { name: `"/login"`, punches: "REDIRECTS", note: "A string is treated as a destination" },
+              { name: "ok(...)", punches: "ALLOWS", note: "Any successful LoomResult" },
+              { name: `err("/login")`, punches: "REDIRECTS", note: "A string error is a destination" },
+              { name: "err(new Error(...))", punches: "BLOCKS", note: "Changed in 0.22.0 — this used to allow" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Connecting Guards to Routes</h2>
           </div>
           <div class="feature-entry">
@@ -76,7 +85,6 @@ class PageBilling extends LoomElement { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Guard Resolution</h2>
           </div>
           <div class="feature-entry">
@@ -97,7 +105,6 @@ class PageBilling extends LoomElement { }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">

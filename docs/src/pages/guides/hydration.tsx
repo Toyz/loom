@@ -13,7 +13,6 @@ export default class PageGuidesHydration extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Overview</h2>
                     </div>
                     <div class="feature-entry">
@@ -33,7 +32,6 @@ export default class PageGuidesHydration extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Basic Usage</h2>
                     </div>
                     <div class="feature-entry">
@@ -77,7 +75,6 @@ class MyCounter extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>How It Works</h2>
                     </div>
                     <div class="feature-entry">
@@ -118,7 +115,6 @@ class MyCounter extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>When to Use</h2>
                     </div>
                     <div class="grid">
@@ -145,7 +141,6 @@ class MyCounter extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Browser Support</h2>
                     </div>
                     <div class="feature-entry">

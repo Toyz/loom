@@ -13,7 +13,6 @@ export default class PageDIDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@service</h2>
           </div>
           <div class="feature-entry">
@@ -35,7 +34,6 @@ class BookmarkStore extends CollectionStore<Bookmark> {
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@inject</h2>
           </div>
           <div class="feature-entry">
@@ -67,7 +65,6 @@ class UserProfile extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="help-circle" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@maybe</h2>
           </div>
           <div class="feature-entry">
@@ -94,7 +91,6 @@ class AnalyticsTracker extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@factory</h2>
           </div>
           <div class="feature-entry">
@@ -116,7 +112,6 @@ class Boot {
 
         <section>
           <div class="group-header">
-            <loom-icon name="eye" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@watch(Service) <span class="badge deprecated">unified</span></h2>
           </div>
           <div class="feature-entry">
@@ -161,7 +156,6 @@ class TodoPage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

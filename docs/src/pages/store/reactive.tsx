@@ -11,7 +11,6 @@ export default class PageStoreReactive extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Reactive&lt;T&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -57,7 +56,6 @@ unsub();`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>CollectionStore&lt;T&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -108,7 +106,6 @@ todos.subscribe((items) => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Persistence Migration</h2>
           </div>
           <div class="feature-entry">

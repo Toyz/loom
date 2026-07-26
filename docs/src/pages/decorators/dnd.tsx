@@ -9,9 +9,13 @@ export default class PageDecoratorDnd extends LoomElement {
             <div>
                 <doc-header title="@draggable / @dropzone" subtitle="Declarative HTML5 Drag and Drop. Make components draggable or accept drops with lifecycle-managed event handling."></doc-header>
 
+        <section>
+          <p>HTML5 drag and drop is an API with a trap in it: the drop target does nothing unless you call <span class="ic">preventDefault()</span> on <span class="ic">dragover</span>, an event you otherwise have no reason to handle. Miss it and the drop silently never fires, with no error to explain why.</p>
+          <p><span class="ic">@draggable</span> and <span class="ic">@dropzone</span> handle the required event dance and leave you the two parts that carry meaning: what the payload is, and what to do when it lands. The payload is serialised from the method's return value, so a drop between components moves data rather than DOM nodes.</p>
+        </section>
+
                 <section>
                     <div class="group-header">
-                        <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Quick Start</h2>
                     </div>
                     <code-block lang="ts" code={QUICK_START}></code-block>
@@ -19,7 +23,6 @@ export default class PageDecoratorDnd extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>API</h2>
                     </div>
                     <div class="feature-entry">
@@ -63,7 +66,6 @@ export default class PageDecoratorDnd extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Examples</h2>
                     </div>
                     <code-block lang="ts" code={EXAMPLES}></code-block>

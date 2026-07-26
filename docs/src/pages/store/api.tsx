@@ -12,7 +12,6 @@ export default class PageFetch extends LoomElement {
         {/* ── Basic Usage ── */}
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <div class="feature-entry">
@@ -29,7 +28,6 @@ export default class PageFetch extends LoomElement {
         {/* ── ApiState<T> ── */}
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>ApiState&lt;T&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -55,7 +53,6 @@ export default class PageFetch extends LoomElement {
         {/* ── Options ── */}
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Options</h2>
           </div>
           <div class="feature-entry">
@@ -79,7 +76,6 @@ export default class PageFetch extends LoomElement {
         {/* ── Interceptors ── */}
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Interceptors</h2>
           </div>
           <div class="feature-entry">
@@ -112,7 +108,6 @@ export default class PageFetch extends LoomElement {
         {/* ── Error Handling ── */}
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Error Handling — @catch_</h2>
           </div>
           <div class="feature-entry">
@@ -141,7 +136,6 @@ export default class PageFetch extends LoomElement {
         {/* ── Key Behaviors ── */}
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Key Behaviors</h2>
           </div>
           <table class="api-table">

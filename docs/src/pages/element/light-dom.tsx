@@ -14,11 +14,17 @@ export default class PageElementLightDom extends LoomElement {
         <section>
           <p>Shadow DOM's encapsulation is a feature right up until the component is a leaf that should look like its surroundings. An icon, a badge, a table cell: styling those from the page means piercing the boundary with custom properties or <span class="ic">::part</span> for every property you might ever want to change.</p>
           <p><span class="ic">{`@component("x-tag", { shadow: false })`}</span> renders into the light DOM instead. The component inherits the page cascade for free, and gives up scoping in exchange — its selectors are now global, and <span class="ic">@styles</span> no longer isolates anything. Use it for leaves, not for anything that owns layout.</p>
+          <punch-matrix
+            columns="SCOPED STYLES,INHERITS CASCADE,SLOTS,::PART"
+            rows={[
+              { name: "shadow (default)", punches: "SCOPED STYLES,SLOTS,::PART", note: "Isolated; the page reaches in only where you allow it" },
+              { name: "shadow: false", punches: "INHERITS CASCADE", note: "No boundary, so no isolation either" },
+            ]}
+          ></punch-matrix>
         </section>
 
         <section>
           <div class="group-header">
-            <loom-icon name="sun" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -40,7 +46,6 @@ class MyButton extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">
@@ -65,7 +70,6 @@ class MyButton extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="palette" size={20} color="var(--text-muted)"></loom-icon>
             <h2>CSS with Light DOM</h2>
           </div>
           <div class="feature-entry">
@@ -103,7 +107,6 @@ class MyButton extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="star" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Built-in Example: loom-icon</h2>
           </div>
           <div class="feature-entry">
@@ -122,7 +125,6 @@ class MyButton extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>When to Use</h2>
           </div>
           <div class="grid">

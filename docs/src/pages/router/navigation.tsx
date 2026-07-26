@@ -12,7 +12,6 @@ export default class PageRouterNavigation extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>&lt;loom-link&gt;</h2>
           </div>
           <div class="feature-entry">
@@ -66,7 +65,6 @@ const fill = css\`a { display: flex; width: 100%; height: 100%; }\`;
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Programmatic Navigation</h2>
           </div>
           <div class="feature-entry">
@@ -102,7 +100,6 @@ setup() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Router API</h2>
           </div>
           <table class="api-table">
@@ -125,7 +122,6 @@ setup() {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Active State</h2>
           </div>
           <div class="feature-entry">

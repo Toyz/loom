@@ -12,8 +12,12 @@ export default class PageElementLog extends LoomElement {
         <doc-header title="@log" subtitle="Structured method logging with pluggable transports. Same DI pattern as RpcTransport in loom-rpc."></doc-header>
 
         <section>
+          <p>Debug logging that ships is usually a <span class="ic">console.log</span> someone forgot, and debug logging that does not ship is usually deleted before it was useful twice. Neither gives you the two things you actually want at 3am: which arguments went in, and how long the call took.</p>
+          <p><span class="ic">@log</span> wraps the method and records both. The transport is pluggable, so the same declaration writes to the console in development and to whatever you use in production — or to nothing at all.</p>
+        </section>
+
+        <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Quick Start</h2>
           </div>
           <code-block lang="ts" code={QUICK_START}></code-block>
@@ -21,7 +25,6 @@ export default class PageElementLog extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API</h2>
           </div>
           <div class="feature-entry">
@@ -60,7 +63,6 @@ export default class PageElementLog extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>LogEntry</h2>
           </div>
           <div class="feature-entry">
@@ -73,7 +75,6 @@ export default class PageElementLog extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Transports</h2>
           </div>
           <div class="feature-entry">
@@ -94,7 +95,6 @@ export default class PageElementLog extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="rocket" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Transport: Sentry</h2>
           </div>
           <code-block lang="ts" code={SENTRY_EXAMPLE}></code-block>
@@ -102,7 +102,6 @@ export default class PageElementLog extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Arg Redaction</h2>
           </div>
           <div class="feature-entry">
@@ -117,7 +116,6 @@ export default class PageElementLog extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <ul>

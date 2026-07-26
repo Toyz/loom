@@ -9,9 +9,13 @@ export default class PageDecoratorFullscreen extends LoomElement {
             <div>
                 <doc-header title="@fullscreen" subtitle="Boolean accessor bound to the Fullscreen API. Toggle fullscreen by setting a field — syncs with Escape key and external changes."></doc-header>
 
+        <section>
+          <p>Fullscreen state can change without you asking for it. The user presses Escape, or F11, or the browser exits fullscreen because a dialog opened — and a boolean you set when you called <span class="ic">requestFullscreen()</span> is now lying about the state of the screen.</p>
+          <p><span class="ic">@fullscreen</span> binds the field to the actual API in both directions. Writing <span class="ic">true</span> requests fullscreen and writing <span class="ic">false</span> exits it, while a change made anywhere else updates the field and re-renders. There is one source of truth, and it is the browser's.</p>
+        </section>
+
                 <section>
                     <div class="group-header">
-                        <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Quick Start</h2>
                     </div>
                     <code-block lang="ts" code={QUICK_START}></code-block>
@@ -19,7 +23,6 @@ export default class PageDecoratorFullscreen extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>API</h2>
                     </div>
                     <div class="feature-entry">
@@ -42,7 +45,6 @@ export default class PageDecoratorFullscreen extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>How It Works</h2>
                     </div>
                     <ul>

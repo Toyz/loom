@@ -9,9 +9,13 @@ export default class PageDecoratorClipboard extends LoomElement {
             <div>
                 <doc-header title="@clipboard" subtitle="Declarative clipboard read/write. Copy return values or handle paste events with a single decorator."></doc-header>
 
+        <section>
+          <p>The Clipboard API is asynchronous, permission-gated, and only callable from inside a real user gesture. Code that reads well — build the text, await the write, show a confirmation — tends to lose the gesture somewhere in the middle and fail in Safari only.</p>
+          <p><span class="ic">@clipboard</span> keeps the call on the gesture. In write mode the method's return value is what gets copied; in read mode the method receives what was pasted. Either way the permission and the async plumbing stay out of your method body.</p>
+        </section>
+
                 <section>
                     <div class="group-header">
-                        <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Quick Start</h2>
                     </div>
                     <code-block lang="ts" code={QUICK_START}></code-block>
@@ -19,7 +23,6 @@ export default class PageDecoratorClipboard extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>API</h2>
                     </div>
                     <div class="feature-entry">
@@ -40,7 +43,6 @@ export default class PageDecoratorClipboard extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Examples</h2>
                     </div>
                     <code-block lang="ts" code={EXAMPLES}></code-block>

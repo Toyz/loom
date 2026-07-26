@@ -13,7 +13,6 @@ export default class PageDIOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>LoomApp</h2>
           </div>
           <div class="feature-entry">
@@ -29,7 +28,6 @@ app.start(); // boots the app`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Registering Providers</h2>
           </div>
           <div class="feature-entry">
@@ -58,7 +56,6 @@ app.use(() => new DatabasePool({ max: 10 }));`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="search" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Retrieving Services</h2>
           </div>
           <div class="feature-entry">
@@ -72,7 +69,6 @@ const db = app.maybe(DatabasePool);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@service</h2>
           </div>
           <div class="feature-entry">
@@ -94,7 +90,6 @@ class BookmarkStore extends CollectionStore<Bookmark> {
 
         <section>
           <div class="group-header">
-            <loom-icon name="link" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@inject</h2>
           </div>
           <div class="feature-entry">
@@ -124,7 +119,6 @@ class UserProfile extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@factory</h2>
           </div>
           <div class="feature-entry">
@@ -145,7 +139,6 @@ class Boot {
 
         <section>
           <div class="group-header">
-            <loom-icon name="activity" size={20} color="var(--text-muted)"></loom-icon>
             <h2>LoomLifecycle</h2>
           </div>
           <div class="feature-entry">

@@ -8,6 +8,10 @@
 import { LoomIcon } from "@toyz/loom/element/icon";
 
 LoomIcon.registerAll({
+  // The punch. One position on a card: outline when the material is
+  // intact, filled via the fill prop when it is punched through.
+  "punch": '<rect x="6.5" y="3.5" width="11" height="17" rx="1" />',
+
   // Navigation
   "home": '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />',
   "thread": '<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2Z" /><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4" /><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />',

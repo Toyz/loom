@@ -13,7 +13,6 @@ export default class PageFlagsOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Install</h2>
           </div>
           <code-block lang="bash" code={`npm install @toyz/loom-flags`}></code-block>
@@ -24,7 +23,6 @@ export default class PageFlagsOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <p>
@@ -43,7 +41,6 @@ export default class PageFlagsOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>1. Create a Provider</h2>
           </div>
           <code-block lang="ts" code={`import { FlagProvider } from "@toyz/loom-flags";
@@ -60,7 +57,6 @@ class LaunchDarklyProvider extends FlagProvider {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>2. Register via DI</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -71,7 +67,6 @@ app.use(FlagProvider, new LaunchDarklyProvider());`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>3. Use the Decorator</h2>
           </div>
           <code-block lang="tsx" code={`import { flag } from "@toyz/loom-flags";
@@ -97,7 +92,6 @@ class PremiumWidget extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>4. Use the Component</h2>
           </div>
           <code-block lang="tsx" code={`import "@toyz/loom-flags"; // registers <loom-flag>
@@ -114,7 +108,6 @@ class PremiumWidget extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Real-Time Updates</h2>
           </div>
           <p>

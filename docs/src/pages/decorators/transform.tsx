@@ -11,11 +11,15 @@ export default class PageDecoratorTransform extends LoomElement {
       <div>
         <doc-header title="Transform" subtitle="Value transformation decorators for parsing and conversion."></doc-header>
 
+        <section>
+          <p>Attributes are strings. Every one of them, always — <span class="ic">count="3"</span> arrives as <span class="ic">"3"</span>, and <span class="ic">disabled="false"</span> arrives as the string <span class="ic">"false"</span>, which is truthy. Hand-parsing that in <span class="ic">attributeChangedCallback</span> is where the off-by-one type bugs live.</p>
+          <p>A transform runs on the way in, converting the incoming value once before it reaches your field. The seven built-ins cover the common conversions, and <span class="ic">createTransform</span> covers the rest. All of them apply to an <span class="ic">accessor</span>, not a plain field — that is a hard requirement of how stage-3 decorators intercept a write, not a style preference.</p>
+        </section>
+
         {/* ═══════════ @transform ═══════════ */}
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@transform</h2>
           </div>
           <div class="feature-entry">
@@ -35,7 +39,6 @@ accessor userId!: number;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>typed&lt;T&gt;()</h2>
           </div>
           <div class="feature-entry">
@@ -63,7 +66,6 @@ accessor routeParams!: UserParams;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@typedTransformer</h2>
           </div>
           <div class="feature-entry">
@@ -95,7 +97,6 @@ accessor routeParams!: UserParams;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="package" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Built-in Transformers</h2>
           </div>
           <div class="feature-entry">
@@ -127,7 +128,6 @@ accessor routeParams!: UserParams;`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Custom Transforms</h2>
           </div>
           <div class="feature-entry">

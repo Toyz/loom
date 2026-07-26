@@ -13,7 +13,6 @@ export default class PageAnalyticsTesting extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Import</h2>
           </div>
           <code-block lang="ts" code={`import { MockAnalytics } from "@toyz/loom-analytics/testing";
@@ -22,7 +21,6 @@ import { AnalyticsTransport } from "@toyz/loom-analytics";`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Setup</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -37,7 +35,6 @@ app.use(AnalyticsTransport, analytics);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="check" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Assertions</h2>
           </div>
           <code-block lang="ts" code={`// Assert an event was tracked
@@ -56,7 +53,6 @@ console.log(analytics.events);
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Reset</h2>
           </div>
           <code-block lang="ts" code={`// Clear all recorded events between tests
@@ -66,7 +62,6 @@ expect(analytics.events).toHaveLength(0);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Full Test Example</h2>
           </div>
           <code-block lang="ts" code={`import { describe, it, expect, beforeEach } from "vitest";

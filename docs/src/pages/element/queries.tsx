@@ -18,7 +18,6 @@ export default class PageElementQueries extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="search" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@query</h2>
           </div>
           <div class="feature-entry">
@@ -68,7 +67,6 @@ const cell = this.cellAt(2, 3); // → querySelector(".cell-2-3")`}></code-block
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@queryAll</h2>
           </div>
           <div class="feature-entry">
@@ -103,7 +101,6 @@ const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured"
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How They Work</h2>
           </div>
           <div class="feature-entry">
@@ -126,7 +123,6 @@ const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured"
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>vs Manual Queries</h2>
           </div>
           <div class="feature-entry">

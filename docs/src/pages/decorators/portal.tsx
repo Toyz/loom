@@ -12,9 +12,13 @@ export default class PageDecoratorPortal extends LoomElement {
                 <doc-header title="@portal" subtitle="Teleport rendered content to an external DOM target.
                     Escape shadow DOM stacking context for modals, tooltips, dropdowns."></doc-header>
 
+        <section>
+          <p>A modal rendered where it belongs logically is a modal trapped inside its parent's stacking context. Any ancestor with <span class="ic">overflow: hidden</span>, a <span class="ic">transform</span>, or a lower <span class="ic">z-index</span> will clip it, and no amount of <span class="ic">z-index: 9999</span> escapes a stacking context from the inside.</p>
+          <p><span class="ic">@portal</span> renders part of the template into a different DOM target while leaving it part of this component — same state, same lifecycle, same teardown. The content lives at the end of <span class="ic">body</span>; the code lives with the component that owns it.</p>
+        </section>
+
                 <section>
                     <div class="group-header">
-                        <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Quick Start</h2>
                     </div>
                     <code-block lang="ts" code={QUICK_START}></code-block>
@@ -22,7 +26,6 @@ export default class PageDecoratorPortal extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>API</h2>
                     </div>
                     <div class="feature-entry">
@@ -49,7 +52,6 @@ export default class PageDecoratorPortal extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>Examples</h2>
                     </div>
                     <code-block lang="ts" code={EXAMPLES}></code-block>
@@ -57,7 +59,6 @@ export default class PageDecoratorPortal extends LoomElement {
 
                 <section>
                     <div class="group-header">
-                        <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
                         <h2>How It Works</h2>
                     </div>
                     <ul>

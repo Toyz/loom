@@ -18,7 +18,6 @@ export default class PageElementLazy extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -34,7 +33,6 @@ export default class PageElementLazy extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <div class="feature-entry">
@@ -61,7 +59,6 @@ class HeavyChart extends LoomElement {}
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>With Routes</h2>
           </div>
           <div class="feature-entry">
@@ -88,7 +85,6 @@ class PageAdmin extends LoomElement {}`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="clock" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Loading Indicator</h2>
           </div>
           <div class="feature-entry">
@@ -124,7 +120,6 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">
@@ -148,7 +143,6 @@ class AnalyticsPage extends LoomElement {}`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Events</h2>
           </div>
           <div class="feature-entry">
@@ -192,7 +186,6 @@ onLazyEnd(e: LazyLoadEnd) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="eye" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Viewport Trigger</h2>
           </div>
           <div class="feature-entry">
@@ -219,7 +212,6 @@ class HeavyChart extends LoomElement {}`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Prefetch</h2>
           </div>
           <div class="feature-entry">
@@ -256,7 +248,6 @@ requestIdleCallback(() => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

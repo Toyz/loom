@@ -13,7 +13,6 @@ export default class PageStorePatterns extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="eye" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@watch — Auto-Subscribe Components</h2>
           </div>
           <div class="feature-entry">
@@ -109,7 +108,6 @@ class MyCounter extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Derived Values</h2>
           </div>
           <div class="feature-entry">
@@ -128,7 +126,6 @@ items.subscribe((list) => {
 
         <section>
           <div class="group-header">
-            <loom-icon name="database" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Deferred Persistence</h2>
           </div>
           <div class="feature-entry">

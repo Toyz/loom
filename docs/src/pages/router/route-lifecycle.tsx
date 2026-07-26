@@ -11,7 +11,6 @@ export default class PageRouteLifecycle extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@onRouteEnter</h2>
           </div>
           <div class="feature-entry">
@@ -36,7 +35,6 @@ class UserPage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="upload" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@onRouteLeave</h2>
           </div>
           <div class="feature-entry">
@@ -60,7 +58,6 @@ class EditorPage extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Combined Usage</h2>
           </div>
           <div class="feature-entry">
@@ -83,7 +80,6 @@ class Dashboard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Lifecycle Order</h2>
           </div>
           <div class="feature-entry">
@@ -99,7 +95,6 @@ class Dashboard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Multiple Handlers</h2>
           </div>
           <div class="feature-entry">

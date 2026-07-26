@@ -22,13 +22,15 @@ const tipStyles = css`
     position: fixed;
     z-index: 400;
     max-width: 21rem;
-    background: var(--card, #b9b099);
-    color: var(--card-ink, #16150f);
-    border: 1px solid var(--card-edge, #a1977e);
+    /* Same surface as a code block and a punch matrix. A popover that appears
+       under the cursor is the worst possible place for a bright panel. */
+    background: var(--ground-sunk, #100f0b);
+    color: var(--text-primary, #e6e1d3);
+    border: 1px solid var(--warp-lit, #4a4839);
     /* Clipped corner: it is a small card, like everything else in this system. */
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
     padding: 10px 13px 11px;
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
     pointer-events: none;
   }
   .name {
@@ -42,7 +44,7 @@ const tipStyles = css`
     font-family: var(--font-sans, sans-serif);
     font-size: 0.8125rem;
     line-height: 1.45;
-    color: color-mix(in srgb, var(--card-ink, #16150f) 78%, transparent);
+    color: var(--text-secondary, #a09a88);
   }
   /* The path, not a sentence telling you to go read it. */
   .more {
@@ -52,7 +54,7 @@ const tipStyles = css`
     font-size: 0.625rem;
     letter-spacing: 0.06em;
     white-space: nowrap;
-    color: color-mix(in srgb, var(--card-ink, #16150f) 55%, transparent);
+    color: var(--text-muted, #6d6858);
   }
 `;
 

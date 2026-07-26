@@ -15,7 +15,6 @@ export default class PageRouterRouteData extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Route Params</h2>
           </div>
           <div class="feature-entry">
@@ -63,7 +62,6 @@ class PageTeam extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="search" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Query Strings</h2>
           </div>
           <div class="feature-entry">
@@ -122,7 +120,6 @@ class PageSearch extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="database" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Route Metadata</h2>
           </div>
           <div class="feature-entry">
@@ -174,7 +171,6 @@ class PageDashboard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="refresh" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@transform</h2>
           </div>
           <div class="feature-entry">
@@ -201,7 +197,6 @@ class PageUser extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="grid" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Combining Params + Query + Meta</h2>
           </div>
           <div class="feature-entry">
@@ -237,7 +232,6 @@ class PageUserPosts extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

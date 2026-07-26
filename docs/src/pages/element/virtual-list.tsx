@@ -16,7 +16,6 @@ export default class PageVirtualList extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -34,7 +33,6 @@ export default class PageVirtualList extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <div class="feature-entry">
@@ -54,7 +52,6 @@ export default class PageVirtualList extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Styling</h2>
           </div>
           <div class="feature-entry">
@@ -81,7 +78,6 @@ loom-virtual {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Props</h2>
           </div>
           <table class="api-table">
@@ -98,7 +94,6 @@ loom-virtual {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Imperative Methods</h2>
           </div>
           <table class="api-table">
@@ -113,7 +108,6 @@ loom-virtual {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Children Template</h2>
           </div>
           <div class="feature-entry">
@@ -132,7 +126,6 @@ loom-virtual {
 
         <section>
           <div class="group-header">
-            <loom-icon name="download" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Infinite Scroll</h2>
           </div>
           <div class="feature-entry">
@@ -149,7 +142,6 @@ loom-virtual {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Dynamic Item Counts</h2>
           </div>
           <div class="feature-entry">

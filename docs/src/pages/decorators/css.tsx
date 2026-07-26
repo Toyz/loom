@@ -10,8 +10,12 @@ export default class PageDecoratorCSS extends LoomElement {
         <doc-header title="@css" subtitle="Dynamic scoped styles from a method — reactive, debounced, and automatically cleaned up."></doc-header>
 
         <section>
+          <p>Almost everything that looks like it needs dynamic CSS does not: a custom property set on the host covers colours, sizes and spacing without regenerating a stylesheet. What custom properties cannot do is change structure — a <span class="ic">grid-template</span> computed from a count, a keyframe body, a selector that only exists in one state.</p>
+          <p><span class="ic">@dynamicCss</span> is for that remainder. The method returns CSS text, and it is re-evaluated whenever a reactive field it read changes. The cost is a stylesheet rebuild per change, which is why the result is debounced and why a custom property is the better answer whenever one will do.</p>
+        </section>
+
+        <section>
           <div class="group-header">
-            <loom-icon name="palette" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Overview</h2>
           </div>
           <div class="feature-entry">
@@ -27,7 +31,6 @@ export default class PageDecoratorCSS extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Basic Usage</h2>
           </div>
           <div class="feature-entry">
@@ -59,7 +62,6 @@ class ThemedCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">
@@ -84,7 +86,6 @@ class ThemedCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@css vs @styles</h2>
           </div>
           <div class="feature-entry">
@@ -125,7 +126,6 @@ class ThemedCard extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="star" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Multiple @css Methods</h2>
           </div>
           <div class="feature-entry">

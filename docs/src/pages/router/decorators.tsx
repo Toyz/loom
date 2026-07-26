@@ -13,7 +13,6 @@ export default class PageRouterDecorators extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="hash" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@route</h2>
           </div>
           <div class="feature-entry">
@@ -49,7 +48,6 @@ class UserSettings extends LoomElement { ... }`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@guard</h2>
           </div>
           <div class="feature-entry">
@@ -79,7 +77,6 @@ checkRole(route: RouteInfo, @inject(UserStore) users: UserStore) {
 
         <section>
           <div class="group-header">
-            <loom-icon name="layers" size={20} color="var(--text-muted)"></loom-icon>
             <h2>@group</h2>
           </div>
           <div class="feature-entry">
@@ -109,7 +106,6 @@ class UserSettings extends LoomElement { }
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Route Param Injection</h2>
           </div>
           <div class="feature-entry">
@@ -136,7 +132,6 @@ class UserSettings extends LoomElement { }
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>URL Part Decorators</h2>
           </div>
           <div class="feature-entry">
@@ -174,7 +169,6 @@ class MyApp extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="book" size={20} color="var(--text-muted)"></loom-icon>
             <h2>API Reference</h2>
           </div>
           <table class="api-table">

@@ -8,7 +8,7 @@ import "./components/source-block"; // live source from GitHub raw API
 import "./components/doc-header";   // page header with auto-generated TOC
 import "./components/doc-nav";      // prev/next page navigation
 import "./components/doc-notification"; // callout/alert banners
-import "./components/punch-card";       // lifecycle punch card (signature element)
+import "./components/punch-matrix";     // the punch matrix (signature element)
 import "./components/doc-tip";          // @attribute popover on decorator tokens
 
 import { app } from "@toyz/loom";

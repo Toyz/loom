@@ -13,7 +13,6 @@ export default class PageFlagsTesting extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="settings" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Setup</h2>
           </div>
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
@@ -28,7 +27,6 @@ beforeEach(() => flags.reset());`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Enable / Disable</h2>
           </div>
           <code-block lang="ts" code={`flags.enable("dark-mode");
@@ -40,7 +38,6 @@ expect(flags.isEnabled("dark-mode")).toBe(false);`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Variants</h2>
           </div>
           <code-block lang="ts" code={`flags.setVariant("checkout-flow", "variant-b");
@@ -52,7 +49,6 @@ expect(flags.getVariant("unknown", "default")).toBe("default");`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="check" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Assertions</h2>
           </div>
           <code-block lang="ts" code={`// Assert a flag was checked (isEnabled was called)
@@ -70,7 +66,6 @@ flags.assertDisabled("off");`}></code-block>
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Reactive Testing</h2>
           </div>
           <p>

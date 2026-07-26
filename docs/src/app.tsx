@@ -330,15 +330,13 @@ const styles = css`
     margin-top: 10px;
   }
   .brand-punches i {
-    width: 5px;
-    height: 8px;
-    border: 1px solid var(--warp-lit, #4a4839);
+    display: flex;
+    color: var(--warp-lit, #4a4839);
   }
   /* Punched reads as a hole everywhere else in the system, so it reads as a
      hole here too — a dimmed thread fill, not five alarm-red blocks. */
   .brand-punches i.on {
-    background: var(--thread-dim, #8f3423);
-    border-color: var(--thread-dim, #8f3423);
+    color: var(--thread-dim, #8f3423);
   }
 
   /* ── Search ──
@@ -703,8 +701,8 @@ export class DocsApp extends LoomElement {
                 Decorative by intent — it identifies the site, it does not
                 encode anything, which is why it never changes. */}
             <div class="brand-punches" aria-hidden="true">
-              <i></i><i class="on"></i><i></i><i></i><i class="on"></i>
-              <i></i><i></i><i class="on"></i><i></i>
+              <i><loom-icon name="punch" size={12} strokeWidth={1.3} fill="none"></loom-icon></i><i class="on"><loom-icon name="punch" size={12} strokeWidth={1.3} fill="currentColor"></loom-icon></i><i><loom-icon name="punch" size={12} strokeWidth={1.3} fill="none"></loom-icon></i><i><loom-icon name="punch" size={12} strokeWidth={1.3} fill="none"></loom-icon></i><i class="on"><loom-icon name="punch" size={12} strokeWidth={1.3} fill="currentColor"></loom-icon></i>
+              <i><loom-icon name="punch" size={12} strokeWidth={1.3} fill="none"></loom-icon></i><i><loom-icon name="punch" size={12} strokeWidth={1.3} fill="none"></loom-icon></i><i class="on"><loom-icon name="punch" size={12} strokeWidth={1.3} fill="currentColor"></loom-icon></i><i><loom-icon name="punch" size={12} strokeWidth={1.3} fill="none"></loom-icon></i>
             </div>
           </div>
 

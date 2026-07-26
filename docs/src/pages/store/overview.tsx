@@ -15,7 +15,6 @@ export default class PageStoreOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Philosophy</h2>
           </div>
           <div class="feature-entry">
@@ -26,13 +25,22 @@ export default class PageStoreOverview extends LoomElement {
               shared, service-level state. Every layer supports optional persistence.
             </div>
           </div>
+          <punch-matrix
+            columns="RE-RENDERS,DEEP,PERSISTS,LAZY,EXTERNAL API"
+            rows={[
+              { name: "@reactive", punches: "RE-RENDERS", note: "One value; assignment schedules a render" },
+              { name: "@store", punches: "RE-RENDERS,DEEP", note: "Nested mutation is tracked too" },
+              { name: "@persist", punches: "RE-RENDERS,PERSISTS", note: "Rehydrates on construction" },
+              { name: "@computed", punches: "RE-RENDERS,LAZY", note: "Recomputes only when a dependency changed" },
+              { name: "@signal", punches: "RE-RENDERS,EXTERNAL API", note: "Readable as a TC39 Signal from outside" },
+            ]}
+          ></punch-matrix>
         </section>
 
         {/* ═══════════ At a Glance ═══════════ */}
 
         <section>
           <div class="group-header">
-            <loom-icon name="bolt" size={20} color="var(--text-muted)"></loom-icon>
             <h2>At a Glance</h2>
           </div>
           <table class="api-table">
@@ -51,7 +59,6 @@ export default class PageStoreOverview extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Quick Example</h2>
           </div>
           <div class="feature-entry">
@@ -91,7 +98,6 @@ class TodoApp extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="compass" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Choosing the Right Tool</h2>
           </div>
           <table class="api-table">

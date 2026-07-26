@@ -265,15 +265,15 @@ export const docStyles = css`
      a complete component, a finished file. Not a generic container. */
 
   .specimen {
-    background: var(--card, #ded6c0);
-    color: var(--card-ink, #1a1913);
-    border: 1px solid var(--card-edge, #c9c0a6);
+    background: var(--ground-sunk, #100f0b);
+    color: var(--text-primary, #e6e1d3);
+    border: 1px solid var(--warp-lit, #4a4839);
     clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
     padding: var(--space-5, 1.25rem);
     margin-bottom: var(--space-5, 1.25rem);
   }
-  .specimen p { color: color-mix(in srgb, var(--card-ink) 72%, transparent); }
-  .specimen strong { color: var(--card-ink); }
+  .specimen p { color: var(--text-secondary, #a09a88); }
+  .specimen strong { color: var(--text-primary, #e6e1d3); }
   .specimen .label {
     display: block;
     font-family: var(--font-mono);
@@ -281,7 +281,7 @@ export const docStyles = css`
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--card-ink) 50%, transparent);
+    color: var(--text-muted, #6d6858);
     margin-bottom: var(--space-2, 0.5rem);
   }
 

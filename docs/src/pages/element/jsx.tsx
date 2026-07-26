@@ -16,7 +16,6 @@ export default class PageJsx extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="sparkles" size={20} color="var(--text-muted)"></loom-icon>
             <h2>How It Works</h2>
           </div>
           <div class="feature-entry">
@@ -37,7 +36,6 @@ export default class PageJsx extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="list" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Keyed Reconciliation</h2>
           </div>
           <div class="feature-entry">
@@ -59,7 +57,6 @@ export default class PageJsx extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="code" size={20} color="var(--text-muted)"></loom-icon>
             <h2>rawHTML</h2>
           </div>
           <div class="feature-entry">
@@ -76,7 +73,6 @@ export default class PageJsx extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="box" size={20} color="var(--text-muted)"></loom-icon>
             <h2>SVG Support</h2>
           </div>
           <div class="feature-entry">
@@ -98,7 +94,6 @@ export default class PageJsx extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="shield" size={20} color="var(--text-muted)"></loom-icon>
             <h2>loom-keep</h2>
           </div>
           <div class="feature-entry">
@@ -112,7 +107,6 @@ export default class PageJsx extends LoomElement {
 
         <section>
           <div class="group-header">
-            <loom-icon name="zap" size={20} color="var(--text-muted)"></loom-icon>
             <h2>Event Handlers</h2>
           </div>
           <div class="feature-entry">
