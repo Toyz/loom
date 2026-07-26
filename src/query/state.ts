@@ -51,6 +51,21 @@ export function createApiState<T>(
       params: {},
       init: {},
       signal,
+      fetch(url?: string, init?: RequestInit): Promise<Response> {
+        let target = url ?? ctx.url ?? "";
+        const paramStr = new URLSearchParams(ctx.params).toString();
+        if (paramStr) target += (target.includes("?") ? "&" : "?") + paramStr;
+        return fetch(target, {
+          ...ctx.init,
+          ...init,
+          headers: {
+            ...ctx.headers,
+            ...(ctx.init.headers as Record<string, string> | undefined),
+            ...(init?.headers as Record<string, string> | undefined),
+          },
+          signal,
+        });
+      },
     };
 
     if (opts.use) {
@@ -75,30 +90,22 @@ export function createApiState<T>(
       }
     }
 
-    // Merge ctx.params into URL
-    let url = ctx.url || "";
-    const paramStr = new URLSearchParams(ctx.params).toString();
-    if (paramStr) {
-      url += (url.includes("?") ? "&" : "?") + paramStr;
-    }
-
-    // Build final RequestInit
-    const init: RequestInit = {
-      ...ctx.init,
-      headers: { ...ctx.headers, ...(ctx.init.headers as Record<string, string> | undefined) },
-      signal,
-    };
 
     // ── Execute fetch with retry ──
     let attempt = 0;
     while (true) {
       try {
-        // The user's fn does the actual fetch — we pass interceptor-enriched context
-        // via host element (the fn can read ctx through closure or we modify fetch globally)
-        // Actually: the fn is user-provided and does its own fetch().
-        // Interceptors modify the context which the user accesses if they want,
-        // but the PRIMARY use is: interceptor sets headers, we wrap fetch.
-        data = await opts.fn(host);
+        // ctx is passed as a second argument, and carries a fetch() that
+        // applies whatever the interceptors put on it. Previously ctx.url,
+        // ctx.headers and the merged RequestInit were all computed and then
+        // thrown away — line was just `opts.fn(host)` — so an @intercept
+        // setting an Authorization header silently did nothing.
+        // Land the result in a local first. A superseded request must not
+        // overwrite newer data, and signal.aborted was only checked in catch —
+        // a user fn that ignores the signal resolves perfectly normally.
+        const result = await opts.fn(host, ctx);
+        if (signal.aborted) { fetching = false; return; }
+        data = result;
 
         // ── Run pipe (after) interceptors ──
         if (opts.pipe) {
@@ -147,6 +154,9 @@ export function createApiState<T>(
         }
         // Exponential backoff: 200ms, 400ms, 800ms...
         await new Promise((r) => setTimeout(r, 200 * Math.pow(2, attempt - 1)));
+        // Re-check after sleeping — the key may have changed mid-backoff, and
+        // the loop would otherwise keep retrying against the old one.
+        if (signal.aborted) { fetching = false; return; }
       }
     }
   }
@@ -157,7 +167,11 @@ export function createApiState<T>(
     const newKey = opts.key(host);
     if (newKey !== lastKey) {
       lastKey = newKey;
-      runFetch();
+      // Deferred: checkKey() runs inside the `data` getter, which is read
+      // during a traced update(). Starting the fetch synchronously called
+      // scheduleUpdate() mid-render, re-entering the render that was reading
+      // the property.
+      queueMicrotask(runFetch);
     }
   }
 
@@ -215,6 +229,13 @@ export function createApiState<T>(
       error = undefined;
       stale = true;
       runFetch();
+    },
+    dispose() {
+      // Abort any in-flight request. Without this an @api on a routed page
+      // kept fetching after navigation and called scheduleUpdate() on a
+      // detached element.
+      controller?.abort();
+      controller = null;
     },
 
     // ── LoomResult combinators ──

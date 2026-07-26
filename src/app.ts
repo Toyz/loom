@@ -29,6 +29,19 @@ interface FactoryMeta {
   key?: any;
 }
 
+/**
+ * Distinguish a class constructor from a plain factory function.
+ *
+ * `fn.prototype?.constructor === fn` is true for EVERY non-arrow function
+ * declaration, so `app.use(function makeThing() { ... })` was `new`-ed and the
+ * container ended up holding an empty instance of the factory itself. Source
+ * text is the only reliable signal at runtime; TS targets ES2022, so classes
+ * are emitted as `class`.
+ */
+function isClassCtor(fn: Function): boolean {
+  return /^\s*class[\s{]/.test(Function.prototype.toString.call(fn));
+}
+
 class LoomApp {
   private providers = new Map<any, any>();
   private services: any[] = [];
@@ -36,6 +49,8 @@ class LoomApp {
   private components: { tag: string; ctor: CustomElementConstructor }[] = [];
   private _started = false;
   private _visibilityCleanup: (() => void) | null = null;
+  /** Unsubscribers for @on handlers wired during start() */
+  private _handlerUnsubs: (() => void)[] = [];
 
   // ── Event bus (delegates to the module-level bus singleton) ──
 
@@ -65,15 +80,14 @@ class LoomApp {
   use(keyOrThing: any, instance?: any): this {
     if (instance !== undefined) {
       // Explicit key: app.use(Key, value)
-      if (typeof instance === "function" && instance.prototype?.constructor === instance) {
-        // Class constructor → auto-construct with @inject DI resolution
-        const args = this.resolveParams(instance.prototype, "constructor");
-        this.providers.set(keyOrThing, new instance(...args));
+      if (typeof instance === "function" && isClassCtor(instance)) {
+        // Class constructor → construct
+        this.providers.set(keyOrThing, new instance());
       } else {
         this.providers.set(keyOrThing, instance);
       }
     } else if (typeof keyOrThing === "function") {
-      if (keyOrThing.prototype?.constructor === keyOrThing) {
+      if (isClassCtor(keyOrThing)) {
         // Class constructor → instantiate
         this.providers.set(keyOrThing, new keyOrThing());
       } else {
@@ -85,6 +99,19 @@ class LoomApp {
       // Instance → key from constructor
       this.providers.set(keyOrThing.constructor, keyOrThing);
     }
+    return this;
+  }
+
+  /** Register a class provider explicitly — no heuristic. */
+  useClass<T = any>(ctor: new () => T, key?: any): this {
+    this.providers.set(key ?? ctor, new ctor());
+    return this;
+  }
+
+  /** Register a factory provider explicitly — no heuristic. */
+  useFactory<T = any>(fn: () => T, key?: any): this {
+    const result = fn();
+    this.providers.set(key ?? (result as any)?.constructor, result);
     return this;
   }
 
@@ -100,6 +127,19 @@ class LoomApp {
   /** Queue a @factory method for invocation on start() */
   registerFactory(key: any, info: { method: string; fn: Function }): void {
     this.factories.push({ key, ...info });
+  }
+
+  /**
+   * Swap a queued @factory's function for one bound to its owning instance.
+   * Replaces in place rather than appending, so the factory still runs once.
+   */
+  rebindFactory(original: Function, bound: Function): void {
+    for (const entry of this.factories) {
+      if (entry.fn === original) {
+        entry.fn = bound;
+        return;
+      }
+    }
   }
 
   /** Queue a @component for customElements.define() on start() */
@@ -143,6 +183,7 @@ class LoomApp {
 
   /** Full container reset — providers, services, factories, components. */
   reset(): void {
+    this._drainHandlers();
     this.providers.clear();
     this.services.length = 0;
     this.factories.length = 0;
@@ -195,12 +236,19 @@ class LoomApp {
       // Wire @on event handlers (bus events + DOM events)
       const instance = this.providers.get(Svc);
       for (const handler of instance[ON_HANDLERS.key] ?? []) {
+        // Keep the unsubscriber: nothing used to, so stop() left every handler
+        // wired and `start(); stop(); start();` — routine in tests and under
+        // HMR — dispatched each event twice, with the first-generation service
+        // instances pinned alive by the bus.
         if (handler.domTarget) {
           // DOM EventTarget: @on(window, "resize")
-          handler.domTarget.addEventListener(handler.event, (e: Event) => instance[handler.key](e));
+          const fn = (e: Event) => instance[handler.key](e);
+          const target = handler.domTarget;
+          target.addEventListener(handler.event, fn);
+          this._handlerUnsubs.push(() => target.removeEventListener(handler.event, fn));
         } else {
           // Bus event: @on(ColorSelect)
-          bus.on(handler.type, (e: any) => instance[handler.key](e));
+          this._handlerUnsubs.push(bus.on(handler.type, (e: any) => instance[handler.key](e)));
         }
       }
       // LoomLifecycle — auto-call start() if the service implements it
@@ -258,7 +306,20 @@ class LoomApp {
       if (!serviceInstances.has(instance) && hasStop(instance)) instance.stop();
     }
     renderLoop.stop();
+    this._drainHandlers();
     this._started = false;
+  }
+
+  /** Remove every @on handler wired by start(). */
+  private _drainHandlers(): void {
+    for (let i = 0; i < this._handlerUnsubs.length; i++) {
+      try {
+        this._handlerUnsubs[i]();
+      } catch (e) {
+        console.error("[Loom] failed to remove an @on handler", e);
+      }
+    }
+    this._handlerUnsubs.length = 0;
   }
 
   /**
@@ -400,6 +461,17 @@ export function maybe<T = unknown>(key: (new (...args: unknown[]) => T) | string
  * }
  * ```
  */
-export const factory = createDecorator<[key?: unknown]>((method, methodName, key) => {
-  app.registerFactory(key, { method: methodName, fn: method });
-});
+export function factory(key?: unknown) {
+  return (method: Function, context: ClassMethodDecoratorContext): void => {
+    const methodName = String(context.name);
+    // Register the raw method at define time so ordering is unchanged...
+    app.registerFactory(key, { method: methodName, fn: method });
+    // ...then rebind to the live instance once the owning @service is
+    // constructed. start() invoked these as a bare `await fn()`, so `this` was
+    // undefined and any factory touching an @inject accessor threw. Mirrors
+    // how @guard rebinds (router/decorators.ts).
+    context.addInitializer(function (this: unknown) {
+      app.rebindFactory(method, method.bind(this));
+    });
+  };
+}

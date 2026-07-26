@@ -20,6 +20,19 @@ export interface ApiCtx {
   signal: AbortSignal;
   /** Raw Response object — available in `pipe` (after) interceptors */
   response?: Response;
+  /**
+   * fetch() with this context applied: `url`/`params` build the URL, `headers`
+   * and `init` are merged, and the managed AbortSignal is attached.
+   *
+   * Use this from an `@api({ fn })` to have `@intercept` actually take effect —
+   * a plain global `fetch()` cannot see anything an interceptor set.
+   *
+   * ```ts
+   * @api({ use: ["auth"], fn: (el, ctx) => ctx.fetch(`/api/user/${el.id}`).then(r => r.json()) })
+   * accessor user!: ApiState<User>;
+   * ```
+   */
+  fetch(url?: string, init?: RequestInit): Promise<Response>;
 }
 
 /** Registration entry in the global intercept registry */
@@ -48,6 +61,8 @@ export interface ApiState<T, E = Error> {
   refetch(): Promise<void>;
   /** Mark data as stale and trigger refetch */
   invalidate(): void;
+  /** Abort any in-flight request. Called automatically on host disconnect. */
+  dispose(): void;
 
   // ── LoomResult combinators ──
 
@@ -67,8 +82,11 @@ export interface ApiState<T, E = Error> {
 
 /** Options object form for @api */
 export interface ApiOptions<T, El = any> {
-  /** The fetch function — receives the host element for parameterized queries */
-  fn: (el: El) => Promise<T>;
+  /**
+   * The fetch function — receives the host element for parameterized queries,
+   * and the interceptor context. Use `ctx.fetch()` if you rely on @intercept.
+   */
+  fn: (el: El, ctx: ApiCtx) => Promise<T>;
   /** Dynamic cache key — when it changes, abort + refetch. Receives the host element */
   key?: (el: El) => string;
   /** Named interceptors to run before fetch (like guards on @route) */

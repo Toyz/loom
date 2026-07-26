@@ -13,7 +13,7 @@ import { Reactive } from "../store/reactive";
 import { createApiState } from "./state";
 import { interceptRegistry } from "./registry";
 import type { Schedulable } from "../element/element";
-import { WATCHERS, localSymbol } from "../decorators/symbols";
+import { WATCHERS, localSymbol, addConnectHook } from "../decorators/symbols";
 
 // Re-export for barrel
 export { interceptRegistry } from "./registry";
@@ -91,6 +91,18 @@ export function api<T extends object>(
 
     const opts: ApiOptions<T> =
       typeof fnOrOpts === "function" ? { fn: fnOrOpts } : fnOrOpts;
+
+    // Abort any in-flight request when the host disconnects. Nothing used to,
+    // so navigating away from a page left its fetch running, and the response
+    // called scheduleUpdate() on a detached element.
+    context.addInitializer(function (this: This) {
+      addConnectHook(this as object, () => () => {
+        const state = (this as unknown as Record<symbol, unknown>)[state_.key] as
+          | ApiState<T>
+          | undefined;
+        state?.dispose();
+      });
+    });
 
     return {
       get(this: This): ApiState<T> {
