@@ -14,10 +14,7 @@ export default class PageStoreSignals extends LoomElement {
           <p><span class="ic">@signal</span> is Loom's bet on that. The accessor reads and writes the plain value so templates stay ergonomic, while the backing Signal is exposed as <span class="ic">this.$signal_&lt;field&gt;</span> for anything outside the component — including libraries that have never heard of Loom.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               Loom's Signal layer bridges the <a href="https://github.com/tc39/proposal-signals" target="_blank">TC39 Signals proposal</a> with
               Loom's real-DOM trace engine. Unlike VDOM frameworks, Loom patches the actual DOM via morphing.
@@ -25,12 +22,8 @@ export default class PageStoreSignals extends LoomElement {
               and <span class="ic">scheduleUpdate()</span> work seamlessly.
             </p>
             <code-block lang="ts" code={`import { SignalState, SignalComputed, signal } from "@toyz/loom/store";`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@signal Decorator</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="@signal Decorator">
             <p>
               Works like <span class="ic">@reactive</span> but backed by a <span class="ic">SignalState&lt;T&gt;</span>.
               The accessor exposes the raw value for ergonomic templates. The backing Signal is exposed as <span class="ic">this.$signal_&lt;field&gt;</span> for interop with external Signal-based code.
@@ -76,12 +69,8 @@ externalLib.observe(sig);`}></code-block>
               <tr><td>Equality check</td><td>Reference (<span class="ic">!==</span>)</td><td><span class="ic">Object.is</span></td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>SignalState&lt;T&gt;</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="SignalState&lt;T&gt;">
             <p>
               A read-write Signal compatible with the TC39 <span class="ic">Signal.State</span> API. Backed by <span class="ic">Reactive&lt;T&gt;</span>,
               so reads via <span class="ic">.get()</span> are tracked by the trace engine.
@@ -108,12 +97,8 @@ counter.subscribe((value, prev) => {
               <tr><td><span class="ic">.subscribe(fn)</span></td><td>Listen for changes. Returns unsubscribe.</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>SignalComputed&lt;T&gt;</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="SignalComputed&lt;T&gt;">
             <p>
               A read-only computed Signal. Lazily evaluates a callback, caches the result, and auto-tracks dependencies.
               Re-evaluates only when a dependency changes.
@@ -139,12 +124,8 @@ doubled.dispose();`}></code-block>
               <tr><td><span class="ic">.dispose()</span></td><td>Clean up dependency subscriptions</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Converters</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Converters">
             <p>
               Bridge between Loom's <span class="ic">Reactive&lt;T&gt;</span> and external Signal ecosystems.
             </p>
@@ -180,12 +161,8 @@ const loomReactive = fromSignal(externalSignal, (onChange) => {
 });
 
 // Now usable with @watch, trace engine, components, etc.`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works with Real DOM</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works with Real DOM">
             <p>
               Unlike VDOM frameworks, Loom patches the real DOM. The trace engine records which
               <span class="ic">Reactive</span> instances are read during <span class="ic">update()</span>.
@@ -202,7 +179,7 @@ const loomReactive = fromSignal(externalSignal, (onChange) => {
 //
 // For closure bindings: {() => counter.get()}
 // The fast-patch path re-evaluates just that patcher — no full morph.`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -14,24 +14,16 @@ export default class PageDecoratorDnd extends LoomElement {
           <p><span class="ic">@draggable</span> and <span class="ic">@dropzone</span> handle the required event dance and leave you the two parts that carry meaning: what the payload is, and what to do when it lands. The payload is serialised from the method's return value, so a drop between components moves data rather than DOM nodes.</p>
         </section>
 
-                <section>
-                    <div class="group-header">
-                        <h2>Quick Start</h2>
-                    </div>
+                <doc-section heading="Quick Start">
                     <code-block lang="ts" code={QUICK_START}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>API</h2>
-                    </div>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@draggable(options?)</div>
-                        <div class="dec-desc">
+                </doc-section>
+                <doc-section heading="API">
+                    <api-entry sig="@draggable(options?)">
+                        <p>
                             Method decorator. Sets <code>draggable="true"</code> on connect, wires <code>dragstart</code>/<code>dragend</code>.
                             The method returns the drag data string. Adds/removes a <code>"dragging"</code> CSS class during drag.
-                        </div>
-                    </div>
+                        </p>
+                    </api-entry>
                         <p><strong>DraggableOptions:</strong></p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
@@ -41,12 +33,11 @@ export default class PageDecoratorDnd extends LoomElement {
                                 <tr><td><code>selector</code></td><td>string</td><td>—</td><td>CSS selector for child elements — enables event delegation. Matched element passed as first arg to method.</td></tr>
                             </tbody>
                         </table>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@dropzone(options?)</div>
-                        <div class="dec-desc">
+                    <api-entry sig="@dropzone(options?)">
+                        <p>
                             Method decorator. Wires <code>dragover</code>/<code>dragleave</code>/<code>drop</code> with proper <code>preventDefault()</code>. The method receives the transferred data string and the <code>DragEvent</code>.
-                        </div>
-                    </div>
+                        </p>
+                    </api-entry>
                         <p><strong>DropzoneOptions:</strong></p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
@@ -58,14 +49,10 @@ export default class PageDecoratorDnd extends LoomElement {
                                 <tr><td><code>over</code></td><td>{"() => Node | string"}</td><td>—</td><td>JSX overlay rendered during dragover, removed on leave/drop</td></tr>
                             </tbody>
                         </table>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Examples</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>
-                </section>
+                </doc-section>
               <doc-nav></doc-nav>
       </div>
         );

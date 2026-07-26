@@ -18,10 +18,7 @@ export default class PageRouterRouteData extends LoomElement {
           <p>Route props are declared as fields and filled in by the outlet on match. They come from the URL, so they are strings — a transform converts them at the boundary. When a key is genuinely absent the field returns to the default you declared, rather than to an empty string that a numeric prop would coerce to zero.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Route Params</h2>
-          </div>
+        <doc-section heading="Route Params">
           <div class="feature-entry">
             <div class="dec-sig">@prop({"{"} param: "name" {"}"})</div>
             <div class="dec-desc">
@@ -63,12 +60,8 @@ class PageTeam extends LoomElement {
   }
 }`}></code-block>
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Query Strings</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Query Strings">
           <div class="feature-entry">
             <div class="dec-sig">@prop({"{"} query: "name" {"}"})</div>
             <div class="dec-desc">
@@ -121,12 +114,8 @@ class PageSearch extends LoomElement {
   }
 }`}></code-block>
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Route Metadata</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Route Metadata">
           <div class="feature-entry">
             <div class="dec-sig">@prop({"{"}  meta: "key" {"}"})</div>
             <div class="dec-desc">
@@ -172,12 +161,8 @@ class PageDashboard extends LoomElement {
   }
 }`}></code-block>
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@transform</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="@transform">
             <p>
               Route params and query strings are always strings from the URL. Use <span class="ic">@transform</span> to parse them into typed values:
             </p>
@@ -196,12 +181,8 @@ class PageUser extends LoomElement {
   @transform((v) => v === "true")
   accessor isAdmin = false;
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Combining Params + Query + Meta</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Combining Params + Query + Meta">
             <p>
               Mix and match single picks, full decompose, query strings,
               and route metadata on the same component:
@@ -229,12 +210,8 @@ class PageUserPosts extends LoomElement {
     );
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API Reference</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="API Reference">
           <table class="api-table">
             <thead>
               <tr><th>Decorator</th><th>Import</th><th>Description</th></tr>
@@ -272,7 +249,7 @@ class PageUserPosts extends LoomElement {
               </tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

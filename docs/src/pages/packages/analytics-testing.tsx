@@ -16,18 +16,11 @@ export default class PageAnalyticsTesting extends LoomElement {
           <p><span class="ic">MockAnalytics</span> records events in memory and exposes them for assertion. No network, no globals, and the events are the same objects the real transport would have received.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Import</h2>
-          </div>
+        <doc-section heading="Import">
           <code-block lang="ts" code={`import { MockAnalytics } from "@toyz/loom-analytics/testing";
 import { AnalyticsTransport } from "@toyz/loom-analytics";`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Setup</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Setup">
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
 
 const analytics = new MockAnalytics();
@@ -36,12 +29,8 @@ app.use(AnalyticsTransport, analytics);`}></code-block>
             Register <span class="ic">MockAnalytics</span> as your transport in test setup.
             All <span class="ic">@track</span> events will be recorded instead of sent to a backend.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Assertions</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Assertions">
           <code-block lang="ts" code={`// Assert an event was tracked
 analytics.assertTracked("page.dashboard");
 
@@ -54,21 +43,13 @@ analytics.assertNotTracked("page.error");
 // Access raw events
 console.log(analytics.events);
 // → [{ event: "page.dashboard", meta: { element: "my-dashboard" }, timestamp: 1234 }]`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Reset</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Reset">
           <code-block lang="ts" code={`// Clear all recorded events between tests
 analytics.reset();
 expect(analytics.events).toHaveLength(0);`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Full Test Example</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Full Test Example">
           <code-block lang="ts" code={`import { describe, it, expect, beforeEach } from "vitest";
 import { app, LoomElement } from "@toyz/loom";
 import { AnalyticsTransport, track } from "@toyz/loom-analytics";
@@ -94,7 +75,7 @@ it("tracks method invocation", () => {
 
   analytics.assertTracked("save", { method: "handleSave" });
 });`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

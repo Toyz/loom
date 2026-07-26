@@ -17,25 +17,17 @@ export default class PageDecoratorPortal extends LoomElement {
           <p><span class="ic">@portal</span> renders part of the template into a different DOM target while leaving it part of this component — same state, same lifecycle, same teardown. The content lives at the end of <span class="ic">body</span>; the code lives with the component that owns it.</p>
         </section>
 
-                <section>
-                    <div class="group-header">
-                        <h2>Quick Start</h2>
-                    </div>
+                <doc-section heading="Quick Start">
                     <code-block lang="ts" code={QUICK_START}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>API</h2>
-                    </div>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@portal(target?, options?)</div>
-                        <div class="dec-desc">
+                </doc-section>
+                <doc-section heading="API">
+                    <api-entry sig="@portal(target?, options?)">
+                        <p>
                             Method decorator. The return value is morphed into a container
                             appended at <span class="ic">target</span>. Return <span class="ic">null</span> or <span class="ic">false</span> to
                             clear the portal content.
-                        </div>
-                    </div>
+                        </p>
+                    </api-entry>
                         <p>
                             <strong>Options:</strong>
                         </p>
@@ -46,19 +38,11 @@ export default class PageDecoratorPortal extends LoomElement {
                                 <tr><td><code>className</code></td><td>string</td><td>—</td><td>CSS class(es) for the portal container</td></tr>
                             </tbody>
                         </table>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Examples</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>How It Works</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="How It Works">
                     <ul>
                         <li>On connect, creates a <span class="ic">{"<div data-loom-portal>"}</span> at the target</li>
                         <li>Hooks into the component's update cycle — portal re-renders alongside <span class="ic">update()</span></li>
@@ -71,7 +55,7 @@ export default class PageDecoratorPortal extends LoomElement {
                         If the target selector doesn't match any element, a warning is logged
                         and the portal is skipped — no crash.
                     </doc-notification>
-                </section>
+                </doc-section>
               <doc-nav></doc-nav>
       </div>
         );

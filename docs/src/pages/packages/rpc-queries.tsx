@@ -16,10 +16,7 @@ export default class PageRpcQueries extends LoomElement {
           <p><span class="ic">@rpc</span> declares a read. It fetches on mount, caches by key, and revalidates in the background while showing what it already has, so the second visit to a screen is not a loading spinner.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage</h2>
-          </div>
+        <doc-section heading="Basic Usage">
           <p>
             <span class="ic">@rpc</span> turns an auto-accessor into a reactive query.
             It fetches on connect and re-renders automatically when data arrives.
@@ -40,12 +37,8 @@ class UserList extends LoomElement {
     });
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Reactive Arguments</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Reactive Arguments">
           <p>
             Pass a <span class="ic">fn</span> to extract procedure arguments from element state.
             When those reactive values change, the query automatically re-fetches.
@@ -58,12 +51,8 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
             The return type of <span class="ic">fn</span> must match the parameter types of the
             contract method. TypeScript enforces this at compile time.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Options</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Options">
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
@@ -73,12 +62,8 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
               <tr><td><code>retry</code></td><td>number</td><td><code>0</code></td><td>Number of retries on failure with exponential backoff (200ms, 400ms, 800ms...).</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>SWR Caching</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="SWR Caching">
           <p>
             Set <span class="ic">staleTime</span> to enable stale-while-revalidate caching.
             After <span class="ic">staleTime</span> milliseconds, the next read marks data
@@ -90,12 +75,8 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
   retry: 2,           // retry twice on failure
 })
 accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>RpcQuery&lt;TArgs, TReturn&gt;</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="RpcQuery&lt;TArgs, TReturn&gt;">
           <p>
             Every <span class="ic">@rpc</span> accessor is an <span class="ic">RpcQuery&lt;TArgs, TReturn&gt;</span> — a typed, reactive state container with pattern matching and Result combinators.
             <span class="ic">ApiState&lt;T&gt;</span> is also accepted for backwards compatibility.
@@ -116,12 +97,8 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
               <tr><td><code>.map(fn)</code></td><td>Transform the Ok value into a <code>LoomResult</code></td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Pattern Matching</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Pattern Matching">
           <p>
             <span class="ic">.match()</span> handles all three states — loading, success, and error.
             The <span class="ic">loading</span> branch is optional; if omitted, loading falls through to <span class="ic">err</span>.
@@ -135,7 +112,7 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
     err: (e) => \<div class="error"\>{e.message}\</div\>,
   });
 }`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

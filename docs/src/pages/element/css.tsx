@@ -16,10 +16,7 @@ export default class PageElementCSS extends LoomElement {
           <p>The <span class="ic">css</span> tag builds and caches those sheets by their text, so two call sites producing identical CSS share one object. Styles come in two kinds: static sheets adopted once at connect via <span class="ic">@styles</span>, and <span class="ic">@dynamicCss</span>, which re-evaluates a method whenever the reactive fields it reads change. Reach for the second only when a value genuinely cannot be a custom property.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>The css`` Tagged Template</h2>
-          </div>
+        <doc-section heading="The css`` Tagged Template">
             <p>
               Loom provides a <span class="ic">css</span> tagged template literal that creates a <span class="ic">CSSStyleSheet</span> object. The sheet is parsed once and cached — subsequent
               calls with the same template return the same instance.
@@ -31,18 +28,13 @@ const styles = css\`
   .title { font-size: 1.5rem; font-weight: 700; }
   .subtitle { color: #888; }
 \`;`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@styles Decorator</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@styles(sheet, ...)</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="@styles Decorator">
+          <api-entry sig="@styles(sheet, ...)">
+            <p>
               The recommended way to apply styles. Auto-adopts one or more <span class="ic">CSSStyleSheet</span>s when the element connects.
               No boilerplate needed.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { component, styles, css, LoomElement } from "@toyz/loom";
 
 const sheet = css\`
@@ -60,7 +52,7 @@ class MyCard extends LoomElement {
     return <div class="card"><slot></slot></div>;
   }
 }`}></code-block>
-          </div>
+          </api-entry>
             <p>
               Multiple <span class="ic">@styles()</span> calls stack — all sheets are adopted. Useful for composing shared + component-specific styles:
             </p>
@@ -70,12 +62,8 @@ import { buttonStyles } from "../styles/buttons";
 @component("my-form")
 @styles(baseStyles, buttonStyles, formSheet)
 class MyForm extends LoomElement { ... }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Inline Styles in update()</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Inline Styles in update()">
             <p>
               For quick prototyping, call <span class="ic">this.css``</span> inside <span class="ic">update()</span>.
               The sheet is adopted into the shadow root automatically. Since it's cached, there's no
@@ -101,12 +89,8 @@ class MyCard extends LoomElement {
             <loom-icon name="bolt" size={14} color="var(--text-muted)"></loom-icon> Prefer <span class="ic">@styles(sheet)</span> for production components — it separates concerns
             and avoids style adoption on every render call.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <table class="api-table">
             <thead><tr><th>Step</th><th>What Happens</th></tr></thead>
             <tbody>
@@ -116,12 +100,8 @@ class MyCard extends LoomElement {
               <tr><td>4</td><td>Shadow DOM scoping ensures styles don't leak or collide with other components</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>:host and Scoping</h2>
-          </div>
+        </doc-section>
+        <doc-section heading=":host and Scoping">
             <p>
               All styles are scoped to the component's shadow root. Use <span class="ic">:host</span> to style the
               component's outer element, and <span class="ic">:host(.class)</span> for conditional styling based on
@@ -133,12 +113,8 @@ class MyCard extends LoomElement {
   :host(.compact) { padding: 4px; }
   ::slotted(p) { margin: 0; }
 \`;`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Dynamic Values</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Dynamic Values">
             <p>
               Use CSS custom properties for dynamic values. The template is parsed once, and you
               update custom properties on the host to change styles:
@@ -158,12 +134,8 @@ class ThemeCard extends LoomElement {
     return <h2 class="title"><slot></slot></h2>;
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API Reference</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="API Reference">
           <table class="api-table">
             <thead><tr><th>API</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -173,7 +145,7 @@ class ThemeCard extends LoomElement {
               <tr><td><code>this.adoptStyles(sheets)</code></td><td>Instance method</td><td>Programmatic style adoption</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

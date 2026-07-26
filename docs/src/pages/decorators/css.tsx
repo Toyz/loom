@@ -14,10 +14,7 @@ export default class PageDecoratorCSS extends LoomElement {
           <p><span class="ic">@dynamicCss</span> is for that remainder. The method returns CSS text, and it is re-evaluated whenever a reactive field it read changes. The cost is a stylesheet rebuild per change, which is why the result is debounced and why a custom property is the better answer whenever one will do.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
           <p>
             <span class="ic">@css</span> turns a method into a reactive stylesheet generator.
             The method returns a CSS string that is adopted into the component's shadow root.
@@ -25,12 +22,8 @@ export default class PageDecoratorCSS extends LoomElement {
             and updated in-place via <span class="ic">CSSStyleSheet.replaceSync()</span>.
           </p>
           <code-block lang="ts" code={`import { dynamicCss } from "@toyz/loom";`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Basic Usage">
           <code-block lang="ts" code={`import { component, LoomElement, reactive, dynamicCss } from "@toyz/loom";
 
 @component("themed-card")
@@ -54,12 +47,8 @@ class ThemedCard extends LoomElement {
     return <div class="card"><slot></slot></div>;
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <p>
             On connect, <span class="ic">@css</span> creates a new <span class="ic">CSSStyleSheet</span>,
             evaluates the method, calls <span class="ic">replaceSync()</span> with the result,
@@ -76,12 +65,8 @@ class ThemedCard extends LoomElement {
               <tr><td>Disconnect</td><td>Unsubscribe all → remove sheet from <span class="ic">adoptedStyleSheets</span></td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@css vs @styles</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="@css vs @styles">
           <table class="api-table">
             <thead><tr><th>Feature</th><th>@styles(css\`...\`)</th><th>@css</th></tr></thead>
               <tbody>
@@ -112,12 +97,8 @@ class ThemedCard extends LoomElement {
     return \`:host { --accent: \${this.accent}; }\`;
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Multiple @css Methods</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Multiple @css Methods">
           <p>
             You can use multiple <span class="ic">@css</span> methods on a single component.
             Each creates its own stylesheet, adopted independently.
@@ -135,7 +116,7 @@ class MyEl extends LoomElement {
     return \`:host { color: \${this.theme === "dark" ? "#fff" : "#000"}; }\`;
   }
 }`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

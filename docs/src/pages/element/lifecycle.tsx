@@ -26,67 +26,48 @@ export default class PageElementLifecycle extends LoomElement {
           ></punch-matrix>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@mount</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@mount</div>
-            <div class="dec-desc">
+        <doc-section heading="@mount">
+          <api-entry sig="@mount">
+            <p>
               Runs when the element connects to the DOM. Multiple <span class="ic">@mount</span> methods allowed per class.
-            </div>
+            </p>
             <code-block lang="ts" code={`@mount
 setup() {
   this.shadow.adoptedStyleSheets = [styles];
   this.ctx = this.canvas.getContext("2d");
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@unmount</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@unmount</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@unmount">
+          <api-entry sig="@unmount">
+            <p>
               Runs when the element disconnects. Use for manual cleanup — cancelling timers, closing connections.
-            </div>
+            </p>
             <code-block lang="ts" code={`@unmount
 teardown() {
   cancelAnimationFrame(this.rafId);
   localStorage.setItem("state", JSON.stringify(this.state));
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@catch_</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@catch_(handler)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@catch_">
+          <api-entry sig="@catch_(handler)">
+            <p>
               Error boundary. Class decorator that wraps <span class="ic">update()</span> and
               <span class="ic">connectedCallback()</span> with try/catch.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("my-widget")
 @catch_((err, el) => {
   el.shadow.replaceChildren(<div>{err.message}</div>);
 })
 class MyWidget extends LoomElement { ... }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@suspend</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@suspend()</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@suspend">
+          <api-entry sig="@suspend()">
+            <p>
               Async suspense. Wraps async methods to set <span class="ic">loading</span>/<span class="ic">error</span> state automatically.
-            </div>
+            </p>
             <code-block lang="ts" code={`@reactive accessor loading = false;
 @reactive accessor error: Error | null = null;
 
@@ -95,13 +76,9 @@ async fetchUser() {
   const res = await fetch(\`/api/users/\${this.userId}\`);
   this.user = await res.json();
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Combined Example</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Combined Example">
             <p>A component with error boundary, async loading, and cleanup:</p>
             <code-block lang="ts" code={`@component("user-card")
 @catch_((err, el) => {
@@ -145,12 +122,8 @@ class UserCard extends LoomElement {
     );
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>firstUpdated()</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="firstUpdated()">
             <p>
               Override <span class="ic">firstUpdated()</span> for one-time setup after the first render completes.
               The shadow DOM is fully populated at this point.
@@ -167,12 +140,8 @@ class MyEl extends LoomElement {
     this.shadow.querySelector("input")?.focus();
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>shouldUpdate()</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="shouldUpdate()">
             <p>
               Override <span class="ic">shouldUpdate()</span> to skip render cycles.
               Called before each <span class="ic">update()</span> — return <span class="ic">false</span> to
@@ -203,12 +172,8 @@ class CanvasWrapper extends LoomElement {
             Default is <span class="ic">true</span> — all components render normally unless you override this.
             Built-in elements like <span class="ic">&lt;loom-canvas&gt;</span> and <span class="ic">&lt;loom-virtual&gt;</span> use this to block re-morphing.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Full Lifecycle Order</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Full Lifecycle Order">
 
           <table class="api-table">
             <thead>
@@ -226,7 +191,7 @@ class CanvasWrapper extends LoomElement {
               <tr><td>7</td><td><code>@unmount</code></td><td>Disconnected — clear timers, close connections</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -16,35 +16,25 @@ export default class PageElementLog extends LoomElement {
           <p><span class="ic">@log</span> wraps the method and records both. The transport is pluggable, so the same declaration writes to the console in development and to whatever you use in production — or to nothing at all.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Quick Start</h2>
-          </div>
+        <doc-section heading="Quick Start">
           <code-block lang="ts" code={QUICK_START}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@log</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="API">
+          <api-entry sig="@log">
+            <p>
               Log with default level <span class="ic">info</span>.
-            </div>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@log(level)</div>
-            <div class="dec-desc">
+            </p>
+          </api-entry>
+          <api-entry sig="@log(level)">
+            <p>
               Log with a specific level: <span class="ic">"debug"</span>, <span class="ic">"info"</span>, <span class="ic">"warn"</span>, or <span class="ic">"error"</span>.
-            </div>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@log(options)</div>
-            <div class="dec-desc">
+            </p>
+          </api-entry>
+          <api-entry sig="@log(options)">
+            <p>
               Full options object with <span class="ic">level</span>, <span class="ic">label</span>, <span class="ic">includeArgs</span>, and <span class="ic">skipArgs</span>.
-            </div>
-          </div>
+            </p>
+          </api-entry>
             <p>
               <strong>Options:</strong>
             </p>
@@ -57,61 +47,39 @@ export default class PageElementLog extends LoomElement {
                 <tr><td><code>skipArgs</code></td><td>number[] | Record</td><td>—</td><td>Selectively redact args by index or nested keys</td></tr>
               </tbody>
             </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>LogEntry</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="LogEntry">
             <p>
               Every <span class="ic">@log</span> call sends a structured <span class="ic">LogEntry</span> to the transport:
             </p>
             <code-block lang="ts" code={LOG_ENTRY}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Transports</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">LogTransport (abstract)</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="Transports">
+          <api-entry sig="LogTransport (abstract)">
+            <p>
               Implement this class and register via DI. Same pattern as <span class="ic">RpcTransport</span> in loom-rpc.
-            </div>
+            </p>
             <code-block lang="ts" code={TRANSPORT}></code-block>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">ConsoleTransport (built-in)</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="ConsoleTransport (built-in)">
+            <p>
               Styled console output with component name, method, args, and duration.
-            </div>
+            </p>
             <code-block lang="ts" code={CONSOLE_TRANSPORT}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Custom Transport: Sentry</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Custom Transport: Sentry">
           <code-block lang="ts" code={SENTRY_EXAMPLE}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Arg Redaction</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Arg Redaction">
             <p>
               Use <span class="ic">includeArgs</span> and <span class="ic">skipArgs</span> to
               control what gets logged. Supports full opt-out, index-based redaction, and
               nested dot-path key redaction for object arguments.
             </p>
             <code-block lang="ts" code={SKIP_ARGS_EXAMPLE}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <ul>
             <li>Resolves <span class="ic">LogTransport</span> from DI via <span class="ic">app.maybe()</span> — no-op if none registered</li>
             <li>Wraps the method via <span class="ic">addInitializer</span> — each instance gets its own wrapper</li>
@@ -122,7 +90,7 @@ export default class PageElementLog extends LoomElement {
           <doc-notification type="note">
             Zero-config safe — if no <span class="ic">LogTransport</span> is registered, <span class="ic">@log</span> is a transparent pass-through with no overhead.
           </doc-notification>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

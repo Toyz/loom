@@ -23,10 +23,7 @@ export default class PageElementLightDom extends LoomElement {
           ></punch-matrix>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               By default, every Loom component creates a shadow root for style isolation. This is ideal
               for complex, reusable widgets — but leaf components like <strong>buttons</strong>, <strong>icons</strong>, and <strong>badges</strong> often <em>want</em> to inherit styles
@@ -40,12 +37,8 @@ class MyButton extends LoomElement {
     return <button class="btn">{this.label}</button>;
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
             <p>
               When <span class="ic">shadow: false</span> is set, Loom skips <span class="ic">attachShadow()</span> in the constructor. Instead, <span class="ic">this.shadow</span> points to the host element itself.
               All existing APIs work unchanged:
@@ -62,12 +55,8 @@ class MyButton extends LoomElement {
               <tr><td><code>@mount / @unmount</code></td><td>All lifecycle hooks fire as expected</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>CSS with Light DOM</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="CSS with Light DOM">
             <p>
               The <span class="ic">@styles</span> decorator automatically detects light DOM components
               and adopts stylesheets into the <em>containing root</em> (parent shadow root or document)
@@ -97,12 +86,8 @@ class MyButton extends LoomElement { ... }`}></code-block>
             <strong>Note:</strong> Use the component's tag name (e.g. <code>my-button</code>) instead
             of <code>:host</code> in your CSS selectors. The <code>:host</code> pseudo-class only works inside shadow DOM.
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Built-in Example: loom-icon</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Built-in Example: loom-icon">
             <p>
               Loom's built-in <span class="ic">&lt;loom-icon&gt;</span> component uses light DOM rendering.
               Icons automatically inherit <span class="ic">color</span> from their parent and skip
@@ -113,12 +98,8 @@ class MyButton extends LoomElement { ... }`}></code-block>
 
 // It inherits currentColor from the parent —
 // no CSS custom properties or ::part() needed!`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>When to Use</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="When to Use">
           <div class="grid">
             <div class="card">
               <h3><loom-icon name="check" size={16} color="var(--text-muted)"></loom-icon> Use Light DOM</h3>
@@ -139,7 +120,7 @@ class MyButton extends LoomElement { ... }`}></code-block>
               </ul>
             </div>
           </div>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

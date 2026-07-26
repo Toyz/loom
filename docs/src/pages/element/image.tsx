@@ -17,17 +17,10 @@ export default class PageElementImage extends LoomElement {
           <p><span class="ic">loom-image</span> is those three parts as one element. It defers via <span class="ic">@observer("intersection")</span>, caches decoded URLs in memory so a second use is instant, and renders a placeholder until the real image is ready. Changing <span class="ic">src</span> restarts the cycle rather than leaving the old image in place.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Quick Start</h2>
-          </div>
+        <doc-section heading="Quick Start">
           <code-block lang="ts" code={QUICK_START}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Props</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Props">
           <table class="api-table">
             <thead>
               <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
@@ -71,12 +64,8 @@ export default class PageElementImage extends LoomElement {
               </tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Static Methods</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Static Methods">
           <table class="api-table">
             <thead>
               <tr><th>Method</th><th>Description</th></tr>
@@ -87,12 +76,8 @@ export default class PageElementImage extends LoomElement {
               <tr><td><code>LoomImage.isCached(url)</code></td><td>Check if a URL is already cached</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <ul>
             <li><span class="ic">@observer("intersection")</span> watches for the element to enter the viewport (with 200px root margin for pre-fetching)</li>
             <li>On first intersection, the image is fetched and stored in a static <span class="ic">Map</span> cache</li>
@@ -103,51 +88,34 @@ export default class PageElementImage extends LoomElement {
             <li>The image fades in with a 300ms <span class="ic">opacity</span> transition</li>
             <li><span class="ic">loom-keep</span> prevents the <span class="ic">&lt;img&gt;</span> from being morphed</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Custom Placeholder</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Custom Placeholder">
             <p>
               Pass any element into the <span class="ic">placeholder</span> slot to
               replace the default shimmer. It fades out when the image loads.
             </p>
             <code-block lang="tsx" code={CUSTOM_PLACEHOLDER}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Error Handling</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Error Handling">
             <p>
               When an image fails to load, <span class="ic">&lt;loom-image&gt;</span> first tries the <span class="ic">fallback</span> URL (if set). If both fail, the <span class="ic">error</span> slot is shown — either your custom content or a default broken-image icon.
             </p>
             <code-block lang="tsx" code={ERROR_HANDLING}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Preloading</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Preloading">
             <p>
               Preload critical images before they scroll into view — perfect for hero
               images or above-the-fold content:
             </p>
             <code-block lang="ts" code={PRELOAD}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Gallery Example</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Gallery Example">
             <p>
               A responsive image grid with free lazy loading — images only fetch
               as they scroll into view:
             </p>
             <code-block lang="tsx" code={GALLERY}></code-block>
-        </section>
-
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

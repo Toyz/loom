@@ -14,17 +14,10 @@ export default class PageDecoratorClipboard extends LoomElement {
           <p><span class="ic">@clipboard</span> keeps the call on the gesture. In write mode the method's return value is what gets copied; in read mode the method receives what was pasted. Either way the permission and the async plumbing stay out of your method body.</p>
         </section>
 
-                <section>
-                    <div class="group-header">
-                        <h2>Quick Start</h2>
-                    </div>
+                <doc-section heading="Quick Start">
                     <code-block lang="ts" code={QUICK_START}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>API</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="API">
                     <div class="feature-entry">
                         <div class="dec-sig">@clipboard("write")</div>
                         <div class="dec-desc">
@@ -39,14 +32,10 @@ export default class PageDecoratorClipboard extends LoomElement {
                             The method receives the pasted text as its first argument.
                         </div>
                     </div>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Examples</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>
-                </section>
+                </doc-section>
               <doc-nav></doc-nav>
       </div>
         );

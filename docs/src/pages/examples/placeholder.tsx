@@ -16,45 +16,30 @@ export default class ExamplePlaceholder extends LoomElement {
           <p>Three placeholder strategies side by side, all holding their space before content arrives. Resize the window: the layout does not shift when the real images land, because the boxes were already the right size.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <p>
             Pick a color, drag the sliders, and watch <span class="ic">&lt;loom-placeholder&gt;</span> render a live image
             from <span class="ic">RgbaPlaceholder</span>.
           </p>
           <placeholder-demo></placeholder-demo>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">&lt;loom-placeholder&gt;</span> — reactive component that renders via the provider</li>
             <li><span class="ic">RgbaPlaceholder</span> — builds rgba.lol URLs (RGB and RGBA)</li>
             <li><span class="ic">PlaceholderProvider</span> — swappable via DI</li>
             <li>PNG and SVG format support</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Provider Setup</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Provider Setup">
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
 import { PlaceholderProvider, RgbaPlaceholder } from "@toyz/loom-placeholder";
 
 app.use(PlaceholderProvider, new RgbaPlaceholder());`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/placeholder-demo.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

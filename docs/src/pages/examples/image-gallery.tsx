@@ -32,10 +32,7 @@ export default class PageExampleImageGallery extends LoomElement {
           <p>A grid where only the visible images have loaded. Scroll and watch the network panel: images request as they approach the viewport, and each one holds its space beforehand so nothing below it jumps.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <p class="hint">
             Navigate away and come back — cached images load instantly.
           </p>
@@ -79,14 +76,10 @@ export default class PageExampleImageGallery extends LoomElement {
               </loom-image>
             ))}
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/image-gallery.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

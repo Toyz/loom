@@ -16,22 +16,15 @@ export default class ExampleRpc extends LoomElement {
           <p>A working client against a mock transport: queries that cache and revalidate, a mutation that invalidates them, and a stream that keeps pushing. Nothing here talks to a real server, which is the point — the same code runs against one by swapping the transport.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <p>
             This component uses <span class="ic">@toyz/loom-rpc</span> with a <span class="ic">MockTransport</span> that simulates network latency.
             Click users to load details, toggle roles with <span class="ic">@mutate</span>,
             and watch the transport log.
           </p>
           <rpc-demo></rpc-demo>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">@rpc(Router, method)</span> — Auto-fetching query decorator with <span class="ic">ApiState</span></li>
             <li><span class="ic">@rpc + fn</span> — Reactive arg extraction that re-fetches when element state changes</li>
@@ -42,12 +35,8 @@ export default class ExampleRpc extends LoomElement {
             <li><span class="ic">MockTransport</span> — Drop-in test transport with delay simulation + stream support</li>
             <li><span class="ic">app.use(RpcTransport, ...)</span> — DI-based transport swap, zero component changes</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Contract</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Contract">
           <code-block lang="ts" code={`interface User {
   id: string;
   name: string;
@@ -61,14 +50,10 @@ class UserRouter {
   listUsers(): User[] { return null!; }
   updateRole(id: string, role: "admin" | "member"): User { return null!; }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/rpc-demo.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -22,10 +22,7 @@ export default class PageStoreStorage extends LoomElement {
           ></punch-matrix>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>StorageAdapter Interface</h2>
-          </div>
+        <doc-section heading="StorageAdapter Interface">
             <p>
               All persistence in Loom goes through the <span class="ic">StorageAdapter</span> interface.
               Reactive and CollectionStore accept a storage option, and Loom handles serialization automatically.
@@ -35,12 +32,8 @@ export default class PageStoreStorage extends LoomElement {
   set(key: string, value: string): void;
   remove(key: string): void;
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Built-in Adapters</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Built-in Adapters">
           <table class="api-table">
             <thead><tr><th>Adapter</th><th>Persists</th><th>Scope</th></tr></thead>
             <tbody>
@@ -62,17 +55,12 @@ const draft = new Reactive("", {
   key: "compose:draft",
   storage: new SessionAdapter(),
 });`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@persist</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@persist</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="@persist">
+          <api-entry sig="@persist">
+            <p>
               Single-value auto-accessor backed by <span class="ic">Reactive{"<T>"}</span> with automatic persistence. Uses the same <span class="ic">StorageAdapter</span> interface as <span class="ic">@store</span> — same hydration, JSON round-trip, and debounced write-through.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { persist } from "@toyz/loom";
 
 // Key = accessor name, persists to localStorage
@@ -87,8 +75,7 @@ const draft = new Reactive("", {
 // Custom key + adapter
 @persist({ key: "user-theme", storage: new SessionAdapter() })
 accessor theme = "dark";`}></code-block>
-          </div>
-
+          </api-entry>
           <table class="api-table">
             <thead><tr><th>Form</th><th>Key</th><th>Storage</th></tr></thead>
             <tbody>
@@ -109,12 +96,8 @@ connectedCallback() {
   super.connectedCallback();
   this.visitCount++;  // hydrate → increment → auto-persist
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Custom Adapter</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Custom Adapter">
             <p>
               Implement <span class="ic">StorageAdapter</span> to persist to any backend — IndexedDB, a remote API, etc:
             </p>
@@ -141,12 +124,8 @@ const store = new Reactive([], {
   key: "app:items",
   storage: new IndexedDBAdapter(),
 });`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Swapping at Runtime</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Swapping at Runtime">
             <p>
               Use <span class="ic">swapStorage()</span> to change backends without losing data:
             </p>
@@ -159,7 +138,7 @@ onLogin(() => {
     storage: new LocalAdapter(),
   });
 });`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

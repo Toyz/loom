@@ -16,28 +16,17 @@ export default class ExampleForm extends LoomElement {
           <p>A form with validation, transforms and dirty tracking, all from one declaration. Type into a field and leave it empty to see the error appear; note that the submit button knows whether the form is valid without anything computing that separately.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Live Demo</h2>
-          </div>
+        <doc-section heading="Live Demo">
           <p>
             Type in the fields below — validation runs in real-time, and the
             status bar at the bottom shows <span class="ic">.valid</span> and <span class="ic">.dirty</span> state.
           </p>
           <contact-form></contact-form>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/contact-form.tsx"></source-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Key Concepts</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Key Concepts">
           <table class="api-table">
             <thead><tr><th>Feature</th><th>How It's Used</th></tr></thead>
             <tbody>
@@ -67,7 +56,7 @@ export default class ExampleForm extends LoomElement {
               </tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

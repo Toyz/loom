@@ -16,10 +16,7 @@ export default class PageRpcTesting extends LoomElement {
           <p><span class="ic">MockTransport</span> is the third option: a real client, typed from the same declaration, with the network replaced. Mock a method and the mock has to match the signature — if the server contract changes, the test stops compiling.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Setup</h2>
-          </div>
+        <doc-section heading="Setup">
           <p>
             Import <span class="ic">MockTransport</span> from the testing subpath export.
             Register it as the transport and you're ready to test — no server, no network.
@@ -29,12 +26,8 @@ import { RpcTransport } from "@toyz/loom-rpc";
 
 const transport = new MockTransport();
 app.use(RpcTransport, transport);`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Static Mocks</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Static Mocks">
           <p>
             Return a fixed value for any router/method combination:
           </p>
@@ -43,12 +36,8 @@ app.use(RpcTransport, transport);`}></code-block>
   name: "Alice",
   email: "alice@test.dev",
 });`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Dynamic Mocks</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Dynamic Mocks">
           <p>
             Pass a function to compute the response based on the call arguments:
           </p>
@@ -62,12 +51,8 @@ transport.mock(UserRouter, "listUsers", () => [
   { id: "1", name: "Alice" },
   { id: "2", name: "Bob" },
 ]);`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Error Mocks</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Error Mocks">
           <p>
             Simulate server errors to test error handling paths:
           </p>
@@ -76,12 +61,8 @@ transport.mock(UserRouter, "listUsers", () => [
   "deleteUser",
   new Error("Forbidden"),
 );`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Delay Simulation</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Delay Simulation">
           <p>
             Add artificial latency to test loading states and skeleton UI:
           </p>
@@ -90,12 +71,8 @@ transport.delay(UserRouter, "getUser", 500);
 
 // 200ms on listUsers
 transport.delay(UserRouter, "listUsers", 200);`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Assertions</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Assertions">
           <p>
             Verify that specific calls were (or were not) made:
           </p>
@@ -108,12 +85,8 @@ transport.assertNotCalled(UserRouter, "deleteUser");
 // Inspect full call history
 console.log(transport.history);
 // [{ router: "UserRouter", method: "getUser", args: ["1"] }]`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API Reference</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="API Reference">
           <table class="api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
             <tbody>
@@ -126,12 +99,8 @@ console.log(transport.history);
               <tr><td><code>.reset()</code></td><td>Clear all mocks, errors, delays, and history</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Full Test Example</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Full Test Example">
           <code-block lang="ts" code={`import { describe, it, expect } from "vitest";
 import { MockTransport } from "@toyz/loom-rpc/testing";
 
@@ -153,7 +122,7 @@ describe("UserProfile", () => {
 
   afterEach(() => transport.reset());
 });`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

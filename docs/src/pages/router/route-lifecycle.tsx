@@ -14,16 +14,12 @@ export default class PageRouteLifecycle extends LoomElement {
           <p><span class="ic">@onRouteEnter</span> and <span class="ic">@onRouteLeave</span> fire on the route transition and receive the matched params and merged meta. A component reused across two URLs of the same pattern gets an enter for each, without a remount in between.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@onRouteEnter</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@onRouteEnter</div>
-            <div class="dec-desc">
+        <doc-section heading="@onRouteEnter">
+          <api-entry sig="@onRouteEnter">
+            <p>
               Marks a method to run when the route becomes active. The method
               receives the matched route <span class="ic">params</span> and the merged <span class="ic">meta</span> from the route and its group chain.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { onRouteEnter } from "@toyz/loom/router";
 
 @route("/user/:id", { meta: { analytics: "user-profile" } })
@@ -35,19 +31,14 @@ class UserPage extends LoomElement {
     analytics.track("page_view", { page: meta.analytics });
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@onRouteLeave</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@onRouteLeave</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@onRouteLeave">
+          <api-entry sig="@onRouteLeave">
+            <p>
               Marks a method to run when navigating away from this route.
               Use it for cleanup — cancelling requests, saving drafts, etc.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { onRouteLeave } from "@toyz/loom/router";
 
 @route("/editor")
@@ -58,13 +49,9 @@ class EditorPage extends LoomElement {
     localStorage.setItem("draft", this.content);
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Combined Usage</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Combined Usage">
             <code-block lang="ts" code={`@route("/dashboard", { meta: { layout: "full" } })
 @component("page-dashboard")
 class Dashboard extends LoomElement {
@@ -79,12 +66,8 @@ class Dashboard extends LoomElement {
     this.stopPolling();
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Lifecycle Order</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Lifecycle Order">
             <p>When navigating from route A to route B:</p>
             <ol>
               <li>Guards for route B are checked</li>
@@ -92,17 +75,13 @@ class Dashboard extends LoomElement {
               <li>Route resolves and <code>RouteChanged</code> event emits</li>
               <li><code>@onRouteEnter</code> fires on route B's element (after DOM update)</li>
             </ol>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Multiple Handlers</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Multiple Handlers">
             <p>
               You can apply <code>@onRouteEnter</code> or <code>@onRouteLeave</code> to
               multiple methods. All decorated methods will be called in declaration order.
             </p>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

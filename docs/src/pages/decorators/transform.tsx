@@ -18,35 +18,26 @@ export default class PageDecoratorTransform extends LoomElement {
 
         {/* ═══════════ @transform ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>@transform</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@transform(fn: (value: any) =&gt; T)</div>
-            <div class="dec-desc">
+        <doc-section heading="@transform">
+          <api-entry sig="@transform(fn: (value: any) =&gt; T)">
+            <p>
               Pipe a value through a conversion function before it reaches the property.
               Commonly paired with <span class="ic">@prop</span> for route params or attribute parsing.
-            </div>
+            </p>
             <code-block lang="ts" code={`// Single param conversion
 @prop({ param: "id" })
 @transform(Number)      // "42" → 42
 accessor userId!: number;`}></code-block>
-          </div>
-        </section>
-
+          </api-entry>
+        </doc-section>
         {/* ═══════════ typed ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>typed&lt;T&gt;()</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">typed&lt;T&gt;(schema)</div>
-            <div class="dec-desc">
+        <doc-section heading="typed&lt;T&gt;()">
+          <api-entry sig="typed&lt;T&gt;(schema)">
+            <p>
               The <span class="ic">typed&lt;T&gt;()</span> helper generates a schema-based transform that
               converts an object's properties according to the specified constructor functions.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { typed } from "@toyz/loom/transform";
 
 interface UserParams {
@@ -59,21 +50,16 @@ interface UserParams {
 @prop({ params })
 @transform(typed<UserParams>({ id: Number, active: Boolean }))
 accessor routeParams!: UserParams;`}></code-block>
-          </div>
-        </section>
-
+          </api-entry>
+        </doc-section>
         {/* ═══════════ @typedTransformer ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>@typedTransformer</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@typedTransformer&lt;T&gt;(schema)</div>
-            <div class="dec-desc">
+        <doc-section heading="@typedTransformer">
+          <api-entry sig="@typedTransformer&lt;T&gt;(schema)">
+            <p>
               Shorthand decorator that combines <span class="ic">@transform</span> and <span class="ic">typed&lt;T&gt;()</span> into
               a single decorator. Use when you don't need to compose transforms:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { typedTransformer } from "@toyz/loom/transform";
 
 interface UserParams {
@@ -90,15 +76,11 @@ accessor routeParams!: UserParams;
 @prop({ params })
 @typedTransformer<UserParams>({ id: Number })
 accessor routeParams!: UserParams;`}></code-block>
-          </div>
-        </section>
-
+          </api-entry>
+        </doc-section>
         {/* ═══════════ Built-in ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Built-in Transformers</h2>
-          </div>
+        <doc-section heading="Built-in Transformers">
             <p>
               Loom ships with common value transformers you can use with <span class="ic">@transform</span>
               or compose into custom pipelines:
@@ -120,14 +102,10 @@ accessor routeParams!: UserParams;`}></code-block>
 @prop @transform(toNumber) accessor count!: number;
 @prop @transform(toBoolean) accessor enabled!: boolean;
 @prop @transform(toDate) accessor createdAt!: Date;`}></code-block>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Custom ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Custom Transforms</h2>
-          </div>
+        <doc-section heading="Custom Transforms">
             <p>
               Use <span class="ic">createTransform</span> for reusable transforms with validation or complex logic:
             </p>
@@ -138,7 +116,7 @@ const toUpperCase = createTransform<string, string>(
 );
 
 @prop @transform(toUpperCase) accessor title!: string;`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

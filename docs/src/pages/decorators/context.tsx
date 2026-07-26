@@ -16,34 +16,25 @@ export default class PageDecoratorContext extends LoomElement {
           <p><span class="ic">@provide</span> and <span class="ic">@consume</span> pass values along the DOM tree instead of through it, crossing shadow roots on the way. The key is a class rather than a string, so the compiler checks both ends and two features cannot collide on the same name. A consumer re-renders when the value it is reading changes.</p>
         </section>
 
-                <section>
-                    <div class="group-header">
-                        <h2>Quick Start</h2>
-                    </div>
+                <doc-section heading="Quick Start">
                     <code-block lang="ts" code={QUICK_START}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>API</h2>
-                    </div>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@provide(Key)</div>
-                        <div class="dec-desc">
+                </doc-section>
+                <doc-section heading="API">
+                    <api-entry sig="@provide(Key)">
+                        <p>
                             Auto-accessor decorator. Makes this element a provider for the given
                             context key. If <span class="ic">Key</span> is a class constructor and no
                             initial value is set, auto-instantiates via <span class="ic">new Key()</span>.
                             Descendants can consume the value.
-                        </div>
-                    </div>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@consume(Key)</div>
-                        <div class="dec-desc">
+                        </p>
+                    </api-entry>
+                    <api-entry sig="@consume(Key)">
+                        <p>
                             Auto-accessor decorator. Consumes a context value from the nearest
                             ancestor provider. Reactively updates when the provider changes.
                             Returns <span class="ic">undefined</span> if no provider is found.
-                        </div>
-                    </div>
+                        </p>
+                    </api-entry>
                         <p>
                             <strong>Key types:</strong>
                         </p>
@@ -55,19 +46,11 @@ export default class PageDecoratorContext extends LoomElement {
                                 <tr><td>Symbol</td><td><code>Symbol("auth")</code></td><td>Private / collision-free</td></tr>
                             </tbody>
                         </table>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Examples</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>How It Works</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="How It Works">
                     <ul>
                         <li>Uses the <span class="ic">W3C Context Protocol</span> — an event-based handshake</li>
                         <li>Consumer dispatches a <span class="ic">context-request</span> event with <span class="ic">composed: true</span> (crosses shadow boundaries)</li>
@@ -81,7 +64,7 @@ export default class PageDecoratorContext extends LoomElement {
                         (<span class="ic">undefined</span> for <span class="ic">!</span> accessors).
                         No errors, no warnings.
                     </doc-notification>
-                </section>
+                </doc-section>
               <doc-nav></doc-nav>
       </div>
         );

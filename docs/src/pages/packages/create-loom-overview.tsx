@@ -16,10 +16,7 @@ export default class PageCreateLoomOverview extends LoomElement {
           <p>The scaffolder emits a project where they already do. Everything it generates is ordinary configuration you can read and change; there is nothing hidden behind a CLI afterwards.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Usage</h2>
-          </div>
+        <doc-section heading="Usage">
           <code-block lang="bash" code={`npm create @toyz/loom my-app
 cd my-app
 npm install
@@ -27,22 +24,14 @@ npm run dev`}></code-block>
           <p>
             That's it. No prompts, no config wizard, no JavaScript option — Loom is TypeScript only.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Current Directory</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Current Directory">
           <p>
             To scaffold into the current directory instead of creating a new folder:
           </p>
           <code-block lang="bash" code={`npm create @toyz/loom .`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What You Get</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What You Get">
           <code-block lang="text" code={`my-app/
 ├── index.html            5 lines
 ├── package.json          1 dep, 2 devDeps
@@ -52,12 +41,8 @@ npm run dev`}></code-block>
     ├── main.tsx           app.start()
     ├── app.tsx            starter component
     └── global.d.ts        CSS module types`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Dependencies</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Dependencies">
           <table class="api-table">
             <thead><tr><th>Type</th><th>Package</th><th>Why</th></tr></thead>
             <tbody>
@@ -67,12 +52,8 @@ npm run dev`}></code-block>
             </tbody>
           </table>
           <p>No other packages. No plugins. No polyfills.</p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Starter Component</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Starter Component">
           <p>
             The generated <span class="ic">app.tsx</span> gives you a minimal Loom component
             with reactive state, scoped CSS, and JSX:
@@ -102,12 +83,8 @@ export class App extends LoomElement {
     );
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>TSConfig</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="TSConfig">
           <p>
             The generated <span class="ic">tsconfig.json</span> is pre-configured for Loom's
             JSX runtime and TC39 decorators:
@@ -123,7 +100,7 @@ export class App extends LoomElement {
   },
   "include": ["src"]
 }`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

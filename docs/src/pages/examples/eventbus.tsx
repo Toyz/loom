@@ -16,20 +16,13 @@ export default class ExampleEventBus extends LoomElement {
           <p>The typed bus on its own, without components in the way. Fire events and watch subscribers receive them, including the one-shot and awaited forms — useful when the question is what the bus does rather than how a component uses it.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <p class="hint">
             Try emitting events, setting up once/waitFor listeners, and watching inheritance + cancellation in the log.
           </p>
           <eventbus-demo></eventbus-demo>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">@on(Ping)</span> — Persistent event subscription, fires on every Ping</li>
             <li><span class="ic">@on(UIEvent)</span> — Event inheritance: catches ClickEvent too (parent handler)</li>
@@ -38,14 +31,10 @@ export default class ExampleEventBus extends LoomElement {
             <li><span class="ic">event.cancel()</span> — Stops subsequent handlers from receiving the event</li>
             <li><span class="ic">ClickEvent → UIEvent</span> — Prototype chain walk dispatches to parent handlers</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/eventbus-demo.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -15,26 +15,18 @@ export default class PageFetch extends LoomElement {
         </section>
 
         {/* ── Basic Usage ── */}
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@api&lt;T&gt;(fetchFn)</div>
-            <div class="dec-desc">
+        <doc-section heading="Basic Usage">
+          <api-entry sig="@api&lt;T&gt;(fetchFn)">
+            <p>
               <span class="ic">@api</span> is an auto-accessor decorator that manages the full lifecycle
               of an async fetch — loading, error, data, and stale states — so you
               never write boilerplate for spinners or error handling again.
-            </div>
+            </p>
             <code-block lang="ts" code={BASIC}></code-block>
-          </div>
-        </section>
-
+          </api-entry>
+        </doc-section>
         {/* ── ApiState<T> ── */}
-        <section>
-          <div class="group-header">
-            <h2>ApiState&lt;T&gt;</h2>
-          </div>
+        <doc-section heading="ApiState&lt;T&gt;">
             <p>The object returned by the accessor. All properties are reactive — accessing them triggers re-renders.</p>
           <table class="api-table">
             <thead><tr><th>Property / Method</th><th>Description</th></tr></thead>
@@ -51,13 +43,9 @@ export default class PageFetch extends LoomElement {
               <tr><td><span class="ic">.unwrap_or(fallback)</span></td><td>Return data or fallback value</td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ── Options ── */}
-        <section>
-          <div class="group-header">
-            <h2>Options</h2>
-          </div>
+        <doc-section heading="Options">
             <p>Use an options object for dynamic keys, interceptors, retries, or stale time.</p>
             <code-block lang="ts" code={OPTIONS_EXAMPLE}></code-block>
 
@@ -72,23 +60,17 @@ export default class PageFetch extends LoomElement {
               <tr><td><code>retry</code></td><td><code>number</code></td><td>Retry count with exponential backoff (default: 0).</td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ── Interceptors ── */}
-        <section>
-          <div class="group-header">
-            <h2>Interceptors</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@intercept()</div>
-            <div class="dec-desc">
+        <doc-section heading="Interceptors">
+          <api-entry sig="@intercept()">
+            <p>
               Define interceptors as class methods with <span class="ic">@intercept</span>.
               Reference them by method name in <span class="ic">use</span> (pre-fetch)
               or <span class="ic">pipe</span> (post-fetch).
-            </div>
+            </p>
             <code-block lang="ts" code={INTERCEPTOR_EXAMPLE}></code-block>
-          </div>
-
+          </api-entry>
             <h3>ApiCtx</h3>
             <p>The mutable context passed to interceptors.</p>
           <table class="api-table">
@@ -102,13 +84,9 @@ export default class PageFetch extends LoomElement {
               <tr><td><span class="ic">ctx.response</span></td><td><code>Response</code></td><td>Available only in <code>pipe</code> (post-fetch) interceptors</td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ── Error Handling ── */}
-        <section>
-          <div class="group-header">
-            <h2>Error Handling — @catch_</h2>
-          </div>
+        <doc-section heading="Error Handling — @catch_">
             <p>
               <span class="ic">@catch_</span> unifies error handling for both render errors and
               async <span class="ic">@api</span> fetch failures. It comes in three forms:
@@ -128,13 +106,9 @@ export default class PageFetch extends LoomElement {
             the <span class="ic">team</span> accessor fails, only the named handler fires.
             Unmatched errors fall through to the general <span class="ic">@catch_</span>.
           </doc-notification>
-        </section>
-
+        </doc-section>
         {/* ── Key Behaviors ── */}
-        <section>
-          <div class="group-header">
-            <h2>Key Behaviors</h2>
-          </div>
+        <doc-section heading="Key Behaviors">
           <table class="api-table">
             <thead><tr><th>Behavior</th><th>Description</th></tr></thead>
             <tbody>
@@ -144,7 +118,7 @@ export default class PageFetch extends LoomElement {
               <tr><td>Per-Instance State</td><td>Each element instance owns its own fetch lifecycle. For shared data, use a <code>@service</code> + <code>Reactive&lt;T&gt;</code>.</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -14,21 +14,14 @@ export default class PageStoreDecorator extends LoomElement {
           <p><span class="ic">@store</span> makes the object itself reactive, to any depth. Mutating a nested field schedules a render. You pay for it with a proxy on every property access, so it is the right default for a form or a settings object and the wrong one for a large array you only ever replace wholesale.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               The <span class="ic">@store</span> decorator creates an isolated, reactive store
               scoped to a single component instance. Mutations — even nested — automatically
               trigger re-renders. No DI, no shared state, just local component data.
             </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Basic Usage">
             <code-block lang="ts" code={`interface TodoState {
   items: string[];
   filter: "all" | "active" | "done";
@@ -49,12 +42,8 @@ class MyTodos extends LoomElement {
     </ul>;
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Deep Reactivity</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Deep Reactivity">
             <p>
               <span class="ic">@store</span> uses a deep <span class="ic">Proxy</span> under
               the hood. Nested property changes, array mutations (<code>push</code>, <code>splice</code>),
@@ -66,12 +55,8 @@ this.state.meta.count = 5;           // nested set
 this.state.items.push("new item");   // array push
 this.state.items.splice(0, 1);       // array splice
 delete this.state.meta;              // delete`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Persisted Store</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Persisted Store">
             <p>
               Pass a persistence config as the second argument to automatically
               back the store with <code>localStorage</code>, <code>sessionStorage</code>,
@@ -92,23 +77,15 @@ class MyPrefs extends LoomElement {
     // Auto-persisted to localStorage
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Instance Isolation</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Instance Isolation">
             <p>
               Each component instance gets its own independent copy of the store.
               Changes in one instance don't affect another — even if they share
               the same class.
             </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Options</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Options">
           <table class="api-table">
             <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -117,12 +94,8 @@ class MyPrefs extends LoomElement {
               <tr><td><code>persist.storage</code></td><td><code>StorageAdapter</code></td><td>Storage backend (<code>LocalAdapter</code>, <code>SessionAdapter</code>, etc.)</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>When to Use</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="When to Use">
           <table class="api-table">
             <thead><tr><th>Need</th><th>Solution</th></tr></thead>
             <tbody>
@@ -132,7 +105,7 @@ class MyPrefs extends LoomElement {
               <tr><td>Shared global store</td><td><code>@service</code> + <code>Reactive</code></td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

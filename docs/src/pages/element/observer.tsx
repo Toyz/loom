@@ -24,10 +24,7 @@ export default class PageElementObserver extends LoomElement {
           ></punch-matrix>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               The <span class="ic">@observer</span> decorator binds a method to a native DOM observer.
               Loom creates the observer on <span class="ic">connectedCallback</span>, observes the element (or a custom target),
@@ -44,12 +41,8 @@ export default class PageElementObserver extends LoomElement {
               <tr><td><code>"mutation"</code></td><td><code>MutationObserver</code></td><td>Watch child/attribute/text changes</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>ResizeObserver</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="ResizeObserver">
           <div class="feature-entry">
             <div class="dec-sig">@observer("resize", opts?)</div>
             <div class="dec-desc">
@@ -81,12 +74,8 @@ class ResponsiveCard extends LoomElement {
 onResize(entry: ResizeObserverEntry) {
   // entry.borderBoxSize is now populated
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>IntersectionObserver</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="IntersectionObserver">
           <div class="feature-entry">
             <div class="dec-sig">@observer("intersection", opts?)</div>
             <div class="dec-desc">
@@ -120,12 +109,8 @@ class LazyImage extends LoomElement {
             Use <code>rootMargin</code> to start loading elements <strong>before</strong> they
             enter the viewport — great for preloading images and heavy content.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>MutationObserver</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="MutationObserver">
           <div class="feature-entry">
             <div class="dec-sig">@observer("mutation", opts)</div>
             <div class="dec-desc">
@@ -157,12 +142,8 @@ class SlotCounter extends LoomElement {
   }
 }`}></code-block>
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Custom Target</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Custom Target">
             <p>
               By default, <span class="ic">@observer</span> observes <code>this</code> — the component element itself.
               Pass a <strong>target resolver</strong> as the third argument to observe a different node, such as
@@ -190,12 +171,8 @@ class ParentWatcher extends LoomElement {
             If the target resolver returns <code>null</code> or <code>undefined</code>, the observer
             is silently skipped. This is safe — no error is thrown.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Multiple Observers</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Multiple Observers">
             <p>
               A single component can have any number of <span class="ic">@observer</span> decorators.
               Each creates its own independent observer. All are cleaned up together on disconnect.
@@ -217,12 +194,8 @@ class SmartPanel extends LoomElement {
     // Re-count or re-render
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Lifecycle</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Lifecycle">
             <p>
               Observers follow the element's lifecycle automatically:
             </p>
@@ -238,15 +211,11 @@ class SmartPanel extends LoomElement {
             Reconnecting an element creates a fresh observer instance. This ensures
             the element always has a clean observer state.
           </doc-notification>
-        </section>
+        </doc-section>
+        <doc-section heading="API Reference">
+          <api-entry sig="@observer(type, options?, target?)">
 
-        <section>
-          <div class="group-header">
-            <h2>API Reference</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@observer(type, options?, target?)</div>
-          </div>
+          </api-entry>
           <table class="api-table">
             <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -255,7 +224,7 @@ class SmartPanel extends LoomElement {
               <tr><td><code>target</code></td><td><code>(el: HTMLElement) =&gt; Node | null</code></td><td>Optional resolver to observe a different node instead of <code>this</code>. Skips silently if <code>null</code>.</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

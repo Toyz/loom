@@ -16,20 +16,13 @@ export default class PageFlagsOverview extends LoomElement {
           <p>Loom's flags are reactive for exactly that reason. Read one in a template and the component updates when the value changes, with no subscription to wire up or tear down.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Install</h2>
-          </div>
+        <doc-section heading="Install">
           <code-block lang="bash" code={`npm install @toyz/loom-flags`}></code-block>
           <p>
             <span class="ic">@toyz/loom</span> is the only dependency.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <p>
             LoomFlags provides two APIs — a <span class="ic">@flag</span> decorator and a <span class="ic">&lt;loom-flag&gt;</span> component — both powered by a swappable <span class="ic">FlagProvider</span>.
           </p>
@@ -42,12 +35,8 @@ export default class PageFlagsOverview extends LoomElement {
             All flag checks are <strong>reactive</strong> — when a provider updates a flag
             (e.g. from a WebSocket push), every decorator and component re-evaluates automatically.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>1. Create a Provider</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="1. Create a Provider">
           <code-block lang="ts" code={`import { FlagProvider } from "@toyz/loom-flags";
 
 class LaunchDarklyProvider extends FlagProvider {
@@ -58,22 +47,14 @@ class LaunchDarklyProvider extends FlagProvider {
     return ldClient.variation(flag, {}, fallback);
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>2. Register via DI</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="2. Register via DI">
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
 import { FlagProvider } from "@toyz/loom-flags";
 
 app.use(FlagProvider, new LaunchDarklyProvider());`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>3. Use the Decorator</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="3. Use the Decorator">
           <code-block lang="tsx" code={`import { flag } from "@toyz/loom-flags";
 
 // Class — injects flagEnabled boolean
@@ -93,12 +74,8 @@ handleExport() { ... }
 // Dynamic context — fn receives element instance
 @flag("premium", el => ({ plan: el.plan }))
 class PremiumWidget extends LoomElement { ... }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>4. Use the Component</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="4. Use the Component">
           <code-block lang="tsx" code={`import "@toyz/loom-flags"; // registers <loom-flag>
 
 <loom-flag name="beta-feature">
@@ -109,12 +86,8 @@ class PremiumWidget extends LoomElement { ... }`}></code-block>
             Named slots <span class="ic">enabled</span> and <span class="ic">disabled</span> let you
             define both states declaratively. The component swaps which slot is visible.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Real-Time Updates</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Real-Time Updates">
           <p>
             Flags are <strong>live</strong>. When a provider calls <span class="ic">set()</span>,
             a <span class="ic">FlagChanged</span> event fires on the Loom bus. Every <span class="ic">@flag</span> decorator and <span class="ic">&lt;loom-flag&gt;</span> component re-evaluates automatically:
@@ -126,7 +99,7 @@ socket.on("flag:update", ({ flag, enabled }) => {
 });
 
 // Every @flag and <loom-flag> reacts — zero manual work`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

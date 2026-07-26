@@ -18,10 +18,7 @@ export default class PageElementDecorators extends LoomElement {
 
         {/* ═══════════ Registration ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Registration</h2>
-          </div>
+        <doc-section heading="Registration">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -29,14 +26,10 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@styles(sheet, ...)</code></td><td>Class</td><td>Auto-adopt CSSStyleSheets — <loom-link to="/element/css" style="color: var(--accent)">CSS</loom-link></td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ State ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>State</h2>
-          </div>
+        <doc-section heading="State">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -46,14 +39,10 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@readonly</code></td><td>Accessor</td><td>Runtime immutability — freezes objects, throws on reassign</td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Lifecycle ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Lifecycle</h2>
-          </div>
+        <doc-section heading="Lifecycle">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -63,14 +52,10 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@suspend()</code></td><td>Method</td><td>Async suspense — <loom-link to="/element/lifecycle" style="color: var(--accent)">Lifecycle</loom-link></td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ DOM ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>DOM</h2>
-          </div>
+        <doc-section heading="DOM">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -79,14 +64,10 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@slot(name?)</code></td><td>Field</td><td>Typed slot-assigned elements, auto-updates on slotchange</td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Events & Interaction ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Events & Interaction</h2>
-          </div>
+        <doc-section heading="Events & Interaction">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -97,14 +78,10 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@observer(type, opts?)</code></td><td>Method</td><td>Auto-managed Resize/Intersection/Mutation observer — <loom-link to="/element/observer" style="color: var(--accent)">Observer</loom-link></td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Timing ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Timing</h2>
-          </div>
+        <doc-section heading="Timing">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -115,14 +92,10 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@animationFrame</code></td><td>Method</td><td>Auto-cleaned rAF loop — <loom-link to="/element/timing" style="color: var(--accent)">Timing</loom-link></td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Data Fetching ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Data Fetching</h2>
-          </div>
+        <doc-section heading="Data Fetching">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -130,14 +103,10 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@intercept()</code></td><td>Method</td><td>Pre/post-fetch interceptors — <loom-link to="/store/api" style="color: var(--accent)">Fetch</loom-link></td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Misc ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Miscellaneous</h2>
-          </div>
+        <doc-section heading="Miscellaneous">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -153,7 +122,7 @@ export default class PageElementDecorators extends LoomElement {
               <tr><td><code>@dropzone(opts?)</code></td><td>Method</td><td>Accept dropped content — <loom-link to="/decorators/dnd" style="color: var(--accent)">Drag & Drop</loom-link></td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

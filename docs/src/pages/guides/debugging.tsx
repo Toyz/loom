@@ -17,16 +17,12 @@ export default class PageDebugging extends LoomElement {
           <p>Loom answers them from the console with no extension installed. A development build exposes a global hook that can list mounted components, dump an element's reactive state, and trace what a render actually read.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>inspect()</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">inspect(element)</div>
-            <div class="dec-desc">
+        <doc-section heading="inspect()">
+          <api-entry sig="inspect(element)">
+            <p>
               Pretty-prints a component's metadata, reactive state, props, and stylesheet count
               to the console. Reads all registered symbols from the constructor automatically:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { inspect } from "@toyz/loom/debug";
 
 // Select any Loom element
@@ -45,13 +41,9 @@ inspect(el);
 //   }
 //   Stylesheets 2
 //   Constructor class MyDashboard { ... }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>DevTools Console Hook</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="DevTools Console Hook">
             <p>
               Install a global hook once, then inspect any element directly from
               the browser console. Add this to your app entry point:
@@ -80,12 +72,8 @@ __loom.SYMBOL_REGISTRY
 //   "analytics:track" => Symbol(loom:analytics:track),
 //   ...
 // }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Reading Symbols Directly</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Reading Symbols Directly">
             <p>
               Every Loom decorator writes metadata to the class constructor using symbols.
               You can read them directly — no special tooling required:
@@ -105,19 +93,14 @@ const routeBindings = ctor[SYMBOL_REGISTRY.get("route:props")];
 
 const tracked = ctor[SYMBOL_REGISTRY.get("analytics:track")];
 // [{ event: "settings.view", kind: "class" }]`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>createSymbol() — Plugin API</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">createSymbol(name): symbol</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="createSymbol() — Plugin API">
+          <api-entry sig="createSymbol(name): symbol">
+            <p>
               Create a symbol that is automatically registered in the global <span class="ic">SYMBOL_REGISTRY</span>. Use this in your own
               decorators or plugins so <span class="ic">inspect()</span> picks
               up your metadata automatically:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { createSymbol } from "@toyz/loom";
 
 // Register a custom symbol
@@ -139,13 +122,9 @@ export function cache(ttl: number) {
 
 // Now inspect() automatically shows:
 // Metadata { "myPlugin:cache": [{ method: "fetchData", ttl: 60000 }] }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Built-in Plugin Symbols</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Built-in Plugin Symbols">
             <p>
               All first-party Loom packages register their decorator metadata via <span class="ic">createSymbol()</span>. This means <span class="ic">inspect()</span> shows everything:
             </p>
@@ -206,8 +185,7 @@ export function cache(ttl: number) {
               </tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         <section>
           <div class="note">
             <strong>Tip:</strong> Add <span class="ic">installGlobalHook()</span> behind

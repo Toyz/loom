@@ -16,20 +16,13 @@ export default class PageAnalyticsOverview extends LoomElement {
           <p><span class="ic">@track</span> moves the call to a decorator and the vendor behind a transport. The method says what happened; where that goes is configured once.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Install</h2>
-          </div>
+        <doc-section heading="Install">
           <code-block lang="bash" code={`npm install @toyz/loom-analytics`}></code-block>
           <p>
             <span class="ic">@toyz/loom</span> is the only dependency.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <p>
             LoomAnalytics adds a single decorator — <span class="ic">@track</span> — that fires
             analytics events through a swappable <span class="ic">AnalyticsTransport</span>.
@@ -38,12 +31,8 @@ export default class PageAnalyticsOverview extends LoomElement {
             Apply <span class="ic">@track</span> to <strong>classes</strong> (fire on mount), <strong>methods</strong> (fire after invocation), or <strong>accessors</strong> (fire
             on set). One decorator, three targets, zero boilerplate.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>1. Create a Transport</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="1. Create a Transport">
           <code-block lang="ts" code={`import { AnalyticsTransport } from "@toyz/loom-analytics";
 
 class PostHogTransport extends AnalyticsTransport {
@@ -55,12 +44,8 @@ class PostHogTransport extends AnalyticsTransport {
             Extend <span class="ic">AnalyticsTransport</span> and implement <span class="ic">track()</span>.
             That's it — plug in PostHog, Mixpanel, Amplitude, GA4, or roll your own.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>2. Register via DI</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="2. Register via DI">
           <code-block lang="ts" code={`// main.tsx
 import { app } from "@toyz/loom";
 import { AnalyticsTransport } from "@toyz/loom-analytics";
@@ -71,12 +56,8 @@ app.start();`}></code-block>
           <p>
             Transports are registered via Loom's DI container. Swap to <span class="ic">MockAnalytics</span> for testing — one line change.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>3. Decorate</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="3. Decorate">
           <code-block lang="tsx" code={`import { track } from "@toyz/loom-analytics";
 
 // Class — fire on mount (page views)
@@ -92,12 +73,8 @@ class Settings extends LoomElement {
   @track("theme.change")
   accessor theme = "dark";
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Custom Metadata</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Custom Metadata">
           <p>
             Pass a second argument to <span class="ic">@track</span> for custom metadata.
             Use a <strong>static object</strong> or a <strong>function</strong> that receives the
@@ -118,7 +95,7 @@ accessor theme = "dark";`}></code-block>
             current component state. It's merged with automatic context (element tag,
             method name, property name, etc.) before being passed to your transport.
           </p>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

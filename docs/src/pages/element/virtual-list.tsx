@@ -14,10 +14,7 @@ export default class PageVirtualList extends LoomElement {
           <p>Windowing renders only the rows that intersect the viewport plus a small overscan, and translates them into position so the scrollbar still reflects the full list. <span class="ic">loom-virtual</span> measures row heights as they render, so rows do not have to be uniform, and keeps those measurements across appends instead of discarding them.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               <span class="ic">&lt;loom-virtual&gt;</span> renders only the visible items in a scrollable container.
               Items are measured, cached, and recycled — you get smooth scrolling even with 100k+ rows.
@@ -27,12 +24,8 @@ export default class PageVirtualList extends LoomElement {
             to register the custom element (it's excluded from the main barrel to avoid side effects):
           </doc-notification>
           <code-block lang="ts" code={`import "@toyz/loom/element/virtual";`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Basic Usage">
             <p>
               Pass your data via <span class="ic">items</span> and provide a render template as a function child:
             </p>
@@ -44,12 +37,8 @@ export default class PageVirtualList extends LoomElement {
     <div class="msg">{msg.text}</div>
   )}
 </loom-virtual>`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Styling</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Styling">
             <p>
               <span class="ic">&lt;loom-virtual&gt;</span> uses Shadow DOM internally. The host element must have
               <span class="ic">display: block</span> and a <strong>fixed height</strong> — without a constrained
@@ -68,12 +57,8 @@ loom-virtual {
             The viewport scrolls, the spacer sets the total height, and the window is absolutely positioned
             to render only visible items.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Props</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Props">
           <table class="api-table">
             <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
@@ -84,12 +69,8 @@ loom-virtual {
               <tr><td><code>onNearEnd</code></td><td><code>() =&gt; void</code></td><td><code>null</code></td><td>Callback fired when scrolled within 100px of the bottom — use for infinite scroll / pagination.</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Imperative Methods</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Imperative Methods">
           <table class="api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
             <tbody>
@@ -98,12 +79,8 @@ loom-virtual {
               <tr><td><code>refresh()</code></td><td>Re-measure all visible items and rebuild offsets.</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Children Template</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Children Template">
             <p>
               The function child is the render template. It receives each item and its index,
               and returns a DOM node. JSX works perfectly — you can even use other Loom components:
@@ -114,12 +91,8 @@ loom-virtual {
     </person-row>
   )}
 </loom-virtual>`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Infinite Scroll</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Infinite Scroll">
             <p>Use the <span class="ic">onNearEnd</span> callback for pagination:</p>
             <code-block lang="tsx" code={`<loom-virtual
   items={this.messages}
@@ -128,12 +101,8 @@ loom-virtual {
 >
   {(msg: Message) => <div class="msg">{msg.text}</div>}
 </loom-virtual>`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Dynamic Item Counts</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Dynamic Item Counts">
             <p>
               Changing the <span class="ic">items</span> array (by reference) automatically clears
               the height cache, rebuilds offsets, and re-renders the visible window. This works seamlessly
@@ -149,7 +118,7 @@ setCount(n: number) {
 <loom-virtual items={this.data} estimatedHeight={38}>
   {(p: Person) => <div>{p.name}</div>}
 </loom-virtual>`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

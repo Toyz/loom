@@ -16,10 +16,7 @@ export default class PageRpcStreams extends LoomElement {
           <p>A stream is a call that yields many values over time. It needs a transport that can push — a WebSocket or SSE — and it needs to unsubscribe when the component goes away, which is the part that is easy to forget and expensive to miss.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
           <p>
             <span class="ic">@stream</span> is the push counterpart to <span class="ic">@rpc</span>. Instead of a one-shot request, it opens a
             long-lived connection through the registered <span class="ic">RpcTransport</span> and delivers events as an <span class="ic">AsyncIterable</span>.
@@ -27,12 +24,8 @@ export default class PageRpcStreams extends LoomElement {
           <p>
             The transport must implement <span class="ic">stream()</span> (e.g. a WebSocket or SSE transport). <span class="ic">HttpTransport</span> handles regular HTTP calls only.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage — Component</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Basic Usage — Component">
           <p>
             Define a contract method that returns <span class="ic">AsyncIterable&lt;T&gt;</span>,
             then use <span class="ic">@stream</span> + <span class="ic">@onStream</span> to
@@ -63,12 +56,8 @@ class ChatFeed extends LoomElement {
     );
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Direct Iteration</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Direct Iteration">
           <p>
             <span class="ic">RpcStream&lt;T&gt;</span> implements <span class="ic">AsyncIterable&lt;T&gt;</span> directly — ideal for services
             or any non-component context.
@@ -80,12 +69,8 @@ for await (const msg of this.chatMessages) {
 
 // .events is an alias for the same iterable
 for await (const msg of this.chatMessages.events) { ... }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@stream Options</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="@stream Options">
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
@@ -93,12 +78,8 @@ for await (const msg of this.chatMessages.events) { ... }`}></code-block>
               <tr><td><code>eager</code></td><td>boolean</td><td><code>true</code></td><td>Auto-open on connect when used with <code>@onStream</code>. Set to <code>false</code> to open manually.</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Manual Control — eager: false</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Manual Control — eager: false">
           <p>
             Set <span class="ic">eager: false</span> to control exactly when the stream
             opens (e.g. after a user action). Call <span class="ic">.open()</span> to start
@@ -122,12 +103,8 @@ joinRoom() {
 leaveRoom() {
   this.chatMessages.close();
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>RpcStream&lt;T&gt; API</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="RpcStream&lt;T&gt; API">
           <table class="api-table">
             <thead><tr><th>Member</th><th>Description</th></tr></thead>
             <tbody>
@@ -139,12 +116,8 @@ leaveRoom() {
               <tr><td><code>[Symbol.asyncIterator]()</code></td><td>Iterate directly with <code>for await</code></td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Transport — Implementing stream()</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Transport — Implementing stream()">
           <p>
             Extend <span class="ic">RpcTransport</span> and implement the optional <span class="ic">stream()</span> method to return an <span class="ic">AsyncIterable&lt;T&gt;</span>. The framework drives teardown
             via the iterator protocol when <span class="ic">.close()</span> is called.
@@ -184,8 +157,7 @@ class WsTransport extends RpcTransport {
     };
   }
 }`}></code-block>
-        </section>
-
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

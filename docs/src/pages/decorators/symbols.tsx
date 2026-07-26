@@ -19,10 +19,7 @@ export default class PageDecoratorsSymbols extends LoomElement {
 
         {/* ═══════════ Problem ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>The Problem</h2>
-          </div>
+        <doc-section heading="The Problem">
             <p>
               Raw <span class="ic">Symbol</span> property access is completely untyped in JavaScript.
               Accessing metadata with <span class="ic">{`(ctor as any)[MY_SYMBOL]`}</span> gives you <span class="ic">any</span> —
@@ -35,14 +32,10 @@ const MY_META = Symbol("my:meta");
 (ctor as any)[MY_META] = 42;
 (ctor as any)[MY_META] = "oops";  // no error!
 const val = (ctor as any)[MY_META];  // any`}></code-block>
-        </section>
-
+        </doc-section>
         {/* ═══════════ LoomSymbol ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>LoomSymbol&lt;T&gt;</h2>
-          </div>
+        <doc-section heading="LoomSymbol&lt;T&gt;">
             <p>
               <span class="ic">LoomSymbol&lt;T&gt;</span> wraps a native <span class="ic">symbol</span> and
               provides typed <span class="ic">from()</span>, <span class="ic">set()</span>, and <span class="ic">has()</span> methods.
@@ -64,14 +57,10 @@ const name = SERVICE_NAME.from(ctor);  // string | undefined
 if (SERVICE_NAME.has(ctor)) {
   // ...
 }`}></code-block>
-        </section>
-
+        </doc-section>
         {/* ═══════════ createSymbol ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>createSymbol</h2>
-          </div>
+        <doc-section heading="createSymbol">
           <div class="feature-entry">
             <div class="dec-sig">{`createSymbol<T>(name: string): LoomSymbol<T>`}</div>
             <div class="dec-desc">
@@ -90,61 +79,44 @@ const a = createSymbol("my:thing");
 const b = createSymbol("my:thing");
 console.log(a === b);  // true`}></code-block>
           </div>
-        </section>
-
+        </doc-section>
         {/* ═══════════ API Reference ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>API</h2>
-          </div>
+        <doc-section heading="API">
 
-          <div class="feature-entry">
-            <div class="dec-sig">.from(target): T | undefined</div>
-            <div class="dec-desc">
+          <api-entry sig=".from(target): T | undefined">
+            <p>
               Read metadata from the target. Returns <span class="ic">undefined</span> if not set.
               The return type is inferred from the symbol's generic parameter.
-            </div>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">.set(target, value: T): void</div>
-            <div class="dec-desc">
+            </p>
+          </api-entry>
+          <api-entry sig=".set(target, value: T): void">
+            <p>
               Write metadata to the target. TypeScript enforces that <span class="ic">value</span> matches
               the symbol's type parameter <span class="ic">T</span>.
-            </div>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">.has(target): boolean</div>
-            <div class="dec-desc">
+            </p>
+          </api-entry>
+          <api-entry sig=".has(target): boolean">
+            <p>
               Check whether the target has this symbol's metadata set.
-            </div>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">.key: symbol</div>
-            <div class="dec-desc">
+            </p>
+          </api-entry>
+          <api-entry sig=".key: symbol">
+            <p>
               The underlying native <span class="ic">symbol</span>. Use this for direct property access
               when you need to bypass the typed API (e.g. in performance-critical internals).
-            </div>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">.name: string</div>
-            <div class="dec-desc">
+            </p>
+          </api-entry>
+          <api-entry sig=".name: string">
+            <p>
               The human-readable name passed to <span class="ic">createSymbol()</span>.
               Used by <span class="ic">inspect()</span> and <span class="ic">SYMBOL_REGISTRY</span>.
-            </div>
-          </div>
-        </section>
-
+            </p>
+          </api-entry>
+        </doc-section>
         {/* ═══════════ SYMBOL_REGISTRY ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>SYMBOL_REGISTRY</h2>
-          </div>
+        <doc-section heading="SYMBOL_REGISTRY">
           <div class="feature-entry">
             <div class="dec-sig">{`SYMBOL_REGISTRY: Map<string, LoomSymbol>`}</div>
             <div class="dec-desc">
@@ -158,14 +130,10 @@ for (const [name, sym] of SYMBOL_REGISTRY) {
   console.log(name, sym.from(myComponent));
 }`}></code-block>
           </div>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Core Symbols ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Core Symbols</h2>
-          </div>
+        <doc-section heading="Core Symbols">
             <p>
               Loom ships with 18 core symbols that power the framework's internals.
               All are available from <span class="ic">@toyz/loom</span>:
@@ -197,7 +165,7 @@ ROUTE_LEAVE      // string[] — @onRouteLeave methods
 // Other
 ON_HANDLERS      // { event, key }[] — @on bindings
 TRANSFORMS       // Map<string, Function> — @transform fns`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

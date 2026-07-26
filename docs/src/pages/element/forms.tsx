@@ -16,24 +16,16 @@ export default class PageElementForms extends LoomElement {
           <p><span class="ic">@form</span> declares them once as a single <span class="ic">FormState</span>. It exposes <span class="ic">data</span>, <span class="ic">errors</span>, <span class="ic">valid</span> and <span class="ic">dirty</span> as read-only views, and <span class="ic">bind(field)</span> returns the event handler that keeps them in step. Binding is explicit — you attach it to the input yourself — so the form never guesses which control maps to which field.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               The <span class="ic">@form</span> decorator creates a typed <span class="ic">FormState&lt;T&gt;</span> object
               with validation, transforms, and dirty tracking. Unlike traditional form libraries that query DOM elements,
               Loom's <span class="ic">@form</span> is <strong>DOM-independent</strong> — you explicitly bind fields
               in your template using <code>.bind(field)</code>.
             </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@form&lt;T&gt;(schema)</div>
+        </doc-section>
+        <doc-section heading="Basic Usage">
+          <api-entry sig="@form&lt;T&gt;(schema)">
             <code-block lang="tsx" code={`import { LoomElement, component } from "@toyz/loom";
 import { form } from "@toyz/loom/element";
 import type { FormState } from "@toyz/loom/element";
@@ -76,13 +68,9 @@ class LoginPage extends LoomElement {
     }
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>FormState&lt;T&gt; API</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="FormState&lt;T&gt; API">
           <table class="api-table">
             <thead><tr><th>Property / Method</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -95,12 +83,8 @@ class LoginPage extends LoomElement {
               <tr><td><code>.bind(field)</code></td><td><code>(e: Event) =&gt; void</code></td><td>Returns an <code>onInput</code> handler for explicit template binding</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Field Schema</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Field Schema">
             <p>Each field in the schema can define:</p>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
@@ -109,12 +93,8 @@ class LoginPage extends LoomElement {
               <tr><td><code>validate</code></td><td><code>(value: V) =&gt; true | string</code></td><td>Return <code>true</code> if valid, or an error message string</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Explicit Binding</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Explicit Binding">
             <p>
               Instead of magic DOM queries, you explicitly wire each input using <code>.bind(field)</code> and
               <code>.data.field</code> for controlled inputs:
@@ -129,19 +109,15 @@ this.login.reset();
 if (this.login.validate()) {
   console.log("All good!", this.login.data);
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Decorator Signature</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Decorator Signature">
           <table class="api-table">
             <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>schema</code></td><td><code>FormSchema&lt;T&gt;</code></td><td>Per-field transform and validation config</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -29,17 +29,13 @@ export default class PageElementAttributes extends LoomElement {
           <code-block lang="tsx" code={`<div sticky intersect={load} shortcut="j">`}></code-block>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@attribute</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@attribute(name)</div>
-            <div class="dec-desc">
+        <doc-section heading="@attribute">
+          <api-entry sig="@attribute(name)">
+            <p>
               Registers a class as a controller for the attribute <span class="ic">name</span>.
               The name is arbitrary — <span class="ic">data-tooltip</span>, <span class="ic">sticky</span>,
               <span class="ic">shortcut</span> all work.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { LoomAttribute, attribute } from "@toyz/loom";
 
 @attribute("data-tooltip")
@@ -55,13 +51,9 @@ class Tooltip extends LoomAttribute {
     this.el.classList.remove("tooltip");
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Lifecycle</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Lifecycle">
             <p>Three hooks, mirroring LoomElement:</p>
             <code-block lang="ts" code={`connect()                    // attribute appeared on a connected element
 valueChanged(old, next)      // attribute value was patched
@@ -72,12 +64,8 @@ disconnect()                 // attribute removed, or element left the DOM`}></c
               <span class="ic">emit</span> / <span class="ic">track</span> / <span class="ic">app</span> helpers
               as LoomElement. Anything you <span class="ic">track()</span> is cleaned up on disconnect.
             </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Passing args as props</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Passing args as props">
             <p>
               HTML attributes are strings, but JSX lets you pass anything. When you write
               <span class="ic">{`intersect={load}`}</span>, Loom sets a marker attribute (so it is
@@ -109,12 +97,8 @@ class Tooltip extends LoomAttribute {
 }
 
 <button tooltip={{ text: "Save", placement: "bottom" }}>Save</button>`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Rendering — attributes as portals</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Rendering — attributes as portals">
             <p>
               A controller is a full component wrapped onto a foreign element. Override
               <span class="ic">update()</span> to render JSX; Loom mounts it into a target
@@ -143,12 +127,8 @@ class Tooltip extends LoomAttribute { /* ... */ }
 
 // 3. Code — anchor to the host element itself
 get target() { return this.el; }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Typing your attributes</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Typing your attributes">
             <p>
               Augment <span class="ic">LoomCustomAttributes</span> so your directives type-check on
               every intrinsic element.
@@ -163,12 +143,8 @@ get target() { return this.el; }`}></code-block>
 
 // now type-checks on any element:
 <div sticky intersect={load} shortcut="j" />`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Light DOM & hand-written HTML</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Light DOM & hand-written HTML">
             <p>
               Two roots are observed automatically: every component's shadow root
               (via <span class="ic">LoomElement</span>) and <span class="ic">document.body</span> —
@@ -179,12 +155,8 @@ get target() { return this.el; }`}></code-block>
             <code-block lang="ts" code={`import { observeAttributes } from "@toyz/loom";
 
 observeAttributes(myCustomRoot); // scans now, reacts to changes, returns an unobserve fn`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Which decorators work</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Which decorators work">
             <p>
               Decorators that route through connect hooks work on controllers.
               DOM-targeting ones auto-target <span class="ic">this.el</span>:
@@ -216,8 +188,7 @@ class Ticker extends LoomAttribute {
               <span class="ic">@component</span>, <span class="ic">@slot</span>, <span class="ic">@form</span>,
               <span class="ic">@portal</span>.
             </p>
-        </section>
-
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -16,17 +16,10 @@ export default class PagePlaceholderTesting extends LoomElement {
           <p><span class="ic">MockPlaceholder</span> resolves locally and deterministically, so the assertion is about your layout rather than about someone else's uptime.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Import</h2>
-          </div>
+        <doc-section heading="Import">
           <code-block lang="ts" code={`import { MockPlaceholder } from "@toyz/loom-placeholder/testing";`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Setup</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Setup">
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
 import { PlaceholderProvider } from "@toyz/loom-placeholder";
 import { MockPlaceholder } from "@toyz/loom-placeholder/testing";
@@ -35,12 +28,8 @@ const mock = new MockPlaceholder();
 app.use(PlaceholderProvider, mock);
 
 beforeEach(() => mock.reset());`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Assertions</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Assertions">
           <code-block lang="ts" code={`// Returns predictable URLs
 const url = mock.url({ width: 300, height: 200 });
 // → "mock://300x200"
@@ -58,12 +47,8 @@ expect(mock.calls[0]).toEqual({ width: 300, height: 200 });
 
 // Reset between tests
 mock.reset();`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="API">
           <table class="api-table">
             <thead>
               <tr><th>Method</th><th>Description</th></tr>
@@ -76,7 +61,7 @@ mock.reset();`}></code-block>
               <tr><td><span class="ic">calls</span></td><td>Array of all recorded PlaceholderOptions</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -16,21 +16,14 @@ export default class PageRpcMutations extends LoomElement {
           <p><span class="ic">@mutate</span> is therefore explicit — nothing happens until you call it — and it tracks its own loading and error state so the button that triggered it can disable itself without a second field.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
           <p>
             Unlike <span class="ic">@rpc</span> queries (which auto-fetch), mutations are triggered
             manually via <span class="ic">.call()</span>. Use <span class="ic">@mutate</span> for
             any write operation — creating, updating, or deleting data.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Basic Usage</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Basic Usage">
           <code-block lang="ts" code={`import { mutate } from "@toyz/loom-rpc";
 import type { RpcMutator } from "@toyz/loom-rpc";
 
@@ -61,12 +54,8 @@ class EditProfile extends LoomElement {
     );
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>RpcMutator&lt;Args, Return&gt;</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="RpcMutator&lt;Args, Return&gt;">
           <p>
             The accessor type for <span class="ic">@mutate</span>. Tracks in-flight state
             and stores the result of the last call.
@@ -81,12 +70,8 @@ class EditProfile extends LoomElement {
               <tr><td><code>.reset()</code></td><td>void</td><td>Clear all state (data, error, loading).</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Refetching After Mutation</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Refetching After Mutation">
           <p>
             After a successful mutation, you'll often want to refresh related queries.
             Call <span class="ic">.refetch()</span> or <span class="ic">.invalidate()</span> on
@@ -102,12 +87,8 @@ class EditProfile extends LoomElement {
     console.error("Failed:", e);
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Type Inference</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Type Inference">
           <p>
             The <span class="ic">Args</span> and <span class="ic">Return</span> types are inferred
             from the contract class. You only need to specify the <span class="ic">RpcMutator</span> type annotation on the accessor for TypeScript to enforce correct usage:
@@ -127,7 +108,7 @@ this.toggleRole.call("1", "admin");
 
 // ✗ Compile error — wrong argument types
 this.toggleRole.call(42, "superadmin");`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

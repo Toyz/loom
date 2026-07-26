@@ -20,10 +20,7 @@ export default class ExampleTiming extends LoomElement {
           <timing-showcase></timing-showcase>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">@interval</span> — Repeating timer with auto-cleanup on disconnect</li>
             <li><span class="ic">@timeout</span> — One-shot timer that runs once then cleans up</li>
@@ -32,14 +29,10 @@ export default class ExampleTiming extends LoomElement {
             <li><span class="ic">@animationFrame</span> — Centralized rAF loop with layer ordering</li>
             <li>All timers auto-clean on disconnect — zero manual teardown</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/timing-showcase.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

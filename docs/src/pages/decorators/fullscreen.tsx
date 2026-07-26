@@ -14,24 +14,16 @@ export default class PageDecoratorFullscreen extends LoomElement {
           <p><span class="ic">@fullscreen</span> binds the field to the actual API in both directions. Writing <span class="ic">true</span> requests fullscreen and writing <span class="ic">false</span> exits it, while a change made anywhere else updates the field and re-renders. There is one source of truth, and it is the browser's.</p>
         </section>
 
-                <section>
-                    <div class="group-header">
-                        <h2>Quick Start</h2>
-                    </div>
+                <doc-section heading="Quick Start">
                     <code-block lang="ts" code={QUICK_START}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>API</h2>
-                    </div>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@fullscreen(options?)</div>
-                        <div class="dec-desc">
+                </doc-section>
+                <doc-section heading="API">
+                    <api-entry sig="@fullscreen(options?)">
+                        <p>
                             Accessor decorator. Setting to <code>true</code> calls <code>requestFullscreen()</code>,
                             <code>false</code> calls <code>exitFullscreen()</code>. Listens for <code>fullscreenchange</code> events to stay in sync.
-                        </div>
-                    </div>
+                        </p>
+                    </api-entry>
                         <p><strong>Options:</strong></p>
                         <table class="api-table">
                             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
@@ -39,19 +31,15 @@ export default class PageDecoratorFullscreen extends LoomElement {
                                 <tr><td><code>navigationUI</code></td><td>"auto" | "hide" | "show"</td><td>"auto"</td><td>Navigation UI preference for fullscreen</td></tr>
                             </tbody>
                         </table>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>How It Works</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="How It Works">
                     <ul>
                         <li>Setting the field to <span class="ic">true</span> enters fullscreen for the host element</li>
                         <li>Setting to <span class="ic">false</span> exits fullscreen (only if this element is fullscreen)</li>
                         <li>Listens for <span class="ic">fullscreenchange</span> events — auto-syncs when user presses Escape</li>
                         <li>On disconnect, exits fullscreen if the component was fullscreen</li>
                     </ul>
-                </section>
+                </doc-section>
               <doc-nav></doc-nav>
       </div>
         );

@@ -16,20 +16,13 @@ export default class ExampleVirtualList extends LoomElement {
           <p>A hundred thousand rows with a few dozen elements in the DOM. Open the inspector while scrolling and count them: the list is windowed, so the cost is the viewport rather than the dataset. Row heights are measured rather than assumed, so they do not have to match.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <p class="hint">
             Switch between sizes — the list only renders what's visible. Scroll to see dynamic measurement in action.
           </p>
           <virtual-list-demo></virtual-list-demo>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">&lt;loom-virtual&gt;</span> — Windowed rendering for massive datasets</li>
             <li><span class="ic">Children template</span> — Render function as JSX children</li>
@@ -39,14 +32,10 @@ export default class ExampleVirtualList extends LoomElement {
             <li><span class="ic">Morph-aware props</span> — Changing <span class="ic">items</span> triggers automatic re-render</li>
             <li>Pure Loom — no imperative setup, just JSX</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/virtual-list-demo.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -24,19 +24,15 @@ export default class PageDecoratorsOverview extends LoomElement {
 
         {/* ═══════════ Foundation ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>createDecorator</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">createDecorator&lt;Args, T&gt;(setup, options?)</div>
-            <div class="dec-desc">
+        <doc-section heading="createDecorator">
+          <api-entry sig="createDecorator&lt;Args, T&gt;(setup, options?)">
+            <p>
               The universal factory every Loom decorator is built on.
               Setup runs at <span class="ic">define-time</span> on the prototype.
               Return a function for <span class="ic">connect</span> behavior.
               Return another from connect for <span class="ic">disconnect</span> cleanup.
               Use <span class="ic">{`{ class: true }`}</span> for class decorators.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { createDecorator } from "@toyz/loom";
 
 // Define-time only — lazy property getter
@@ -60,15 +56,11 @@ const observeResize = createDecorator<[string]>((proto, key, selector) => {
 const tag = createDecorator<[string]>((ctor, name) => {
   customElements.define(name, ctor);
 }, { class: true });`}></code-block>
-          </div>
-        </section>
-
+          </api-entry>
+        </doc-section>
         {/* ═══════════ State ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>State</h2>
-          </div>
+        <doc-section heading="State">
 
           <div class="feature-entry" id="reactive">
             <div class="dec-sig">@reactive</div>
@@ -146,14 +138,10 @@ onTheme(val: string, prev: string) { }`}></code-block>
 // Standalone — frozen after init
 @readonly accessor config = { theme: "dark" };`}></code-block>
           </div>
-        </section>
-
+        </doc-section>
         {/* ═══════════ See Also ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>More Decorators</h2>
-          </div>
+        <doc-section heading="More Decorators">
           <table class="api-table">
             <thead><tr><th>Category</th><th>Decorators</th><th>Page</th></tr></thead>
             <tbody>
@@ -194,7 +182,7 @@ onTheme(val: string, prev: string) { }`}></code-block>
               </tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -15,17 +15,13 @@ export default class PageRouterGroups extends LoomElement {
           <p><span class="ic">@group</span> declares both once. Routes inside inherit the prefix and the guards, so adding a route to a protected area cannot accidentally leave it unprotected.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@group</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@group(prefix, opts?)</div>
-            <div class="dec-desc">
+        <doc-section heading="@group">
+          <api-entry sig="@group(prefix, opts?)">
+            <p>
               The <span class="ic">@group</span> class decorator defines a route group.
               Child routes opt in by referencing the group constructor in their <span class="ic">@route</span> options.
               The group's prefix is prepended and its guards run before route-level guards:
-            </div>
+            </p>
             <code-block lang="tsx" code={`import { group, route } from "@toyz/loom/router";
 
 @group("/api")
@@ -37,13 +33,9 @@ class PageApiUsers extends LoomElement {
   // Matches: /api/users
   update() { return <h1>API Users</h1>; }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Group Options</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Group Options">
             <p>
               The second argument to <span class="ic">@group</span> is an optional options object:
             </p>
@@ -62,12 +54,8 @@ class PageApiUsers extends LoomElement {
               </tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Group Guards</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Group Guards">
             <p>
               Guards defined on a group run <strong>before</strong> any route-level guards.
               This makes it easy to protect entire sections of your app:
@@ -81,12 +69,8 @@ class AdminGroup {}
 class PageAdminLogs extends LoomElement { }
 
 // Guard order: auth → admin → audit`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Group Metadata</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Group Metadata">
             <p>
               Group <span class="ic">meta</span> is inherited by all child routes.
               Route-level meta overrides group values. Guards and lifecycle hooks
@@ -111,12 +95,8 @@ checkAuth(ctx: RouteContext) {
   }
   return LoomResult.ok();
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Nested Groups</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Nested Groups">
             <p>
               Groups can nest by stacking <span class="ic">@group</span> and <span class="ic">@route</span> on the same class.
               Prefixes and guards chain from root to leaf:
@@ -137,12 +117,8 @@ class AdminGroup extends LoomElement {
 @route("/users", { group: AdminGroup })
 @component("page-admin-users")
 class PageAdminUsers extends LoomElement { }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Dynamic Params in Groups</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Dynamic Params in Groups">
             <p>
               Group prefixes can contain dynamic <span class="ic">:param</span> segments.
               Parameters cascade to all child routes:
@@ -159,12 +135,8 @@ class TeamGroup {}
 @route("/member/:memberId", { group: TeamGroup })
 @component("page-member")
 class PageMember extends LoomElement { }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
             <p>
               <span class="ic">@group</span> is a class decorator built on <span class="ic">createDecorator</span>.
               At define-time it stores group metadata (prefix, guards) on the constructor.
@@ -177,7 +149,7 @@ class PageMember extends LoomElement { }`}></code-block>
               patches route entries that were registered by <span class="ic">@route</span> on the same class.
               This means decorator order doesn't matter for correctness.
             </div>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

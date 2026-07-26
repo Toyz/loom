@@ -15,16 +15,12 @@ export default class PageRouterRoutes extends LoomElement {
           <p>Loom matches in registration order, first match wins. That is worth knowing because it makes the outcome depend on import order: whichever module was imported first gets asked first. Declare the specific pattern before the general one.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@route</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@route(pattern, opts?)</div>
-            <div class="dec-desc">
+        <doc-section heading="@route">
+          <api-entry sig="@route(pattern, opts?)">
+            <p>
               Use <span class="ic">@route</span> on a <span class="ic">LoomElement</span> class to register it as a routed page.
               Dynamic segments use <span class="ic">:param</span> syntax. Use <span class="ic">*</span> for a catch-all:
-            </div>
+            </p>
             <code-block lang="tsx" code={`import { route } from "@toyz/loom/router";
 
 @route("/users")
@@ -41,13 +37,9 @@ class PageUserDetail extends LoomElement { }
 @route("*")
 @component("page-not-found")
 class PageNotFound extends LoomElement { }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Pattern Matching</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Pattern Matching">
             <p>
               Routes are matched in registration order. Wildcards (<span class="ic">*</span>) are always checked last.
               The first match wins — order your routes from most to least specific:
@@ -60,12 +52,8 @@ class PageNotFound extends LoomElement { }`}></code-block>
 
 // Matched last (catch-all)
 @route("*")`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Typed Route Data</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Typed Route Data">
             <p>
               Use <span class="ic">@prop</span> with route options to inject URL params and query strings
               as typed properties. Combine with <span class="ic">@transform</span> for automatic type conversion:
@@ -100,12 +88,8 @@ class PageUserDetail extends LoomElement {
     return <h1>User {this.userId}</h1>;
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Route Options</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Route Options">
             <p>
               The second argument to <span class="ic">@route</span> is an optional options object:
             </p>
@@ -142,12 +126,8 @@ class PageUserDetail extends LoomElement {
 })
 @component("page-user-detail")
 class PageUserDetail extends LoomElement { }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Named Routes</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Named Routes">
             <p>
               Give a route a <span class="ic">name</span> to navigate by name instead of raw path.
               Use <span class="ic">buildPath()</span> to generate URLs, or pass a name target
@@ -171,18 +151,14 @@ router.go({ name: "user-post", params: { id: "42", slug: "hello" } });
 <loom-link name="user-post" params={{ id: "42", slug: "hello" }}>
   View Post
 </loom-link>`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
             <p>
               <span class="ic">@route</span> is a class decorator built on <span class="ic">createDecorator</span>.
               At define-time it compiles the pattern into a regex and registers the route entry.
               The tag is lazily resolved from <span class="ic">@component</span> — so decorator order doesn't matter.
             </p>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

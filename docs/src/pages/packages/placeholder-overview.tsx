@@ -16,20 +16,13 @@ export default class PagePlaceholderOverview extends LoomElement {
           <p>A placeholder holds the exact dimensions in advance. The provider is pluggable, so the same markup can render a solid block, a shimmer, or a remote image service without the component knowing which.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Install</h2>
-          </div>
+        <doc-section heading="Install">
           <code-block lang="bash" code={`npm install @toyz/loom-placeholder`}></code-block>
           <p>
             <span class="ic">@toyz/loom</span> is the only dependency.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <p>
             LoomPlaceholder provides a <span class="ic">&lt;loom-placeholder&gt;</span> component
             powered by a swappable <span class="ic">PlaceholderProvider</span>.
@@ -39,22 +32,14 @@ export default class PagePlaceholderOverview extends LoomElement {
             <li><span class="ic">&lt;loom-placeholder&gt;</span> renders a solid-color image using the registered provider</li>
             <li>Swap providers without changing any component code</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>1. Register a Provider</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="1. Register a Provider">
           <code-block lang="ts" code={`import { app } from "@toyz/loom";
 import { PlaceholderProvider, RgbaPlaceholder } from "@toyz/loom-placeholder";
 
 app.use(PlaceholderProvider, new RgbaPlaceholder());`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>2. Use the Component</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="2. Use the Component">
           <code-block lang="tsx" code={`import "@toyz/loom-placeholder"; // registers <loom-placeholder>
 
 // RGB placeholder — solid red 300×200
@@ -72,12 +57,8 @@ app.use(PlaceholderProvider, new RgbaPlaceholder());`}></code-block>
             <li><strong>6 chars</strong> — RGB (e.g. <span class="ic">"ff00aa"</span>)</li>
             <li><strong>8 chars</strong> — RGBA (e.g. <span class="ic">"ff00aa80"</span>)</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>3. Use the Provider Directly</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="3. Use the Provider Directly">
           <code-block lang="ts" code={`const provider = new RgbaPlaceholder();
 
 provider.rgba({ r: 255, g: 0, b: 170, width: 300, height: 200 });
@@ -85,12 +66,8 @@ provider.rgba({ r: 255, g: 0, b: 170, width: 300, height: 200 });
 
 provider.rgba({ r: 255, g: 0, b: 170, a: 128, width: 64, height: 64, format: "svg" });
 // → "https://rgba.lol/ff/00/aa/80/64x64.svg"`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Props</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Props">
           <table class="api-table">
             <thead>
               <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
@@ -103,12 +80,8 @@ provider.rgba({ r: 255, g: 0, b: 170, a: 128, width: 64, height: 64, format: "sv
               <tr><td><span class="ic">alt</span></td><td>string</td><td>"placeholder"</td><td>Alt text</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Custom Providers</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Custom Providers">
           <p>
             Swap to any placeholder backend with one DI line:
           </p>
@@ -123,7 +96,7 @@ app.use(PlaceholderProvider, new MyPlaceholderProvider());`}></code-block>
             Every <span class="ic">&lt;loom-placeholder&gt;</span> in the app uses the new provider.
             No component changes.
           </p>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -16,10 +16,7 @@ export default class PageRpcTransports extends LoomElement {
           <p>A transport is the seam. The same typed client runs over HTTP in production, over a WebSocket where you need push, and over a mock in tests, with no change at the call site.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>RpcTransport</h2>
-          </div>
+        <doc-section heading="RpcTransport">
           <p>
             The abstract base class that all transports implement. Registered via Loom's DI container
             with <span class="ic">app.use(RpcTransport, impl)</span>.
@@ -31,12 +28,8 @@ export default class PageRpcTransports extends LoomElement {
     args: any[],
   ): Promise\<T\>;
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>HttpTransport</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="HttpTransport">
           <p>
             The built-in transport — <span class="ic">POST</span> JSON to <span class="ic">/rpc/&#123;Router&#125;/&#123;Method&#125;</span>.
           </p>
@@ -60,12 +53,8 @@ app.use(RpcTransport, new HttpTransport("/api/rpc", {
               <tr><td><code>headers</code></td><td>Record&lt;string, string&gt;</td><td><code>{"{}"}</code></td><td>Default headers sent with every request</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Wire Protocol</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Wire Protocol">
           <p>
             <span class="ic">HttpTransport</span> sends a JSON body with an <span class="ic">args</span> array. Any backend that follows this convention works — Go, Rust, Python, Express, Hono,
             Cloudflare Workers.
@@ -76,12 +65,8 @@ Content-Type: application/json
 Request:  { "args": [arg1, arg2, ...] }
 Response: { "data": \<return value\> }
 Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>RpcError</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="RpcError">
           <p>
             Structured error thrown by transports with additional context about the failed call.
           </p>
@@ -95,12 +80,8 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
               <tr><td><code>.code</code></td><td>string | undefined</td><td>Application-specific error code</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Custom Transports</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Custom Transports">
           <p>
             Extend <span class="ic">RpcTransport</span> to implement WebSocket, gRPC-Web, or any
             protocol. One DI swap and every <span class="ic">@rpc</span> and <span class="ic">@mutate</span> in the app uses the new transport.
@@ -133,7 +114,7 @@ Error:    { "error": { "message": "...", "code": "..." } }`}></code-block>
 
 // Swap in — zero component changes
 app.use(RpcTransport, new WsTransport(ws));`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

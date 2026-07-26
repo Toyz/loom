@@ -17,10 +17,7 @@ export default class PageResult extends LoomElement {
           <p><span class="ic">LoomResult</span> makes it the first return type instead. A function returns success or failure as a value, and reading the success requires acknowledging the failure. It is used throughout Loom where an operation can fail for an ordinary reason: guards, validation, and transforms.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Why Result?</h2>
-          </div>
+        <doc-section heading="Why Result?">
             <p>
               JavaScript's <span class="ic">try/catch</span> is invisible in the
               type system — a function that throws looks identical to one that
@@ -44,12 +41,8 @@ result.match({
   err: (e)    => showError(e.message),
 });`}
             ></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Creating Results</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Creating Results">
           <code-block
             lang="ts"
             code={`import { LoomResult } from "@toyz/loom";
@@ -71,12 +64,8 @@ const result = await LoomResult.fromPromise(
   fetch("/api/data")
 );`}
           ></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Narrowing</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Narrowing">
             <p>
               The <span class="ic">.ok</span> boolean is a discriminant —
               TypeScript narrows <span class="ic">.data</span> and <span class="ic">.error</span> automatically:
@@ -93,31 +82,24 @@ if (r.ok) {
   r.data;   // -> undefined
 }`}
             ></code-block>
-        </section>
+        </doc-section>
+        <doc-section heading="Combinators">
 
-        <section>
-          <div class="group-header">
-            <h2>Combinators</h2>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">unwrap() / unwrap_or()</div>
-            <div class="dec-desc">
+          <api-entry sig="unwrap() / unwrap_or()">
+            <p>
               Extract the value — <span class="ic">unwrap()</span> throws on Err, <span class="ic">unwrap_or()</span> returns a fallback.
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`result.unwrap();        // T — throws the error if Err
 result.unwrap_or([]);   // T — returns [] if Err`}
             ></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">map() / map_err()</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="map() / map_err()">
+            <p>
               Transform the Ok or Err value. The other variant passes through
               unchanged.
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`// Transform the success value
@@ -126,11 +108,9 @@ const names = result.map(team => team.map(m => m.name));
 // Transform the error
 const friendly = result.map_err(e => \`Failed: \${e.message}\`);`}
             ></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">and_then()</div>
-            <div class="dec-desc">Chain fallible operations — the function only runs on Ok.</div>
+          </api-entry>
+          <api-entry sig="and_then()">
+            <p>Chain fallible operations — the function only runs on Ok.</p>
             <code-block
               lang="ts"
               code={`const user = await LoomResult.fromPromise(fetchUser())
@@ -140,14 +120,12 @@ const friendly = result.map_err(e => \`Failed: \${e.message}\`);`}
       : LoomResult.err(new Error("Not verified"))
   ));`}
             ></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">match()</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="match()">
+            <p>
               Exhaustive pattern match — handles both branches, returns a value.
               This is the recommended way to consume a Result.
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`const greeting = result.match({
@@ -155,13 +133,9 @@ const friendly = result.map_err(e => \`Failed: \${e.message}\`);`}
   err: (e)    => \`Error: \${e.message}\`,
 });`}
             ></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Composable Match</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Composable Match">
             <p>
               The match object isn't fixed — <strong>each layer adds
               optional branches</strong>. The base <span class="ic">{"{ ok, err }"}</span> is always required (guarantees exhaustiveness), and
@@ -213,24 +187,19 @@ match(cases) {
             branches are right there, fully typed. <strong>Opt-in
             granularity, not mandatory complexity.</strong>
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Framework Integration</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Framework Integration">
             <p>
               LoomResult isn't just a utility — it's woven into the framework
               everywhere errors can occur.
             </p>
 
-          <div class="feature-entry">
-            <div class="dec-sig">@api — Tri-State Match</div>
-            <div class="dec-desc">
+          <api-entry sig="@api — Tri-State Match">
+            <p>
               Every <span class="ic">ApiState&lt;T&gt;</span> extends
               the match object with an optional <span class="ic">loading</span> branch.
               One call handles the entire fetch lifecycle:
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`@api<Team[]>({ fn: () => fetch("/api/team"), pipe: ["json"] })
@@ -244,14 +213,12 @@ update() {
   });
 }`}
             ></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">@form — Validate as Result</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="@form — Validate as Result">
+            <p>
               <span class="ic">validate()</span> returns <span class="ic">LoomResult&lt;T, errors&gt;</span> — no more
               boolean checks:
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`@form<LoginForm>({
@@ -267,13 +234,11 @@ onSubmit() {
   });
 }`}
             ></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">DI — Safe Lookups</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="DI — Safe Lookups">
+            <p>
               <span class="ic">app.maybe()</span> returns a Result instead of <span class="ic">undefined</span>:
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`// Before: manual undefined check
@@ -286,14 +251,12 @@ app.maybe(MyService).match({
   err: (e)   => console.warn(e.message),
 });`}
             ></code-block>
-          </div>
-
-          <div class="feature-entry">
-            <div class="dec-sig">@guard — Result-Based Guards</div>
-            <div class="dec-desc">
+          </api-entry>
+          <api-entry sig="@guard — Result-Based Guards">
+            <p>
               Route guards can return <span class="ic">LoomResult&lt;void, string&gt;</span> where the
               error string is the redirect path:
-            </div>
+            </p>
             <code-block
               lang="ts"
               code={`@guard("auth")
@@ -302,13 +265,9 @@ checkAuth(route: RouteInfo, @inject(TokenStore) t: TokenStore) {
   return LoomResult.OK;  // allow navigation
 }`}
             ></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API Reference</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="API Reference">
           <table class="api-table">
             <thead>
               <tr>
@@ -375,7 +334,7 @@ checkAuth(route: RouteInfo, @inject(TokenStore) t: TokenStore) {
               </tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

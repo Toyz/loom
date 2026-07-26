@@ -16,10 +16,7 @@ export default class PageDIOverview extends LoomElement {
           <p>A container is that seam. Services are registered by key and resolved on first use, so a test registers a fake before <span class="ic">start()</span> and every consumer gets it without knowing. Construction is lazy and singleton per container.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>LoomApp</h2>
-          </div>
+        <doc-section heading="LoomApp">
             <p>
               The <span class="ic">app</span> singleton is Loom's service container. It manages providers,
               delegates events, and boots the application.
@@ -27,12 +24,8 @@ export default class PageDIOverview extends LoomElement {
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 
 app.start(); // boots the app`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Registering Providers</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Registering Providers">
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 
 // Class → auto-instantiated as singleton
@@ -53,29 +46,20 @@ app.use(() => new DatabasePool({ max: 10 }));`}></code-block>
               <tr><td><span class="ic">app.use(factory)</span></td><td>Calls factory, stores result</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Retrieving Services</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Retrieving Services">
             <code-block lang="ts" code={`// Get (throws if not registered)
 const auth = app.get(AuthService);
 
 // Maybe (returns undefined if not registered)
 const db = app.maybe(DatabasePool);`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@service</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@service</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="@service">
+          <api-entry sig="@service">
+            <p>
               Auto-instantiated singleton registered on <span class="ic">app.start()</span>.
               Constructor <span class="ic">@inject</span> params are resolved automatically.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { service } from "@toyz/loom/di";
 
 @service
@@ -84,19 +68,14 @@ class BookmarkStore extends CollectionStore<Bookmark> {
     super("bookmarks", new LocalMedium("bookmarks"));
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@inject</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@inject(Key)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@inject">
+          <api-entry sig="@inject(Key)">
+            <p>
               Dependency injection — use as a property decorator (lazy getter) or parameter
               decorator on constructors and factory methods.
-            </div>
+            </p>
             <code-block lang="ts" code={`// Property — lazy getter
 @inject(AuthService) auth!: AuthService;
 
@@ -113,19 +92,14 @@ class UserProfile extends LoomElement {
     return <p>Logged in as {this.auth.currentUser.name}</p>;
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@factory</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@factory(Key?)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@factory">
+          <api-entry sig="@factory(Key?)">
+            <p>
               Method decorator on <span class="ic">@service</span> classes. Return value is registered
               as a provider on <span class="ic">app.start()</span>. Supports <span class="ic">@inject</span> on parameters.
-            </div>
+            </p>
             <code-block lang="ts" code={`@service
 class Boot {
   @factory(ChatClient)
@@ -133,13 +107,9 @@ class Boot {
     return new ChatClient(nc);
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>LoomLifecycle</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="LoomLifecycle">
           <div class="feature-entry">
             <div class="dec-sig">{'LoomLifecycle<"start" | "stop" | "suspend" | "resume">'}</div>
             <div class="dec-desc">
@@ -203,7 +173,7 @@ app.start(); // router.start() called automatically`}></code-block>
               <tr><td><span class="ic">resume()</span></td><td><span class="ic">visibilitychange</span> (visible)</td><td>Registration order</td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
 
       </div>

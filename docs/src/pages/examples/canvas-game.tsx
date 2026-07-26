@@ -16,20 +16,13 @@ export default class ExampleCanvasGame extends LoomElement {
           <p>A playable breakout clone in one component. Physics and paint are separate <span class="ic">@animationFrame</span> layers so the simulation always finishes before anything draws, and both share the one render loop the rest of the page is using.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <p class="hint">
             Move your mouse over the canvas to control the paddle. Click to start.
           </p>
           <canvas-game-demo></canvas-game-demo>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">&lt;loom-canvas&gt;</span> — Auto-resizing canvas with DPR-aware rendering</li>
             <li><span class="ic">draw</span> — Per-frame draw callback with delta-time for smooth animation</li>
@@ -37,14 +30,10 @@ export default class ExampleCanvasGame extends LoomElement {
             <li><span class="ic">loom-keep</span> — Canvas element is preserved across morphs (baked into loom-canvas)</li>
             <li><span class="ic">@mount</span> — One-time setup for input handlers</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/canvas-game-demo.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

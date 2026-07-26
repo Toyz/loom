@@ -16,10 +16,7 @@ export default class PageStorePatterns extends LoomElement {
           <p>The patterns here are the three that hold up. Each is shown with the wiring it actually needs, including the teardown, because the subscription you forget to release is the bug that shows up two weeks later as a memory leak.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@watch — Auto-Subscribe Components</h2>
-          </div>
+        <doc-section heading="@watch — Auto-Subscribe Components">
             <p>
               The <span class="ic">@watch</span> decorator subscribes a component method to a store,
               auto-calls <span class="ic">scheduleUpdate()</span> after each change, and cleans up on disconnect.
@@ -101,12 +98,8 @@ class MyCounter extends LoomElement {
     console.log(\`count: \${prev} → \${value}\`);
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Derived Values</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Derived Values">
             <p>
               Derive computed state by subscribing to one store and updating another:
             </p>
@@ -117,12 +110,8 @@ const count = new Reactive(0);
 items.subscribe((list) => {
   count.set(list.length);
 });`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Deferred Persistence</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Deferred Persistence">
             <p>
               Start in-memory and upgrade to persistent storage later using <span class="ic">swapStorage()</span>.
               Useful for stores that shouldn't persist until the user is authenticated:
@@ -136,7 +125,7 @@ function onAuthenticated() {
     storage: new LocalAdapter(),
   });
 }`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -15,16 +15,12 @@ export default class PageRouterDecorators extends LoomElement {
           <p>The router's decorators split by what they attach to: the class gets the route or the group, and methods get the guards and the lifecycle hooks. Nothing here needs the router instance, which is what lets a route be declared in the same file as the component and stay there.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@route</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@route(path, opts?)</div>
-            <div class="dec-desc">
+        <doc-section heading="@route">
+          <api-entry sig="@route(path, opts?)">
+            <p>
               Registers a class as a route handler. Supports path parameters,
               named routes, guards, and group membership.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { route } from "@toyz/loom/router";
 
 @route("/docs/:slug")
@@ -38,8 +34,7 @@ class PageAdmin extends LoomElement { ... }
 @route("/settings", { group: UserLayout, name: "user-settings" })
 @component("user-settings")
 class UserSettings extends LoomElement { ... }`}></code-block>
-          </div>
-
+          </api-entry>
           <table class="api-table">
             <thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
             <tbody>
@@ -48,21 +43,16 @@ class UserSettings extends LoomElement { ... }`}></code-block>
               <tr><td><code>name</code></td><td><code>string</code></td><td>Named route for programmatic navigation</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@guard</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@guard(name?)</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="@guard">
+          <api-entry sig="@guard(name?)">
+            <p>
               Marks a method as a named route guard.
               Guards always receive <code>RouteInfo</code> as their first argument,
               giving access to <code>path</code>, <code>params</code>, <code>tag</code>, and <code>meta</code>.
               Return <code>true</code> to allow, <code>false</code> to block,
               or a <code>string</code> to redirect. Async guards are awaited.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { guard, type RouteInfo } from "@toyz/loom/router";
 
 @guard("auth")
@@ -76,20 +66,15 @@ checkRole(route: RouteInfo, @inject(UserStore) users: UserStore) {
   const required = route.meta.role as string;
   return users.current?.role === required ? true : "/forbidden";
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@group</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@group(prefix, opts?)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@group">
+          <api-entry sig="@group(prefix, opts?)">
+            <p>
               Marks a class as a route group. Groups provide a path prefix and
               optional guards that are inherited by all child routes. Groups can
               also be routes themselves (layout pages).
-            </div>
+            </p>
             <code-block lang="ts" code={`import { group, route } from "@toyz/loom/router";
 
 @group("/user/:profile", { guards: ["auth"] })
@@ -105,13 +90,9 @@ class UserLayout extends LoomElement {
 @component("user-settings")
 class UserSettings extends LoomElement { }
 // → resolves to /user/:profile/settings, inherits "auth" guard`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Route Param Injection</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Route Param Injection">
             <p>
               Use <span class="ic">@prop</span> with route options to inject path and query
               parameters directly into reactive properties. Imported from
@@ -130,12 +111,8 @@ class UserSettings extends LoomElement { }
 
 // All query params decomposed
 @prop({ query: routeQuery }) query!: { page: string; sort: string };`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>URL Part Decorators</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="URL Part Decorators">
             <p>
               <span class="ic">@subdomain</span>, <span class="ic">@domain</span>, and <span class="ic">@tld</span> are set-and-forget auto-accessor decorators that
               parse <span class="ic">window.location.hostname</span> once at construction time.
@@ -165,12 +142,8 @@ class MyApp extends LoomElement {
                 <tr><td><code>localhost</code></td><td><code>""</code></td><td><code>"localhost"</code></td><td><code>"localhost"</code></td><td><code>""</code></td></tr>
               </tbody>
             </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API Reference</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="API Reference">
           <table class="api-table">
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
@@ -187,7 +160,7 @@ class MyApp extends LoomElement {
               <tr><td><code>@tld</code></td><td>Accessor</td><td>Effective TLD — handles compound TLDs like <code>.co.uk</code></td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

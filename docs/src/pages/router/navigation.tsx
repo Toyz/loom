@@ -15,10 +15,7 @@ export default class PageRouterNavigation extends LoomElement {
           <p><span class="ic">&lt;loom-link&gt;</span> renders a real anchor with a real href and intercepts only the clicks it should: plain left clicks, with no modifier held. Anything else is left to the browser, which is what the user was asking for.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>&lt;loom-link&gt;</h2>
-          </div>
+        <doc-section heading="&lt;loom-link&gt;">
             <p>
               A navigation component that renders an anchor tag. Handles hash vs history mode
               automatically. Adds <span class="ic">.active</span> when the current path matches:
@@ -62,12 +59,8 @@ const fill = css\`a { display: flex; width: 100%; height: 100%; }\`;
 <loom-link to="/bar" styles={[fill]} class="card">
   <span>Bar</span>
 </loom-link>`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Programmatic Navigation</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Programmatic Navigation">
             <p>
               Access the router service to navigate from code — event handlers,
               guard redirects, or after async operations:
@@ -95,12 +88,8 @@ setup() {
   const router = this.app.get(LoomRouter);
   if (!this.isAuthed) router.go("/login");
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Router API</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Router API">
           <table class="api-table">
             <thead>
               <tr><th>Method</th><th>Description</th></tr>
@@ -117,18 +106,14 @@ setup() {
           <doc-notification type="note">
             <strong>Target</strong> can be a <span class="ic">string</span> path or a <span class="ic">{`{ name, params? }`}</span> object for named routes.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Active State</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Active State">
             <p>
               Listen for <span class="ic">RouteChanged</span> events to track the current path and
               style active navigation items. See <loom-link to="/router/overview" style="color: var(--accent)">Overview</loom-link> for
               the event bus pattern.
             </p>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

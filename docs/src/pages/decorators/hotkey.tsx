@@ -16,26 +16,18 @@ export default class PageElementHotkey extends LoomElement {
           <p><span class="ic">@hotkey</span> binds the shortcut for exactly as long as the element is connected. The binding and its removal are the same declaration, so a component that is never unmounted correctly is not a class of bug that exists here.</p>
         </section>
 
-                <section>
-                    <div class="group-header">
-                        <h2>Quick Start</h2>
-                    </div>
+                <doc-section heading="Quick Start">
                     <code-block lang="ts" code={QUICK_START}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>API</h2>
-                    </div>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@hotkey(...combos, options?)</div>
-                        <div class="dec-desc">
+                </doc-section>
+                <doc-section heading="API">
+                    <api-entry sig="@hotkey(...combos, options?)">
+                        <p>
                             Binds a method to one or more keyboard shortcuts. Combos can be
                             strings (<span class="ic">"mod+k"</span>) or objects
                             (<span class="ic">{"{ key, mod, ctrl, ... }"}</span>). Mix freely.
                             Listeners are auto-cleaned on disconnect.
-                        </div>
-                    </div>
+                        </p>
+                    </api-entry>
                         <p>
                             <strong>Options:</strong>
                         </p>
@@ -46,12 +38,8 @@ export default class PageElementHotkey extends LoomElement {
                                 <tr><td><code>preventDefault</code></td><td>boolean</td><td>true</td><td>Call <code>e.preventDefault()</code> on match</td></tr>
                             </tbody>
                         </table>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Key Combos</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Key Combos">
                         <p>
                             Combos use <span class="ic">+</span> to join modifiers and a key.
                             Case-insensitive. Supported modifiers:
@@ -69,12 +57,8 @@ export default class PageElementHotkey extends LoomElement {
                         <doc-notification type="note">
                             Use <span class="ic">mod</span> for cross-platform shortcuts — it maps to <span class="ic">⌘ Cmd</span> on macOS and <span class="ic">Ctrl</span> everywhere else.
                         </doc-notification>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Object Combos</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Object Combos">
                         <p>
                             Instead of string combos, use <span class="ic">HotkeyCombo</span> objects
                             for programmatic or complex definitions. Object combos can also carry
@@ -94,19 +78,11 @@ export default class PageElementHotkey extends LoomElement {
                             </tbody>
                         </table>
                         <code-block lang="ts" code={OBJECT_COMBOS}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Examples</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Live Demo</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Live Demo">
                         <p>
                             Try pressing <span class="ic">⌘K</span> or <span class="ic">Ctrl+K</span> right now — the
                             docs search is powered by <span class="ic">@hotkey</span>:
@@ -116,12 +92,8 @@ export default class PageElementHotkey extends LoomElement {
                             This is the actual code running in this docs site. The search palette
                             you see when pressing ⌘K uses <span class="ic">@hotkey</span> for its keyboard shortcut.
                         </doc-notification>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>How It Works</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="How It Works">
                     <ul>
                         <li>Combo strings are parsed once and cached — zero overhead per keydown</li>
                         <li>Built on <span class="ic">CONNECT_HOOKS</span> — listeners auto-removed on disconnect</li>
@@ -129,7 +101,7 @@ export default class PageElementHotkey extends LoomElement {
                         <li>Existing <span class="ic">tabindex</span> attributes are preserved</li>
                         <li>The <span class="ic">mod</span> modifier detects macOS via <span class="ic">navigator.platform</span></li>
                     </ul>
-                </section>
+                </doc-section>
               <doc-nav></doc-nav>
       </div>
         );

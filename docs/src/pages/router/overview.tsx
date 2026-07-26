@@ -15,10 +15,7 @@ export default class PageRouterOverview extends LoomElement {
           <p>Loom answers it with decorators on the component itself, so a route lives next to the thing it renders rather than in a table somewhere else that has to be kept in sync. It runs in hash or history mode, and the choice affects your server config rather than your code.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Setup</h2>
-          </div>
+        <doc-section heading="Setup">
             <p>
               Create a <span class="ic">LoomRouter</span> with either <span class="ic">hash</span> or <span class="ic">history</span> mode
               and register it with the app:
@@ -30,12 +27,8 @@ const router = new LoomRouter({ mode: "hash" });
 app.use(router);
 app.start();
 router.start();`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Modes</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Modes">
           <table class="api-table">
             <thead>
               <tr><th>Mode</th><th>URL Shape</th><th>Requires Server</th></tr>
@@ -50,12 +43,8 @@ router.start();`}></code-block>
               <span class="ic">history</span> mode gives clean URLs but requires your server to serve
               <span class="ic">index.html</span> for all routes.
             </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Outlet</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Outlet">
             <p>
               <span class="ic">&lt;loom-outlet&gt;</span> renders the matched route's component.
               Place it where routed content should appear:
@@ -76,12 +65,8 @@ class App extends LoomElement {
             the routed component. Set <span class="ic">scrollToTop="false"</span> to opt out of
             automatic scroll reset on navigation.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>RouteChanged Event</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="RouteChanged Event">
             <p>Listen for navigation changes anywhere via the event bus:</p>
             <code-block lang="tsx" code={`import { on } from "@toyz/loom";
 import { RouteChanged } from "@toyz/loom/router";
@@ -91,7 +76,7 @@ onRoute(e: RouteChanged) {
   console.log(\`Navigated to \${e.path}\`);
   // e.path, e.params, e.query available
 }`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

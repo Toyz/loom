@@ -14,10 +14,7 @@ export default class PageStoreReactive extends LoomElement {
           <p>Change detection is identity-based, with one deliberate exception: <span class="ic">NaN</span>. Under a plain <span class="ic">!==</span> comparison a field holding <span class="ic">NaN</span> looks different from itself on every assignment and re-renders forever, so the check treats it as unchanged.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Reactive&lt;T&gt;</h2>
-          </div>
+        <doc-section heading="Reactive&lt;T&gt;">
             <p>A generic observable value container. Notifies subscribers when the value changes.</p>
             <code-block lang="ts" code={`import { Reactive, LocalAdapter } from "@toyz/loom/store";
 
@@ -55,12 +52,8 @@ count.watch((value) => render(value));
 
 // Cleanup
 unsub();`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>CollectionStore&lt;T&gt;</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="CollectionStore&lt;T&gt;">
             <p>
               CRUD layer over <span class="ic">Reactive&lt;T[]&gt;</span>. Items must have an <span class="ic">id: string</span> field.
               Auto-generates UUIDs if omitted.
@@ -103,12 +96,8 @@ todos.remove(todo.id);
 todos.subscribe((items) => {
   console.log(\`\${items.length} todos\`);
 });`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Persistence Migration</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Persistence Migration">
             <p>
               Use <span class="ic">swapStorage</span> to upgrade storage backend at runtime — for example,
               starting in-memory and switching to localStorage once the user logs in:
@@ -128,7 +117,7 @@ prefs.swapStorage({
 
 // Log out: remove storage, keep in-memory
 prefs.clear({ theme: "dark", lang: "en" });`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

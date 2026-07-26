@@ -31,17 +31,13 @@ export default class PageRouterGuards extends LoomElement {
           on every section. Open the console and click any nav link to watch it fire.
         </doc-notification>
 
-        <section>
-          <div class="group-header">
-            <h2>@guard</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@guard(name?)</div>
-            <div class="dec-desc">
+        <doc-section heading="@guard">
+          <api-entry sig="@guard(name?)">
+            <p>
               Mark a method as a named route guard. Return <span class="ic">true</span> to allow,
               <span class="ic">false</span> to block, or a <span class="ic">string</span> to redirect.
               Async guards are awaited:
-            </div>
+            </p>
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 import { service } from "@toyz/loom/di";
 import { guard, type RouteInfo } from "@toyz/loom/router";
@@ -68,13 +64,9 @@ class Guards {
     return app.get(BillingService).isActive ? true : "/upgrade";
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Connecting Guards to Routes</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Connecting Guards to Routes">
             <p>
               Reference guards by name in the <span class="ic">@route</span> options.
               Guards run in order — if any guard rejects, navigation stops:
@@ -86,12 +78,8 @@ class PageAdmin extends LoomElement { }
 @route("/billing", { guards: ["auth", "checkSubscription"] })
 @component("page-billing")
 class PageBilling extends LoomElement { }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Guard Resolution</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Guard Resolution">
             <p>Guards are resolved in two phases:</p>
             <ol>
               <li>
@@ -103,18 +91,14 @@ class PageBilling extends LoomElement { }`}></code-block>
                 route component's prototype.
               </li>
             </ol>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
             <p>
               <span class="ic">@guard()</span> is a define-time decorator built on <span class="ic">createDecorator</span>.
               It registers the method in a global <span class="ic">guardRegistry</span> map keyed by name.
               When <span class="ic">@guard()</span> is called without a name, the method name is used.
             </p>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

@@ -17,10 +17,7 @@ export default class PageElementOverview extends LoomElement {
           <p><span class="ic">LoomElement</span> reduces it to one method. You write <span class="ic">update()</span> returning DOM; everything else is declared with a decorator and torn down for you when the element disconnects. There is no virtual DOM in between — <span class="ic">update()</span> builds real nodes, and a re-render morphs the existing tree in place rather than replacing it.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Overview</h2>
-          </div>
+        <doc-section heading="Overview">
             <p>
               <span class="ic">LoomElement</span> extends <span class="ic">HTMLElement</span> and provides Shadow DOM,
               scoped CSS, lifecycle management, and automatic DOM morphing. Every Loom component inherits from it.
@@ -39,12 +36,8 @@ export class MyWidget extends LoomElement {
     return <p>Hello from a Loom component!</p>;
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>The update() Method</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="The update() Method">
             <p>
               <span class="ic">update()</span> is your render function. It's called whenever a <span class="ic">@reactive</span> property
               changes. Return a JSX node and Loom will morph the shadow DOM to match — only touching elements that actually changed.
@@ -61,18 +54,13 @@ export class MyWidget extends LoomElement {
             If <span class="ic">update()</span> returns <span class="ic">void</span>, no morph occurs — useful when you
             manage the DOM imperatively.
           </doc-notification>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>The @component Decorator</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@component(tag)</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="The @component Decorator">
+          <api-entry sig="@component(tag)">
+            <p>
               Registers a class as a custom element with <span class="ic">customElements.define()</span>.
               It also wires <span class="ic">@prop</span> observed attributes and auto-parsing.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("my-counter")
 class MyCounter extends LoomElement {
   @prop accessor label = "Count";
@@ -86,13 +74,9 @@ class MyCounter extends LoomElement {
     );
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API Reference</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="API Reference">
           <table class="api-table">
             <thead>
               <tr><th>Member</th><th>Type</th><th>Description</th></tr>
@@ -111,7 +95,7 @@ class MyCounter extends LoomElement {
             See <loom-link to="/element/css" styles={[inlineLink]} style="color: var(--accent)">CSS</loom-link> for <span class="ic">@styles</span> and <span class="ic">css``</span>.
             See <loom-link to="/element/decorators" styles={[inlineLink]} style="color: var(--accent)">Decorators</loom-link> for the full decorator cheat sheet.
           </doc-notification>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

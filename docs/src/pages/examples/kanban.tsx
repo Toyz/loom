@@ -17,20 +17,13 @@ export default class ExampleKanban extends LoomElement {
           <p>Drag and drop across columns, persisted. The part worth reading is the payload: a card moves between columns as data rather than as a DOM node, so the drop handler never touches the element that was dragged.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <p class="hint">
             Drag cards between columns. Press <kbd style="background:var(--surface-2);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.75rem;">N</kbd> to focus input. Data persists via localStorage.
           </p>
           <kanban-board></kanban-board>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">@store</span> + <span class="ic">LocalAdapter</span> — Persistent card state across page refreshes</li>
             <li><span class="ic">@draggable</span> + <span class="ic">selector</span> — Per-card drag via event delegation (no sub-components needed)</li>
@@ -44,14 +37,10 @@ export default class ExampleKanban extends LoomElement {
             <li><span class="ic">$reset</span> — One-call restore to empty board</li>
             <li><span class="ic">loom-icon</span> — SVG icons for column headers and card actions</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/kanban-board.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

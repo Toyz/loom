@@ -17,17 +17,10 @@ export default class PageCanvas extends LoomElement {
           <p><span class="ic">loom-canvas</span> does the sizing and rescaling, and calls your draw method from Loom's shared render loop — the same one <span class="ic">@animationFrame</span> uses, so a canvas and the components around it stay on one <span class="ic">requestAnimationFrame</span> rather than competing for frames.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Quick Start</h2>
-          </div>
+        <doc-section heading="Quick Start">
           <code-block lang="ts" code={QUICK_START}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Props</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Props">
           <table class="api-table">
             <thead>
               <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
@@ -59,12 +52,8 @@ export default class PageCanvas extends LoomElement {
               </tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>API</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="API">
           <table class="api-table">
             <thead>
               <tr><th>Member</th><th>Type</th><th>Description</th></tr>
@@ -87,38 +76,26 @@ export default class PageCanvas extends LoomElement {
               </tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <ul>
             <li>The inner <span class="ic">&lt;canvas&gt;</span> is created with <span class="ic">loom-keep</span> — morphing never touches it</li>
             <li><span class="ic">@animationFrame</span> drives the draw loop via Loom's centralized <span class="ic">RenderLoop</span></li>
             <li>When <span class="ic">autoResize</span> is enabled, a <span class="ic">ResizeObserver</span> updates the canvas dimensions and scales for <span class="ic">devicePixelRatio</span> — crisp rendering on retina displays</li>
             <li><span class="ic">shouldUpdate()</span> blocks re-morphing after the initial skeleton is built — the canvas is fully imperative</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Fixed Size</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Fixed Size">
             <p>For pixel-perfect rendering (e.g. games), disable auto-resize and set explicit dimensions:</p>
             <code-block lang="ts" code={FIXED_SIZE}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Imperative Access</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Imperative Access">
             <p>
               You can also grab a reference via <span class="ic">@query</span> and draw
               directly outside the render loop:
             </p>
             <code-block lang="ts" code={IMPERATIVE}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

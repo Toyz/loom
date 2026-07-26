@@ -16,16 +16,12 @@ export default class PageDIDecorators extends LoomElement {
           <p>The four here differ in when they resolve and what happens when the key is missing. <span class="ic">@inject</span> throws on a missing provider; <span class="ic">@maybe</span> yields undefined. That distinction is the whole reason both exist.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@service</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@service</div>
-            <div class="dec-desc">
+        <doc-section heading="@service">
+          <api-entry sig="@service">
+            <p>
               Auto-instantiated singleton registered on <span class="ic">app.start()</span>.
               Constructor <span class="ic">@inject</span> params are resolved automatically.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { service } from "@toyz/loom";
 
 @service
@@ -34,20 +30,15 @@ class BookmarkStore extends CollectionStore<Bookmark> {
     super("bookmarks", new LocalMedium("bookmarks"));
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@inject</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@inject(Key)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@inject">
+          <api-entry sig="@inject(Key)">
+            <p>
               Dual-mode dependency injection. Use as a <strong>property decorator</strong> for
               a lazy getter, or as a <strong>parameter decorator</strong> on constructors and
               factory methods.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { inject } from "@toyz/loom";
 
 // Auto-accessor — lazy getter (throws if missing)
@@ -65,20 +56,15 @@ class UserProfile extends LoomElement {
     return <p>Logged in as {this.auth.currentUser.name}</p>;
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@maybe</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@maybe(Key)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@maybe">
+          <api-entry sig="@maybe(Key)">
+            <p>
               Optional dependency injection. Returns <span class="ic">undefined</span> if the
               provider is not registered, instead of throwing. Use when a dependency
               is genuinely optional.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { maybe } from "@toyz/loom";
 
 @component("analytics-tracker")
@@ -91,20 +77,15 @@ class AnalyticsTracker extends LoomElement {
     this.analytics?.track(event);
   }
 }`}></code-block>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@factory</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@factory(Key?)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@factory">
+          <api-entry sig="@factory(Key?)">
+            <p>
               Method decorator on <span class="ic">@service</span> classes.
               The return value is registered as a provider on <span class="ic">app.start()</span>.
               Supports <span class="ic">@inject</span> on parameters. Async methods are awaited.
-            </div>
+            </p>
             <code-block lang="ts" code={`@service
 class Boot {
   @factory(ChatClient)
@@ -112,21 +93,19 @@ class Boot {
     return new ChatClient(nc);
   }
 }`}></code-block>
-          </div>
-        </section>
-
+          </api-entry>
+        </doc-section>
         <section>
           <div class="group-header">
             <h2>@watch(Service) <span class="badge deprecated">unified</span></h2>
           </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@watch(ServiceClass, prop?)</div>
-            <div class="dec-desc">
+          <api-entry sig="@watch(ServiceClass, prop?)">
+            <p>
               Subscribe a component method to changes on a DI-resolved service.
               This is now part of the unified <span class="ic">@watch</span> decorator —
               it detects whether you pass a string (local field), a <span class="ic">Reactive</span> instance,
               or a <strong>class constructor</strong> (DI lookup) and does the right thing.
-            </div>
+            </p>
             <code-block lang="ts" code={`import { watch } from "@toyz/loom";
 import { TodoStore } from "./stores/todo-store";
 import { ThemeService } from "./services/theme";
@@ -152,7 +131,7 @@ class TodoPage extends LoomElement {
     return <div class={this.theme}>{this.items.length} todos</div>;
   }
 }`}></code-block>
-          </div>
+          </api-entry>
           <doc-notification type="note">
             <strong>Deprecation:</strong> The <span class="ic">watchService</span> export still works
             but is deprecated and will be removed in v1.0. Use <span class="ic">@watch(Service)</span> instead.

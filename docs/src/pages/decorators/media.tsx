@@ -14,25 +14,17 @@ export default class PageDecoratorMedia extends LoomElement {
           <p><span class="ic">@media</span> collapses it to a boolean field bound to the query. It is right on first render and stays right, and it re-renders when the match changes. Use it for behaviour that has to differ — rendering a different component, not painting a different colour, which is a CSS media query's job.</p>
         </section>
 
-                <section>
-                    <div class="group-header">
-                        <h2>Quick Start</h2>
-                    </div>
+                <doc-section heading="Quick Start">
                     <code-block lang="ts" code={QUICK_START}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>API</h2>
-                    </div>
-                    <div class="feature-entry">
-                        <div class="dec-sig">@media(query)</div>
-                        <div class="dec-desc">
+                </doc-section>
+                <doc-section heading="API">
+                    <api-entry sig="@media(query)">
+                        <p>
                             Accessor decorator. Binds a <code>boolean</code> field to a CSS media query
                             via <code>matchMedia</code>. Sets the initial value on connect and updates
                             reactively whenever the match state changes. Cleanup is automatic on disconnect.
-                        </div>
-                    </div>
+                        </p>
+                    </api-entry>
                         <p>
                             <strong>Parameters:</strong>
                         </p>
@@ -42,19 +34,11 @@ export default class PageDecoratorMedia extends LoomElement {
                                 <tr><td><code>query</code></td><td>string</td><td>CSS media query string, e.g. <code>"(max-width: 768px)"</code></td></tr>
                             </tbody>
                         </table>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>Examples</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="Examples">
                     <code-block lang="ts" code={EXAMPLES}></code-block>
-                </section>
-
-                <section>
-                    <div class="group-header">
-                        <h2>How It Works</h2>
-                    </div>
+                </doc-section>
+                <doc-section heading="How It Works">
                     <ul>
                         <li>On connect, calls <span class="ic">window.matchMedia(query)</span> and reads <span class="ic">.matches</span></li>
                         <li>Listens for <span class="ic">change</span> events on the <span class="ic">MediaQueryList</span></li>
@@ -62,7 +46,7 @@ export default class PageDecoratorMedia extends LoomElement {
                         <li>On disconnect, removes the change event listener</li>
                         <li>Multiple <span class="ic">@media</span> decorators on different fields work independently</li>
                     </ul>
-                </section>
+                </doc-section>
               <doc-nav></doc-nav>
       </div>
         );

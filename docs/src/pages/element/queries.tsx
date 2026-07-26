@@ -16,15 +16,11 @@ export default class PageElementQueries extends LoomElement {
           <p><span class="ic">@query</span> and <span class="ic">@queryAll</span> sidestep both by reading on every access. The accessor is a live lookup, not a stored node, so it is correct after any render and there is nothing to invalidate. The cost is a <span class="ic">querySelector</span> per read, which is why the parameterized form pre-compiles its selector at decoration time rather than building it per call.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@query</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@query(selector)</div>
-            <div class="dec-desc">
+        <doc-section heading="@query">
+          <api-entry sig="@query(selector)">
+            <p>
               Lazy shadow DOM <span class="ic">querySelector</span>. Returns the first match on access — always reads live DOM.
-            </div>
+            </p>
             <code-block lang="ts" code={`@query(".submit-btn") accessor submitBtn!: HTMLButtonElement;
 @query("canvas") accessor canvas!: HTMLCanvasElement;
 
@@ -34,8 +30,7 @@ setup() {
   this.canvas.height = 600;
   this.submitBtn.addEventListener("click", () => this.save());
 }`}></code-block>
-          </div>
-
+          </api-entry>
           <div class="feature-entry">
             <div class="dec-sig">@query("selector-$0") — Dynamic (parameterized)</div>
             <div class="dec-desc">
@@ -63,17 +58,12 @@ const cell = this.cellAt(2, 3); // → querySelector(".cell-2-3")`}></code-block
               Each call is just array indexing + string concatenation — zero regex overhead at runtime.
             </doc-notification>
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@queryAll</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@queryAll(selector)</div>
-            <div class="dec-desc">
+        </doc-section>
+        <doc-section heading="@queryAll">
+          <api-entry sig="@queryAll(selector)">
+            <p>
               Lazy shadow DOM <span class="ic">querySelectorAll</span>. Returns an array (not NodeList) on each access.
-            </div>
+            </p>
             <code-block lang="ts" code={`@queryAll("input") accessor inputs!: HTMLInputElement[];
 @queryAll(".swatch") accessor swatches!: HTMLElement[];
 
@@ -81,8 +71,7 @@ validate() {
   const allValid = this.inputs.every(i => i.checkValidity());
   this.swatches.forEach(s => s.classList.toggle("active", false));
 }`}></code-block>
-          </div>
-
+          </api-entry>
           <div class="feature-entry">
             <div class="dec-sig">@queryAll("selector-$0") — Dynamic</div>
             <div class="dec-desc">
@@ -97,12 +86,8 @@ accessor cardsIn!: LoomHtmlQueryAll<[string]>;
 // Returns HTMLElement[]
 const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured")`}></code-block>
           </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How They Work</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How They Work">
             <p>
               Both decorators replace the property with a getter that calls
               <span class="ic">this.shadow.querySelector()</span> or <span class="ic">this.shadow.querySelectorAll()</span>
@@ -117,12 +102,8 @@ const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured"
               <tr><td>Type-safe</td><td>Type annotation on the property is preserved</td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>vs Manual Queries</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="vs Manual Queries">
             <p>The decorators are sugar for a common pattern. They're equivalent to:</p>
             <code-block lang="ts" code={`// Without decorator
 get submitBtn() {
@@ -131,7 +112,7 @@ get submitBtn() {
 
 // With decorator — same behavior, less boilerplate
 @query(".submit-btn") submitBtn!: HTMLButtonElement;`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

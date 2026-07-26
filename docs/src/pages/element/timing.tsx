@@ -51,16 +51,12 @@ export default class PageElementTiming extends LoomElement {
           </p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>@interval</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@interval(ms: number)</div>
-            <div class="dec-desc">
+        <doc-section heading="@interval">
+          <api-entry sig="@interval(ms: number)">
+            <p>
               Starts a <span class="ic">setInterval</span> when the element connects and
               clears it when the element disconnects.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("session-timer")
 class SessionTimer extends LoomElement {
   @reactive accessor secondsLeft = 900;
@@ -78,19 +74,14 @@ class SessionTimer extends LoomElement {
               elapsed time has to survive a move, store a start timestamp instead of
               counting ticks.
             </p>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@timeout</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@timeout(ms: number)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@timeout">
+          <api-entry sig="@timeout(ms: number)">
+            <p>
               Runs the method once, <span class="ic">ms</span> after connect. Cancelled if
               the element disconnects first.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("toast-message")
 class ToastMessage extends LoomElement {
   @reactive accessor visible = true;
@@ -105,19 +96,14 @@ class ToastMessage extends LoomElement {
               moved twice runs its <span class="ic">@timeout</span> three times. For
               genuinely one-shot work, guard with a flag.
             </p>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@debounce</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@debounce(ms: number)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@debounce">
+          <api-entry sig="@debounce(ms: number)">
+            <p>
               Replaces the method with a version that waits for <span class="ic">ms</span> of silence before running. Each call cancels the pending one, so a burst
               produces exactly one execution — with the arguments of the <em>last</em> call.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("user-search")
 class UserSearch extends LoomElement {
   @reactive accessor results: User[] = [];
@@ -132,19 +118,14 @@ class UserSearch extends LoomElement {
               Debounce delays <em>everything</em>, including the first call. If the UI
               should react at once and then settle, you want <span class="ic">@throttle</span>.
             </p>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@throttle</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">@throttle(ms: number)</div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@throttle">
+          <api-entry sig="@throttle(ms: number)">
+            <p>
               Replaces the method with a version that runs immediately, then at most once
               per <span class="ic">ms</span> afterwards.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("scroll-progress")
 class ScrollProgress extends LoomElement {
   @reactive accessor percent = 0;
@@ -162,21 +143,14 @@ class ScrollProgress extends LoomElement {
               the final resting position — many throttle implementations drop the trailing
               call and leave the UI one event stale.
             </p>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>@animationFrame</h2>
-          </div>
-          <div class="feature-entry">
-            <div class="dec-sig">
-              @animationFrame | @animationFrame(layer) | @animationFrame(options)
-            </div>
-            <div class="dec-desc">
+          </api-entry>
+        </doc-section>
+        <doc-section heading="@animationFrame">
+          <api-entry sig="@animationFrame | @animationFrame(layer) | @animationFrame(options)">
+            <p>
               Joins the shared render loop. The method receives <span class="ic">(dt, timestamp)</span> — <span class="ic">dt</span> is
               seconds since the previous frame, <span class="ic">timestamp</span> is the raw <span class="ic">requestAnimationFrame</span> value in milliseconds.
-            </div>
+            </p>
             <code-block lang="ts" code={`@component("particle-field")
 class ParticleField extends LoomElement {
   private particles: Particle[] = [];
@@ -220,13 +194,9 @@ class ParticleField extends LoomElement {
               Multiplying by <span class="ic">dt</span> is safe: the object simply does not
               move for one frame.
             </p>
-          </div>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Choosing between them</h2>
-          </div>
+          </api-entry>
+        </doc-section>
+        <doc-section heading="Choosing between them">
           <table class="api-table">
             <thead>
               <tr>
@@ -263,12 +233,8 @@ class ParticleField extends LoomElement {
               </tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Worked example</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Worked example">
           <p>
             A search field that stays responsive while typing and issues one request when
             you stop. It uses both wrappers for different jobs: throttle drives the instant
@@ -328,8 +294,7 @@ export class PeopleSearch extends LoomElement {
     );
   }
 }`}></code-block>
-        </section>
-
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

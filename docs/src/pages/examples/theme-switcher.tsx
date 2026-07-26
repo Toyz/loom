@@ -16,17 +16,10 @@ export default class ExampleThemeSwitcher extends LoomElement {
           <p>A theme toggle done with custom properties rather than two stylesheets: one reactive field flips an attribute on the host, and the cascade does the rest. No component below re-renders when the theme changes.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Demo</h2>
-          </div>
+        <doc-section heading="Demo">
           <theme-toggle></theme-toggle>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>What This Shows</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="What This Shows">
           <ul>
             <li><span class="ic">@reactive</span> — Triggers re-render when theme changes</li>
             <li><span class="ic">@styles(sheet)</span> — Auto-adopted scoped CSS via class decorator</li>
@@ -34,14 +27,10 @@ export default class ExampleThemeSwitcher extends LoomElement {
             <li><span class="ic">loom-icon</span> — SVG sun/moon icons from the icon registry</li>
             <li>Persists to <span class="ic">localStorage</span> manually</li>
           </ul>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Source</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/theme-toggle.tsx"></source-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

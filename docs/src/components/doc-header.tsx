@@ -229,20 +229,28 @@ export class DocHeader extends LoomElement {
     const root = this.getRootNode() as ShadowRoot;
     if (!root) return;
 
-    const headings = root.querySelectorAll(".group-header h2");
+    // Headings come from two places now. <doc-section> renders its h2 inside
+    // its own shadow root, so a ".group-header h2" query cannot see it — its
+    // title is read off the heading attribute instead, and the host element
+    // is the scroll anchor. Pages that still write a raw <section> with a
+    // .group-header keep working through the second selector.
+    const nodes = root.querySelectorAll("doc-section[heading], .group-header");
     const entries: TocEntry[] = [];
 
-    headings.forEach((h2) => {
-      const text = h2.textContent?.trim() || "";
+    nodes.forEach((node) => {
+      const isSection = node.tagName === "DOC-SECTION";
+      const text = (isSection
+        ? node.getAttribute("heading")
+        : node.querySelector("h2")?.textContent
+      )?.trim() || "";
       if (!text) return;
 
       const id = `section-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
-      const header = h2.closest(".group-header");
-      if (header) header.id = id;
+      node.id = id;
 
-      const iconEl = header?.querySelector("loom-icon") as HTMLElement | null;
+      const iconEl = node.querySelector("loom-icon") as HTMLElement | null;
       const icon = iconEl?.getAttribute("name") || "";
-      const iconColor = iconEl?.getAttribute("color") || "var(--accent, #818cf8)";
+      const iconColor = iconEl?.getAttribute("color") || "var(--text-muted)";
 
       entries.push({ id, label: text, icon, iconColor });
     });

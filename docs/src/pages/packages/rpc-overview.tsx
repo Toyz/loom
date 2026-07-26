@@ -16,20 +16,13 @@ export default class PageRpcOverview extends LoomElement {
           <p>Loom RPC closes the gap with the server's own types. You declare methods, the client is typed from the declaration, and a signature change is a compile error rather than a runtime surprise. The transport is pluggable and the server can be anything — nothing here assumes a particular framework.</p>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Install</h2>
-          </div>
+        <doc-section heading="Install">
           <code-block lang="bash" code={`npm install @toyz/loom-rpc`}></code-block>
           <p>
             <span class="ic">@toyz/loom</span> is the only dependency.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>How It Works</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="How It Works">
           <p>
             LoomRPC adds three decorator pairs — <span class="ic">@rpc</span> for queries, <span class="ic">@mutate</span> for mutations, and <span class="ic">@stream</span> / <span class="ic">@onStream</span> for server-push
             streams. All are type-safe auto-accessor decorators that talk to the server through a
@@ -49,12 +42,8 @@ export default class PageRpcOverview extends LoomElement {
               <tr><td><code>@stream</code> / <code>@onStream</code></td><td>Server-push <code>AsyncIterable</code> streams — WebSocket, SSE, etc.</td><td><a href="#/packages/rpc-streams">RPC Streams →</a></td></tr>
             </tbody>
           </table>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>1. Define a Contract</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="1. Define a Contract">
           <code-block lang="ts" code={`import { service } from "@toyz/loom-rpc";
 
 // contracts/user.ts — shared between client & server
@@ -69,12 +58,8 @@ export class UserRouter {
             type inference. The <span class="ic">@service</span> decorator assigns a stable name
             that survives minification. Without it, <span class="ic">class.name</span> is used as a fallback.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>2. Register a Transport</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="2. Register a Transport">
           <code-block lang="ts" code={`// main.tsx
 import { app } from "@toyz/loom";
 import { RpcTransport, HttpTransport } from "@toyz/loom-rpc";
@@ -87,12 +72,8 @@ app.start();`}></code-block>
             Transports are registered via Loom's DI container. Swap to <span class="ic">MockTransport</span> for testing, <span class="ic">WsTransport</span> for
             WebSocket — one line change, zero component modifications.
           </p>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>3. Use in Components</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="3. Use in Components">
           <code-block lang="tsx" code={`import { rpc, mutate } from "@toyz/loom-rpc";
 import { UserRouter } from "../contracts/user";
 
@@ -117,12 +98,8 @@ class UserProfile extends LoomElement {
     });
   }
 }`}></code-block>
-        </section>
-
-        <section>
-          <div class="group-header">
-            <h2>Type Safety</h2>
-          </div>
+        </doc-section>
+        <doc-section heading="Type Safety">
           <p>Everything is inferred from the contract class:</p>
           <ul>
             <li>Method names are autocompleted and type-checked</li>
@@ -134,7 +111,7 @@ class UserProfile extends LoomElement {
 //                 ↑ autocompleted        ↑ must be [string]
 accessor user!: ApiState\<User\>;
 //                       ↑ inferred from UserRouter.getUser return type`}></code-block>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );

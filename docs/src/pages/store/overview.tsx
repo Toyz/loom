@@ -28,24 +28,17 @@ export default class PageStoreOverview extends LoomElement {
           ></punch-matrix>
         </section>
 
-        <section>
-          <div class="group-header">
-            <h2>Philosophy</h2>
-          </div>
+        <doc-section heading="Philosophy">
             <p>
               Loom provides layered state management. Start simple with <span class="ic">@reactive</span> fields,
               scale up to <span class="ic">@store</span> for component-scoped deep reactivity,
               or use <span class="ic">Reactive&lt;T&gt;</span> and <span class="ic">CollectionStore&lt;T&gt;</span> for
               shared, service-level state. Every layer supports optional persistence.
             </p>
-        </section>
-
+        </doc-section>
         {/* ═══════════ At a Glance ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>At a Glance</h2>
-          </div>
+        <doc-section heading="At a Glance">
           <table class="api-table">
             <thead><tr><th>Primitive</th><th>Scope</th><th>Use Case</th></tr></thead>
             <tbody>
@@ -56,14 +49,10 @@ export default class PageStoreOverview extends LoomElement {
               <tr><td><code>StorageAdapter</code></td><td>Any</td><td>Pluggable persistence (localStorage, sessionStorage, custom)</td></tr>
             </tbody>
           </table>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Quick Example ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Quick Example</h2>
-          </div>
+        <doc-section heading="Quick Example">
             <code-block lang="ts" code={`import { LoomElement, component, reactive, store } from "@toyz/loom";
 
 // Simple: single reactive field
@@ -93,14 +82,10 @@ class TodoApp extends LoomElement {
     </ul>;
   }
 }`}></code-block>
-        </section>
-
+        </doc-section>
         {/* ═══════════ Choosing ═══════════ */}
 
-        <section>
-          <div class="group-header">
-            <h2>Choosing the Right Tool</h2>
-          </div>
+        <doc-section heading="Choosing the Right Tool">
           <table class="api-table">
             <thead><tr><th>Need</th><th>Solution</th><th>Page</th></tr></thead>
             <tbody>
@@ -110,7 +95,7 @@ class TodoApp extends LoomElement {
               <tr><td>Patterns & best practices</td><td>Combining primitives</td><td><loom-link to="/store/patterns">Patterns</loom-link></td></tr>
             </tbody>
           </table>
-        </section>
+        </doc-section>
         <doc-nav></doc-nav>
       </div>
     );
