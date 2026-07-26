@@ -15,7 +15,7 @@ export default class PageDecoratorsOverview extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Decorators" subtitle="36 core decorators. createDecorator is the foundation — every built-in decorator is built on it."></doc-header>
+        <doc-header title="Decorators" subtitle="Every built-in decorator, and the one function they are all built on."></doc-header>
 
         <section>
           <p>Loom is built on TC39 stage-3 decorators — the standard ones, not the legacy TypeScript flavour, so there is no <span class="ic">experimentalDecorators</span> flag and no parameter decorators anywhere in the API. Every decorator here attaches to a class, a field, an <span class="ic">accessor</span>, or a method, and the one it attaches to is part of its contract.</p>

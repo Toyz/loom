@@ -45,6 +45,8 @@ function isClassCtor(fn: Function): boolean {
 class LoomApp {
   private providers = new Map<any, any>();
   private services: any[] = [];
+  /** Instances whose @on handlers are already bound, so re-wiring is a no-op. */
+  private _wired = new WeakSet<object>();
   private factories: FactoryMeta[] = [];
   private components: { tag: string; ctor: CustomElementConstructor }[] = [];
   private _started = false;
@@ -117,11 +119,75 @@ class LoomApp {
 
   // ── Registration (called by decorators) ──
 
-  /** Queue a @service class for auto-instantiation on start() */
+  /**
+   * Queue a @service class. If the app has already started, bring it up now
+   * rather than never — a service declared in a lazily-loaded route module
+   * registers long after start(), and start() is one-shot.
+   */
   registerService(ctor: any): void {
-    if (!this.services.includes(ctor)) {
-      this.services.push(ctor);
+    if (this.services.includes(ctor)) return;
+    this.services.push(ctor);
+    if (this._started) {
+      const instance = this.wireService(ctor);
+      // Fire-and-forget: registerService is called from a decorator, which
+      // cannot await. Failing to start is reported rather than swallowed.
+      if (hasStart(instance)) {
+        void Promise.resolve(instance.start()).catch((e: unknown) =>
+          console.error(`[loom] ${ctor?.name ?? "service"}.start() failed`, e),
+        );
+      }
     }
+  }
+
+
+  /**
+   * Construct a @service and wire its @on handlers. Idempotent.
+   *
+   * Split out of start() so a service registered *after* the app has started
+   * still comes up. Registration happens at class-definition time, so a
+   * @service inside a lazily-loaded route module — or one re-registered by
+   * HMR — used to be queued and then never looked at again, because start()
+   * is one-shot. Nothing else was ever going to come back for it.
+   *
+   * Everything here is synchronous, so app.get() works the instant a class is
+   * registered; only the optional LoomLifecycle start() is awaited, by the
+   * caller.
+   */
+  private wireService(Svc: any): any {
+    if (!this.providers.has(Svc)) {
+      // No constructor injection: TC39 stage-3 has no parameter decorators,
+      // so INJECT_PARAMS was never written and resolveParams() always
+      // returned []. Property injection via `@inject(Key) accessor` works.
+      this.providers.set(Svc, new Svc());
+    }
+    // Also register by @service("name") string key for name-based injection
+    const svcName: string | undefined = Svc[SERVICE_NAME.key];
+    if (svcName && !this.providers.has(svcName)) {
+      this.providers.set(svcName, this.providers.get(Svc));
+    }
+
+    const instance = this.providers.get(Svc);
+    if (this._wired.has(instance)) return instance;   // handlers already bound
+    this._wired.add(instance);
+
+    // Wire @on event handlers (bus events + DOM events)
+    for (const handler of instance[ON_HANDLERS.key] ?? []) {
+      // Keep the unsubscriber: nothing used to, so stop() left every handler
+      // wired and `start(); stop(); start();` — routine in tests and under
+      // HMR — dispatched each event twice, with the first-generation service
+      // instances pinned alive by the bus.
+      if (handler.domTarget) {
+        // DOM EventTarget: @on(window, "resize")
+        const fn = (e: Event) => instance[handler.key](e);
+        const target = handler.domTarget;
+        target.addEventListener(handler.event, fn);
+        this._handlerUnsubs.push(() => target.removeEventListener(handler.event, fn));
+      } else {
+        // Bus event: @on(ColorSelect)
+        this._handlerUnsubs.push(bus.on(handler.type, (e: any) => instance[handler.key](e)));
+      }
+    }
+    return instance;
   }
 
   /** Queue a @factory method for invocation on start() */
@@ -214,35 +280,7 @@ class LoomApp {
 
     // 1. Instantiate @service singletons and wire @on handlers
     for (const Svc of this.services) {
-      if (!this.providers.has(Svc)) {
-        // No constructor injection: TC39 stage-3 has no parameter decorators,
-        // so INJECT_PARAMS was never written and resolveParams() always
-        // returned []. Property injection via `@inject(Key) accessor` works.
-        this.providers.set(Svc, new Svc());
-      }
-      // Also register by @service("name") string key for name-based injection
-      const svcName: string | undefined = Svc[SERVICE_NAME.key];
-      if (svcName && !this.providers.has(svcName)) {
-        this.providers.set(svcName, this.providers.get(Svc));
-      }
-      // Wire @on event handlers (bus events + DOM events)
-      const instance = this.providers.get(Svc);
-      for (const handler of instance[ON_HANDLERS.key] ?? []) {
-        // Keep the unsubscriber: nothing used to, so stop() left every handler
-        // wired and `start(); stop(); start();` — routine in tests and under
-        // HMR — dispatched each event twice, with the first-generation service
-        // instances pinned alive by the bus.
-        if (handler.domTarget) {
-          // DOM EventTarget: @on(window, "resize")
-          const fn = (e: Event) => instance[handler.key](e);
-          const target = handler.domTarget;
-          target.addEventListener(handler.event, fn);
-          this._handlerUnsubs.push(() => target.removeEventListener(handler.event, fn));
-        } else {
-          // Bus event: @on(ColorSelect)
-          this._handlerUnsubs.push(bus.on(handler.type, (e: any) => instance[handler.key](e)));
-        }
-      }
+      const instance = this.wireService(Svc);
       // LoomLifecycle — auto-call start() if the service implements it
       if (hasStart(instance)) await instance.start();
     }
@@ -312,6 +350,10 @@ class LoomApp {
       }
     }
     this._handlerUnsubs.length = 0;
+    // The unsubscribers are gone, so the instances are no longer wired.
+    // Without this, a restart would skip re-binding them and every @on
+    // handler on a service would be silently dead after stop(); start().
+    this._wired = new WeakSet<object>();
   }
 
   /**

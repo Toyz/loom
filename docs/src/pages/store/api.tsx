@@ -7,15 +7,16 @@ export default class PageFetch extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Fetch" subtitle="Declarative async data fetching with interceptor pipelines and scoped error boundaries."></doc-header>
+        <doc-header title="Fetch" subtitle="Loading, error, retry and abort-on-unmount as one declaration — and a shorter form when the request is just a URL."></doc-header>
 
         <section>
           <p>Every hand-written fetch grows the same five pieces: a loading flag, an error field, a way to retry, a guard so a slow response cannot overwrite a newer one, and an abort on unmount. Skip the last two and you get the bugs that only appear on a slow connection — stale data winning, and a state update on a component that is gone.</p>
           <p><span class="ic">@api</span> declares all five. The request aborts when the element disconnects, a superseded response is discarded rather than applied, and <span class="ic">@intercept</span> lets you modify the request or the response without touching the call site.</p>
           <punch-matrix
-            columns="FETCHES,WRAPS THE REQUEST,TRACKS LOADING,ABORTS ON UNMOUNT"
+            columns="FETCHES,BUILDS THE URL,CHECKS THE STATUS,WRAPS THE REQUEST"
             rows={[
-              { name: "@api(fetchFn)", punches: "FETCHES,TRACKS LOADING,ABORTS ON UNMOUNT", note: "Loading, error and retry in one declaration" },
+              { name: "@api(fn)", punches: "FETCHES", note: "You write the request; you check it too" },
+              { name: "@fetch(url)", punches: "FETCHES,BUILDS THE URL,CHECKS THE STATUS", note: "The common case, with the status check built in" },
               { name: "@intercept()", punches: "WRAPS THE REQUEST", note: "Runs before or after, without touching call sites" },
             ]}
           ></punch-matrix>

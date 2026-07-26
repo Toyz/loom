@@ -100,6 +100,7 @@ export default class PageElementDecorators extends LoomElement {
             <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>@api&lt;T&gt;(fn)</code></td><td>Accessor</td><td>Declarative async fetch — <loom-link to="/store/api" style="color: var(--accent)">Fetch</loom-link></td></tr>
+              <tr><td><code>@fetch&lt;T&gt;(url)</code></td><td>Accessor</td><td>The URL case of <code>@api</code>: status-checked, interceptors applied — <loom-link to="/store/api" style="color: var(--accent)">Fetch</loom-link></td></tr>
               <tr><td><code>@intercept()</code></td><td>Method</td><td>Pre/post-fetch interceptors — <loom-link to="/store/api" style="color: var(--accent)">Fetch</loom-link></td></tr>
             </tbody>
           </table>

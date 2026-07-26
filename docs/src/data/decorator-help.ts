@@ -83,5 +83,6 @@ export const DECORATOR_HELP: Record<string, DecoratorHelp> = {
   maybe: { summary: "Resolves a provider if registered, otherwise yields undefined.", to: "/di/decorators" },
   factory: { summary: "Registers the method's return value as a provider during app.start().", to: "/di/decorators" },
   api: { summary: "Declarative async fetch with loading, error, retry and abort-on-unmount.", to: "/store/api" },
+  fetch: { summary: "@api for a URL: interceptors apply, non-2xx throws, and the cache key is the resolved URL.", to: "/store/api" },
   intercept: { summary: "Runs before or after an @api request to modify the context or the response.", to: "/store/api" },
 };

@@ -40,6 +40,14 @@ existing suite could not see.
   describe. It now resolves the backing store for `@reactive`, `@store` and
   `@signal` fields, and the error names the fix when a field genuinely is not
   reactive.
+- **A `@service` registered after `app.start()` now comes up.** Registration
+  happens at class-definition time, so a service inside a lazily-loaded route
+  module — the normal shape of a code-split app — was queued and then never
+  looked at again, because `start()` is one-shot: `app.get()` threw "no
+  provider" and its `@on` handlers never bound. Construction and handler
+  binding are synchronous, so `app.get()` works the instant the class is
+  registered; a `LoomLifecycle.start()` is awaited in the background.
+  `app.start()` itself is still one-shot.
 - **`ApiState.fetching`.** Already tracked internally and never exposed.
   `loading` is false once data exists, so there was no way to show a
   background revalidation without blanking the screen. `loading` means "there

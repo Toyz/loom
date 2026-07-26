@@ -203,7 +203,7 @@ class LazyStoreSignals extends LoomElement { }
 @route("/api", { group: StoreGroup })
 @component("page-store-api")
 @lazy(() => import("./store/api"))
-@searchable({ title: "Fetch", section: "Store", icon: "zap", to: "/store/api", keywords: ["fetch", "api", "http", "request", "data fetching"], summary: "Declarative async data fetching with interceptor pipelines." })
+@searchable({ title: "Fetch", section: "Store", icon: "zap", to: "/store/api", keywords: ["fetch", "api", "http", "request", "data fetching", "enabled", "interceptor", "HttpError"], summary: "Declarative async data fetching: @api, @fetch, interceptors, and request gating." })
 class LazyStoreApi extends LoomElement { }
 
 // ── DI & Services ──

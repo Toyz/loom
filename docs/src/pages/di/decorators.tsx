@@ -112,9 +112,13 @@ class Boot {
           <api-entry sig="@watch(ServiceClass, prop?)">
             <p>
               Subscribe a component method to changes on a DI-resolved service.
-              This is now part of the unified <span class="ic">@watch</span> decorator —
-              it detects whether you pass a string (local field), a <span class="ic">Reactive</span> instance,
+              This is part of the unified <span class="ic">@watch</span> decorator — it detects
+              whether you pass a string (local field), a <span class="ic">Reactive</span> instance,
               or a <strong>class constructor</strong> (DI lookup) and does the right thing.
+              With a second argument it watches one field on that service, and that field can be
+              an ordinary <span class="ic">@reactive</span>, <span class="ic">@store</span> or
+              <span class="ic">@signal</span> accessor — not only a property holding a
+              <span class="ic">Reactive</span> instance.
             </p>
             <code-block lang="ts" code={`import { watch } from "@toyz/loom";
 import { TodoStore } from "./stores/todo-store";
@@ -125,7 +129,7 @@ class TodoPage extends LoomElement {
   items: Todo[] = [];
   theme = "dark";
 
-  // Watch the service itself (must extend Reactive)
+  // Watch the service itself (it extends Reactive)
   @watch(TodoStore)
   onTodos(items: Todo[], prev: Todo[]) {
     this.items = items;

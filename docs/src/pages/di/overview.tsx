@@ -173,6 +173,25 @@ app.start(); // router.start() called automatically`}></code-block>
             </tbody>
           </table>
         </doc-section>
+        <doc-section heading="Services in code-split modules">
+          <p>
+            Registration happens when a class is defined, so a
+            <span class="ic">@service</span> inside a lazily-loaded route module registers long
+            after <span class="ic">app.start()</span> has run. That is the normal shape of a
+            code-split app, not an edge case.
+          </p>
+          <p>
+            Such a service is constructed on registration rather than waiting for a start that
+            has already happened. Construction and <span class="ic">@on</span> binding are
+            synchronous, so <span class="ic">app.get()</span> works immediately; a
+            <span class="ic">start()</span> method on the service is awaited in the background.
+          </p>
+          <doc-notification type="note">
+            <span class="ic">app.start()</span> itself remains one-shot — calling it twice does
+            nothing. It is late <em>registration</em> that is handled, not repeated starting.
+          </doc-notification>
+        </doc-section>
+
         <doc-nav></doc-nav>
 
       </div>
