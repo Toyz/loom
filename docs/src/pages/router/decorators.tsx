@@ -12,6 +12,10 @@ export default class PageRouterDecorators extends LoomElement {
         <doc-header title="Decorators" subtitle="Router-specific decorators for route registration, guards, and groups."></doc-header>
 
         <section>
+          <p>The router's decorators split by what they attach to: the class gets the route or the group, and methods get the guards and the lifecycle hooks. Nothing here needs the router instance, which is what lets a route be declared in the same file as the component and stay there.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>@route</h2>
           </div>

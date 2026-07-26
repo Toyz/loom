@@ -11,6 +11,11 @@ export default class PageRouterOverview extends LoomElement {
         <doc-header title="Router Overview" subtitle="Dual-mode decorator-driven routing with guards, typed params, and outlets. Import from @toyz/loom/router."></doc-header>
 
         <section>
+          <p>Routing is mostly one question asked repeatedly: given this URL, which component, and is this person allowed to see it. Everything else — params, query, transitions, code splitting — hangs off that.</p>
+          <p>Loom answers it with decorators on the component itself, so a route lives next to the thing it renders rather than in a table somewhere else that has to be kept in sync. It runs in hash or history mode, and the choice affects your server config rather than your code.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Setup</h2>
           </div>

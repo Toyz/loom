@@ -10,6 +10,11 @@ export default class PageStoreReactive extends LoomElement {
         <doc-header title="Reactive State" subtitle="Observable values and CRUD collections with optional persistence."></doc-header>
 
         <section>
+          <p>A <span class="ic">Reactive</span> is one value plus the list of things watching it. Assigning notifies the watchers; reading inside a render records a dependency, which is how Loom knows that a given change cannot possibly affect a given component and skips its render entirely.</p>
+          <p>Change detection is identity-based, with one deliberate exception: <span class="ic">NaN</span>. Under a plain <span class="ic">!==</span> comparison a field holding <span class="ic">NaN</span> looks different from itself on every assignment and re-renders forever, so the check treats it as unchanged.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Reactive&lt;T&gt;</h2>
           </div>

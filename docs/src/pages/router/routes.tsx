@@ -11,6 +11,11 @@ export default class PageRouterRoutes extends LoomElement {
         <doc-header title="Routes &amp; Params" subtitle="Declarative routing with @route, dynamic segments, and fully typed route data."></doc-header>
 
         <section>
+          <p>A route is a pattern and a component. The pattern's job is to be unambiguous, which is harder than it looks the moment two of them can match the same URL — <span class="ic">/user/:id</span> and <span class="ic">/user/new</span> both match <span class="ic">/user/new</span>.</p>
+          <p>Loom matches in registration order, first match wins. That is worth knowing because it makes the outcome depend on import order: whichever module was imported first gets asked first. Declare the specific pattern before the general one.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>@route</h2>
           </div>

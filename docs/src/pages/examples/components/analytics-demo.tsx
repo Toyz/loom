@@ -325,7 +325,7 @@ class AnalyticsDemo extends LoomElement {
             </h3>
 
             <div class="action-card" onClick={() => { this.handleSave(); this.refresh(); }}>
-              <div class="action-icon" style={{ background: "rgba(52,211,153,0.15)" }}>💾</div>
+              <div class="action-icon" style={{ background: "rgba(52,211,153,0.15)" }}><loom-icon name="save" size={16}></loom-icon></div>
               <div class="action-info">
                 <div class="action-label">Save Document</div>
                 <div class="action-event">@track("button.save")</div>
@@ -343,7 +343,7 @@ class AnalyticsDemo extends LoomElement {
             </div>
 
             <div class="action-card" onClick={() => { this.handleSearch(); this.refresh(); }}>
-              <div class="action-icon" style={{ background: "rgba(99,102,241,0.15)" }}>🔍</div>
+              <div class="action-icon" style={{ background: "rgba(99,102,241,0.15)" }}><loom-icon name="search" size={16}></loom-icon></div>
               <div class="action-info">
                 <div class="action-label">Search Users</div>
                 <div class="action-event">@track("user.search")</div>
@@ -352,7 +352,7 @@ class AnalyticsDemo extends LoomElement {
             </div>
 
             <div class="action-card" onClick={() => { this.handleLike(); this.refresh(); }}>
-              <div class="action-icon" style={{ background: "rgba(251,191,36,0.15)" }}>👍</div>
+              <div class="action-icon" style={{ background: "rgba(251,191,36,0.15)" }}><loom-icon name="check-circle" size={16}></loom-icon></div>
               <div class="action-info">
                 <div class="action-label">Like (dynamic meta)</div>
                 <div class="action-event">@track("button.like", el =&gt; (...))</div>

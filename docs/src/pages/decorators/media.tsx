@@ -105,7 +105,7 @@ accessor isDesktopWithMouse = false;
 // ── Use in update() ──
 update() {
   return <div>
-    <p>{this.prefersDark ? "🌙 Dark" : "☀️ Light"}</p>
+    <p>{this.prefersDark ? "Dark" : "Light"}</p>
     <p>{this.reducedMotion ? "Calm mode" : "Full animations"}</p>
   </div>;
 }`;

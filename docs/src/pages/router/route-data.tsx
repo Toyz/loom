@@ -14,6 +14,11 @@ export default class PageRouterRouteData extends LoomElement {
         <doc-header title="Route Data" subtitle="Inject URL params, query strings, and route metadata into your components with @prop."></doc-header>
 
         <section>
+          <p>Reading the current route inside a component means finding the router, asking it for its state, and re-reading whenever it changes. Doing that in every routed component is the boilerplate this page exists to remove.</p>
+          <p>Route props are declared as fields and filled in by the outlet on match. They come from the URL, so they are strings — a transform converts them at the boundary. When a key is genuinely absent the field returns to the default you declared, rather than to an empty string that a numeric prop would coerce to zero.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Route Params</h2>
           </div>

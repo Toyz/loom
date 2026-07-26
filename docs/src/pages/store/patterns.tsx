@@ -12,6 +12,11 @@ export default class PageStorePatterns extends LoomElement {
         <doc-header title="Patterns" subtitle="Common patterns for wiring stores into components and services."></doc-header>
 
         <section>
+          <p>Once state outgrows a single component there are only a few honest places to put it: alongside the component that owns it, in a service resolved from the container, or in a store passed down through context. Most state-management complexity is the cost of not deciding which.</p>
+          <p>The patterns here are the three that hold up. Each is shown with the wiring it actually needs, including the teardown, because the subscription you forget to release is the bug that shows up two weeks later as a memory leak.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>@watch — Auto-Subscribe Components</h2>
           </div>

@@ -219,7 +219,7 @@ const ERROR_HANDLING = `{/* Fallback URL — tried when src fails */}
     background: #1a1a2e;
     color: #f87171;
   ">
-    <span>⚠ Image unavailable</span>
+    <span>Image unavailable</span>
   </div>
 </loom-image>
 

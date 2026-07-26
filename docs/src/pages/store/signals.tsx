@@ -10,6 +10,11 @@ export default class PageStoreSignals extends LoomElement {
         <doc-header title="Signals" subtitle="TC39 Signals interop — future-proof reactivity with real DOM integration."></doc-header>
 
         <section>
+          <p>TC39 Signals are on track for the language itself. When they land, code written against a framework's private reactive object will need rewriting; code written against the standard will not.</p>
+          <p><span class="ic">@signal</span> is Loom's bet on that. The accessor reads and writes the plain value so templates stay ergonomic, while the backing Signal is exposed as <span class="ic">this.$signal_&lt;field&gt;</span> for anything outside the component — including libraries that have never heard of Loom.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Overview</h2>
           </div>

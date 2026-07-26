@@ -10,6 +10,11 @@ export default class PageStoreDecorator extends LoomElement {
         <doc-header title="@store Decorator" subtitle="Component-scoped reactive stores with optional persistence."></doc-header>
 
         <section>
+          <p><span class="ic">@reactive</span> notices assignment to the field. It does not notice <span class="ic">this.form.name = "x"</span>, because the field still holds the same object — nothing was assigned to it. The usual workaround is to reassign a fresh copy on every edit, which is easy to forget in exactly the place it matters.</p>
+          <p><span class="ic">@store</span> makes the object itself reactive, to any depth. Mutating a nested field schedules a render. You pay for it with a proxy on every property access, so it is the right default for a form or a settings object and the wrong one for a large array you only ever replace wholesale.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>Overview</h2>
           </div>

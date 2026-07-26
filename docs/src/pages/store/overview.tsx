@@ -11,7 +11,22 @@ export default class PageStoreOverview extends LoomElement {
       <div>
         <doc-header title="State Management" subtitle="Reactive primitives, component stores, and persistent storage — everything you need to manage state in Loom."></doc-header>
 
+        <section>
+          <p>Loom has five ways to declare state, which sounds like four too many until you notice they answer different questions. Does a change to a nested field count. Does the value survive a reload. Is it derived from other state. Does anything outside the component need to read it.</p>
+          <p>Pick by answering those, not by reaching for the most powerful one. <span class="ic">@reactive</span> is the default and covers most fields; the others each add one capability and the cost that comes with it.</p>
+
         {/* ═══════════ Philosophy ═══════════ */}
+          <punch-matrix
+            columns="RE-RENDERS,DEEP,PERSISTS,LAZY,EXTERNAL API"
+            rows={[
+              { name: "@reactive", punches: "RE-RENDERS", note: "One value; assignment schedules a render" },
+              { name: "@store", punches: "RE-RENDERS,DEEP", note: "Nested mutation is tracked too" },
+              { name: "@persist", punches: "RE-RENDERS,PERSISTS", note: "Rehydrates on construction" },
+              { name: "@computed", punches: "RE-RENDERS,LAZY", note: "Recomputes only when a dependency changed" },
+              { name: "@signal", punches: "RE-RENDERS,EXTERNAL API", note: "Readable as a TC39 Signal from outside" },
+            ]}
+          ></punch-matrix>
+        </section>
 
         <section>
           <div class="group-header">
@@ -25,16 +40,6 @@ export default class PageStoreOverview extends LoomElement {
               shared, service-level state. Every layer supports optional persistence.
             </div>
           </div>
-          <punch-matrix
-            columns="RE-RENDERS,DEEP,PERSISTS,LAZY,EXTERNAL API"
-            rows={[
-              { name: "@reactive", punches: "RE-RENDERS", note: "One value; assignment schedules a render" },
-              { name: "@store", punches: "RE-RENDERS,DEEP", note: "Nested mutation is tracked too" },
-              { name: "@persist", punches: "RE-RENDERS,PERSISTS", note: "Rehydrates on construction" },
-              { name: "@computed", punches: "RE-RENDERS,LAZY", note: "Recomputes only when a dependency changed" },
-              { name: "@signal", punches: "RE-RENDERS,EXTERNAL API", note: "Readable as a TC39 Signal from outside" },
-            ]}
-          ></punch-matrix>
         </section>
 
         {/* ═══════════ At a Glance ═══════════ */}

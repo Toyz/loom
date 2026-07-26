@@ -10,6 +10,11 @@ export default class PageRouteLifecycle extends LoomElement {
         <doc-header title="Route Lifecycle" subtitle="Run code when entering or leaving a route."></doc-header>
 
         <section>
+          <p>Mount and route entry are not the same event, and treating them as one is how you get an analytics page-view that fires twice, or a data load that does not fire at all when only the params changed.</p>
+          <p><span class="ic">@onRouteEnter</span> and <span class="ic">@onRouteLeave</span> fire on the route transition and receive the matched params and merged meta. A component reused across two URLs of the same pattern gets an enter for each, without a remount in between.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>@onRouteEnter</h2>
           </div>

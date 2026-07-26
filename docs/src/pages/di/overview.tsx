@@ -12,6 +12,11 @@ export default class PageDIOverview extends LoomElement {
         <doc-header title="DI &amp; Services" subtitle="Service container, singleton management, and provider patterns."></doc-header>
 
         <section>
+          <p>The alternative to a container is a module-level <span class="ic">export const api = new ApiClient()</span>. That works until a test needs a different one, at which point every importer is holding the singleton directly and there is no seam to substitute at.</p>
+          <p>A container is that seam. Services are registered by key and resolved on first use, so a test registers a fake before <span class="ic">start()</span> and every consumer gets it without knowing. Construction is lazy and singleton per container.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>LoomApp</h2>
           </div>

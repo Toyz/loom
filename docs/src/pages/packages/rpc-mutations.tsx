@@ -117,7 +117,7 @@ class EditProfile extends LoomElement {
 @mutate(UserRouter, "updateRole")
 accessor toggleRole!: RpcMutator\<[string, "admin" | "member"], User\>;
 
-// ✓ Compiles
+// Compiles
 this.toggleRole.call("1", "admin");
 
 // ✗ Compile error — wrong argument types

@@ -11,6 +11,11 @@ export default class PageRouterGroups extends LoomElement {
         <doc-header title="Route Groups" subtitle="Organize routes with shared prefixes and guards using @group."></doc-header>
 
         <section>
+          <p>Ten admin routes means writing <span class="ic">/admin</span> ten times and the auth guard ten times. The prefix that gets mistyped once, and the guard that gets left off the one route nobody remembered, are the same bug.</p>
+          <p><span class="ic">@group</span> declares both once. Routes inside inherit the prefix and the guards, so adding a route to a protected area cannot accidentally leave it unprotected.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>@group</h2>
           </div>

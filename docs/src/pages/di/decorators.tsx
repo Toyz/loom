@@ -12,6 +12,11 @@ export default class PageDIDecorators extends LoomElement {
         <doc-header title="Decorators" subtitle="DI-specific decorators for services, injection, optional injection, and provider factories."></doc-header>
 
         <section>
+          <p>Stage-3 decorators have no parameter form, so constructor injection in the shape other frameworks use is not available and never will be. Loom injects on property access instead, which turns out to be the better fit: resolution happens on first read, so a cyclic dependency resolves rather than deadlocking at construction.</p>
+          <p>The four here differ in when they resolve and what happens when the key is missing. <span class="ic">@inject</span> throws on a missing provider; <span class="ic">@maybe</span> yields undefined. That distinction is the whole reason both exist.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>@service</h2>
           </div>

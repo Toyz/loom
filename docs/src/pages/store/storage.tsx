@@ -10,6 +10,19 @@ export default class PageStoreStorage extends LoomElement {
         <doc-header title="Storage Adapters" subtitle="Pluggable persistence backends for reactive state."></doc-header>
 
         <section>
+          <p>Persisting state sounds like one line of <span class="ic">localStorage</span> and turns into four problems: it is unavailable in some privacy modes and throws rather than returning null, it stores strings so everything needs serialising, it is synchronous and on the main thread, and it has a quota that fails loudly once you cross it.</p>
+          <p>A storage adapter puts one interface in front of those. Loom ships three, and they differ in exactly one dimension — how long the value lives.</p>
+          <punch-matrix
+            columns="SURVIVES RELOAD,SURVIVES TAB CLOSE,SIZE CAPPED,NEEDS BROWSER"
+            rows={[
+              { name: "MemoryStorage", punches: "", note: "In-process; gone when the tab is" },
+              { name: "SessionAdapter", punches: "SURVIVES RELOAD,SIZE CAPPED,NEEDS BROWSER", note: "Per tab, cleared when it closes" },
+              { name: "LocalAdapter", punches: "SURVIVES RELOAD,SURVIVES TAB CLOSE,SIZE CAPPED,NEEDS BROWSER", note: "Shared across tabs on the origin" },
+            ]}
+          ></punch-matrix>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>StorageAdapter Interface</h2>
           </div>
@@ -24,14 +37,6 @@ export default class PageStoreStorage extends LoomElement {
   remove(key: string): void;
 }`}></code-block>
           </div>
-          <punch-matrix
-            columns="SURVIVES RELOAD,SURVIVES TAB CLOSE,SIZE CAPPED,NEEDS BROWSER"
-            rows={[
-              { name: "MemoryStorage", punches: "", note: "In-process; gone when the tab is" },
-              { name: "SessionAdapter", punches: "SURVIVES RELOAD,SIZE CAPPED,NEEDS BROWSER", note: "Per tab, cleared when it closes" },
-              { name: "LocalAdapter", punches: "SURVIVES RELOAD,SURVIVES TAB CLOSE,SIZE CAPPED,NEEDS BROWSER", note: "Shared across tabs on the origin" },
-            ]}
-          ></punch-matrix>
         </section>
 
         <section>

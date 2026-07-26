@@ -44,14 +44,14 @@ const MOCK_USERS: User[] = [
 ];
 
 const STREAM_MSGS: Pick<ChatMsg, "user" | "text">[] = [
-  { user: "alice",   text: "Hey team 👋" },
+  { user: "alice",   text: "Hey team" },
   { user: "bob",     text: "What's shipping?" },
   { user: "charlie", text: "Just merged the stream PR!" },
-  { user: "diana",   text: "All green 🟢" },
-  { user: "alice",   text: "Let's ship it 🚀" },
+  { user: "diana",   text: "All green" },
+  { user: "alice",   text: "Let's ship it" },
   { user: "bob",     text: "Ping!" },
   { user: "charlie", text: "Pong!" },
-  { user: "diana",   text: "Stream keeps going 📡" },
+  { user: "diana",   text: "Stream keeps going" },
 ];
 
 // Extends MockTransport so @rpc/.call() still works, adds stream() for @stream

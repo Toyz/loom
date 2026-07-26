@@ -11,6 +11,11 @@ export default class PageRouterNavigation extends LoomElement {
         <doc-header title="Navigation" subtitle="Navigate declaratively with <loom-link> or programmatically via the router service."></doc-header>
 
         <section>
+          <p>An SPA link has to be a real <span class="ic">&lt;a href&gt;</span> — so it can be middle-clicked, copied, opened in a new tab, and read by a crawler — while still not reloading the page on a plain left click. A <span class="ic">div</span> with an onClick fails every one of those.</p>
+          <p><span class="ic">&lt;loom-link&gt;</span> renders a real anchor with a real href and intercepts only the clicks it should: plain left clicks, with no modifier held. Anything else is left to the browser, which is what the user was asking for.</p>
+        </section>
+
+        <section>
           <div class="group-header">
             <h2>&lt;loom-link&gt;</h2>
           </div>

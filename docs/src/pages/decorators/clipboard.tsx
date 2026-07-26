@@ -64,7 +64,7 @@ class ShareButton extends LoomElement {
   copyLink() { return this.url; }
 
   update() {
-    return <button onClick={() => this.copyLink()}>📋 Copy Link</button>;
+    return <button onClick={() => this.copyLink()}>Copy link</button>;
   }
 }`;
 

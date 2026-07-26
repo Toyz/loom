@@ -9,6 +9,11 @@ export default class PageFetch extends LoomElement {
       <div>
         <doc-header title="Fetch" subtitle="Declarative async data fetching with interceptor pipelines and scoped error boundaries."></doc-header>
 
+        <section>
+          <p>Every hand-written fetch grows the same five pieces: a loading flag, an error field, a way to retry, a guard so a slow response cannot overwrite a newer one, and an abort on unmount. Skip the last two and you get the bugs that only appear on a slow connection — stale data winning, and a state update on a component that is gone.</p>
+          <p><span class="ic">@api</span> declares all five. The request aborts when the element disconnects, a superseded response is discarded rather than applied, and <span class="ic">@intercept</span> lets you modify the request or the response without touching the call site.</p>
+        </section>
+
         {/* ── Basic Usage ── */}
         <section>
           <div class="group-header">
