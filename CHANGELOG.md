@@ -122,6 +122,13 @@ existing suite could not see.
 
 ### Documentation
 
+- **Real numbers on the home page.** It made qualitative performance claims
+  and cited nothing. It now shows a table where every figure is checkable:
+  core bundle size and test count are read from this repository at build time
+  so they cannot go stale, and the Lighthouse figures (99, 0ms TBT, FCP and
+  LCP both 0.7s, CLS 0) are labelled as coming from a production site rather
+  than from the docs. The page also states the honest limit of TBT — it is a
+  load metric and says nothing about interaction afterwards.
 - **`<api-table>`.** There were 101 hand-written reference tables across the
   docs — table, thead, a row of th, then a tbody of tr/td — which is the same
   drift risk the page skeleton had before `<doc-section>`: a column count that

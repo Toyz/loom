@@ -1,5 +1,7 @@
 import { defineConfig } from "vite";
 import { readFileSync, readdirSync } from "fs";
+import { gzipSync } from "zlib";
+import { buildSync } from "esbuild";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -39,6 +41,33 @@ function countTests(dir: string): number {
 }
 
 const testCount = countTests(resolve(root, "tests"));
+
+/**
+ * Core bundle size: minified, tree-shaken, gzipped.
+ *
+ * Measured rather than asserted, and measured the way a consumer would get it
+ * — bundling the public entry, not summing the files in dist/. Returns 0 if
+ * dist/ has not been built, and the page omits the figure rather than
+ * printing a zero.
+ */
+function coreGzipBytes(): number {
+  try {
+    const out = buildSync({
+      entryPoints: [resolve(root, "dist/index.js")],
+      bundle: true,
+      minify: true,
+      format: "esm",
+      write: false,
+      logLevel: "silent",
+    });
+    const js = out.outputFiles?.[0]?.contents;
+    return js ? gzipSync(Buffer.from(js), { level: 9 }).length : 0;
+  } catch {
+    return 0;
+  }
+}
+
+const coreBytes = coreGzipBytes();
 // Fail the build rather than ship a spec card confidently printing "0 TESTS".
 // A zero here means the directory moved, not that the suite is empty.
 if (testCount === 0) {
@@ -59,6 +88,7 @@ export default defineConfig({
   define: {
     __LOOM_VERSION__: JSON.stringify(pkg.version),
     __LOOM_TESTS__: JSON.stringify(testCount),
+    __LOOM_GZIP_BYTES__: JSON.stringify(coreBytes),
     __LOOM_RPC_VERSION__: JSON.stringify(loomRpcPkg.version),
     __LOOM_ANALYTICS_VERSION__: JSON.stringify(loomAnalyticsPkg.version),
     __LOOM_FLAGS_VERSION__: JSON.stringify(loomFlagsPkg.version),

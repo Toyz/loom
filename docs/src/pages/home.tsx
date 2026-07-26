@@ -222,6 +222,16 @@ const styles = css`
     grid-template-columns: 13rem 1fr;
   }
   .claim + .claim { margin-top: var(--space-2); }
+
+  .measured-intro {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
+  }
+  .measured-note {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    margin-top: var(--space-3);
+  }
   .claim dt {
     font-family: var(--font-display);
     font-size: 0.9375rem;
@@ -423,6 +433,40 @@ export default class PageHome extends LoomElement {
               </dd>
             </div>
           </dl>
+        </section>
+
+
+        <section>
+          <div class="band-label">Measured, not asserted</div>
+          <p class="measured-intro">
+            Every figure below is checkable. Two are read from this repository when the site
+            is built, so they cannot go stale; the rest come from a Lighthouse run against a
+            production site built with Loom.
+          </p>
+          <api-table
+            head={["Figure", "Value", "Where it comes from"]}
+            rows={[
+              ["Core, gzipped", <code>{__LOOM_GZIP_BYTES__ ? `${(__LOOM_GZIP_BYTES__ / 1024).toFixed(1)} kB` : "—"}</code>, "The public entry, bundled, minified and tree-shaken at build time"],
+              ["Runtime dependencies", <code>0</code>, "package.json has no dependencies and no peerDependencies"],
+              ["Tests", <code>{String(__LOOM_TESTS__)}</code>, "Counted from tests/ when this page was built"],
+              ["Total Blocking Time", <code>0 ms</code>, "Lighthouse, 4x CPU throttling, on a production dashboard"],
+              ["First Contentful Paint", <code>0.7 s</code>, "Same run"],
+              ["Largest Contentful Paint", <code>0.7 s</code>, "Same run — equal to FCP, so nothing arrived late"],
+              ["Cumulative Layout Shift", <code>0</code>, "Same run"],
+              ["Lighthouse Performance", <code>99</code>, "Same run"],
+            ]}
+          ></api-table>
+          <p class="measured-note">
+            The line worth reading twice is LCP matching FCP. It means the largest element
+            painted in the same frame as the first one — no hero image landing a second later,
+            no framework runtime between the markup and the pixels. That gap is where a
+            framework usually shows up in a trace.
+          </p>
+          <p class="measured-note">
+            Total Blocking Time is a load metric: it says no task exceeded 50ms between first
+            paint and interactive. It says nothing about what happens after, which is the
+            honest limit of the number.
+          </p>
         </section>
 
         <section>
