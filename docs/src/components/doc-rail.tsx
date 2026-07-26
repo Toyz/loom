@@ -45,6 +45,12 @@ const railStyles = css`
     padding: 0 0 0 14px;
   }
 
+  nav {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
   .head {
     font-family: var(--font-mono, monospace);
     font-size: 0.5625rem;
@@ -142,11 +148,16 @@ export class DocRail extends LoomElement {
   }
 
   update() {
-    if (!this.entries.length) return <div></div>;
+    // The card is not part of the index and must not depend on it. It used to
+    // live inside the <nav>, which is skipped when a page has no sections --
+    // so on those pages the card never mounted and its @api never ran.
+    const index = this.entries.length > 0;
     return (
-      <nav class="sticky" aria-label="On this page">
-        <div class="head">On this page</div>
-        <ol>
+      <div class="sticky">
+        {index ? (
+          <nav aria-label="On this page">
+            <div class="head">On this page</div>
+            <ol>
           {this.entries.map((e) => {
             const on = e.id === this.activeId;
             return (
@@ -162,9 +173,11 @@ export class DocRail extends LoomElement {
               </li>
             );
           })}
-        </ol>
+            </ol>
+          </nav>
+        ) : null}
         <spec-card></spec-card>
-      </nav>
+      </div>
     );
   }
 }
