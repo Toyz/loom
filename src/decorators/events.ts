@@ -5,7 +5,7 @@
  * @emit — Auto-broadcast to the bus (field or method form)
  */
 
-import { EMITTERS, ON_HANDLERS, CONNECT_HOOKS, hostElement } from "./symbols";
+import { EMITTERS, ON_HANDLERS, addConnectHook, hostElement } from "./symbols";
 import { LoomEvent } from "../event";
 import { bus, type Constructor } from "../bus";
 
@@ -53,16 +53,15 @@ export function on(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | (
       // Store metadata for service wiring by app.start() (not for self-host DOM form).
       if (!this[ON_HANDLERS.key]) this[ON_HANDLERS.key] = [];
       if (selfHost) {
-        // handled purely via CONNECT_HOOKS below
+        // handled purely via the connect hook below
       } else if (event !== undefined) {
         this[ON_HANDLERS.key].push({ key, domTarget: typeOrTargetOrEvent, event });
       } else {
         this[ON_HANDLERS.key].push({ key, type: typeOrTargetOrEvent });
       }
 
-      // Wire lifecycle via CONNECT_HOOKS
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-      this[CONNECT_HOOKS.key].push((el: any) => {
+      // Wire lifecycle via a connect hook
+      addConnectHook(this, (el: any) => {
         if (selfHost) {
           const target = hostElement(el);
           const fn = (e: Event) => method.call(el, e);
@@ -153,8 +152,7 @@ function onOnce(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | ((el
     const selfHost = typeof typeOrTargetOrEvent === "string";
     const evName = selfHost ? (typeOrTargetOrEvent as string) : event;
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-      this[CONNECT_HOOKS.key].push((el: any) => {
+      addConnectHook(this, (el: any) => {
         if (evName !== undefined) {
           // DOM event — use { once: true } for native auto-removal
           const target = selfHost

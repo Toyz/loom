@@ -7,10 +7,17 @@
  * @styles   — Adopt CSSStyleSheets on connect (class decorator)
  */
 
-import { PROPS, TRANSFORMS, CONNECT_HOOKS, REACTIVES } from "../decorators/symbols";
+import { PROPS, TRANSFORMS, REACTIVES, addConnectHook } from "../decorators/symbols";
 import { app } from "../app";
 import { createDecorator } from "../decorators/create";
 import { pendingProps } from "../store/decorators";
+
+/**
+ * @dynamicCss reactive-symbol cache, keyed on the EXACT constructor.
+ * A static property would resolve through the prototype chain, so a subclass
+ * would reuse its base's symbol list and never subscribe to its own fields.
+ */
+const _dynCssSyms = new WeakMap<Function, symbol[]>();
 
 /**
  * Register a class as a custom element. Wires @prop observed attributes
@@ -23,14 +30,15 @@ import { pendingProps } from "../store/decorators";
  */
 export const component = createDecorator<[tag: string, opts?: { shadow?: boolean }]>((ctor, tag, opts) => {
   if (opts?.shadow === false) (ctor as any).__loom_noshadow = true;
-  // Flush pendingProps from @prop decorators (member decorators run before class decorators)
-  const propMap: Map<string, string> =
-    (ctor as any)[PROPS.key] ?? new Map();
+  // Flush pendingProps from @prop decorators (member decorators run before class decorators).
+  // ownMap, not a raw read: `ctor[PROPS.key]` resolves through the static
+  // prototype chain, so a subclass would mutate its base's Map in place and
+  // every sibling subclass would inherit the union of all their @props.
+  const propMap = PROPS.ownMap<string, string>(ctor);
   for (const { key } of pendingProps) {
     propMap.set(key.toLowerCase(), key);
   }
   pendingProps.length = 0; // clear staging area
-  (ctor as any)[PROPS.key] = propMap;
 
   // Wire observedAttributes from @prop fields — cache the array
   const _cachedAttrs = Array.from(propMap.keys());
@@ -250,10 +258,7 @@ export function dynamicCss(
   const key = String(context.name);
 
   context.addInitializer(function (this: any) {
-    const hooks: Array<(el: any) => (() => void) | void> = this[CONNECT_HOOKS.key] ?? [];
-    this[CONNECT_HOOKS.key] = hooks;
-
-    hooks.push((el: any) => {
+    addConnectHook(this, (el: any) => {
       const sheet = new CSSStyleSheet();
 
       // Initial evaluation
@@ -292,10 +297,12 @@ export function dynamicCss(
 
       // Discover reactive backing stores. We check only the symbols
       // that exist at connect time (all @reactive/@store/@signal fields
-      // are initialized by now). Cache the list on the constructor to
-      // avoid re-scanning on reconnect.
-      const ctor = el.constructor as any;
-      let reactiveSymbols: symbol[] = ctor.__loom_reactive_syms;
+      // are initialized by now). Cached per exact constructor in a WeakMap —
+      // a static property would resolve through the prototype chain, so a
+      // subclass would inherit its base's list and never subscribe to the
+      // fields it added.
+      const ctor = el.constructor as Function;
+      let reactiveSymbols = _dynCssSyms.get(ctor);
       if (!reactiveSymbols) {
         reactiveSymbols = [];
         const allSymbols = Object.getOwnPropertySymbols(el);
@@ -307,7 +314,7 @@ export function dynamicCss(
             reactiveSymbols.push(allSymbols[i]);
           }
         }
-        ctor.__loom_reactive_syms = reactiveSymbols;
+        _dynCssSyms.set(ctor, reactiveSymbols);
       }
 
       for (let i = 0; i < reactiveSymbols.length; i++) {
@@ -331,5 +338,6 @@ export function dynamicCss(
       };
     });
   });
+
 }
 

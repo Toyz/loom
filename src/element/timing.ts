@@ -10,7 +10,7 @@
 
 import { renderLoop } from "../render-loop";
 import { createDecorator } from "../decorators/create";
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { addConnectHook } from "../decorators/symbols";
 
 /**
  * Auto-cleaned setInterval. Runs the method every `ms` milliseconds.
@@ -65,8 +65,7 @@ export function debounce(ms: number) {
 
     // Lifecycle: cancel pending timer on disconnect
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-      this[CONNECT_HOOKS.key].push((el: any) => {
+      addConnectHook(this, (el: any) => {
         return () => clearTimeout(el[timerKey]);
       });
     });
@@ -108,8 +107,7 @@ export function throttle(ms: number) {
 
     // Lifecycle: cancel pending timer on disconnect
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-      this[CONNECT_HOOKS.key].push((el: any) => {
+      addConnectHook(this, (el: any) => {
         return () => clearTimeout(el[timerKey]);
       });
     });

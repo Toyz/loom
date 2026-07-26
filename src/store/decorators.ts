@@ -51,9 +51,8 @@ export function reactive<This extends object, V>(
   // Store field name for LoomElement introspection
   context.addInitializer(function () {
     const ctor = this!.constructor as object;
-    const existing = REACTIVES.from(ctor) as string[] | undefined;
-    if (!existing) REACTIVES.set(ctor, [key]);
-    else if (!existing.includes(key)) existing.push(key);
+    const fields = REACTIVES.ownArray<string>(ctor);
+    if (!fields.includes(key)) fields.push(key);
   });
 
   return {
@@ -174,15 +173,18 @@ export function prop<This extends object, V>(
     // Store route binding metadata
     ctx.addInitializer(function () {
       const ctor = (this as object & { constructor: object }).constructor;
-      const existing = ROUTE_PROPS.from(ctor) as RouteBinding[] | undefined;
+      const bindings = ROUTE_PROPS.ownArray<RouteBinding>(ctor);
+      // addInitializer runs per INSTANCE — without this guard the array grows
+      // by one duplicate binding for every element constructed, and the outlet
+      // re-injects each of them on every navigation.
+      if (bindings.some((b) => b.propKey === propKey)) return;
 
       const binding: RouteBinding = { propKey };
       if (opts.params) binding.params = opts.params;
       if (opts.param) binding.param = opts.param;
       if (opts.query) binding.query = opts.query;
       if (opts.meta) binding.meta = opts.meta;
-      if (!existing) ROUTE_PROPS.set(ctor, [binding]);
-      else existing.push(binding);
+      bindings.push(binding);
     });
 
     return result;
@@ -208,9 +210,8 @@ export function computed<This extends object, V>(
   // Track dirty key for scheduleUpdate invalidation
   context.addInitializer(function () {
     const proto = ((this as object & { constructor: { prototype: object } }).constructor).prototype;
-    const existing = COMPUTED_DIRTY.from(proto) as symbol[] | undefined;
-    if (!existing) COMPUTED_DIRTY.set(proto, [dirty.key]);
-    else if (!existing.includes(dirty.key)) existing.push(dirty.key);
+    const keys = COMPUTED_DIRTY.ownArray<symbol>(proto);
+    if (!keys.includes(dirty.key)) keys.push(dirty.key);
   });
 
   return function (this: This): V {

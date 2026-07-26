@@ -38,7 +38,7 @@ afterEach(() => cleanup());
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("baseline: subclass metadata isolation (Phase 1)", () => {
-  it.fails("@prop on two sibling subclasses does not cross-contaminate", () => {
+  it("@prop on two sibling subclasses does not cross-contaminate", () => {
     @component(nextTag())
     class Base extends LoomElement {
       @prop accessor shared = "";
@@ -67,40 +67,45 @@ describe("baseline: subclass metadata isolation (Phase 1)", () => {
     expect([...baseMap.keys()]).toEqual(["shared"]);
   });
 
-  it.fails("@reactive on a subclass does not append to the base's REACTIVES", () => {
-    class Base extends LoomElement {
+  // Plain classes, not LoomElement subclasses: `new` on an unregistered custom
+  // element throws "Illegal constructor", which would make these pass for the
+  // wrong reason. The metadata decorators only touch `this.constructor`, so a
+  // plain class exercises exactly the same code path.
+  it("@reactive on a subclass does not append to the base's REACTIVES", () => {
+    class Base {
       @reactive accessor a = 1;
     }
     class Sub extends Base {
       @reactive accessor b = 2;
     }
 
-    // Touch both so the per-instance initializers have run.
-    void new (class extends Base {})();
-    void new (class extends Sub {})();
+    new Base();
+    new Sub();
 
     expect(REACTIVES.from(Base) as string[]).toEqual(["a"]);
-    expect((REACTIVES.from(Sub) as string[]).sort()).toEqual(["a", "b"]);
+    expect((REACTIVES.from(Sub) as string[]).slice().sort()).toEqual(["a", "b"]);
   });
 
-  it.fails("@transform on sibling subclasses keeps separate maps", () => {
-    class Page extends LoomElement {
+  it("@transform on sibling subclasses keeps separate maps", () => {
+    const toDate = (v: unknown) => new Date(String(v));
+
+    class Page {
       accessor value: unknown = null;
     }
     class NumPage extends Page {
       @transform(Number) accessor value: unknown = 0;
     }
     class DatePage extends Page {
-      @transform((v: unknown) => new Date(String(v))) accessor value: unknown = null;
+      @transform(toDate) accessor value: unknown = null;
     }
 
     new NumPage();
     new DatePage();
 
-    // The shared parent must have picked up neither.
+    // The shared parent must have picked up neither subclass's transform.
     expect(TRANSFORMS.from(Page)).toBeUndefined();
     expect((TRANSFORMS.from(NumPage) as Map<string, Function>).get("value")).toBe(Number);
-    expect((TRANSFORMS.from(DatePage) as Map<string, Function>).get("value")).not.toBe(Number);
+    expect((TRANSFORMS.from(DatePage) as Map<string, Function>).get("value")).toBe(toDate);
   });
 });
 
@@ -109,8 +114,9 @@ describe("baseline: subclass metadata isolation (Phase 1)", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("baseline: ROUTE_PROPS growth (Phase 1)", () => {
-  it.fails("registers one binding per declared prop, not one per instance", () => {
-    class UserPage extends LoomElement {
+  it("registers one binding per declared prop, not one per instance", () => {
+    // Plain class — see the note above on "Illegal constructor".
+    class UserPage {
       @prop({ param: "id" }) accessor id = "";
     }
 

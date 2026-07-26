@@ -18,7 +18,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols";
 
 export interface DraggableOptions {
   /** MIME-like type key for dataTransfer, default "text/plain" */
@@ -67,15 +67,17 @@ export function draggable(opts?: DraggableOptions) {
 
   return function (method: Function, context: ClassMethodDecoratorContext) {
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-      this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
+      addConnectHook(this, (host: HTMLElement) => {
+        // A LoomAttribute controller is not itself an element — target the
+        // element it wraps, but keep `this` binding on the raw host.
+        const el = hostElement(host);
         if (!selector) {
           // Host-level draggable (original behavior)
           el.draggable = true;
 
           const onStart = (e: DragEvent) => {
-            const data = method.call(el);
+            const data = method.call(host);
             e.dataTransfer?.setData(mimeType, String(data ?? ""));
             if (e.dataTransfer) e.dataTransfer.effectAllowed = effect;
             el.classList.add("dragging");
@@ -130,7 +132,7 @@ export function draggable(opts?: DraggableOptions) {
         const onStart = (e: DragEvent) => {
           const target = (e.target as HTMLElement)?.closest?.(selector);
           if (!target) return;
-          const data = method.call(el, target);
+          const data = method.call(host, target);
           e.dataTransfer?.setData(mimeType, String(data ?? ""));
           if (e.dataTransfer) e.dataTransfer.effectAllowed = effect;
           target.classList.add("dragging");
@@ -173,9 +175,11 @@ export function dropzone(opts?: DropzoneOptions) {
 
   return function (method: Function, context: ClassMethodDecoratorContext) {
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-      this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
+      addConnectHook(this, (host: HTMLElement) => {
+        // A LoomAttribute controller is not itself an element — target the
+        // element it wraps, but keep `this` binding on the raw host.
+        const el = hostElement(host);
         let overlayEl: Node | null = null;
 
         const showOverlay = () => {
@@ -220,7 +224,7 @@ export function dropzone(opts?: DropzoneOptions) {
             el.classList.remove(overClass);
             hideOverlay();
             const data = e.dataTransfer?.getData(mimeType) ?? "";
-            method.call(el, data, e);
+            method.call(host, data, e);
           };
 
           el.addEventListener("dragover", onOver);
@@ -266,7 +270,7 @@ export function dropzone(opts?: DropzoneOptions) {
           if (currentOverTarget) currentOverTarget.classList.remove(overClass);
           currentOverTarget = null;
           const data = e.dataTransfer?.getData(mimeType) ?? "";
-          method.call(el, data, e, target);
+          method.call(host, data, e, target);
         };
 
         root.addEventListener("dragover", onOver as EventListener);

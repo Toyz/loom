@@ -327,9 +327,8 @@ export function signal<This extends object, V>(
   // Register as a reactive field for LoomElement introspection
   context.addInitializer(function () {
     const ctor = this!.constructor as object;
-    const existing = REACTIVES.from(ctor) as string[] | undefined;
-    if (!existing) REACTIVES.set(ctor, [key]);
-    else if (!existing.includes(key)) existing.push(key);
+    const fields = REACTIVES.ownArray<string>(ctor);
+    if (!fields.includes(key)) fields.push(key);
   });
 
   return {

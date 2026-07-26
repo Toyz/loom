@@ -15,7 +15,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols";
 
 export interface FullscreenOptions {
   /** Navigation UI preference for requestFullscreen */
@@ -38,9 +38,11 @@ export function fullscreen(opts?: FullscreenOptions) {
     const storageKey = `__fs_${fieldName}`;
 
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-      this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
+      addConnectHook(this, (host: HTMLElement) => {
+        // A LoomAttribute controller is not itself an element — compare against
+        // the element it wraps.
+        const el = hostElement(host);
         // Sync field when fullscreen changes externally (e.g., Escape key)
         const handler = () => {
           const isFs = document.fullscreenElement === el;

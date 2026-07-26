@@ -14,7 +14,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols";
 
 type ClipboardMode = "read" | "write";
 
@@ -49,16 +49,18 @@ export function clipboard(mode: ClipboardMode) {
 
     // mode === "read" — listen for paste events on the element
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-      this[CONNECT_HOOKS.key].push((el: HTMLElement) => {
+      addConnectHook(this, (host: HTMLElement) => {
+        // A LoomAttribute controller is not itself an element — listen on the
+        // element it wraps, but keep `this` binding on the raw host.
+        const dom = hostElement(host);
         const handler = (e: ClipboardEvent) => {
           const text = e.clipboardData?.getData("text/plain") ?? "";
-          method.call(el, text, e);
+          method.call(host, text, e);
         };
 
-        el.addEventListener("paste", handler);
-        return () => el.removeEventListener("paste", handler);
+        dom.addEventListener("paste", handler);
+        return () => dom.removeEventListener("paste", handler);
       });
     });
   };

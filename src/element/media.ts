@@ -17,7 +17,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { addConnectHook } from "../decorators/symbols";
 
 /**
  * @media(query) — Accessor decorator
@@ -35,9 +35,8 @@ export function media(query: string) {
     const storageKey = `__media_${fieldName}`;
 
     context.addInitializer(function (this: any) {
-      if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-      this[CONNECT_HOOKS.key].push((_el: HTMLElement) => {
+      addConnectHook(this, (_el: HTMLElement) => {
         const mql = window.matchMedia(query);
 
         // Set initial value from current match state

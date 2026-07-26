@@ -7,7 +7,7 @@
  * @unmount — Run method on disconnectedCallback
  */
 
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { addConnectHook } from "../decorators/symbols";
 import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
 
 /** Function called when update() throws or an @api fetch fails */
@@ -135,8 +135,7 @@ export function suspend() {
  */
 export function mount(method: Function, context: ClassMethodDecoratorContext) {
   context.addInitializer(function (this: any) {
-    if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-    this[CONNECT_HOOKS.key].push((el: any) => {
+    addConnectHook(this, (el: any) => {
       return method.call(el);
     });
   });
@@ -152,9 +151,8 @@ export function mount(method: Function, context: ClassMethodDecoratorContext) {
  */
 export function unmount(method: Function, context: ClassMethodDecoratorContext) {
   context.addInitializer(function (this: any) {
-    if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
     // Return a cleanup function that calls the unmount method
-    this[CONNECT_HOOKS.key].push((el: any) => {
+    addConnectHook(this, (el: any) => {
       return () => method.call(el);
     });
   });

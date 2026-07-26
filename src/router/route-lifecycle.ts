@@ -27,9 +27,8 @@ export function onRouteEnter(method: Function, context: ClassMethodDecoratorCont
   const key = String(context.name);
   context.addInitializer(function () {
     const proto = Object.getPrototypeOf(this) as object;
-    const existing = ROUTE_ENTER.from(proto) as string[] | undefined;
-    if (!existing) ROUTE_ENTER.set(proto, [key]);
-    else if (!existing.includes(key)) existing.push(key);
+    const keys = ROUTE_ENTER.ownArray<string>(proto);
+    if (!keys.includes(key)) keys.push(key);
   });
 }
 
@@ -40,8 +39,7 @@ export function onRouteLeave(method: Function, context: ClassMethodDecoratorCont
   const key = String(context.name);
   context.addInitializer(function () {
     const proto = Object.getPrototypeOf(this) as object;
-    const existing = ROUTE_LEAVE.from(proto) as string[] | undefined;
-    if (!existing) ROUTE_LEAVE.set(proto, [key]);
-    else if (!existing.includes(key)) existing.push(key);
+    const keys = ROUTE_LEAVE.ownArray<string>(proto);
+    if (!keys.includes(key)) keys.push(key);
   });
 }

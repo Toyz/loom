@@ -1,7 +1,7 @@
 import { bus, type Constructor, type Handler } from "../bus";
 import { type LoomEvent } from "../event";
 import { type CSSValue, adoptCSS } from "../css";
-import { COMPUTED_DIRTY, REACTIVES, CONNECT_HOOKS, FIRST_UPDATED_HOOKS } from "../decorators/symbols";
+import { COMPUTED_DIRTY, REACTIVES, getConnectHooks, FIRST_UPDATED_HOOKS } from "../decorators/symbols";
 import { morph } from "../morph";
 import { app } from "../app";
 import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, releaseTrace, type TraceDeps } from "../trace";
@@ -107,7 +107,7 @@ export abstract class LoomElement extends HTMLElement {
 
   connectedCallback(): void {
     // Run decorator-registered connect hooks (from @mount, @interval, @watch, etc.)
-    const hooks = CONNECT_HOOKS.from(this) as Array<(el: LoomElement) => (() => void) | void> | undefined;
+    const hooks = getConnectHooks(this);
     if (hooks) {
       for (let i = 0; i < hooks.length; i++) {
         const cleanup = hooks[i](this);

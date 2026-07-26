@@ -29,7 +29,7 @@
  *   valueChanged(old, next)         — attribute value was patched
  *   disconnect()                    — attribute removed, or element left the DOM
  *
- * Timing / watch / event decorators that route through CONNECT_HOOKS
+ * Timing / watch / event decorators that route through connect hooks
  * (@interval, @timeout, @debounce, @throttle, @watch, @on, @log, …) work on
  * attribute controllers because the base runs those hooks on connect. Shadow-
  * DOM / render decorators (@styles, @query, @dynamicCss, @slot, @form, @portal,
@@ -40,7 +40,7 @@
 import { bus, type Constructor, type Handler } from "../bus";
 import { type LoomEvent } from "../event";
 import { app, type LoomApp } from "../app";
-import { CONNECT_HOOKS } from "../decorators/symbols";
+import { getConnectHooks } from "../decorators/symbols";
 import { createDecorator } from "../decorators/create";
 import { pendingProps } from "../store/decorators";
 import { morph } from "../morph";
@@ -297,7 +297,7 @@ export abstract class LoomAttribute<A = string> {
 
   // ── Internal lifecycle driver ──
 
-  /** @internal — run connect() + CONNECT_HOOKS-registered decorators. */
+  /** @internal — run connect() + hook-registered decorators. */
   __mount(): void {
     const renders = this.update !== LoomAttribute.prototype.update;
     // @styles patches the prototype's connectedCallback to adopt sheets into
@@ -310,9 +310,7 @@ export abstract class LoomAttribute<A = string> {
     // Run decorator-registered connect hooks (@interval, @watch, @on, @dynamicCss, …).
     // Hooks receive the controller instance (which carries the decorated
     // methods + `this.shadow`), matching how LoomElement passes `this`.
-    const hooks = (this as unknown as Record<symbol, unknown>)[CONNECT_HOOKS.key] as
-      | Array<(host: this) => (() => void) | void>
-      | undefined;
+    const hooks = getConnectHooks(this);
     if (hooks) {
       for (let i = 0; i < hooks.length; i++) {
         const cleanup = hooks[i](this);

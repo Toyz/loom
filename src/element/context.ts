@@ -18,7 +18,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS, localSymbol } from "../decorators/symbols";
+import { addConnectHook, localSymbol } from "../decorators/symbols";
 import type { Schedulable } from "./element";
 
 // ── Context Request Event ──
@@ -68,7 +68,6 @@ export function provide<T>(key: (new () => T) | string | symbol) {
 
         context.addInitializer(function () {
             const self = this as object;
-            const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
 
             const hook = (el: object) => {
                 const host = el as HTMLElement & Schedulable & Record<symbol, unknown>;
@@ -119,8 +118,7 @@ export function provide<T>(key: (new () => T) | string | symbol) {
                 };
             };
 
-            if (!hooks) CONNECT_HOOKS.set(self, [hook]);
-            else hooks.push(hook);
+            addConnectHook(self, hook);
         });
 
         return {
@@ -178,7 +176,6 @@ export function consume<T>(key: (new () => T) | string | symbol) {
 
         context.addInitializer(function () {
             const self = this as object;
-            const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
 
             const hook = (el: object) => {
                 const host = el as HTMLElement & Schedulable & Record<symbol, unknown>;
@@ -221,8 +218,7 @@ export function consume<T>(key: (new () => T) | string | symbol) {
                 };
             };
 
-            if (!hooks) CONNECT_HOOKS.set(self, [hook]);
-            else hooks.push(hook);
+            addConnectHook(self, hook);
         });
 
         return {

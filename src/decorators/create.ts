@@ -32,7 +32,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS } from "./symbols";
+import { addConnectHook } from "./symbols";
 
 type ConnectFn = (element: HTMLElement) => void | (() => void);
 type MethodSetup<Args extends unknown[]> = (
@@ -77,7 +77,7 @@ export function createDecorator<Args extends unknown[] = []>(
 
   // Method decorator: (...args) => (method, context) => void
   // Setup receives (method, key, ...args).
-  // If a ConnectFn is returned, push it to CONNECT_HOOKS for LoomElement to consume.
+  // If a ConnectFn is returned, register it as a connect hook for LoomElement to consume.
   return (...args: Args) => {
     return (method: Function, context: ClassMethodDecoratorContext) => {
       const key = String(context.name);
@@ -86,8 +86,7 @@ export function createDecorator<Args extends unknown[] = []>(
       if (typeof connectFn === "function") {
         // Has lifecycle — register as connect hook
         context.addInitializer(function (this: any) {
-          if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
-          this[CONNECT_HOOKS.key].push(connectFn);
+          addConnectHook(this, connectFn);
         });
       }
     };

@@ -16,7 +16,7 @@
  * ```
  */
 
-import { CONNECT_HOOKS, hostElement } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols";
 
 // ── Types ──
 
@@ -196,9 +196,8 @@ export function hotkey(
 
     return (method: Function, context: ClassMethodDecoratorContext) => {
         context.addInitializer(function (this: any) {
-            if (!this[CONNECT_HOOKS.key]) this[CONNECT_HOOKS.key] = [];
 
-            this[CONNECT_HOOKS.key].push((host: HTMLElement) => {
+            addConnectHook(this, (host: HTMLElement) => {
                 // DOM target: the host's element (a LoomAttribute wraps `this.el`).
                 // Method binding stays on the raw host for correct `this`.
                 const dom = hostElement(host);

@@ -33,6 +33,44 @@ export class LoomSymbol<T = unknown> {
     return this.key in target;
   }
 
+  /** True when `target` carries this metadata as its OWN property, not inherited */
+  hasOwn(target: object): boolean {
+    return Object.prototype.hasOwnProperty.call(target, this.key);
+  }
+
+  /**
+   * Array metadata guaranteed to be OWN to `target` — copy-on-inherit.
+   *
+   * `from()` is a plain property read, so it walks the prototype chain. Class
+   * constructors inherit from their superclass constructor, so
+   * `REACTIVES.from(Sub)` returns the *base's* array and `.push()` mutates it
+   * in place — leaking a subclass's fields into its parent and into every
+   * sibling subclass. This returns an array the target owns, seeded from the
+   * inherited one, so extending a subclass never touches the base.
+   *
+   * Non-enumerable so metadata stays out of `Object.keys(ctor)` / static spread.
+   */
+  ownArray<E>(target: object): E[] {
+    if (this.hasOwn(target)) return (target as Record<symbol, unknown>)[this.key] as E[];
+    const inherited = (target as Record<symbol, unknown>)[this.key] as E[] | undefined;
+    const arr: E[] = inherited ? inherited.slice() : [];
+    Object.defineProperty(target, this.key, {
+      value: arr, writable: true, configurable: true, enumerable: false,
+    });
+    return arr;
+  }
+
+  /** Map metadata guaranteed to be OWN to `target` — copy-on-inherit. See {@link ownArray}. */
+  ownMap<K, V>(target: object): Map<K, V> {
+    if (this.hasOwn(target)) return (target as Record<symbol, unknown>)[this.key] as Map<K, V>;
+    const inherited = (target as Record<symbol, unknown>)[this.key] as Map<K, V> | undefined;
+    const map = inherited ? new Map<K, V>(inherited) : new Map<K, V>();
+    Object.defineProperty(target, this.key, {
+      value: map, writable: true, configurable: true, enumerable: false,
+    });
+    return map;
+  }
+
   /** Symbol description */
   get description(): string | undefined {
     return this.key.description;
@@ -91,6 +129,26 @@ export const CONNECT_HOOKS = createSymbol("connect:hooks");
 export function hostElement(host: unknown): HTMLElement {
   const el = (host as { el?: unknown })?.el;
   return (el instanceof Element ? el : host) as HTMLElement;
+}
+
+/** A connect hook: runs on connect, may return a cleanup run on disconnect. */
+export type ConnectHook = (host: any) => (() => void) | void;
+
+/**
+ * Register a connect hook on a host INSTANCE.
+ *
+ * Call from inside `context.addInitializer`, where `this` is the instance.
+ * Uses `ownArray` so the list is always an own property — otherwise a hook
+ * array reachable on a prototype would be shared, and every instance would
+ * append one more hook to it.
+ */
+export function addConnectHook(host: object, hook: ConnectHook): void {
+  CONNECT_HOOKS.ownArray<ConnectHook>(host).push(hook);
+}
+
+/** Read the connect hooks registered on a host instance. */
+export function getConnectHooks(host: object): ConnectHook[] | undefined {
+  return CONNECT_HOOKS.from(host) as ConnectHook[] | undefined;
 }
 export const FIRST_UPDATED_HOOKS = createSymbol("first-updated:hooks");
 export const SERVICE_NAME = createSymbol<string>("service:name");

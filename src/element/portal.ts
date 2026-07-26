@@ -17,7 +17,7 @@
  * Container and content are auto-removed on disconnect.
  */
 
-import { CONNECT_HOOKS, createSymbol } from "../decorators/symbols";
+import { addConnectHook, createSymbol } from "../decorators/symbols";
 import { morph } from "../morph";
 import type { Schedulable } from "./element";
 
@@ -71,7 +71,6 @@ export function portal(
             entries.push({ method, target, className, container: null });
 
             // Push a connect hook for lifecycle management
-            const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
 
             const hook = (el: object) => {
                 const host = el as HTMLElement & Schedulable & Record<symbol, unknown>;
@@ -134,8 +133,7 @@ export function portal(
                 };
             };
 
-            if (!hooks) CONNECT_HOOKS.set(self, [hook]);
-            else hooks.push(hook);
+            addConnectHook(self, hook);
         });
     };
 }

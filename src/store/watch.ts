@@ -7,7 +7,7 @@
  */
 
 import { app } from "../app";
-import { WATCHERS, CONNECT_HOOKS } from "../decorators/symbols";
+import { WATCHERS, addConnectHook } from "../decorators/symbols";
 import type { Schedulable } from "../element/element";
 
 /**
@@ -56,7 +56,6 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
       const service = target as new (...args: unknown[]) => unknown;
       context.addInitializer(function () {
         const self = this as object;
-        const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
         const hook = (el: object) => {
           const svc = app.get(service);
           const reactive = prop ? (svc as Record<string, unknown>)[prop] : svc;
@@ -71,14 +70,12 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
           });
           return unsub;
         };
-        if (!hooks) CONNECT_HOOKS.set(self, [hook]);
-        else hooks.push(hook);
+        addConnectHook(self, hook);
       });
     } else if (typeof target === "object" && typeof target.subscribe === "function") {
       // Form 2: direct Reactive instance — subscribe on connect via CONNECT_HOOKS
       context.addInitializer(function () {
         const self = this as object;
-        const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
         const hook = (el: object) => {
           const unsub = target.subscribe((v: unknown, prev: unknown) => {
             method.call(el, v, prev);
@@ -86,8 +83,7 @@ export function watch(target: string | { subscribe: Function; value: unknown } |
           });
           return unsub;
         };
-        if (!hooks) CONNECT_HOOKS.set(self, [hook]);
-        else hooks.push(hook);
+        addConnectHook(self, hook);
       });
     }
   };

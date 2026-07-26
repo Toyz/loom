@@ -1,4 +1,4 @@
-import { CONNECT_HOOKS, localSymbol } from "../decorators/symbols";
+import { addConnectHook, localSymbol } from "../decorators/symbols";
 import type { Schedulable } from "./element";
 /**
  * Loom — @slot<...T> decorator (TC39 Stage 3)
@@ -29,7 +29,6 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
 
     context.addInitializer(function () {
       const self = this as object;
-      const hooks = CONNECT_HOOKS.from(self) as Array<(el: object) => (() => void) | void> | undefined;
       const hook = (el: object) => {
         const host = el as Schedulable & { shadow: ShadowRoot; track: (fn: () => void) => void } & Record<symbol, unknown>;
         // Defer to allow update() to render the slot elements first
@@ -50,8 +49,7 @@ export function slot<T extends Element[] = [Element]>(name?: string) {
           host.track(() => slotEl.removeEventListener("slotchange", updateSlotted));
         });
       };
-      if (!hooks) CONNECT_HOOKS.set(self, [hook]);
-      else hooks.push(hook);
+      addConnectHook(self, hook);
     });
 
     return {
