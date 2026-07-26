@@ -7,11 +7,11 @@
  */
 import { LoomElement } from "@toyz/loom";
 
-const QUICK = `import { permission, type LoomPermissionState } from "@toyz/loom/element";
+const QUICK = `import { permission, Permission, type LoomPermissionState } from "@toyz/loom/element";
 
 @component("location-button")
 class LocationButton extends LoomElement {
-  @permission("geolocation")
+  @permission(Permission.Geolocation)
   accessor geo: LoomPermissionState = "prompt";
 
   update() {
@@ -28,6 +28,16 @@ class LocationButton extends LoomElement {
     );
   }
 }`;
+
+const NAMES_EXAMPLE = `import { permission, Permission } from "@toyz/loom/element";
+
+// Typed: autocompletes, and cannot be misspelt
+@permission(Permission.ClipboardRead)
+accessor clip: LoomPermissionState = "prompt";
+
+// Raw string: for anything newer than the registry
+@permission("compute-pressure")
+accessor cpu: LoomPermissionState = "prompt";`;
 
 export default class PageDecoratorPermission extends LoomElement {
   update() {
@@ -62,6 +72,57 @@ export default class PageDecoratorPermission extends LoomElement {
             </p>
             <code-block lang="tsx" code={QUICK}></code-block>
           </api-entry>
+        </doc-section>
+
+        <doc-section heading="Names">
+          <p>
+            <span class="ic">Permission</span> holds the known names so a call site does not
+            depend on remembering a string. It is for discovery and spelling, not a gate — a
+            raw string still works, which matters because the registry cannot keep up with
+            every engine:
+          </p>
+          <code-block lang="ts" code={NAMES_EXAMPLE}></code-block>
+          <p>
+            The first group is everything in TypeScript's own
+            <span class="ic"> PermissionName</span> union. The second is implemented by engines
+            but absent from it, which is the reason the parameter is not typed as
+            <span class="ic">PermissionName</span> — doing so would reject
+            <span class="ic">"clipboard-read"</span>, which browsers do support.
+          </p>
+          <table class="api-table">
+            <thead><tr><th>Constant</th><th>Name</th><th>In lib.dom</th></tr></thead>
+            <tbody>
+              <tr><td><code>Permission.Camera</code></td><td><code>camera</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.Geolocation</code></td><td><code>geolocation</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.Microphone</code></td><td><code>microphone</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.Midi</code></td><td><code>midi</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.Notifications</code></td><td><code>notifications</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.PersistentStorage</code></td><td><code>persistent-storage</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.Push</code></td><td><code>push</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.ScreenWakeLock</code></td><td><code>screen-wake-lock</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.StorageAccess</code></td><td><code>storage-access</code></td><td>yes</td></tr>
+              <tr><td><code>Permission.ClipboardRead</code></td><td><code>clipboard-read</code></td><td>no</td></tr>
+              <tr><td><code>Permission.ClipboardWrite</code></td><td><code>clipboard-write</code></td><td>no</td></tr>
+              <tr><td><code>Permission.Bluetooth</code></td><td><code>bluetooth</code></td><td>no</td></tr>
+              <tr><td><code>Permission.DisplayCapture</code></td><td><code>display-capture</code></td><td>no</td></tr>
+              <tr><td><code>Permission.IdleDetection</code></td><td><code>idle-detection</code></td><td>no</td></tr>
+              <tr><td><code>Permission.LocalFonts</code></td><td><code>local-fonts</code></td><td>no</td></tr>
+              <tr><td><code>Permission.WindowManagement</code></td><td><code>window-management</code></td><td>no</td></tr>
+              <tr><td><code>Permission.Accelerometer</code></td><td><code>accelerometer</code></td><td>no</td></tr>
+              <tr><td><code>Permission.Gyroscope</code></td><td><code>gyroscope</code></td><td>no</td></tr>
+              <tr><td><code>Permission.Magnetometer</code></td><td><code>magnetometer</code></td><td>no</td></tr>
+              <tr><td><code>Permission.AmbientLightSensor</code></td><td><code>ambient-light-sensor</code></td><td>no</td></tr>
+              <tr><td><code>Permission.BackgroundSync</code></td><td><code>background-sync</code></td><td>no</td></tr>
+              <tr><td><code>Permission.PeriodicBackgroundSync</code></td><td><code>periodic-background-sync</code></td><td>no</td></tr>
+              <tr><td><code>Permission.PaymentHandler</code></td><td><code>payment-handler</code></td><td>no</td></tr>
+              <tr><td><code>Permission.SpeakerSelection</code></td><td><code>speaker-selection</code></td><td>no</td></tr>
+              <tr><td><code>Permission.Nfc</code></td><td><code>nfc</code></td><td>no</td></tr>
+            </tbody>
+          </table>
+          <doc-notification type="note">
+            Being in the list is not a promise that an engine implements it — support varies
+            widely, and that is precisely what <span class="ic">"unsupported"</span> is for.
+          </doc-notification>
         </doc-section>
 
         <doc-section heading="unsupported is not denied">

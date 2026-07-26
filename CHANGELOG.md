@@ -68,7 +68,11 @@ existing suite could not see.
   into `"denied"`: denied means stop, unsupported means the browser will not
   say in advance, so attempt it and handle the failure. Disconnecting before
   the async query resolves attaches no listener and writes nothing to the
-  detached element.
+  detached element. Names come from a typed `Permission` registry so a call
+  site does not depend on remembering a string, while a raw string still
+  works — the parameter is deliberately not typed as lib.dom's
+  `PermissionName`, whose union omits names browsers do implement, such as
+  `clipboard-read`.
 - **`LoomEvent<T>` payload events.** An event that is only a bag of data no
   longer needs a constructor written for it: declare the payload as a type
   parameter and it arrives as `.data`. `T` defaults to `void`, so every

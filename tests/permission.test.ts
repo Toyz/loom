@@ -9,7 +9,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { LoomElement, component } from "../src/index";
 import { cleanup } from "../src/testing";
-import { permission, type LoomPermissionState } from "../src/element/permission";
+import { permission, Permission, type LoomPermissionState } from "../src/element/permission";
 
 const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms));
 
@@ -199,5 +199,65 @@ describe("@permission", () => {
     el.remove();
     await tick(10);
     expect(f.listenerCount).toBe(0);
+  });
+});
+
+describe("Permission registry", () => {
+  it("works as the decorator argument", async () => {
+    const f = fakeStatus("granted");
+    const query = vi.fn().mockResolvedValue(f.status);
+    setPermissions({ query });
+
+    const tag = nextTag();
+    @component(tag)
+    class Host extends LoomElement {
+      @permission(Permission.Geolocation)
+      accessor geo: LoomPermissionState = "prompt";
+      update() { return document.createTextNode(this.geo); }
+    }
+
+    customElements.define(tag, Host);
+    const el = document.createElement(tag) as Host;
+    document.body.appendChild(el);
+    await tick(10);
+
+    // the constant resolves to the string the API actually expects
+    expect(query).toHaveBeenCalledWith({ name: "geolocation" });
+    expect(el.geo).toBe("granted");
+    el.remove();
+  });
+
+  it("still accepts a raw string, including names not in the registry", async () => {
+    const f = fakeStatus("prompt");
+    const query = vi.fn().mockResolvedValue(f.status);
+    setPermissions({ query });
+
+    const tag = nextTag();
+    @component(tag)
+    class Host extends LoomElement {
+      @permission("compute-pressure")
+      accessor cpu: LoomPermissionState = "prompt";
+      update() { return document.createTextNode(this.cpu); }
+    }
+
+    customElements.define(tag, Host);
+    const el = document.createElement(tag) as Host;
+    document.body.appendChild(el);
+    await tick(10);
+
+    expect(query).toHaveBeenCalledWith({ name: "compute-pressure" });
+    el.remove();
+  });
+
+  it("holds only lower-case wire names, never the friendly key", () => {
+    for (const value of Object.values(Permission)) {
+      expect(value).toBe(value.toLowerCase());
+      expect(value).not.toContain(" ");
+    }
+  });
+
+  it("has no duplicate values", () => {
+    const values = Object.values(Permission);
+    expect(new Set(values).size).toBe(values.length);
   });
 });

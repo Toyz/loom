@@ -66,8 +66,8 @@ export type { PortalOptions } from "./portal";
 
 // Media: reactive media query binding
 export { media } from "./media";
-export { permission } from "./permission";
-export type { LoomPermissionState } from "./permission";
+export { permission, Permission } from "./permission";
+export type { LoomPermissionState, PermissionKey, PermissionNameLike } from "./permission";
 
 // Fullscreen: toggle fullscreen API
 export { fullscreen } from "./fullscreen";

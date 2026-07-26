@@ -39,16 +39,75 @@ import { addConnectHook } from "../decorators/symbols";
 export type LoomPermissionState = PermissionState | "unsupported";
 
 /**
+ * Known permission names, so a call site does not depend on remembering a
+ * magic string.
+ *
+ * The first group is everything in the DOM lib's own `PermissionName` union.
+ * The second is widely implemented but not in that union, which is why the
+ * decorator accepts a plain string as well — the registry is for discovery
+ * and spelling, not a gate. A name no engine implements simply reports
+ * `"unsupported"`, the same as one that is merely absent here.
+ *
+ * ```ts
+ * @permission(Permission.Geolocation) accessor geo: LoomPermissionState = "prompt";
+ * @permission("compute-pressure")     accessor cpu: LoomPermissionState = "prompt";
+ * ```
+ */
+export const Permission = {
+  // In lib.dom's PermissionName
+  Camera: "camera",
+  Geolocation: "geolocation",
+  Microphone: "microphone",
+  Midi: "midi",
+  Notifications: "notifications",
+  PersistentStorage: "persistent-storage",
+  Push: "push",
+  ScreenWakeLock: "screen-wake-lock",
+  StorageAccess: "storage-access",
+
+  // Implemented by engines, absent from that union
+  ClipboardRead: "clipboard-read",
+  ClipboardWrite: "clipboard-write",
+  Accelerometer: "accelerometer",
+  AmbientLightSensor: "ambient-light-sensor",
+  BackgroundSync: "background-sync",
+  Bluetooth: "bluetooth",
+  DisplayCapture: "display-capture",
+  Gyroscope: "gyroscope",
+  IdleDetection: "idle-detection",
+  LocalFonts: "local-fonts",
+  Magnetometer: "magnetometer",
+  Nfc: "nfc",
+  PaymentHandler: "payment-handler",
+  PeriodicBackgroundSync: "periodic-background-sync",
+  SpeakerSelection: "speaker-selection",
+  WindowManagement: "window-management",
+} as const;
+
+/** Any value of {@link Permission}. */
+export type PermissionKey = (typeof Permission)[keyof typeof Permission];
+
+/**
+ * What `@permission` accepts.
+ *
+ * `string & {}` keeps the known names in autocomplete while still allowing
+ * anything — a plain `string` in the union would collapse the literals and
+ * suggest nothing.
+ */
+export type PermissionNameLike = PermissionKey | PermissionName | (string & {});
+
+
+/**
  * @permission(name) — accessor decorator.
  *
  * Binds the field to `navigator.permissions.query({ name })`. Resolution is
  * async, so the field holds its declared initial value until the first answer
  * arrives; declare it `"prompt"` unless you have a reason not to.
  *
- * @param name A `PermissionName`, e.g. `"geolocation"`, `"notifications"`,
- *   `"clipboard-read"`, `"camera"`, `"microphone"`, `"push"`.
+ * @param name A value of {@link Permission}, or any permission string. Names
+ *   the engine does not implement report `"unsupported"`.
  */
-export function permission(name: PermissionName | string) {
+export function permission(name: PermissionNameLike) {
   return function (
     _target: ClassAccessorDecoratorTarget<any, LoomPermissionState>,
     context: ClassAccessorDecoratorContext,
