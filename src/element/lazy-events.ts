@@ -5,7 +5,7 @@
  * Listen with @on(LazyLoadStart) or @on(LazyLoadEnd).
  */
 
-import { LoomEvent } from "../event";
+import { LoomEvent } from "../event.js";
 
 /** Emitted when a @lazy component begins loading its module */
 export class LazyLoadStart extends LoomEvent {

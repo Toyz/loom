@@ -15,13 +15,13 @@
  * Set autoResize={false} and width/height props for fixed-size canvases.
  */
 
-import { LoomElement } from "./element";
-import { component, query, styles } from "./decorators";
-import { prop } from "../store/decorators";
-import { css } from "../css";
-import { animationFrame } from "./timing";
-import { event } from "./events";
-import { observer } from "./observers";
+import { LoomElement } from "./element.js";
+import { component, query, styles } from "./decorators.js";
+import { prop } from "../store/decorators.js";
+import { css } from "../css.js";
+import { animationFrame } from "./timing.js";
+import { event } from "./events.js";
+import { observer } from "./observers.js";
 
 const canvasStyles = css`
   :host {

@@ -11,9 +11,9 @@ import {
   type LoomEventMap,
   type LoomPropMap,
   type LoomNode,
-} from "./morph";
-import { startSubTrace, endSubTrace, addBinding } from "./trace";
-import { hasRegisteredAttributes, isRegisteredAttr, setAttrArg } from "./element/attribute";
+} from "./morph.js";
+import { startSubTrace, endSubTrace, addBinding } from "./trace.js";
+import { hasRegisteredAttributes, isRegisteredAttr, setAttrArg } from "./element/attribute.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const SVG_TAGS = new Set([
@@ -207,6 +207,21 @@ export function jsx(
     }
   }
 
+  // Record which attributes the template declared, so morph knows which ones
+  // it is allowed to remove later. Read back off the element rather than
+  // tracked at each setAttribute call site: there are eight of those across
+  // three branches, and a missed one silently reintroduces exactly the bug
+  // this exists to prevent.
+  //
+  // Only for elements that actually got attributes -- wrappers with none are
+  // the common case and allocate nothing.
+  // getAttributeNames() hands back a plain array in one call. Walking
+  // el.attributes by index goes through the live NamedNodeMap for every entry,
+  // which measured ~24% off attribute-heavy element creation.
+  if (el.attributes.length > 0) {
+    (el as unknown as LoomNode).__loomAttrs = el.getAttributeNames();
+  }
+
   appendChildren(el, props?.children);
   return el;
 }
@@ -305,6 +320,18 @@ export interface LoomHTMLAttributes extends LoomCustomAttributes {
   enterKeyHint?: "enter" | "done" | "go" | "next" | "previous" | "search" | "send";
   innerHTML?: string;
   rawHTML?: string;
+  /**
+   * Top-layer attributes. `@popover` drives a `[popover]` element, so writing
+   * one in JSX is the normal way to use it -- without these the decorator
+   * ships with no way to declare its own target.
+   */
+  popover?: "auto" | "manual" | "hint" | "" | boolean;
+  popoverTarget?: string;
+  popoverTargetAction?: "toggle" | "show" | "hide";
+  /** Makes a subtree unfocusable and invisible to assistive tech. */
+  inert?: MaybeReactive<boolean>;
+  /** For <dialog>. Prefer showModal() over setting this by hand. */
+  open?: MaybeReactive<boolean>;
   [key: `aria-${string}`]: MaybeReactive<string | number | boolean | undefined>;
   [key: `data-${string}`]: string | number | boolean | undefined;
   ref?: (el: HTMLElement) => void;

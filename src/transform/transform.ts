@@ -11,7 +11,7 @@
  * ```
  */
 
-import { TRANSFORMS } from "../decorators/symbols";
+import { TRANSFORMS } from "../decorators/symbols.js";
 
 /**
  * Auto-accessor decorator that registers a transform function.

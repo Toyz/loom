@@ -23,7 +23,7 @@ export interface TransitionOptions {
   leaveClass?: string;
 }
 
-import { localSymbol } from "../decorators/symbols";
+import { localSymbol } from "../decorators/symbols.js";
 
 /**
  * @transition(opts) — Method decorator

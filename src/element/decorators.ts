@@ -7,10 +7,12 @@
  * @styles   — Adopt CSSStyleSheets on connect (class decorator)
  */
 
-import { PROPS, TRANSFORMS, REACTIVES, addConnectHook } from "../decorators/symbols";
-import { app } from "../app";
-import { createDecorator } from "../decorators/create";
-import { pendingProps } from "../store/decorators";
+import { makeFormAssociated } from "./form-associated.js";
+import { toSheet, type LazyStyleSheet } from "../css.js";
+import { PROPS, TRANSFORMS, REACTIVES, addConnectHook } from "../decorators/symbols.js";
+import { app } from "../app.js";
+import { createDecorator } from "../decorators/create.js";
+import { pendingProps } from "../store/decorators.js";
 
 /**
  * @dynamicCss reactive-symbol cache, keyed on the EXACT constructor.
@@ -28,8 +30,14 @@ const _dynCssSyms = new WeakMap<Function, symbol[]>();
  * class MyCounter extends LoomElement { ... }
  * ```
  */
-export const component = createDecorator<[tag: string, opts?: { shadow?: boolean }]>((ctor, tag, opts) => {
+export const component = createDecorator<
+  [tag: string, opts?: { shadow?: boolean; formAssociated?: boolean }]
+>((ctor, tag, opts) => {
   if (opts?.shadow === false) (ctor as any).__loom_noshadow = true;
+  // Must be set before customElements.define reads it -- the browser latches
+  // `formAssociated` at definition time, so setting it later does nothing and
+  // fails silently, which is the trap this option exists to avoid.
+  if (opts?.formAssociated) makeFormAssociated(ctor);
   // Flush pendingProps from @prop decorators (member decorators run before class decorators).
   // ownMap, not a raw read: `ctor[PROPS.key]` resolves through the static
   // prototype chain, so a subclass would mutate its base's Map in place and
@@ -198,7 +206,7 @@ export function queryAll<V = any>(selector: string) {
  *
  * Multiple `@styles()` calls stack (all sheets are adopted).
  */
-export function styles(...sheets: CSSStyleSheet[]) {
+export function styles(...sheets: Array<CSSStyleSheet | LazyStyleSheet>) {
   return (value: Function, _context: ClassDecoratorContext) => {
     const orig = value.prototype.connectedCallback;
     value.prototype.connectedCallback = function () {
@@ -209,10 +217,15 @@ export function styles(...sheets: CSSStyleSheet[]) {
         : this.shadow;
 
       if ('adoptedStyleSheets' in root) {
+        // Resolved here, not at module scope: a lazy sheet exists so that
+        // importing the module does not require a DOM, and this is the first
+        // point where one is guaranteed.
+        const resolved = sheets.map(toSheet);
         const existing = root.adoptedStyleSheets;
         const toAdd: CSSStyleSheet[] = [];
-        for (let i = 0; i < sheets.length; i++) {
-          if (!existing.includes(sheets[i])) toAdd.push(sheets[i]);
+        for (let i = 0; i < resolved.length; i++) {
+          const sheet = resolved[i]!;
+          if (!existing.includes(sheet)) toAdd.push(sheet);
         }
         if (toAdd.length > 0) {
           root.adoptedStyleSheets = existing.concat(toAdd);

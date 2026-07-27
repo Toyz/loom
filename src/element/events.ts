@@ -24,7 +24,7 @@
  * dispatch would need to be an explicit opt-in rather than silent behavior.
  */
 
-import { localSymbol } from "../decorators/symbols";
+import { localSymbol } from "../decorators/symbols.js";
 
 /**
  * Decorator for typed event callback props.

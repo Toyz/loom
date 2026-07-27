@@ -5,13 +5,14 @@
  * Mirrors createFormState's pattern.
  */
 
-import type { ApiState, ApiOptions, ApiCtx, InterceptRegistration } from "./types";
-import { interceptRegistry } from "./registry";
-import { app } from "../app";
-import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
-import { LoomResult } from "../result";
-import { bus } from "../bus";
-import { ApiStale } from "./events";
+import type { ApiState, ApiOptions, ApiCtx, InterceptRegistration } from "./types.js";
+import { interceptRegistry } from "./registry.js";
+import { app } from "../app.js";
+import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols.js";
+import { LoomResult } from "../result.js";
+import { bus } from "../bus.js";
+import { ApiStale } from "./events.js";
+import { isVisible, onVisibilityChange } from "../env.js";
 
 
 /** Create an ApiState<T> instance bound to a host element */
@@ -30,8 +31,12 @@ export function createApiState<T>(
   let controller: AbortController | null = null;
   let fetching = false;
 
+  /** True once a request has gone out with the gate open, until it shuts. */
+  let gateOpen = false;
+
   const staleTime = opts.staleTime ?? 0;
   const revalidate = opts.revalidate ?? true;
+  const pauseWhenHidden = opts.pauseWhenHidden ?? true;
   const maxRetries = opts.retry ?? 0;
 
   /** Whether a request is allowed right now. No gate declared means always. */
@@ -47,6 +52,13 @@ export function createApiState<T>(
       scheduleUpdate();
       return;
     }
+    // A request is going out with the gate open, so the gate is armed --
+    // whoever started this one (the initial fetch, a key change, refetch())
+    // counts. Tracking that only in checkGate() meant the initial fetch left
+    // it disarmed, and the first render then queued a second identical
+    // request; the old `data === undefined` guard hid that by also breaking
+    // reopen.
+    gateOpen = true;
 
     // Abort any in-flight request
     controller?.abort();
@@ -194,17 +206,32 @@ export function createApiState<T>(
    * finally arrives — `enabled` flips but the key was undefined before and is
    * undefined-shaped still. Deferred for the same reason checkKey() is: this
    * runs inside a getter read during a traced render.
+   *
+   * A gate that has already delivered data still re-arms. The old condition
+   * also required `data === undefined`, which made the gate one-shot: close it
+   * and reopen it — switch away from a tab and back, log out and back in — and
+   * the query kept serving whatever it had loaded the first time, with nothing
+   * left to trigger a refetch since the key had not moved. Worse, `gateOpen`
+   * never flipped back to true in that state, so it stayed unarmed for good.
+   *
+   * Whether reopening actually fetches is `staleTime`'s call, which is the
+   * same question it answers everywhere else: at the default of 0 the data was
+   * never fresh to begin with, so reopening refetches; set it, and a gate that
+   * reopens inside the window serves what it has.
    */
-  let gateOpen = false;
   function checkGate(): void {
     if (!opts.enabled) return;
     const open = isEnabled();
-    if (open && !gateOpen && data === undefined && !fetching) {
-      gateOpen = true;
-      queueMicrotask(runFetch);
-    } else if (!open) {
+    if (!open) {
       gateOpen = false;
+      return;
     }
+    if (gateOpen || fetching) return;
+    gateOpen = true;
+    if (data !== undefined && staleTime > 0 && Date.now() - lastFetchTime <= staleTime) {
+      return; // still fresh — reopening is not a reason to spend a request
+    }
+    queueMicrotask(runFetch);
   }
 
   /**
@@ -229,10 +256,36 @@ export function createApiState<T>(
         // transition, and neither may run synchronously from this getter.
         queueMicrotask(() => {
           bus.emit(new ApiStale(apiName ?? "", lastKey, host));
-          if (shouldRefetch && !fetching) runFetch();
+          if (!shouldRefetch || fetching) return;
+          if (pauseWhenHidden && !isVisible()) {
+            // Nobody is looking. Revalidating a background tab spends a
+            // request, and on a phone a radio wake-up, to update pixels that
+            // are not on screen -- and a tab left open overnight would do it
+            // on a timer forever. Deferred to the return instead.
+            waitForVisible();
+            return;
+          }
+          runFetch();
         });
       }
     }
+  }
+
+  /**
+   * Refetch once the page comes back, if the data is still stale by then.
+   *
+   * One listener per state at most: a component read while hidden can trip
+   * checkStale on every render, and each would otherwise queue its own.
+   */
+  let visibilityWait: (() => void) | null = null;
+  function waitForVisible(): void {
+    if (visibilityWait) return;
+    visibilityWait = onVisibilityChange((nowVisible) => {
+      if (!nowVisible) return;
+      visibilityWait?.();
+      visibilityWait = null;
+      if (stale && !fetching && isEnabled()) runFetch();
+    });
   }
 
 
@@ -274,6 +327,10 @@ export function createApiState<T>(
       // detached element.
       controller?.abort();
       controller = null;
+      // And the visibility listener, or a query that went stale while hidden
+      // holds a reference to a disposed state for the life of the page.
+      visibilityWait?.();
+      visibilityWait = null;
     },
 
     // ── LoomResult combinators ──

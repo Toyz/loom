@@ -8,12 +8,12 @@
  * @persist  — Single-value persistent accessor (auto-accessor)
  */
 
-import { REACTIVES, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, localSymbol } from "../decorators/symbols";
-import { Reactive } from "./reactive";
-import { bus } from "../bus";
-import type { PersistOptions, StorageAdapter } from "./storage";
-import { LocalAdapter } from "./storage";
-import type { Schedulable } from "../element/element";
+import { REACTIVES, WATCHERS, EMITTERS, COMPUTED_DIRTY, ROUTE_PROPS, localSymbol } from "../decorators/symbols.js";
+import { Reactive } from "./reactive.js";
+import { bus } from "../bus.js";
+import type { PersistOptions, StorageAdapter } from "./storage.js";
+import { LocalAdapter } from "./storage.js";
+import type { Schedulable } from "../element/element.js";
 
 /**
  * Staging area for @prop registrations.
@@ -81,7 +81,7 @@ export function reactive<This extends object, V>(
         if (emitters) {
           for (let i = 0; i < emitters.length; i++) {
             const e = emitters[i];
-            if (e.field === key) r.subscribe((v: V) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+            if (e.field === key) r.subscribe((v: V) => bus.emit(e.factory(v) as import("../event.js").LoomEvent));
           }
         }
       }
@@ -313,7 +313,7 @@ function buildStoreAccessor<This extends object, T extends object>(
     if (emitters) {
       for (let i = 0; i < emitters.length; i++) {
         const e = emitters[i];
-        if (e.field === key) r.subscribe((v: T) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+        if (e.field === key) r.subscribe((v: T) => bus.emit(e.factory(v) as import("../event.js").LoomEvent));
       }
     }
 
@@ -483,7 +483,7 @@ export function store<This extends object, T extends object>(
           if (emitters) {
             for (let i = 0; i < emitters.length; i++) {
               const e = emitters[i];
-              if (e.field === key) r.subscribe((v: T) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+              if (e.field === key) r.subscribe((v: T) => bus.emit(e.factory(v) as import("../event.js").LoomEvent));
             }
           }
 
@@ -671,7 +671,7 @@ function buildPersistAccessor<This extends object, V>(
         if (emitters) {
           for (let i = 0; i < emitters.length; i++) {
             const e = emitters[i];
-            if (e.field === fieldName) r.subscribe((v: V) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+            if (e.field === fieldName) r.subscribe((v: V) => bus.emit(e.factory(v) as import("../event.js").LoomEvent));
           }
         }
       }

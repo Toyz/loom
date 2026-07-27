@@ -7,16 +7,16 @@
  * Models interceptors after @guard: named, globally registered, DI-aware.
  */
 
-import { createDecorator } from "../decorators/create";
-import type { ApiState, ApiOptions, InterceptRegistration } from "./types";
-import { Reactive } from "../store/reactive";
-import { createApiState } from "./state";
-import { interceptRegistry } from "./registry";
-import type { Schedulable } from "../element/element";
-import { WATCHERS, localSymbol, addConnectHook } from "../decorators/symbols";
+import { createDecorator } from "../decorators/create.js";
+import type { ApiState, ApiOptions, InterceptRegistration } from "./types.js";
+import { Reactive } from "../store/reactive.js";
+import { createApiState } from "./state.js";
+import { interceptRegistry } from "./registry.js";
+import type { Schedulable } from "../element/element.js";
+import { WATCHERS, localSymbol, addConnectHook } from "../decorators/symbols.js";
 
 // Re-export for barrel
-export { interceptRegistry } from "./registry";
+export { interceptRegistry } from "./registry.js";
 
 
 

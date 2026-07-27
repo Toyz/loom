@@ -15,7 +15,7 @@
  *     the element fast-patches those DOM nodes directly.
  */
 
-import type { Reactive } from "./store/reactive";
+import type { Reactive } from "./store/reactive.js";
 
 // ── Types ──
 

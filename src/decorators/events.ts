@@ -5,9 +5,9 @@
  * @emit — Auto-broadcast to the bus (field or method form)
  */
 
-import { EMITTERS, ON_HANDLERS, addConnectHook, hostElement } from "./symbols";
-import { LoomEvent } from "../event";
-import { bus, type Constructor } from "../bus";
+import { EMITTERS, ON_HANDLERS, addConnectHook, hostElement } from "./symbols.js";
+import { LoomEvent } from "../event.js";
+import { bus, type Constructor } from "../bus.js";
 
 /**
  * Declarative event subscription. Auto-subscribed on connect, auto-cleaned on disconnect.
@@ -37,11 +37,11 @@ import { bus, type Constructor } from "../bus";
  * onClick(e: MouseEvent) { ... }
  * ```
  */
-export function on<T extends LoomEvent>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
+export function on<T extends LoomEvent<any>>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function on(event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function on(target: EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 export function on(resolver: (el: any) => EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
-export function on(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget) | string, event?: string) {
+export function on(typeOrTargetOrEvent: Constructor<LoomEvent<any>> | EventTarget | ((el: any) => EventTarget) | string, event?: string) {
   return (method: Function, context: ClassMethodDecoratorContext) => {
     const key = String(context.name);
 
@@ -76,7 +76,7 @@ export function on(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | (
           target.addEventListener(evName!, fn);
           return () => target.removeEventListener(evName!, fn);
         } else {
-          return bus.on(typeOrTargetOrEvent as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
+          return bus.on(typeOrTargetOrEvent as Constructor<LoomEvent<any>>, (e: LoomEvent<any>) => method.call(el, e));
         }
       });
     });
@@ -101,7 +101,7 @@ export function on(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | (
  * accessor selectedIndex = 0;
  * ```
  */
-export function emit<T extends LoomEvent>(
+export function emit<T extends LoomEvent<any>>(
   _type?: Constructor<T>,
   factory?: (val: unknown) => T,
 ) {
@@ -143,11 +143,11 @@ export function emit<T extends LoomEvent>(
  * Bus event: `\@on.once(AuthComplete)`
  * DOM event: `\@on.once(window, "load")` — uses `{ once: true }`
  */
-function onOnce<T extends LoomEvent>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
+function onOnce<T extends LoomEvent<any>>(type: Constructor<T>): (method: Function, context: ClassMethodDecoratorContext) => void;
 function onOnce(event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 function onOnce(target: EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
 function onOnce(resolver: (el: any) => EventTarget, event: string): (method: Function, context: ClassMethodDecoratorContext) => void;
-function onOnce(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | ((el: any) => EventTarget) | string, event?: string) {
+function onOnce(typeOrTargetOrEvent: Constructor<LoomEvent<any>> | EventTarget | ((el: any) => EventTarget) | string, event?: string) {
   return (method: Function, context: ClassMethodDecoratorContext) => {
     const selfHost = typeof typeOrTargetOrEvent === "string";
     const evName = selfHost ? (typeOrTargetOrEvent as string) : event;
@@ -165,7 +165,7 @@ function onOnce(typeOrTargetOrEvent: Constructor<LoomEvent> | EventTarget | ((el
           return () => target.removeEventListener(evName!, fn);
         } else {
           // Bus event — use bus.once() for auto-unsubscribe
-          return bus.once(typeOrTargetOrEvent as Constructor<LoomEvent>, (e: LoomEvent) => method.call(el, e));
+          return bus.once(typeOrTargetOrEvent as Constructor<LoomEvent<any>>, (e: LoomEvent<any>) => method.call(el, e));
         }
       });
     });

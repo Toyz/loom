@@ -1,11 +1,11 @@
-import { bus, type Constructor, type Handler } from "../bus";
-import { type LoomEvent } from "../event";
-import { type CSSValue, adoptCSS } from "../css";
-import { COMPUTED_DIRTY, REACTIVES, getConnectHooks } from "../decorators/symbols";
-import { morph } from "../morph";
-import { app } from "../app";
-import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, releaseTrace, type TraceDeps } from "../trace";
-import { hasRegisteredAttributes, observeAttributes } from "./attribute";
+import { bus, type Constructor, type Handler } from "../bus.js";
+import { type LoomEvent } from "../event.js";
+import { type CSSValue, adoptCSS } from "../css.js";
+import { COMPUTED_DIRTY, REACTIVES, getConnectHooks } from "../decorators/symbols.js";
+import { morph } from "../morph.js";
+import { app } from "../app.js";
+import { startTrace, endTrace, hasDirtyDeps, canFastPatch, applyBindings, refreshSnapshots, releaseTrace, type TraceDeps } from "../trace.js";
+import { hasRegisteredAttributes, observeAttributes } from "./attribute.js";
 
 /**
  * Structural type for objects that support Loom's render scheduling.
@@ -33,6 +33,18 @@ export abstract class LoomElement extends HTMLElement {
    * without monkey-patching _flushUpdate. Undefined until something registers.
    */
   __afterUpdate?: Array<() => void>;
+  /**
+   * @internal — wraps the commit half of a full render. Set by
+   * `@viewTransition` so the morph happens inside
+   * `document.startViewTransition`. Undefined means render inline, which is
+   * the default and costs nothing.
+   *
+   * `declare` is load-bearing. Under ES2022 class-field semantics a plain
+   * `x?: T` field is *defined* on every instance as undefined, which would
+   * shadow the prototype value the decorator assigns -- the feature would
+   * silently never engage.
+   */
+  declare __renderWrapper?: (commit: () => void) => void;
 
   constructor() {
     super();
@@ -93,7 +105,7 @@ export abstract class LoomElement extends HTMLElement {
   }
 
   /** Emit a typed event */
-  protected emit<T extends LoomEvent>(event: T): void {
+  protected emit<T extends LoomEvent<any>>(event: T): void {
     bus.emit(event);
   }
 
@@ -301,17 +313,40 @@ export abstract class LoomElement extends HTMLElement {
     if (this.__traceDeps) releaseTrace(this.__traceDeps);
     this.__traceDeps = endTrace();
 
-    // Auto-morph if update() returned DOM nodes
-    if (result != null) {
-      morph(this.shadow, result);
-    }
+    // Auto-morph if update() returned DOM nodes.
+    //
+    // The two branches say the same thing. The uninstrumented one is written
+    // out rather than always building a closure, because this is the full
+    // render path and nothing should pay for a feature it does not use.
+    const wrap = this.__renderWrapper;
+    if (wrap === undefined) {
+      if (result != null) {
+        morph(this.shadow, result);
+      }
 
-    if (!this._hasUpdated) {
-      this._hasUpdated = true;
-      this.firstUpdated();
-    }
+      if (!this._hasUpdated) {
+        this._hasUpdated = true;
+        this.firstUpdated();
+      }
 
-    this._runAfterUpdate();
+      this._runAfterUpdate();
+    } else {
+      // firstUpdated and the after-update hooks have to run *inside* the
+      // wrapper: a view transition defers the callback to its own frame, and
+      // running them out here would fire them against the pre-morph DOM.
+      wrap.call(this, () => {
+        if (result != null) {
+          morph(this.shadow, result);
+        }
+
+        if (!this._hasUpdated) {
+          this._hasUpdated = true;
+          this.firstUpdated();
+        }
+
+        this._runAfterUpdate();
+      });
+    }
   }
 
   /**

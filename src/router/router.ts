@@ -5,17 +5,31 @@
  * Register via app.use(new LoomRouter({ mode: "hash" }))
  */
 
-import { bus } from "../bus";
-import { type RouterMode, HashMode, HistoryMode } from "./mode";
-import { matchRoute, guardRegistry, buildPath } from "./route";
-import { LoomResult } from "../result";
-import { RouteChanged } from "./events";
-import { ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
-import { app } from "../app";
-import type { LoomLifecycle } from "../lifecycle";
+import { bus } from "../bus.js";
+import { type RouterMode, HashMode, HistoryMode } from "./mode.js";
+import { matchRoute, guardRegistry, buildPath } from "./route.js";
+import { startViewTransition, type ViewTransitionOptions } from "../element/view-transition.js";
+import { LoomResult } from "../result.js";
+import { RouteChanged } from "./events.js";
+import { ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols.js";
+import { app } from "../app.js";
+import type { LoomLifecycle } from "../lifecycle.js";
 
 export interface RouterOptions {
   mode?: "hash" | "history";
+  /**
+   * Animate navigations with `document.startViewTransition` (default: false).
+   *
+   * Every route change swaps the outlet's contents in one synchronous DOM
+   * mutation, which is exactly the shape a view transition wants. Wrapping it
+   * here rather than at each `router.go()` call means back/forward buttons and
+   * guard redirects animate too -- they reach the same swap without passing
+   * through any call site an app could wrap itself.
+   *
+   * Ignored where the browser has no view transitions, and skipped under
+   * `prefers-reduced-motion: reduce`.
+   */
+  transitions?: boolean | ViewTransitionOptions;
 }
 
 /** Target for programmatic navigation — raw path or named route */
@@ -68,8 +82,12 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
     return this._resolveWithGuards();
   }
 
+  /** See RouterOptions.transitions. */
+  private _transitions: boolean | ViewTransitionOptions;
+
   constructor(opts: RouterOptions = {}) {
     this.mode = opts.mode === "history" ? new HistoryMode() : new HashMode();
+    this._transitions = opts.transitions ?? false;
   }
 
   /** Current route info (read-only snapshot) */
@@ -226,7 +244,16 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
    * (which could have changed during async guard checks).
    */
   private _doRender(path: string): void {
-    this._resolve(path);
+    if (!this._transitions) {
+      this._resolve(path);
+      return;
+    }
+    // startViewTransition falls through to calling this synchronously where
+    // the API is missing, so there is one code path either way.
+    startViewTransition(
+      () => this._resolve(path),
+      this._transitions === true ? {} : this._transitions,
+    );
   }
 
   private _resolve(path: string): void {

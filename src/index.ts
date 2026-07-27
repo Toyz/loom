@@ -11,34 +11,35 @@
  */
 
 // App entry point + DI
-export { app, service, inject, maybe, factory, resolveServiceName } from "./app";
-export type { LoomApp } from "./app";
+export { app, service, inject, maybe, factory, resolveServiceName } from "./app.js";
+export type { LoomApp } from "./app.js";
 
 // HTML entity decoder
-export { text } from "./text";
+export { text } from "./text.js";
 
 // Event system
-export { LoomEvent } from "./event";
-export { EventBus, bus, useBus } from "./bus";
-export type { Constructor, Handler } from "./bus";
+export { LoomEvent } from "./event.js";
+export { EventBus, bus, useBus } from "./bus.js";
+export type { Constructor, Handler } from "./bus.js";
 
 // CSS
-export { css } from "./css";
-export type { CSSValue } from "./css";
+export { css, cssText, isLazySheet, toSheet } from "./css.js";
+export type { LazyStyleSheet } from "./css.js";
+export type { CSSValue } from "./css.js";
 
 // DOM morphing
-export { morph, LOOM_KEY_ATTR } from "./morph";
+export { morph, LOOM_KEY_ATTR } from "./morph.js";
 
 // JSX runtime (re-exported so jsxImportSource resolves)
-export { jsx, jsxs, Fragment } from "./jsx-runtime";
+export { jsx, jsxs, Fragment } from "./jsx-runtime.js";
 
 // Render loop
-export { renderLoop } from "./render-loop";
-export type { RenderLoop } from "./render-loop";
+export { renderLoop } from "./render-loop.js";
+export type { RenderLoop } from "./render-loop.js";
 
 // ── Store (core only — adapters & route sentinels via @toyz/loom/store) ──
 
-export { reactive, prop, computed, watch, store, persist } from "./store";
+export { reactive, prop, computed, watch, store, persist } from "./store/index.js";
 
 // ── Element: base class + core decorators ──
 
@@ -49,16 +50,35 @@ export {
   type LoomHtmlQuery, type LoomHtmlQueryAll,
   catch_, suspend, mount, unmount,
   event, observer,
-  interval, timeout, debounce, throttle, animationFrame,
-} from "./element";
+  interval, timeout, debounce, throttle, animationFrame, idle,
+  // ElementInternals: form association, :state(), ARIA reflection
+  state, aria, formValue, validity, revalidate,
+  checkValidity, reportValidity, validationMessage, formOf,
+  // Native top layer
+  popover, dialog,
+  // Environment
+  visible, online,
+  // View transitions and animation
+  viewTransition, startViewTransition, transitionName, animate,
+  // Long-lived connections
+  sse, socket,
+  // Device and selection
+  geolocation, wakeLock, share, canShare, selection, highlight, findRanges,
+} from "./element/index.js";
 
 // ── Decorators: event decorators + factory ──
 
-export { on, emit, createDecorator, createSymbol, LoomSymbol, SYMBOL_REGISTRY } from "./decorators";
+export { on, emit, createDecorator, createSymbol, LoomSymbol, SYMBOL_REGISTRY } from "./decorators/index.js";
 
 // Result type
-export { LoomResult } from "./result";
+export { LoomResult } from "./result.js";
+
+// Design tokens — declare a value once, use it as var() everywhere
+export { tokens } from "./tokens.js";
+export type { Tokens } from "./tokens.js";
 
 // Lifecycle interface for DI services
-export type { LoomLifecycle } from "./lifecycle";
+export type { LoomLifecycle } from "./lifecycle.js";
 
+// Environment signals — shared visibility/online state
+export { isVisible, onVisibilityChange, isOnline, onOnlineChange } from "./env.js";

@@ -6,8 +6,8 @@
  */
 
 // DI decorators (now live in app.ts)
-export { service, resolveServiceName, inject, maybe, factory } from "../app";
-export { SERVICE_NAME } from "../decorators/symbols";
+export { service, resolveServiceName, inject, maybe, factory } from "../app.js";
+export { SERVICE_NAME } from "../decorators/symbols.js";
 
 // DI-aware watch
-export { watch } from "./watch";
+export { watch } from "./watch.js";

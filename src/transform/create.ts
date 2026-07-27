@@ -16,7 +16,7 @@
  * ```
  */
 
-import { TRANSFORMS } from "../decorators/symbols";
+import { TRANSFORMS } from "../decorators/symbols.js";
 
 /**
  * Build a reusable `@transform`-style auto-accessor decorator.

@@ -30,8 +30,8 @@
  * you need both, `import { fetch as fetchJson }`.
  */
 
-import type { ApiCtx, ApiOptions, ApiState } from "./types";
-import { api } from "./decorators";
+import type { ApiCtx, ApiOptions, ApiState } from "./types.js";
+import { api } from "./decorators.js";
 
 /** The global, captured before the export below shadows the name locally. */
 const nativeFetch = globalThis.fetch;
@@ -69,9 +69,14 @@ export interface FetchOptions<El = any>
   /** Body handling. `response` hands back the raw Response. Default `json`. */
   as?: FetchAs;
   /**
-   * Override the derived cache key. By default the key is the resolved URL
-   * and params, which is what you want unless the same URL can legitimately
-   * return different things.
+   * Override the derived key, which is otherwise the resolved URL plus the
+   * names of any `use` interceptors.
+   *
+   * Set this when the same URL can legitimately return different things —
+   * most often because an interceptor varies the request per tenant or per
+   * acting user. That dimension is invisible to the derived key, since
+   * interceptors run inside the request, and a component that stays mounted
+   * across such a switch would otherwise keep showing the first result.
    */
   key?: (el: El) => string;
 }
@@ -115,12 +120,24 @@ export function fetch<T extends object, El = any>(
     return base + (base.includes("?") ? "&" : "?") + qs;
   };
 
+  /* Interceptors run inside the request, after the key has been compared, so
+     what they add to it cannot be part of a derived key. Their *names* can be,
+     which at least means swapping the interceptor set refetches.
+
+     What this does not cover: an interceptor whose contribution varies at
+     runtime — a tenant header, an acting-user param. That dimension has to go
+     in `key` explicitly, because nothing here can see it. It is a staleness
+     bug rather than a leak: ApiState is per component instance, so two
+     components never share one, but a component that stays mounted across a
+     tenant switch will keep showing the first tenant's data. */
+  const interceptorTag = opts.use?.length ? `|use:${opts.use.join(",")}` : "";
+
   const options: ApiOptions<T, El> = {
     ...opts,
     // Default the key to the resolved URL. A URL built from a prop then
     // refetches when that prop changes without a second declaration to
     // maintain — the usual cause of a stale view is those two disagreeing.
-    key: opts.key ?? ((el: El) => target(el)),
+    key: opts.key ?? ((el: El) => target(el) + interceptorTag),
 
     fn: async (el: El, ctx: ApiCtx): Promise<T> => {
       const url = resolve(opts.url, el) ?? "";

@@ -1,6 +1,6 @@
 {
   "name": "@toyz/loom",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "type": "module",
   "description": "Decorator-driven web component framework with reactive state, DOM morphing, DI, and JSX",
   "license": "MIT",
@@ -91,7 +91,13 @@
     "test:watch": "vitest",
     "bench": "vitest bench",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm test && npm run build"
+    "prepublishOnly": "npm run clean && npm test && npm run build",
+    "test:types": "tsc --noEmit -p tsconfig.tests.json",
+    "check:dist": "node scripts/check-dist-esm.mjs",
+    "check:versions": "node scripts/check-versions.mjs",
+    "smoke:create-loom": "node scripts/smoke-create-loom.mjs",
+    "verify": "npm run check:versions && tsc --noEmit && npm run test:types && npm test && npm run build && npm run check:dist",
+    "changed": "node scripts/changed.mjs --explain"
   },
   "devDependencies": {
     "happy-dom": "^20.6.1",

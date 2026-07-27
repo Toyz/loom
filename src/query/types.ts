@@ -91,11 +91,11 @@ export interface ApiState<T, E = Error> {
   /** Return data or the fallback */
   unwrap_or(fallback: T): T;
   /** Transform the Ok value */
-  map<U>(fn: (value: T) => U): import("../result").LoomResult<U, E>;
+  map<U>(fn: (value: T) => U): import("../result.js").LoomResult<U, E>;
   /** Transform the Err value */
-  map_err<F>(fn: (error: E) => F): import("../result").LoomResult<T, F>;
+  map_err<F>(fn: (error: E) => F): import("../result.js").LoomResult<T, F>;
   /** Chain a fallible operation */
-  and_then<U>(fn: (value: T) => import("../result").LoomResult<U, E>): import("../result").LoomResult<U, E>;
+  and_then<U>(fn: (value: T) => import("../result.js").LoomResult<U, E>): import("../result.js").LoomResult<U, E>;
   /** Composable pattern match — extends base ok/err with optional `loading` branch */
   match<R>(cases: { ok: (data: T) => R; err: (error: E) => R; loading?: () => R; [_: string]: unknown }): R;
 }
@@ -115,6 +115,15 @@ export interface ApiOptions<T, El = any> {
   pipe?: string[];
   /** Milliseconds before data is considered stale (default: 0 = always stale) */
   staleTime?: number;
+  /**
+   * Skip stale revalidation while the page is hidden (default: true).
+   *
+   * A background tab revalidating on a timer spends requests -- and on a
+   * phone, radio wake-ups -- to refresh pixels nobody is looking at. With
+   * this on, the refetch is deferred until the page is visible again, and
+   * only happens if the data is still stale by then.
+   */
+  pauseWhenHidden?: boolean;
   /**
    * Revalidate in the background once `staleTime` has elapsed (default: true).
    *

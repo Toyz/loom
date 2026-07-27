@@ -20,7 +20,7 @@
  * ```
  */
 
-import type { LoomElement } from "./element/element";
+import type { LoomElement } from "./element/element.js";
 
 const containers: HTMLDivElement[] = [];
 

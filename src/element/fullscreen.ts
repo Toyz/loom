@@ -15,7 +15,7 @@
  * ```
  */
 
-import { addConnectHook, hostElement } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols.js";
 
 export interface FullscreenOptions {
   /** Navigation UI preference for requestFullscreen */

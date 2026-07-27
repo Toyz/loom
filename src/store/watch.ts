@@ -6,9 +6,9 @@
  * Form 3: Watch a DI-resolved service (or a property on it)
  */
 
-import { app } from "../app";
-import { WATCHERS, addConnectHook, findLocalStore } from "../decorators/symbols";
-import type { Schedulable } from "../element/element";
+import { app } from "../app.js";
+import { WATCHERS, addConnectHook, findLocalStore } from "../decorators/symbols.js";
+import type { Schedulable } from "../element/element.js";
 
 /**
  * Watch a local @reactive field, an external Reactive instance,

@@ -1,0 +1,20 @@
+{
+  "//": "Typechecks the tests that assert type-level guarantees. tsconfig.json includes only src, because it drives the dist build, so nothing checked these before: a @ts-expect-error whose guarantee quietly stopped holding just became an unused directive that nobody ran.",
+  "//2": "Scoped to a list rather than all of tests/ on purpose. The suite has ~119 pre-existing type errors from never having been checked -- worth clearing, but as its own job; a script that always fails is a script nobody runs.",
+  "//3": "module/moduleResolution are overridden back to bundler: the published package is resolved by Node, so src is checked as nodenext, but tests are loaded by Vitest through Vite, which resolves as a bundler. Checking them as nodenext would model the wrong loader.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "rootDir": ".",
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src"],
+  "files": [
+    "tests/event-payload-readonly.test.ts",
+    "tests/permission.test.ts",
+    "tests/stream-types.test.ts"
+  ]
+}

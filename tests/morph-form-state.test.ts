@@ -161,3 +161,77 @@ describe("JS prop removal restores the prior value", () => {
     expect((root.firstElementChild as any).items).toEqual([2]);
   });
 });
+
+describe("reconciliation only removes what the template declared", () => {
+  /**
+   * These build `next` through the JSX runtime rather than createElement,
+   * because that is what records the declaration. A hand-built element has no
+   * template behind it, which is exactly the distinction under test.
+   */
+  const tpl = (tag: string, attrs: Record<string, string> = {}) =>
+    jsx(tag, Object.keys(attrs).length ? { ...attrs } : {}) as HTMLElement;
+
+  it("keeps a dialog's open attribute", () => {
+    // showModal() sets `open`; no template declares it. Removing it is the
+    // documented way to strand a modal -- the dialog disappears, the page
+    // stays inert behind it, and no `close` event fires.
+    const root = document.createElement("div");
+    const live = tpl("dialog", { id: "d" });
+    live.setAttribute("open", "");        // the browser, after showModal()
+    root.appendChild(live);
+
+    morph(root, [tpl("dialog", { id: "d" })]);
+
+    expect(root.querySelector("dialog")!.hasAttribute("open")).toBe(true);
+  });
+
+  it("keeps a details open by the user", () => {
+    // The other half of the same bug, and the one I argued past: clicking a
+    // <summary> sets `open` on the element, so an unrelated re-render used to
+    // snap the disclosure shut under the reader.
+    const root = document.createElement("div");
+    const live = tpl("details", { id: "x" });
+    live.setAttribute("open", "");        // the user, by clicking
+    root.appendChild(live);
+
+    morph(root, [tpl("details", { id: "x" })]);
+
+    expect(root.querySelector("details")!.hasAttribute("open")).toBe(true);
+  });
+
+  it("still removes an attribute the template dropped", () => {
+    const root = document.createElement("div");
+    root.appendChild(tpl("div", { id: "a", title: "gone" }));
+
+    morph(root, [tpl("div", { id: "a" })]);
+
+    const el = root.querySelector("div")!;
+    expect(el.getAttribute("id")).toBe("a");
+    expect(el.hasAttribute("title")).toBe(false);
+  });
+
+  it("still removes when the template drops every attribute", () => {
+    const root = document.createElement("div");
+    const live = tpl("div", { id: "a", title: "t" });
+    live.setAttribute("data-browser", "1");   // not from a template
+    root.appendChild(live);
+
+    morph(root, [tpl("div")]);
+
+    const el = root.querySelector("div")!;
+    expect(el.hasAttribute("id")).toBe(false);
+    expect(el.hasAttribute("title")).toBe(false);
+    expect(el.getAttribute("data-browser")).toBe("1");  // never ours to remove
+  });
+
+  it("lets a template still control open when it declares it", () => {
+    // Declared once, dropped next render -> removable, because the template
+    // is the one that put it there.
+    const root = document.createElement("div");
+    root.appendChild(tpl("details", { open: "" }));
+
+    morph(root, [tpl("details")]);
+
+    expect(root.querySelector("details")!.hasAttribute("open")).toBe(false);
+  });
+});

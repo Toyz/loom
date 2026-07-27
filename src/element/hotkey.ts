@@ -16,7 +16,7 @@
  * ```
  */
 
-import { addConnectHook, hostElement } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols.js";
 
 // ── Types ──
 

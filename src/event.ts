@@ -10,8 +10,8 @@
  * - toString() — debug-friendly string
  */
 
-import type { Constructor } from "./bus";
-import { bus } from "./bus";
+import type { Constructor } from "./bus.js";
+import { bus } from "./bus.js";
 
 /**
  * Stable per-class token for dedup keys.
@@ -57,8 +57,32 @@ export abstract class LoomEvent<T = void> {
   /**
    * The payload, when the class declared one via `LoomEvent<T>`.
    * `undefined` for the classic form, which carries its own fields instead.
+   *
+   * `Readonly` because one event object reaches every handler, in registration
+   * order. A handler that writes to `data` -- normalising a field, stashing a
+   * result on it -- changes what every later handler sees, and which handler
+   * wins then depends on registration order, which is not something the code
+   * says out loud anywhere.
+   *
+   * The guarantee is a compile-time one, not `Object.freeze`. Freezing the
+   * payload measured 15% off emit, and most of that was not the freeze call
+   * but what it does to the object afterwards: a frozen object reads slower
+   * for the rest of its life, and every handler is a reader. An opt-in flag
+   * checked per construction still cost 7%, because the check is per event
+   * while the mistake is per line of source. `readonly` catches it where it is
+   * free to catch, and emit stays where it was.
+   *
+   * To send a changed payload, send a changed event: `e.clone({ data: ... })`.
+   *
+   * Shallow, like `Object.freeze` would have been -- a nested object inside
+   * the payload is still the caller's, and still shared.
+   *
+   * Conditional on `T` being an object because `Readonly<void>` is not `void`,
+   * and a bare `Readonly<T>` therefore made the classic no-payload form stop
+   * matching `LoomEvent<any>` -- which is what every `emit`/`on` signature
+   * constrains against.
    */
-  readonly data!: T;
+  readonly data!: T extends object ? Readonly<T> : T;
 
   /**
    * Takes the payload when `T` is declared, and nothing when it is not — so
@@ -92,6 +116,7 @@ export abstract class LoomEvent<T = void> {
    * two increments, not one.
    */
   static dedupe?: boolean | readonly string[];
+
 
   /**
    * Frame-scoped dedup key. If two events return the same one in a single

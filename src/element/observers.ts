@@ -29,7 +29,7 @@
  * ```
  */
 
-import { addConnectHook, hostElement } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols.js";
 
 /** Resolver that selects the observe target from the component instance. */
 type TargetResolver = (el: HTMLElement) => Node | Element | null | undefined;

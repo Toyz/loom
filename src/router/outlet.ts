@@ -9,16 +9,16 @@
  * RouteChanged fired before the outlet entered the DOM.
  */
 
-import { LoomElement, type Schedulable } from "../element/element";
-import { component } from "../element/decorators";
-import { on } from "../decorators/events";
-import { prop } from "../store/decorators";
-import { ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols";
-import { matchRoute } from "./route";
-import { RouteChanged } from "./events";
-import { params as paramsSentinel, routeQuery as querySentinel, routeMeta as metaSentinel } from "../store/decorators";
-import { app } from "../app";
-import { LoomRouter } from "./router";
+import { LoomElement, type Schedulable } from "../element/element.js";
+import { component } from "../element/decorators.js";
+import { on } from "../decorators/events.js";
+import { prop } from "../store/decorators.js";
+import { ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols.js";
+import { matchRoute } from "./route.js";
+import { RouteChanged } from "./events.js";
+import { params as paramsSentinel, routeQuery as querySentinel, routeMeta as metaSentinel } from "../store/decorators.js";
+import { app } from "../app.js";
+import { LoomRouter } from "./router.js";
 
 @component("loom-outlet")
 class LoomOutlet extends LoomElement {

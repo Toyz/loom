@@ -18,7 +18,7 @@
  * ```
  */
 
-import { addConnectHook, hostElement } from "../decorators/symbols";
+import { addConnectHook, hostElement } from "../decorators/symbols.js";
 
 export interface DraggableOptions {
   /** MIME-like type key for dataTransfer, default "text/plain" */

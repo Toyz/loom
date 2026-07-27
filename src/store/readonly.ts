@@ -15,7 +15,7 @@
  * ```
  */
 
-import { localSymbol } from "../decorators/symbols";
+import { localSymbol } from "../decorators/symbols.js";
 
 /** Flipped to true by the morph engine around prop patches */
 export let _readonlyBypass = false;

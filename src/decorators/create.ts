@@ -32,7 +32,7 @@
  * ```
  */
 
-import { addConnectHook } from "./symbols";
+import { addConnectHook } from "./symbols.js";
 
 type ConnectFn = (element: HTMLElement) => void | (() => void);
 type MethodSetup<Args extends unknown[]> = (

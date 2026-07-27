@@ -37,14 +37,14 @@
  * and produces no template.
  */
 
-import { bus, type Constructor, type Handler } from "../bus";
-import { type LoomEvent } from "../event";
-import { app, type LoomApp } from "../app";
-import { getConnectHooks, REACTIVES } from "../decorators/symbols";
-import { createDecorator } from "../decorators/create";
-import { pendingProps } from "../store/decorators";
-import { morph, registerMorphHook } from "../morph";
-import { adoptCSS, type CSSValue } from "../css";
+import { bus, type Constructor, type Handler } from "../bus.js";
+import { type LoomEvent } from "../event.js";
+import { app, type LoomApp } from "../app.js";
+import { getConnectHooks, REACTIVES } from "../decorators/symbols.js";
+import { createDecorator } from "../decorators/create.js";
+import { pendingProps } from "../store/decorators.js";
+import { morph, registerMorphHook } from "../morph.js";
+import { adoptCSS, type CSSValue } from "../css.js";
 
 // ── Registry ──
 
@@ -296,7 +296,7 @@ export abstract class LoomAttribute<A = string> {
   }
 
   /** Emit a typed bus event. */
-  protected emit<T extends LoomEvent>(event: T): void {
+  protected emit<T extends LoomEvent<any>>(event: T): void {
     bus.emit(event);
   }
 

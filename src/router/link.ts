@@ -10,15 +10,15 @@
  *   <loom-link to="/foo" styles={[inline]}>Foo</loom-link>
  */
 
-import { LoomElement } from "../element/element";
-import { component, query } from "../element/decorators";
-import { prop } from "../store/decorators";
-import { on } from "../decorators/events";
-import { watch } from "../store/watch";
-import { app } from "../app";
-import { LoomRouter, type RouteTarget } from "./router";
-import { RouteChanged } from "./events";
-import { buildPath } from "./route";
+import { LoomElement } from "../element/element.js";
+import { component, query } from "../element/decorators.js";
+import { prop } from "../store/decorators.js";
+import { on } from "../decorators/events.js";
+import { watch } from "../store/watch.js";
+import { app } from "../app.js";
+import { LoomRouter, type RouteTarget } from "./router.js";
+import { RouteChanged } from "./events.js";
+import { buildPath } from "./route.js";
 
 @component("loom-link")
 class LoomLink extends LoomElement {

@@ -19,7 +19,7 @@
  * ```
  */
 
-import { transform } from "./transform";
+import { transform } from "./transform.js";
 
 export interface TransformSchema<T> {
   [key: string]: (v: string) => T[keyof T];

@@ -56,6 +56,52 @@ describe("@api enabled gate", () => {
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
+  it("refetches when the gate reopens, even with data already loaded", async () => {
+    const fn = vi.fn()
+      .mockResolvedValueOnce({ v: 1 })
+      .mockResolvedValueOnce({ v: 2 });
+    const host = { ready: true };
+    const s = createApiState<{ v: number }>(
+      { fn, enabled: (el: any) => el.ready },
+      () => {},
+      host,
+    );
+    await tick(10);
+    expect(s.data).toEqual({ v: 1 });
+
+    // Close it -- switch tabs, log out -- and reopen.
+    host.ready = false;
+    void s.data;
+    await tick(5);
+    host.ready = true;
+    void s.data;
+    await tick(10);
+
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(s.data).toEqual({ v: 2 });
+  });
+
+  it("serves what it has when the gate reopens inside staleTime", async () => {
+    const fn = vi.fn().mockResolvedValue({ v: 1 });
+    const host = { ready: true };
+    const s = createApiState<{ v: number }>(
+      { fn, enabled: (el: any) => el.ready, staleTime: 60_000 },
+      () => {},
+      host,
+    );
+    await tick(10);
+
+    host.ready = false;
+    void s.data;
+    await tick(5);
+    host.ready = true;
+    void s.data;
+    await tick(10);
+
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(s.data).toEqual({ v: 1 });
+  });
+
   it("does not re-fire once the gate has opened and data arrived", async () => {
     const fn = vi.fn().mockResolvedValue({ v: 3 });
     const host = { ready: true };

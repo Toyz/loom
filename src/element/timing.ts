@@ -8,9 +8,9 @@
  * @animationFrame — Centralized rAF loop via RenderLoop
  */
 
-import { renderLoop } from "../render-loop";
-import { createDecorator } from "../decorators/create";
-import { addConnectHook } from "../decorators/symbols";
+import { renderLoop } from "../render-loop.js";
+import { createDecorator } from "../decorators/create.js";
+import { addConnectHook } from "../decorators/symbols.js";
 
 /**
  * Auto-cleaned setInterval. Runs the method every `ms` milliseconds.
@@ -181,3 +181,40 @@ export function animationFrame(
   const layer = typeof methodOrLayerOrOpts === "number" ? methodOrLayerOrOpts : 0;
   return _af(layer, undefined);
 }
+
+/**
+ * Auto-cleaned requestIdleCallback. Runs the method when the browser is idle.
+ *
+ * ```ts
+ * @idle()
+ * warmCaches() { prefetchNextPage(); }
+ *
+ * @idle({ timeout: 2000 })
+ * report() { sendAnalytics(); }
+ * ```
+ *
+ * The point of idle over `@timeout(0)` is that it yields to input and to
+ * rendering: work scheduled here cannot be what makes a tap feel slow. The
+ * `timeout` option is the counterweight -- without it a page that never goes
+ * idle never runs the callback at all, so anything that must eventually
+ * happen needs a deadline.
+ *
+ * Falls back to `setTimeout` where `requestIdleCallback` is missing (Safari
+ * has never shipped it), which loses the yielding but not the work.
+ */
+export const idle = createDecorator<[opts?: { timeout?: number }]>((method, _key, opts) => {
+  return (el: any) => {
+    const ric = (globalThis as {
+      requestIdleCallback?: (cb: () => void, o?: { timeout?: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    });
+
+    if (typeof ric.requestIdleCallback === "function") {
+      const id = ric.requestIdleCallback(() => method.call(el), opts);
+      return () => ric.cancelIdleCallback?.(id);
+    }
+    // Safari. A macrotask is not idle, but it is still off the critical path.
+    const id = setTimeout(() => method.call(el), opts?.timeout ?? 1);
+    return () => clearTimeout(id);
+  };
+});

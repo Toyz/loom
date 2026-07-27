@@ -15,9 +15,9 @@
  * ```
  */
 
-import { PROPS, ROUTE_PROPS, TRANSFORMS, ROUTE_ENTER, ROUTE_LEAVE, createSymbol } from "../decorators/symbols";
-import { bus } from "../bus";
-import { LazyLoadStart, LazyLoadEnd } from "./lazy-events";
+import { PROPS, ROUTE_PROPS, TRANSFORMS, ROUTE_ENTER, ROUTE_LEAVE, createSymbol } from "../decorators/symbols.js";
+import { bus } from "../bus.js";
+import { LazyLoadStart, LazyLoadEnd } from "./lazy-events.js";
 
 const LAZY_LOADER = createSymbol("lazy:loader");
 const LAZY_OPTS = createSymbol<LazyOptions>("lazy:opts");

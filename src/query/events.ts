@@ -24,7 +24,7 @@
  * hazard the key check already defers for.
  */
 
-import { LoomEvent } from "../event";
+import { LoomEvent } from "../event.js";
 
 /**
  * An `@api` or `@fetch` accessor's data has passed its `staleTime`.

@@ -5,14 +5,14 @@
  */
 
 // Core decorator
-export { transform } from "./transform";
+export { transform } from "./transform.js";
 
 // Factory for creating custom transform decorators
-export { createTransform } from "./create";
+export { createTransform } from "./create.js";
 
 // Typed schema transform
-export { typed, typedTransformer } from "./typed";
-export type { TransformSchema } from "./typed";
+export { typed, typedTransformer } from "./typed.js";
+export type { TransformSchema } from "./typed.js";
 
 // Built-in transforms
-export { toNumber, toBoolean, toDate, toJSON, toTrimmed, toInt, toFloat } from "./built-in";
+export { toNumber, toBoolean, toDate, toJSON, toTrimmed, toInt, toFloat } from "./built-in.js";

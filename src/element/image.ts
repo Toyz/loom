@@ -23,12 +23,12 @@
  *   </loom-image>
  */
 
-import { LoomElement } from "./element";
-import { component, query, styles } from "./decorators";
-import { prop } from "../store/decorators";
-import { css } from "../css";
-import { observer } from "./observers";
-import { watch } from "../store/watch";
+import { LoomElement } from "./element.js";
+import { component, query, styles } from "./decorators.js";
+import { prop } from "../store/decorators.js";
+import { css } from "../css.js";
+import { observer } from "./observers.js";
+import { watch } from "../store/watch.js";
 
 // ── Static image cache ──
 const imageCache = new Map<string, HTMLImageElement>();

@@ -5,7 +5,7 @@
  * Separated from decorators to avoid circular imports with state.ts.
  */
 
-import type { InterceptRegistration } from "./types";
+import type { InterceptRegistration } from "./types.js";
 
 /** Global interceptor registry — populated by @intercept decorator */
 export const interceptRegistry = new Map<string, InterceptRegistration>();

@@ -12,7 +12,7 @@
  *   - Concurrent-safe: void update() = no morph, returned Node = auto-morph
  */
 
-import { setReadonlyBypass } from "./store/readonly";
+import { setReadonlyBypass } from "./store/readonly.js";
 
 /** Expando key for tracked event listeners */
 export const LOOM_EVENTS = "__loomEvents";
@@ -39,6 +39,14 @@ export interface LoomNode {
   __childTemplate?: Node | Node[];
   /** Mirrors `loom-key` when set via JSX or patchAttributes — undefined means fall back to getAttribute */
   __loomKey?: string;
+  /**
+   * Attribute names the template declared for this element.
+   *
+   * Reconciliation may only remove what is in here. Anything else on the
+   * element was put there by the browser or the user, and is not morph's to
+   * take away.
+   */
+  __loomAttrs?: string[];
 }
 
 // ── Morph hooks ──
@@ -265,11 +273,16 @@ function patchAttributes(old: Element, next: Element): void {
     return;
   }
 
-  // Fast path: old has attrs, next has none — bulk remove
+  // Fast path: old has attrs, next has none — remove the ones we put there.
   if (nextLen === 0 && oldLen > 0) {
-    while (old.attributes.length > 0) {
-      old.removeAttribute(old.attributes[0].name);
+    const declared = (old as unknown as LoomNode).__loomAttrs;
+    if (declared) {
+      for (let i = declared.length - 1; i >= 0; i--) old.removeAttribute(declared[i]!);
+    } else {
+      // Untracked: hydrated or hand-built. See the removal loop below.
+      while (old.attributes.length > 0) old.removeAttribute(old.attributes[0]!.name);
     }
+    (old as unknown as LoomNode).__loomAttrs = undefined;
     delete (old as unknown as LoomNode).__loomKey;
     return;
   }
@@ -283,15 +296,42 @@ function patchAttributes(old: Element, next: Element): void {
     }
   }
 
-  // Remove attributes not in next
-  for (let i = oldAttrs.length - 1; i >= 0; i--) {
-    const { name } = oldAttrs[i];
-    if (!next.hasAttribute(name)) {
-      old.removeAttribute(name);
-      if (name === LOOM_KEY_ATTR) delete (old as unknown as LoomNode).__loomKey;
+  // Remove attributes the template declared last render and no longer does.
+  //
+  // Restricted to what Loom put there. `showModal()` sets `open`, a user
+  // clicking a <summary> sets `open` on a <details>, and neither is in any
+  // template -- reconciling against "everything currently on the element"
+  // tore both of those off on the next unrelated render. For a modal that is
+  // the documented way to strand one: it disappears, the page stays inert
+  // behind it, and no `close` event fires.
+  const declared = (old as unknown as LoomNode).__loomAttrs;
+  if (declared) {
+    for (let i = declared.length - 1; i >= 0; i--) {
+      const name = declared[i]!;
+      if (!next.hasAttribute(name)) {
+        old.removeAttribute(name);
+        if (name === LOOM_KEY_ATTR) delete (old as unknown as LoomNode).__loomKey;
+      }
+    }
+  } else {
+    // No record, so this element did not come from a template: server-rendered
+    // markup being hydrated, or a node someone built by hand. There is nothing
+    // to distinguish browser state from stale markup, and leaving stale
+    // attributes on hydrated HTML would be the worse failure -- so `next` is
+    // authoritative, exactly as it was before.
+    for (let i = oldAttrs.length - 1; i >= 0; i--) {
+      const { name } = oldAttrs[i];
+      if (!next.hasAttribute(name)) {
+        old.removeAttribute(name);
+        if (name === LOOM_KEY_ATTR) delete (old as unknown as LoomNode).__loomKey;
+      }
     }
   }
+
+  // What the template declares now becomes what may be removed next time.
+  (old as unknown as LoomNode).__loomAttrs = (next as unknown as LoomNode).__loomAttrs;
 }
+
 
 export function loomEventProxy(this: Element, e: Event): void {
   const handler = ((this as unknown as LoomNode).__loomEvents)?.[e.type];

@@ -5,7 +5,8 @@ import { describe, it, expect, vi } from "vitest";
 import { reactive } from "../src/store/decorators";
 import { store } from "../src/store/decorators";
 import { signal } from "../src/store/signal";
-import { dynamicCss } from "../src/element/decorators";
+import { dynamicCss, component } from "../src/element/decorators";
+import { LoomElement } from "../src/element/element";
 import { CONNECT_HOOKS } from "../src/decorators/symbols";
 
 // Helper: simulate connect lifecycle

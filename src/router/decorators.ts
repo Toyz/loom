@@ -8,8 +8,8 @@
  * All use createDecorator as their foundation.
  */
 
-import { createDecorator } from "../decorators/create";
-import { routes, routeByName, guardRegistry, compilePattern, GROUP_META, ROUTE_GROUP, type RouteEntry, type GroupMeta } from "./route";
+import { createDecorator } from "../decorators/create.js";
+import { routes, routeByName, guardRegistry, compilePattern, insertRoute, GROUP_META, ROUTE_GROUP, type RouteEntry, type GroupMeta } from "./route.js";
 
 export const ROUTE_PATH = Symbol("loom:route:path");
 /**
@@ -144,13 +144,8 @@ export const route = createDecorator<[pattern: string, opts?: RouteOptions]>(
       routeByName.set(opts.name, entry);
     }
 
-    if (fullPattern === "*") {
-      routes.push(entry);
-    } else {
-      const wildcardIdx = routes.findIndex((r) => r.pattern === "*");
-      if (wildcardIdx === -1) routes.push(entry);
-      else routes.splice(wildcardIdx, 0, entry);
-    }
+    // Ordered by specificity, not import order -- see insertRoute.
+    insertRoute(entry);
   },
   { class: true },
 );

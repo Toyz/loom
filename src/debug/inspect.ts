@@ -13,7 +13,7 @@
  *   installGlobalHook();
  *   // Then in DevTools console: __loom.inspect($0)
  */
-import { SYMBOL_REGISTRY } from "../decorators/symbols";
+import { SYMBOL_REGISTRY } from "../decorators/symbols.js";
 
 /**
  * Inspect a Loom element's metadata and current state.

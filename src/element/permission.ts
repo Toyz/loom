@@ -25,7 +25,7 @@
  * and never suppresses anything.
  */
 
-import { addConnectHook } from "../decorators/symbols";
+import { addConnectHook } from "../decorators/symbols.js";
 
 /**
  * `PermissionState`, plus the case the spec leaves you to discover at runtime.

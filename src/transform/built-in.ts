@@ -23,7 +23,7 @@
  * ```
  */
 
-import { createTransform } from "./create";
+import { createTransform } from "./create.js";
 
 /** Coerce to number via Number() */
 export const toNumber = createTransform<string, number>(Number);

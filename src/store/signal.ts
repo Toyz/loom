@@ -35,11 +35,11 @@
  *   re-evaluates just that binding's patcher — no full morph needed.
  */
 
-import { Reactive, type Subscriber } from "./reactive";
-import { startSubTrace, endSubTrace } from "../trace";
-import { REACTIVES, WATCHERS, EMITTERS, localSymbol } from "../decorators/symbols";
-import { bus } from "../bus";
-import type { Schedulable } from "../element/element";
+import { Reactive, type Subscriber } from "./reactive.js";
+import { startSubTrace, endSubTrace } from "../trace.js";
+import { REACTIVES, WATCHERS, EMITTERS, localSymbol } from "../decorators/symbols.js";
+import { bus } from "../bus.js";
+import type { Schedulable } from "../element/element.js";
 
 // ── TC39-compatible Signal interface ──
 
@@ -348,7 +348,7 @@ export function signal<This extends object, V>(
         if (emitters) {
           for (let i = 0; i < emitters.length; i++) {
             const e = emitters[i];
-            if (e.field === key) sig.subscribe((v: V) => bus.emit(e.factory(v) as import("../event").LoomEvent));
+            if (e.field === key) sig.subscribe((v: V) => bus.emit(e.factory(v) as import("../event.js").LoomEvent));
           }
         }
       }

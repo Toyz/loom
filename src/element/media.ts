@@ -17,7 +17,7 @@
  * ```
  */
 
-import { addConnectHook } from "../decorators/symbols";
+import { addConnectHook } from "../decorators/symbols.js";
 
 /**
  * @media(query) — Accessor decorator

@@ -18,8 +18,8 @@
  * ```
  */
 
-import { addConnectHook, localSymbol } from "../decorators/symbols";
-import type { Schedulable } from "./element";
+import { addConnectHook, localSymbol } from "../decorators/symbols.js";
+import type { Schedulable } from "./element.js";
 
 // ── Context Request Event ──
 

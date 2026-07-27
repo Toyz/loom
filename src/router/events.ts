@@ -2,7 +2,7 @@
  * Loom Router — Events
  */
 
-import { LoomEvent } from "../event";
+import { LoomEvent } from "../event.js";
 
 /** Emitted on every navigation */
 export class RouteChanged extends LoomEvent {

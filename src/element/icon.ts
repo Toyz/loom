@@ -14,12 +14,12 @@
  *   app.use(IconResolver, myHeroIconResolver);
  */
 
-import { LoomElement } from "./element";
-import { component, styles } from "./decorators";
-import { prop } from "../store/decorators";
-import { watch } from "../store/watch";
-import { css } from "../css";
-import { app } from "../app";
+import { LoomElement } from "./element.js";
+import { component, styles } from "./decorators.js";
+import { prop } from "../store/decorators.js";
+import { watch } from "../store/watch.js";
+import { css } from "../css.js";
+import { app } from "../app.js";
 
 const baseStyles = css`
   loom-icon {

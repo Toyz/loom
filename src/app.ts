@@ -15,15 +15,17 @@
  * ```
  */
 
-import { renderLoop } from "./render-loop";
-import { ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols";
-import { createDecorator } from "./decorators/create";
-import { bus, type Constructor, type Handler } from "./bus";
-import type { LoomEvent } from "./event";
-import { LoomResult } from "./result";
-import { hasStart, hasStop, hasSuspend, hasResume } from "./lifecycle";
+import { renderLoop } from "./render-loop.js";
+import { ON_HANDLERS, SERVICE_NAME } from "./decorators/symbols.js";
+import { createDecorator } from "./decorators/create.js";
+import { bus, type Constructor, type Handler } from "./bus.js";
+import type { LoomEvent } from "./event.js";
+import { LoomResult } from "./result.js";
+import { hasStart, hasStop, hasSuspend, hasResume } from "./lifecycle.js";
 
 interface FactoryMeta {
+  /** Set once invoked, so a late registration cannot re-create providers. */
+  ran?: boolean;
   fn: Function;
   method: string;
   key?: any;
@@ -60,7 +62,7 @@ class LoomApp {
   on<T>(type: Constructor<T>, handler: Handler<T>): () => void { return bus.on(type, handler); }
 
   /** Emit a typed event to all listeners. */
-  emit<T extends LoomEvent>(event: T): void { bus.emit(event); }
+  emit<T extends LoomEvent<any>>(event: T): void { bus.emit(event); }
 
   /** Remove a specific event handler. */
   off<T>(type: Constructor<T>, handler: Handler<T>): void { bus.off(type, handler); }
@@ -190,9 +192,46 @@ class LoomApp {
     return instance;
   }
 
-  /** Queue a @factory method for invocation on start() */
+  /**
+   * Queue a @factory method. If the app has already started, run it once the
+   * owning @service has been constructed.
+   *
+   * Registration happens at class-definition time, so a @service inside a
+   * lazily-loaded module registers its factories long after start() -- which
+   * ran them exactly once and never looked again, so the provider was never
+   * created. Same gap that late @service registration had, one level down.
+   *
+   * Deferred to a microtask deliberately: the decorator registers the raw
+   * method here and rebinds it to the live instance from an initializer that
+   * has not run yet. Calling it now would invoke it with `this` undefined,
+   * which is the bug rebindFactory exists to fix.
+   */
   registerFactory(key: any, info: { method: string; fn: Function }): void {
     this.factories.push({ key, ...info });
+    if (this._started) {
+      queueMicrotask(() => {
+        void this.runFactories().catch((e) =>
+          console.error("[loom] a late @factory failed", e),
+        );
+      });
+    }
+  }
+
+  /**
+   * Invoke every queued @factory that has not run yet.
+   *
+   * Idempotent per entry, so calling it again after a late registration does
+   * not re-create providers that already exist.
+   */
+  private async runFactories(): Promise<void> {
+    for (const entry of this.factories) {
+      if (entry.ran) continue;
+      entry.ran = true;
+      const result = await entry.fn();
+      if (result != null) {
+        this.providers.set(entry.key ?? result.constructor, result);
+      }
+    }
   }
 
   /**
@@ -286,12 +325,7 @@ class LoomApp {
     }
 
     // 2. Run @factory methods on instantiated services
-    for (const { fn, method, key } of this.factories) {
-      const result = await fn();
-      if (result != null) {
-        this.providers.set(key ?? result.constructor, result);
-      }
-    }
+    await this.runFactories();
 
     // 2b. Call start() on app.use() providers that implement LoomLifecycle
     //     (skip @service instances — already started in step 1)

@@ -12,7 +12,7 @@
  *               respects event.cancelled to stop propagation
  */
 
-import type { LoomEvent } from "./event";
+import type { LoomEvent } from "./event.js";
 
 export type Constructor<T = any> = new (...args: any[]) => T;
 export type Handler<T> = (data: T) => void;
@@ -68,7 +68,7 @@ export class EventBus {
    * Frame-scoped dedup: if event.dedupeKey is non-undefined, only the first
    * emission with that key per synchronous flush reaches handlers.
    */
-  emit<T extends LoomEvent>(event: T): void {
+  emit<T extends LoomEvent<any>>(event: T): void {
     // Frame-scoped dedup — opt-in via dedupeKey on the event
     const key = event.dedupeKey;
     if (key !== undefined) {

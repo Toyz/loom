@@ -9,7 +9,7 @@
  */
 import { describe, it, expect, vi } from "vitest";
 import { app, LoomEvent, on } from "../src/index";
-import { service } from "../src/di/index";
+import { service, factory, inject } from "../src/di/index";
 
 const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms));
 
@@ -94,5 +94,87 @@ describe("late @service registration", () => {
     const a = app.get(Once);
     app.registerService(Once);
     expect(app.get(Once)).toBe(a);
+  });
+});
+
+/**
+ * Same gap, one level down: a @factory inside a lazily-loaded @service.
+ *
+ * start() ran the queued factories exactly once and never looked again, so a
+ * factory declared after it produced no provider at all — the class it was
+ * meant to construct stayed unresolvable for the life of the app.
+ */
+describe("late @factory registration", () => {
+  it("runs a @factory declared after start()", async () => {
+    await app.start();
+
+    class LateWidget {
+      readonly made = "by-factory";
+    }
+
+    @service()
+    class LateBoot {
+      @factory(LateWidget)
+      makeWidget() { return new LateWidget(); }
+    }
+    app.get(LateBoot);
+
+    await tick();
+    expect(app.get(LateWidget).made).toBe("by-factory");
+  });
+
+  it("invokes it bound to its owning service, so @inject works", async () => {
+    await app.start();
+
+    @service()
+    class Dep {
+      readonly n = 7;
+    }
+
+    class Built {
+      constructor(readonly n: number) {}
+    }
+
+    @service()
+    class BoundBoot {
+      @inject(Dep) accessor dep!: Dep;
+
+      @factory(Built)
+      make() { return new Built(this.dep.n); }
+    }
+    app.get(BoundBoot);
+
+    await tick();
+    expect(app.get(Built).n).toBe(7);
+  });
+
+  it("runs each factory once, even as later ones register", async () => {
+    await app.start();
+    const calls = vi.fn();
+
+    class First {}
+    @service()
+    class FirstBoot {
+      @factory(First)
+      make() { calls(); return new First(); }
+    }
+    app.get(FirstBoot);
+    await tick();
+
+    // Registering a second factory drains the queue again. The first must not
+    // re-run and replace the provider that consumers already hold.
+    const firstInstance = app.get(First);
+    class Second {}
+    @service()
+    class SecondBoot {
+      @factory(Second)
+      make() { return new Second(); }
+    }
+    app.get(SecondBoot);
+    await tick();
+
+    expect(calls).toHaveBeenCalledTimes(1);
+    expect(app.get(First)).toBe(firstInstance);
+    expect(app.get(Second)).toBeInstanceOf(Second);
   });
 });

@@ -5,20 +5,23 @@
  */
 
 // Reactive primitives
-export { Reactive, CollectionStore } from "./reactive";
-export type { Subscriber, Updater, Identifiable } from "./reactive";
+export { Reactive, CollectionStore } from "./reactive.js";
+export type { Subscriber, Updater, Identifiable } from "./reactive.js";
 
 // Storage adapters
-export { MemoryStorage, LocalAdapter, SessionAdapter, LocalMedium, SessionMedium } from "./storage";
-export type { StorageAdapter, StorageMedium, PersistOptions } from "./storage";
+export { MemoryStorage, LocalAdapter, SessionAdapter, LocalMedium, SessionMedium } from "./storage.js";
+export type { StorageAdapter, StorageMedium, PersistOptions } from "./storage.js";
 
 // Decorators
-export { reactive, prop, computed, params, routeQuery, store, persist } from "./decorators";
-export { readonly } from "./readonly";
+export { reactive, prop, computed, params, routeQuery, store, persist } from "./decorators.js";
+export { readonly } from "./readonly.js";
 
 // Watch
-export { watch } from "./watch";
+export { watch } from "./watch.js";
 
 // TC39 Signals interop
-export { SignalState, SignalComputed, toSignal, fromSignal, signal } from "./signal";
-export type { Signal, SignalOptions } from "./signal";
+export { SignalState, SignalComputed, toSignal, fromSignal, signal } from "./signal.js";
+export type { Signal, SignalOptions } from "./signal.js";
+
+// IndexedDB-backed persistence (async write-behind, sync reads)
+export { IndexedDBAdapter } from "./storage.js";

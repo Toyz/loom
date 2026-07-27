@@ -22,9 +22,9 @@
  * ```
  */
 
-import { LoomResult } from "../result";
-import { Reactive } from "../store/reactive";
-import { localSymbol } from "../decorators/symbols";
+import { LoomResult } from "../result.js";
+import { Reactive } from "../store/reactive.js";
+import { localSymbol } from "../decorators/symbols.js";
 
 
 // ── Types ──

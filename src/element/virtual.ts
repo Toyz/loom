@@ -22,11 +22,11 @@
  *   - Post-paint measurement uses a single nested rAF inside renderWindow()
  */
 
-import { LoomElement } from "./element";
-import { component, query, styles } from "./decorators";
-import { prop, reactive } from "../store/decorators";
-import { css } from "../css";
-import { animationFrame } from "./timing";
+import { LoomElement } from "./element.js";
+import { component, query, styles } from "./decorators.js";
+import { prop, reactive } from "../store/decorators.js";
+import { css } from "../css.js";
+import { animationFrame } from "./timing.js";
 
 const listStyles = css`
   :host {

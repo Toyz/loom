@@ -4,4 +4,4 @@
  * @deprecated Import from "@toyz/loom" directly.
  */
 
-export { service, resolveServiceName, inject, maybe, factory } from "../app";
+export { service, resolveServiceName, inject, maybe, factory } from "../app.js";

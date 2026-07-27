@@ -17,9 +17,9 @@
  * Container and content are auto-removed on disconnect.
  */
 
-import { addConnectHook, createSymbol } from "../decorators/symbols";
-import { morph } from "../morph";
-import type { Schedulable } from "./element";
+import { addConnectHook, createSymbol } from "../decorators/symbols.js";
+import { morph } from "../morph.js";
+import type { Schedulable } from "./element.js";
 
 // ── Types ──
 

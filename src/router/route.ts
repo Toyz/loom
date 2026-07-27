@@ -88,6 +88,74 @@ export function compilePattern(pattern: string): { regex: RegExp; paramNames: st
 }
 
 /**
+ * How specific a single pattern segment is. Lower wins.
+ *
+ * The ordering is the obvious one, written down: an exact segment beats a
+ * partial match, which beats a named param, which beats a splat.
+ */
+const enum Rank {
+  Static = 0,
+  Partial = 1, // "*.png" -- fixed text plus a wildcard
+  Param = 2,   // ":id"
+  Splat = 3,   // "*" -- swallows the rest
+}
+
+function rankSegment(seg: string): Rank {
+  if (seg === "*") return Rank.Splat;
+  if (seg.startsWith(":")) return Rank.Param;
+  return seg.includes("*") ? Rank.Partial : Rank.Static;
+}
+
+/**
+ * Order two patterns by specificity, most specific first. 0 keeps them in
+ * registration order.
+ *
+ * Segment by segment, because a single score cannot separate `/user/:id/edit`
+ * from `/user/new/:tab` -- both have one static and one dynamic segment after
+ * `/user`, and which should win depends on where they sit, not how many there
+ * are. The first segment the two disagree on decides it, exactly as a reader
+ * comparing the patterns would.
+ */
+function compareSpecificity(a: string, b: string): number {
+  // The bare catch-all is last by definition, not by segment count.
+  if (a === "*") return b === "*" ? 0 : 1;
+  if (b === "*") return -1;
+
+  const as = a.split("/");
+  const bs = b.split("/");
+  const n = Math.min(as.length, bs.length);
+  for (let i = 0; i < n; i++) {
+    const d = rankSegment(as[i]!) - rankSegment(bs[i]!);
+    if (d !== 0) return d;
+  }
+  // Same shape as far as both go: the longer pattern is the more specific one,
+  // and can only be reached past a splat in the shorter.
+  return bs.length - as.length;
+}
+
+/**
+ * Add a route to the table, keeping it ordered by specificity.
+ *
+ * matchRoute() takes the first pattern that matches, so before this the table
+ * was in import order and `@route("/user/:id")` loaded first swallowed
+ * `/user/new` -- the more specific route was unreachable, and the fix was to
+ * reorder imports, which nothing about the code suggested. Only the bare "*"
+ * catch-all was special-cased.
+ *
+ * Sorted on insert rather than at match time so matchRoute keeps its early
+ * exit; registration happens once per route at class-definition time, and
+ * route tables are small.
+ *
+ * Ties hold registration order: the insert goes after every entry that is at
+ * least as specific, so two identical patterns still resolve first-registered.
+ */
+export function insertRoute(entry: RouteEntry): void {
+  let i = routes.length;
+  while (i > 0 && compareSpecificity(entry.pattern, routes[i - 1]!.pattern) < 0) i--;
+  routes.splice(i, 0, entry);
+}
+
+/**
  * Percent-decode a route param, tolerating malformed input.
  *
  * Hash mode round-trips through the URL object, whose hash setter

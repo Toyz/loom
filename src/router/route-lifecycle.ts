@@ -17,7 +17,7 @@
  * ```
  */
 
-import { ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols";
+import { ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols.js";
 
 /**
  * Method decorator. Marks a method to be called when this route is entered.

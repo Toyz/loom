@@ -7,8 +7,8 @@
  * @unmount — Run method on disconnectedCallback
  */
 
-import { addConnectHook } from "../decorators/symbols";
-import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols";
+import { addConnectHook } from "../decorators/symbols.js";
+import { CATCH_HANDLER, CATCH_HANDLERS } from "../decorators/symbols.js";
 
 /** Function called when update() throws or an @api fetch fails */
 type CatchFn = (
