@@ -1,0 +1,12 @@
+# Everything, by default.
+*                       @Toyz
+
+# The paths worth a second look regardless of who is asking.
+#
+# A workflow change can exfiltrate secrets; a change to the release scripts can
+# publish something nobody reviewed. These are the files where "looks fine" is
+# not good enough, because a compromise here is not visible in the product.
+/.github/               @Toyz
+/scripts/               @Toyz
+/package.json           @Toyz
+/create-loom/           @Toyz

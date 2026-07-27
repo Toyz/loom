@@ -62,8 +62,12 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    # Scopes NPM_TOKEN to this job and gives the publish somewhere to hang a
+    # required reviewer. Configure it under Settings -> Environments; until it
+    # exists the job still runs, it simply is not gated.
+    environment: release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           # changed.mjs diffs against release tags, so it needs the history and
           # the tags, not a shallow clone.
@@ -139,6 +143,22 @@ jobs:
 
       - name: Check every dependency range still admits the core version
         run: node scripts/check-versions.mjs
+
+      # The one failure a dry run could not previously see. `dry_run` skips the
+      # publish step by definition, so a missing or wrong token surfaced only on
+      # a real release -- after the gate had passed and the bump was applied.
+      # whoami exercises exactly the credential publish uses and uploads
+      # nothing, so "dry run passed" now means the real one will authenticate.
+      - name: Verify npm credentials
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          who=$(npm whoami --registry=https://registry.npmjs.org 2>&1) || {
+            echo "::error::npm auth failed: $who"
+            echo "::error::NPM_TOKEN is missing, expired, or lacks publish rights."
+            exit 1
+          }
+          echo "authenticated to npm as $who"
 
       # ── Gate. The same checks CI runs, so a release cannot be looser. ──
 

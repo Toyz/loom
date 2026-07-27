@@ -14,6 +14,12 @@ on:
   push:
     branches: [main]
 
+# CI runs third-party code: dependency install scripts, test suites, build
+# plugins. Any of it can read GITHUB_TOKEN out of the environment, so the token
+# it finds should not be able to write anything.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -27,9 +33,12 @@ jobs:
       any: ${{ steps.select.outputs.any }}
       docs: ${{ steps.filter.outputs.docs }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # Do not leave the token in .git/config for the build to find.
+          persist-credentials: false
 
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3
         id: filter
         with:
           filters: |
@@ -86,37 +95,62 @@ jobs:
   # ── Repo-wide invariants, cheap enough to always run ──
   invariants:
     runs-on: ubuntu-latest
+    # Only this job can comment, and only on pull requests. Everything else
+    # stays read-only.
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # Do not leave the token in .git/config for the build to find.
+          persist-credentials: false
       - uses: ./.github/actions/setup
         with:
           link-core: "false"
 
-      - name: Zero production dependencies in core
-        run: |
-          node -e "
-            const deps = Object.keys(require('./package.json').dependencies || {});
-            if (deps.length) {
-              console.error('Loom is zero-dependency. Found: ' + deps.join(', '));
-              process.exit(1);
-            }
-            console.log('core has no production dependencies');
-          "
+      - name: No new production dependencies
+        id: depcheck
+        run: node scripts/check-dependencies.mjs
 
-      - name: Siblings depend only on @toyz/loom
-        run: |
-          node --input-type=module -e "
-            import { PACKAGES, readManifest, CORE } from './scripts/packages.mjs';
-            let bad = 0;
-            for (const p of PACKAGES) {
-              if (p.core) continue;
-              const deps = Object.keys(readManifest(p).dependencies || {});
-              const extra = deps.filter((d) => d !== CORE.name);
-              if (extra.length) { bad++; console.error(p.name + ' depends on ' + extra.join(', ')); }
-            }
-            if (bad) process.exit(1);
-            console.log('sibling dependencies clean');
-          "
+      # The petty part, and the useful part: say so on the PR rather than
+      # leaving someone to open a red X and read a log.
+      #
+      # A pull_request run from a *fork* gets a read-only token, so this cannot
+      # comment there -- it fails softly rather than failing the run, since the
+      # check above has already recorded the verdict.
+      - name: Say so on the pull request
+        if: ${{ failure() && steps.depcheck.outputs.violations != '' && github.event_name == 'pull_request' }}
+        continue-on-error: true
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const found = process.env.VIOLATIONS;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: [
+                '## no.',
+                '',
+                'Loom is zero-dependency, and the sibling packages depend on',
+                '`@toyz/loom` and nothing else. This adds:',
+                '',
+                '```',
+                found,
+                '```',
+                '',
+                'Move it to `devDependencies`, or do it by hand. Every production',
+                'dependency is code that ships to everyone who installs this, and',
+                'a package you did not choose can be taken over by someone you',
+                'have never heard of.',
+              ].join('\n'),
+            });
+        env:
+          VIOLATIONS: ${{ steps.depcheck.outputs.violations }}
+
+      - name: Actions are pinned to commit SHAs
+        run: node scripts/check-actions-pinned.mjs
 
       - name: Dependency ranges admit the core version
         run: node scripts/check-versions.mjs
@@ -132,7 +166,10 @@ jobs:
         package: ${{ fromJson(needs.changes.outputs.packages) }}
     name: ${{ matrix.package }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # Do not leave the token in .git/config for the build to find.
+          persist-credentials: false
       - uses: ./.github/actions/setup
 
       - name: Resolve package directory
@@ -192,7 +229,10 @@ jobs:
     if: needs.changes.outputs.docs == 'true' || needs.changes.outputs.any == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # Do not leave the token in .git/config for the build to find.
+          persist-credentials: false
       - uses: ./.github/actions/setup
 
       - name: Build sibling packages
