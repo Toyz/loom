@@ -70,7 +70,13 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      # registry-url is what makes setup-node write the .npmrc line that reads
+      # NODE_AUTH_TOKEN. Without it the token is present in the environment and
+      # simply never consulted, so `npm publish` gets all the way through
+      # packing and then fails with ENEEDAUTH.
       - uses: ./.github/actions/setup
+        with:
+          registry-url: https://registry.npmjs.org
 
       # ── Decide what is being released ──
 
