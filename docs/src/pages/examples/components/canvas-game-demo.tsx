@@ -27,8 +27,21 @@ const sheet = css`
     font-size: 0.9rem;
     color: var(--text-secondary, var(--text-secondary));
   }
-  .hud .label { color: var(--text-muted, var(--text-muted)); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
-  .hud .value { color: var(--accent, var(--thread)); font-size: 1.4rem; font-weight: 700; }
+  .hud .label { color: var(--text-muted); font-family: var(--font-mono, monospace); font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em; }
+  .hud .value {
+    color: var(--text-primary);
+    font-family: var(--font-display, sans-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  /* Lives are punches, like every other countable thing in this design. */
+  .hud .lives {
+    color: var(--thread);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+    letter-spacing: 0.15em;
+  }
   .canvas-container {
     width: 100%;
     max-width: 600px;
@@ -36,7 +49,7 @@ const sheet = css`
     border-radius: 0;
     overflow: hidden;
     border: 1px solid var(--border, var(--warp-lit));
-    background: #0a0a14;
+    background: #100f0b;
     cursor: none;
   }
   loom-canvas {
@@ -54,7 +67,9 @@ const sheet = css`
     border: 1px solid var(--border, var(--warp-lit));
     background: var(--surface-2, #1a1a2e);
     color: var(--text, var(--text-primary));
-    font-size: 0.85rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
@@ -78,7 +93,12 @@ const PADDLE_H = 12;
 const BALL_R = 6;
 const BALL_SPEED = 320;
 
-const BRICK_COLORS = ["#f472b6", "#818cf8", "#34d399", "#fbbf24", "#fb923c"];
+/* One hue, five values. Five saturated colours read as a different product
+   from the rest of the site; a ramp still tells you which row is worth more. */
+const BRICK_COLORS = ["#d9573b", "#c4472f", "#a83c27", "#8c311f", "#702717"];
+/* A cleared brick leaves its position behind, the way a card shows an
+   unpunched hole. The board reads as it empties. */
+const BRICK_GHOST = "rgba(74, 72, 57, 0.30)";
 
 interface Brick {
   x: number; y: number; w: number; h: number;
@@ -174,60 +194,62 @@ export class CanvasGameDemo extends LoomElement {
     ctx.clearRect(0, 0, this.W, this.H);
 
     // Background
-    ctx.fillStyle = "#0a0a14";
+    ctx.fillStyle = "#100f0b";
     ctx.fillRect(0, 0, this.W, this.H);
 
-    // Draw bricks
+    // Bricks. Square, because nothing else in this design is rounded, and a
+    // cleared one leaves its outline so the card reads as it empties.
     for (const b of this.bricks) {
-      if (!b.alive) continue;
-      ctx.fillStyle = b.color;
-      ctx.beginPath();
-      this.roundRect(ctx, b.x, b.y, b.w, b.h, 4);
-      ctx.fill();
+      if (b.alive) {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+      } else {
+        ctx.strokeStyle = BRICK_GHOST;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(b.x + 0.5, b.y + 0.5, b.w - 1, b.h - 1);
+      }
     }
 
     // Draw paddle
     const pw = 80;
     const px = Math.max(0, Math.min(this.W - pw, this.paddleX - pw / 2));
     const py = this.H - 30;
-    ctx.fillStyle = "#818cf8";
-    ctx.beginPath();
-    this.roundRect(ctx, px, py, pw, PADDLE_H, 6);
-    ctx.fill();
+    ctx.fillStyle = "#e6e1d3";
+    ctx.fillRect(px, py, pw, PADDLE_H);
 
     // Draw ball
-    ctx.fillStyle = "#f472b6";
+    ctx.fillStyle = "#c4472f";
     ctx.beginPath();
     ctx.arc(this.ballX, this.ballY, BALL_R, 0, Math.PI * 2);
     ctx.fill();
 
     // Show start message if not running
     if (!this.running && !this.gameOver) {
-      ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.font = "16px Inter, sans-serif";
+      ctx.fillStyle = "#a09a88";
+      ctx.font = "12px 'IBM Plex Mono', monospace";
       ctx.textAlign = "center";
-      ctx.fillText("Click to start", this.W / 2, this.H / 2 + 40);
+      ctx.fillText("CLICK TO START", this.W / 2, this.H / 2 + 40);
       return;
     }
 
     // Game over
     if (this.gameOver) {
-      ctx.fillStyle = "rgba(255,255,255,0.8)";
-      ctx.font = "bold 28px Inter, sans-serif";
+      ctx.fillStyle = "#e6e1d3";
+      ctx.font = "700 26px 'IBM Plex Sans Condensed', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("Game Over", this.W / 2, this.H / 2);
-      ctx.font = "14px Inter, sans-serif";
-      ctx.fillStyle = "rgba(255,255,255,0.5)";
-      ctx.fillText(`Score: ${this.score}`, this.W / 2, this.H / 2 + 30);
+      ctx.fillText("GAME OVER", this.W / 2, this.H / 2);
+      ctx.font = "12px 'IBM Plex Mono', monospace";
+      ctx.fillStyle = "#6d6858";
+      ctx.fillText(`SCORE ${this.score}`, this.W / 2, this.H / 2 + 28);
       return;
     }
 
     // Win check
     if (this.bricks.every(b => !b.alive)) {
-      ctx.fillStyle = "rgba(255,255,255,0.9)";
-      ctx.font = "bold 28px Inter, sans-serif";
+      ctx.fillStyle = "#c4472f";
+      ctx.font = "700 26px 'IBM Plex Sans Condensed', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("You Win!", this.W / 2, this.H / 2);
+      ctx.fillText("CARD CLEARED", this.W / 2, this.H / 2);
       this.running = false;
       return;
     }
@@ -306,17 +328,6 @@ export class CanvasGameDemo extends LoomElement {
     }
   };
 
-  private roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.arcTo(x + w, y, x + w, y + r, r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-    ctx.lineTo(x + r, y + h);
-    ctx.arcTo(x, y + h, x, y + h - r, r);
-    ctx.lineTo(x, y + r);
-    ctx.arcTo(x, y, x + r, y, r);
-  }
 
   update() {
     return (
@@ -328,7 +339,7 @@ export class CanvasGameDemo extends LoomElement {
           </div>
           <div>
             <div class="label">Lives</div>
-            <div class="value">{"♥".repeat(this.lives)}</div>
+            <div class="value lives">{"\u25A0 ".repeat(this.lives).trim()}</div>
           </div>
         </div>
 
