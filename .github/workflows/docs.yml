@@ -29,7 +29,8 @@ jobs:
       - name: Build sibling packages
         run: |
           for dir in loom-rpc loom-analytics loom-flags loom-placeholder; do
-            (cd "$dir" && npm ci && npm link @toyz/loom && npm run build)
+            node scripts/install-linked.mjs "$dir"
+            (cd "$dir" && npm link @toyz/loom && npm run build)
           done
 
       - name: Build docs

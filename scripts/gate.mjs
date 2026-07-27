@@ -47,7 +47,11 @@ if (!pkg.builds) {
 }
 
 if (!skipInstall && !pkg.core) {
-  run("npm ci", "npm", ["ci"]);
+  // Not `npm ci`: the core version this release is about to publish does not
+  // exist on the registry yet, so resolving the declared range fails until
+  // after the thing that needs it has already run.
+  run("install against the local core", "node",
+      [join(ROOT, "scripts", "install-linked.mjs"), pkg.dir], ROOT);
   run(`npm link ${CORE.name}`, "npm", ["link", CORE.name]);
 }
 

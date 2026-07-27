@@ -143,12 +143,17 @@ jobs:
           echo "dir=$DIR" >> "$GITHUB_OUTPUT"
           echo "builds=$BUILDS" >> "$GITHUB_OUTPUT"
 
+      # Not `npm ci`: between bumping a sibling's @toyz/loom range and
+      # publishing that core version, the range resolves to nothing on the
+      # registry. install-linked points it at this checkout instead.
       - name: Install (sibling)
         if: steps.pkg.outputs.dir != '.'
+        run: node scripts/install-linked.mjs ${{ steps.pkg.outputs.dir }}
+
+      - name: Link core
+        if: steps.pkg.outputs.dir != '.'
         working-directory: ${{ steps.pkg.outputs.dir }}
-        run: |
-          npm ci
-          npm link @toyz/loom
+        run: npm link @toyz/loom
 
       - name: Typecheck
         if: steps.pkg.outputs.builds == 'true'
@@ -193,7 +198,8 @@ jobs:
       - name: Build sibling packages
         run: |
           for dir in loom-rpc loom-analytics loom-flags loom-placeholder; do
-            (cd "$dir" && npm ci && npm link @toyz/loom && npm run build)
+            node scripts/install-linked.mjs "$dir"
+            (cd "$dir" && npm link @toyz/loom && npm run build)
           done
 
       - name: Typecheck docs against src
