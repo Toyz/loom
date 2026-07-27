@@ -1,0 +1,231 @@
+name: Release
+
+# One workflow for all six packages, run from the Actions tab.
+#
+# It replaces publish.yml, publish-create-loom.yml, publish-loom-rpc.yml,
+# publish-loom-analytics.yml, publish-loom-flags.yml and
+# publish-loom-placeholder.yml -- six near-identical files, six tag prefixes,
+# and 124 tags to show for it. Three published without running tests and one
+# published without building. Nothing verified that the tag you pushed matched
+# the version in package.json.
+#
+# Pick a package -- or `changed`, or `all` -- and a bump. This bumps, runs the
+# full gate, publishes, and pushes one tag per package afterwards, so a tag
+# records what shipped instead of triggering it and possibly disagreeing.
+#
+# Deliberately one sequential job rather than a matrix: every selected package
+# lands in a single commit and its tags push once, so two release jobs cannot
+# race each other to a non-fast-forward. Core also has to reach npm before any
+# sibling that depends on it, which scripts/changed.mjs orders for us.
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Which package(s) to release
+        required: true
+        default: changed
+        type: choice
+        options:
+          - changed          # everything modified since its last release tag
+          - all              # every package, regardless
+          - loom
+          - rpc
+          - analytics
+          - flags
+          - placeholder
+          - create-loom
+      bump:
+        description: Version bump, applied to each selected package
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major, exact]
+      exact_version:
+        description: Exact version, when bump is "exact". Single package only.
+        required: false
+        type: string
+      dry_run:
+        description: Run every check and stop before publishing
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write      # commit the bump, push tags, create releases
+  id-token: write      # npm provenance
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # changed.mjs diffs against release tags, so it needs the history and
+          # the tags, not a shallow clone.
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: ./.github/actions/setup
+
+      # ── Decide what is being released ──
+
+      - name: Plan
+        id: plan
+        env:
+          SELECTION: ${{ inputs.package }}
+          BUMP: ${{ inputs.bump }}
+          EXACT: ${{ inputs.exact_version }}
+        run: |
+          case "$SELECTION" in
+            changed) PKGS=$(node scripts/changed.mjs --json) ;;
+            all)     PKGS=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(JSON.stringify(m.PACKAGES.map(p=>p.id))))") ;;
+            *)       PKGS=$(node -e "console.log(JSON.stringify([process.argv[1]]))" "$SELECTION") ;;
+          esac
+
+          COUNT=$(node -e "console.log(JSON.parse(process.argv[1]).length)" "$PKGS")
+          if [ "$COUNT" = "0" ]; then
+            echo "::error::Nothing has changed since the last release. Pick a package explicitly to force one."
+            exit 1
+          fi
+
+          # An exact version cannot mean anything sensible applied to several
+          # packages at once.
+          if [ "$BUMP" = "exact" ]; then
+            if [ -z "$EXACT" ]; then
+              echo "::error::bump is 'exact' but exact_version is empty."
+              exit 1
+            fi
+            if [ "$COUNT" != "1" ]; then
+              echo "::error::bump 'exact' releases one package at a time; $COUNT were selected."
+              exit 1
+            fi
+          fi
+
+          echo "packages=$PKGS" >> "$GITHUB_OUTPUT"
+          echo "Releasing: $PKGS"
+          node scripts/changed.mjs --explain || true
+
+      # ── Bump ──
+
+      - name: Bump versions
+        id: bump
+        env:
+          PKGS: ${{ steps.plan.outputs.packages }}
+          BUMP: ${{ inputs.bump }}
+          EXACT: ${{ inputs.exact_version }}
+        run: |
+          SPEC="$BUMP"
+          [ "$SPEC" = "exact" ] && SPEC="$EXACT"
+
+          # bump.mjs refuses a version already on the registry -- the failure
+          # that used to surface as a red publish step after everything else
+          # had passed.
+          for id in $(node -e "console.log(JSON.parse(process.env.PKGS).join(' '))"); do
+            OUT=$(node scripts/bump.mjs "$id" "$SPEC")
+            echo "$OUT"
+            echo "version_$id=$(echo "$OUT" | tail -1)" >> "$GITHUB_OUTPUT"
+          done
+
+      - name: Check every dependency range still admits the core version
+        run: node scripts/check-versions.mjs
+
+      # ── Gate. The same checks CI runs, so a release cannot be looser. ──
+
+      - name: Verify each package
+        env:
+          PKGS: ${{ steps.plan.outputs.packages }}
+        run: |
+          for id in $(node -e "console.log(JSON.parse(process.env.PKGS).join(' '))"); do
+            node scripts/gate.mjs "$id"
+          done
+
+      - name: Scaffold, install, test and build a generated project
+        if: contains(steps.plan.outputs.packages, 'loom') || contains(steps.plan.outputs.packages, 'create-loom')
+        run: node scripts/smoke-create-loom.mjs
+
+      # ── Publish ──
+
+      - name: Publish to npm
+        if: ${{ !inputs.dry_run }}
+        env:
+          PKGS: ${{ steps.plan.outputs.packages }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Manifest order puts core first, which matters: a sibling published
+          # ahead of the core it pins would be unresolvable until core landed.
+          for id in $(node -e "console.log(JSON.parse(process.env.PKGS).join(' '))"); do
+            DIR=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(m.byId(process.argv[1]).dir))" "$id")
+            ( cd "$DIR" && npm publish --provenance --access public )
+          done
+
+      # ── Record it: one commit, one tag and release per package ──
+
+      - name: Commit, tag and release
+        if: ${{ !inputs.dry_run }}
+        env:
+          PKGS: ${{ steps.plan.outputs.packages }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          IDS=$(node -e "console.log(JSON.parse(process.env.PKGS).join(' '))")
+          SUBJECT=$(node -e "
+            const ids = JSON.parse(process.env.PKGS);
+            console.log(ids.length === 1 ? ids[0] : ids.length + ' packages');
+          ")
+
+          git add -A
+          git commit -m "release: $SUBJECT"
+
+          # One tag namespace for everything, so \`git tag\` reads as a list of
+          # releases rather than six interleaved schemes.
+          TAGS=""
+          for id in $IDS; do
+            NAME=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(m.byId(process.argv[1]).name))" "$id")
+            VERSION=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(m.readManifest(m.byId(process.argv[1])).version))" "$id")
+            git tag -a "$id@$VERSION" -m "$NAME $VERSION"
+            TAGS="$TAGS refs/tags/$id@$VERSION"
+          done
+
+          git push origin HEAD:${{ github.ref_name }}
+          # Named explicitly rather than --tags: this repo carries 124 tags from
+          # the old per-package schemes, and pushing the lot on every release
+          # makes the output useless for seeing what just shipped.
+          git push origin $TAGS
+
+          for id in $IDS; do
+            NAME=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(m.byId(process.argv[1]).name))" "$id")
+            VERSION=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(m.readManifest(m.byId(process.argv[1])).version))" "$id")
+            gh release create "$id@$VERSION" --title "$NAME $VERSION" --generate-notes
+          done
+
+      - name: Summary
+        if: always()
+        env:
+          PKGS: ${{ steps.plan.outputs.packages }}
+        run: |
+          {
+            echo "### Release"
+            echo
+            if [ -z "$PKGS" ]; then
+              echo "Nothing selected."
+            else
+              for id in $(node -e "console.log(JSON.parse(process.env.PKGS).join(' '))"); do
+                NAME=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(m.byId(process.argv[1]).name))" "$id")
+                VERSION=$(node -e "import('./scripts/packages.mjs').then(m=>console.log(m.readManifest(m.byId(process.argv[1])).version))" "$id")
+                echo "- \`$NAME\` **$VERSION**"
+              done
+              echo
+              if [ "${{ inputs.dry_run }}" = "true" ]; then
+                echo "Dry run: every check passed, nothing was published or tagged."
+              else
+                echo "Published to npm and tagged."
+              fi
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

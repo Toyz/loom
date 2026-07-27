@@ -1,0 +1,41 @@
+name: Set up Loom workspace
+description: >
+  Install Node, install and build @toyz/loom, and link it so sibling packages
+  resolve the tree they are being built against rather than the registry.
+
+inputs:
+  node-version:
+    description: Node version
+    required: false
+    default: "22"
+  registry-url:
+    description: npm registry, set when the job will publish
+    required: false
+    default: ""
+  link-core:
+    description: Build and npm-link @toyz/loom for sibling packages
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: ${{ inputs.registry-url }}
+        cache: npm
+
+    # This chain was pasted into six publish workflows and the docs deploy.
+    # Each copy drifted: some ran tests, some did not, one published without
+    # building at all.
+    - name: Install and build @toyz/loom
+      shell: bash
+      run: npm ci
+
+    - name: Build and link core
+      if: inputs.link-core == 'true'
+      shell: bash
+      run: |
+        npm run build
+        npm link

@@ -20,26 +20,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      # Installs Node, builds @toyz/loom and links it. The same steps were
+      # inlined here and in six publish workflows before.
+      - uses: ./.github/actions/setup
 
-      # Build all packages (docs depend on core + loom-rpc)
-      - name: Build Packages
+      # The docs import every sibling package, so all of them have to be built
+      # and linked before the site will resolve.
+      - name: Build sibling packages
         run: |
-          npm ci
-          npm run build
-          npm link
-          cd loom-rpc && npm ci && npm link @toyz/loom && npm run build
-          cd ..
-          cd loom-analytics && npm ci && npm link @toyz/loom && npm run build
-          cd ..
-          cd loom-flags && npm ci && npm link @toyz/loom && npm run build
-          cd ..
-          cd loom-placeholder && npm ci && npm link @toyz/loom && npm run build
+          for dir in loom-rpc loom-analytics loom-flags loom-placeholder; do
+            (cd "$dir" && npm ci && npm link @toyz/loom && npm run build)
+          done
 
-      # Build the docs site
-      - name: Build Docs
+      - name: Build docs
         working-directory: docs
         run: |
           npm ci

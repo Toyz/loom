@@ -1,153 +1,211 @@
 name: CI
 
+# Previously this gated core and loom-rpc only. analytics, flags, placeholder,
+# create-loom and the docs site had no CI at all -- which is how three sibling
+# packages came to declare @toyz/loom ^0.12.8 against a core at 0.22.0, and how
+# the scaffolder came to promise a test runner it did not ship.
+#
+# One matrix job now covers every package, driven by scripts/packages.mjs, so
+# adding a package is a manifest entry rather than another copied file.
+
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # ── Detect which packages have changes ──
+  # ── Which packages does this change touch? ──
   changes:
     runs-on: ubuntu-latest
     outputs:
-      core: ${{ steps.filter.outputs.core }}
-      rpc: ${{ steps.filter.outputs.rpc }}
+      packages: ${{ steps.select.outputs.packages }}
+      any: ${{ steps.select.outputs.any }}
+      docs: ${{ steps.filter.outputs.docs }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
-            core:
+            loom:
               - 'src/**'
               - 'tests/**'
               - 'package.json'
               - 'tsconfig.json'
+              - 'vitest.config.ts'
+              - 'scripts/**'
             rpc:
               - 'loom-rpc/**'
+            analytics:
+              - 'loom-analytics/**'
+            flags:
+              - 'loom-flags/**'
+            placeholder:
+              - 'loom-placeholder/**'
+            create-loom:
+              - 'create-loom/**'
+            docs:
+              - 'docs/**'
 
-  # ── Core: @toyz/loom ──
-  core:
-    needs: changes
-    if: needs.changes.outputs.core == 'true'
+      - name: Build the matrix
+        id: select
+        env:
+          F_LOOM: ${{ steps.filter.outputs.loom }}
+          F_RPC: ${{ steps.filter.outputs.rpc }}
+          F_ANALYTICS: ${{ steps.filter.outputs.analytics }}
+          F_FLAGS: ${{ steps.filter.outputs.flags }}
+          F_PLACEHOLDER: ${{ steps.filter.outputs.placeholder }}
+          F_CREATE_LOOM: ${{ steps.filter.outputs.create-loom }}
+        run: |
+          # A change to core can break any sibling that builds against it, so
+          # core forces the full set rather than only itself.
+          if [ "$F_LOOM" = "true" ]; then
+            PKGS='["loom","rpc","analytics","flags","placeholder","create-loom"]'
+          else
+            PKGS=$(node -e '
+              const on = {
+                rpc: process.env.F_RPC,
+                analytics: process.env.F_ANALYTICS,
+                flags: process.env.F_FLAGS,
+                placeholder: process.env.F_PLACEHOLDER,
+                "create-loom": process.env.F_CREATE_LOOM,
+              };
+              console.log(JSON.stringify(Object.keys(on).filter((k) => on[k] === "true")));
+            ')
+          fi
+          echo "packages=$PKGS" >> "$GITHUB_OUTPUT"
+          echo "any=$(node -e "console.log(JSON.parse(process.argv[1]).length > 0)" "$PKGS")" >> "$GITHUB_OUTPUT"
+          echo "Selected: $PKGS"
+
+  # ── Repo-wide invariants, cheap enough to always run ──
+  invariants:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup
         with:
-          node-version: 22
-          cache: npm
+          link-core: "false"
 
-      - run: npm ci
-
-      - name: Zero dependencies check
-        id: depcheck
-        if: github.event_name == 'pull_request'
+      - name: Zero production dependencies in core
         run: |
           node -e "
-            const pkg = require('./package.json');
-            const deps = Object.keys(pkg.dependencies || {});
-            if (deps.length > 0) {
-              console.error('ERROR: Production dependencies detected!');
-              console.error('Loom must remain zero-dependency.');
-              console.error('Found:', deps.join(', '));
-              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'failed=true\n');
-              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'deps=' + deps.join(', ') + '\n');
+            const deps = Object.keys(require('./package.json').dependencies || {});
+            if (deps.length) {
+              console.error('Loom is zero-dependency. Found: ' + deps.join(', '));
               process.exit(1);
             }
-            console.log('No production dependencies — clean.');
+            console.log('core has no production dependencies');
           "
 
-      - name: Comment on PR (zero-dep violation)
-        if: failure() && steps.depcheck.outputs.failed == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const deps = '${{ steps.depcheck.outputs.deps }}';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `## no.\n\nLoom is a **zero-dependency** framework. This PR introduces production dependencies:\n\n\`${deps}\`\n\nMove them to \`devDependencies\` or remove them entirely.`
-            });
+      - name: Siblings depend only on @toyz/loom
+        run: |
+          node --input-type=module -e "
+            import { PACKAGES, readManifest, CORE } from './scripts/packages.mjs';
+            let bad = 0;
+            for (const p of PACKAGES) {
+              if (p.core) continue;
+              const deps = Object.keys(readManifest(p).dependencies || {});
+              const extra = deps.filter((d) => d !== CORE.name);
+              if (extra.length) { bad++; console.error(p.name + ' depends on ' + extra.join(', ')); }
+            }
+            if (bad) process.exit(1);
+            console.log('sibling dependencies clean');
+          "
 
-      - name: Typecheck
-        run: npx tsc --noEmit
+      - name: Dependency ranges admit the core version
+        run: node scripts/check-versions.mjs
 
-      - name: Test
-        run: npm test
-
-      - name: Build
-        run: npm run build
-
-  # ── LoomRPC: @toyz/loom-rpc ──
-  rpc:
+  # ── Per-package gate ──
+  package:
     needs: changes
-    if: needs.changes.outputs.rpc == 'true'
+    if: needs.changes.outputs.any == 'true'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: loom-rpc
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.changes.outputs.packages) }}
+    name: ${{ matrix.package }}
     steps:
       - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install & Build core (Loom)
+      - name: Resolve package directory
+        id: pkg
         run: |
-          npm ci
-          npm run build
-          npm link
-        working-directory: .
+          DIR=$(node --input-type=module -e "import('./scripts/packages.mjs').then(m=>console.log(m.byId(process.argv[1]).dir))" "${{ matrix.package }}")
+          BUILDS=$(node --input-type=module -e "import('./scripts/packages.mjs').then(m=>console.log(m.byId(process.argv[1]).builds))" "${{ matrix.package }}")
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+          echo "builds=$BUILDS" >> "$GITHUB_OUTPUT"
 
-      - name: Install (loom-rpc)
+      - name: Install (sibling)
+        if: steps.pkg.outputs.dir != '.'
+        working-directory: ${{ steps.pkg.outputs.dir }}
         run: |
           npm ci
           npm link @toyz/loom
 
-      - name: Single-dependency check
-        id: depcheck
-        if: github.event_name == 'pull_request'
-        run: |
-          node -e "
-            const pkg = require('./package.json');
-            const deps = Object.keys(pkg.dependencies || {});
-            const allowed = ['@toyz/loom'];
-            const violations = deps.filter(d => !allowed.includes(d));
-            if (violations.length > 0) {
-              console.error('ERROR: Unauthorized dependencies detected!');
-              console.error('LoomRPC may only depend on @toyz/loom.');
-              console.error('Found:', violations.join(', '));
-              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'failed=true\n');
-              require('fs').appendFileSync(process.env.GITHUB_OUTPUT, 'deps=' + violations.join(', ') + '\n');
-              process.exit(1);
-            }
-            console.log('Dependencies clean — only @toyz/loom.');
-          "
-
-      - name: Comment on PR (dependency violation)
-        if: failure() && steps.depcheck.outputs.failed == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const deps = '${{ steps.depcheck.outputs.deps }}';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `## no.\n\nLoomRPC may only depend on \`@toyz/loom\`. This PR introduces unauthorized dependencies:\n\n\`${deps}\`\n\nRemove them or move them to \`devDependencies\`.`
-            });
-
       - name: Typecheck
+        if: steps.pkg.outputs.builds == 'true'
+        working-directory: ${{ steps.pkg.outputs.dir }}
         run: npx tsc --noEmit
 
+      - name: Type-level assertions
+        if: matrix.package == 'loom'
+        run: npm run test:types
+
       - name: Test
+        if: steps.pkg.outputs.builds == 'true'
+        working-directory: ${{ steps.pkg.outputs.dir }}
         run: npm test
 
       - name: Build
+        if: steps.pkg.outputs.builds == 'true'
+        working-directory: ${{ steps.pkg.outputs.dir }}
+        run: npm run build
+
+      # The published output must be resolvable by Node, not only by a bundler.
+      # Every package shipped extensionless relative imports until 0.22.0; the
+      # whole suite passed throughout, because tests resolve src/ via Vite.
+      - name: dist is resolvable by Node
+        if: steps.pkg.outputs.builds == 'true'
+        run: node scripts/check-dist-esm.mjs ${{ matrix.package }}
+
+      # create-loom has no source of its own; its gate is a real scaffold.
+      - name: Scaffold, install, test and build a generated project
+        if: matrix.package == 'create-loom'
+        run: node scripts/smoke-create-loom.mjs
+
+  # ── Docs build against src/, so they catch type-surface breaks early ──
+  docs:
+    needs: changes
+    if: needs.changes.outputs.docs == 'true' || needs.changes.outputs.any == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      - name: Build sibling packages
+        run: |
+          for dir in loom-rpc loom-analytics loom-flags loom-placeholder; do
+            (cd "$dir" && npm ci && npm link @toyz/loom && npm run build)
+          done
+
+      - name: Typecheck docs against src
+        working-directory: docs
+        run: npm ci && npm run tsc
+
+      # Against the generated .d.ts as well: declaration emit can break in ways
+      # src-path resolution hides.
+      - name: Typecheck docs against dist
+        working-directory: docs
+        run: npx tsc -p tsconfig.dist.json --noEmit
+
+      - name: Build docs
+        working-directory: docs
         run: npm run build
