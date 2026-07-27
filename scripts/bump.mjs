@@ -41,6 +41,8 @@ const current = manifest.version;
 
 function next(version, how) {
   if (/^\d+\.\d+\.\d+(-[\w.]+)?$/.test(how)) return how;
+  // `auto` is resolved by the caller, which needs the registry to decide.
+  if (how === "auto") throw new Error("auto is resolved before next()");
   const m = /^(\d+)\.(\d+)\.(\d+)/.exec(version);
   if (!m) throw new Error(`Cannot parse current version "${version}"`);
   let [maj, min, patch] = m.slice(1).map(Number);
@@ -50,9 +52,24 @@ function next(version, how) {
   throw new Error(`Unknown bump "${how}" -- use patch, minor, major, or an exact version`);
 }
 
-const version = next(current, spec);
+/**
+ * `auto`: ship what the tree already says when that version is not on the
+ * registry, and bump otherwise.
+ *
+ * A release covering several packages hits both cases at once. Some have a
+ * version that was written by hand and never published -- bumping those skips
+ * straight past the version the changelog documents. Others sit exactly at
+ * what is published and genuinely need a new number. Asking for one bump level
+ * to describe both is what forces a release into several runs.
+ */
+let version;
+if (spec === "auto") {
+  version = alreadyPublished(pkg.name, current) ? next(current, "minor") : current;
+} else {
+  version = next(current, spec);
+}
 
-if (version === current) {
+if (version === current && spec !== "auto") {
   console.error(`  ${pkg.name} is already ${version}.`);
   process.exit(1);
 }
@@ -69,12 +86,16 @@ function alreadyPublished(name, v) {
   }
 }
 
-if (alreadyPublished(pkg.name, version)) {
+if (version !== current && alreadyPublished(pkg.name, version)) {
   console.error(`  ${pkg.name}@${version} is already published. Pick a higher version.`);
   process.exit(1);
 }
 
-const changes = [`${pkg.name}  ${current} -> ${version}`];
+const changes = [
+  version === current
+    ? `${pkg.name}  ${version} (unpublished; releasing as-is)`
+    : `${pkg.name}  ${current} -> ${version}`,
+];
 
 if (!dryRun) {
   manifest.version = version;

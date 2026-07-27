@@ -36,11 +36,11 @@ on:
           - placeholder
           - create-loom
       bump:
-        description: Version bump, applied to each selected package
+        description: Version bump. `auto` ships an unpublished tree version as-is, bumps minor otherwise.
         required: true
-        default: patch
+        default: auto
         type: choice
-        options: [patch, minor, major, exact]
+        options: [auto, patch, minor, major, exact]
       exact_version:
         description: Exact version, when bump is "exact". Single package only.
         required: false
