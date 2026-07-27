@@ -1,62 +1,82 @@
-import { LoomElement, component, reactive, css, styles } from "@toyz/loom";
+import { LoomElement, component, reactive, computed, css, styles } from "@toyz/loom";
 
+/**
+ * Styles are scoped to this component's shadow root, so these bare `button`
+ * and `h1` selectors cannot reach anything else on the page.
+ */
 const appStyles = css`
   :host {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-content: center;
+    gap: 1rem;
     min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Helvetica, Arial, sans-serif;
-    background: #0a0a0a;
-    color: #ededed;
+    padding: 2rem;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    color: #1a1a1a;
+    background: #fafafa;
   }
+
+  @media (prefers-color-scheme: dark) {
+    :host {
+      color: #ededed;
+      background: #111;
+    }
+  }
+
   h1 {
-    font-size: 3rem;
-    font-weight: 200;
-    margin: 0 0 1rem;
-    background: linear-gradient(135deg, #c084fc, #67e8f9);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
   }
+
   p {
-    color: #888;
-    margin: 0 0 2rem;
+    margin: 0;
+    opacity: 0.6;
   }
+
   button {
-    padding: 0.75rem 1.5rem;
-    border: 1px solid #333;
-    border-radius: 8px;
-    background: #1a1a1a;
-    color: #ededed;
-    font-size: 1rem;
+    justify-self: center;
+    padding: 0.6rem 1.4rem;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: none;
+    color: inherit;
+    font: inherit;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
   }
+
   button:hover {
-    border-color: #c084fc;
-    background: #222;
+    background: color-mix(in srgb, currentColor 10%, transparent);
   }
-  span {
-    font-weight: bold;
-    color: #c084fc;
+
+  .count {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
   }
 `;
 
 @component("my-app")
 @styles(appStyles)
 export class MyApp extends LoomElement {
+  /** Writing to this re-renders. No setState, no dependency array. */
   @reactive accessor count = 0;
+
+  /** Recomputed only when `count` changes. */
+  @computed get parity() {
+    return this.count % 2 === 0 ? "even" : "odd";
+  }
 
   update() {
     return (
       <div>
         <h1>Loom</h1>
-        <p>Weave the web Loom</p>
+        <p>Edit src/app.tsx and save.</p>
         <button onClick={() => this.count++}>
-          Count: <span>{this.count}</span>
+          Clicked <span class="count">{this.count}</span> times
         </button>
+        <p>That is {this.parity}.</p>
       </div>
     );
   }

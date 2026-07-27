@@ -1,15 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    /* es2022 or later: standard decorators and the `accessor` keyword both
+       need it, and this is the setting most Loom setup problems come down to.
+       experimentalDecorators must stay off -- Loom uses the stage-3 form. */
+    "target": "es2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
+
+    /* Routes JSX to Loom's runtime, which builds real DOM. */
     "jsx": "react-jsx",
     "jsxImportSource": "@toyz/loom",
+
     "strict": true,
-    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "dist"
+
+    /* Vite does the emitting. tsc only checks -- it used to emit into dist/
+       as well, which vite then deleted on its way past. */
+    "noEmit": true,
+
+    /* import.meta.env, and the module declarations for ?url / ?raw / *.css
+       imports. Hand-writing those is how you end up with a worse copy. */
+    "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts", "vitest.config.ts", "vitest.setup.ts"]
 }

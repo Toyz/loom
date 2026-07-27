@@ -31,14 +31,18 @@ That's it. No prompts, no config wizard, no JavaScript option — Loom is TypeSc
 
 ```
 my-app/
-├── index.html            5 lines
-├── package.json          1 dep, 2 devDeps
+├── index.html            mounts <my-app>
+├── package.json          1 dep, 3 devDeps
 ├── tsconfig.json         Loom JSX pre-configured
 ├── vite.config.ts        esbuild JSX wired to Loom
+├── vitest.config.ts      happy-dom, same JSX settings
+├── vitest.setup.ts       app.start(), so tags are defined in tests
+├── .gitignore
+├── README.md
 └── src/
     ├── main.tsx           app.start()
     ├── app.tsx            starter component
-    └── global.d.ts        CSS module types
+    └── app.test.tsx       its test
 ```
 
 ### Dependencies
@@ -48,8 +52,14 @@ my-app/
 | `dependencies`    | `@toyz/loom` | The framework (zero transitive deps) |
 | `devDependencies` | `typescript` | Type checking                        |
 | `devDependencies` | `vite`       | Dev server + bundler                 |
+| `devDependencies` | `vitest`     | Test runner                          |
+| `devDependencies` | `happy-dom`  | A DOM for tests -- components are real custom elements |
 
-No other packages. No plugins. No polyfills.
+No plugins. No polyfills.
+
+## Scripts
+
+`dev`, `build`, `preview`, `test`, `test:watch`, `typecheck`.
 
 ## Current directory
 
