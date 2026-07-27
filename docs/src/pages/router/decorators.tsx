@@ -103,7 +103,7 @@ class UserSettings extends LoomElement { }
         <doc-section heading="Route Param Injection">
             <p>
               Use <span class="ic">@prop</span> with route options to inject path and query
-              parameters directly into reactive properties. Imported from
+              parameters directly into reactive properties. Imported from{" "}
               <span class="ic">@toyz/loom/router</span>.
             </p>
             <code-block lang="ts" code={`import { params, routeQuery } from "@toyz/loom/router";

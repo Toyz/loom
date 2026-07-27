@@ -5,6 +5,7 @@
  * Shows tracked buttons, tracked accessor, and live event log.
  */
 import { LoomElement, component, reactive, css, styles, app } from "@toyz/loom";
+import { t } from "../../../tokens";
 import { AnalyticsTransport, track } from "@toyz/loom-analytics";
 import { MockAnalytics } from "@toyz/loom-analytics/testing";
 import { scrollbar } from "../../../shared/scrollbar";
@@ -52,7 +53,7 @@ const demoStyles = css`
     padding: 0.15rem 0.5rem;
     border-radius: 0;
     background: rgba(52,211,153,0.15);
-    color: #6ee7b7;
+    color: ${t.ok};
     font-weight: 600;
   }
 
@@ -103,7 +104,7 @@ const demoStyles = css`
 
   button {
     background: rgba(52,211,153,0.12);
-    color: #6ee7b7;
+    color: ${t.ok};
     border: 1px solid rgba(52,211,153,0.2);
     padding: 0.4rem 0.85rem;
     border-radius: 0;
@@ -126,7 +127,7 @@ const demoStyles = css`
 
   button.accent {
     background: rgba(99,102,241,0.12);
-    color: #a5b4fc;
+    color: ${t.thread};
     border-color: rgba(99,102,241,0.2);
   }
 
@@ -156,7 +157,7 @@ const demoStyles = css`
 
   .theme-badge.dark {
     background: rgba(99,102,241,0.15);
-    color: #a5b4fc;
+    color: ${t.thread};
   }
 
   .theme-badge.light {
@@ -209,7 +210,7 @@ const demoStyles = css`
   }
 
   .event-time {
-    color: #475569;
+    color: ${t.textMuted};
     font-size: 0.65rem;
     margin-left: auto;
     white-space: nowrap;
@@ -220,7 +221,7 @@ const demoStyles = css`
     align-items: center;
     justify-content: center;
     height: 100px;
-    color: #475569;
+    color: ${t.textMuted};
     font-size: 0.85rem;
     font-style: italic;
   }
@@ -248,7 +249,7 @@ const demoStyles = css`
   }
 
   .stat-dot.green { background: var(--ok); }
-  .stat-dot.blue { background: #6366f1; }
+  .stat-dot.blue { background: ${t.thread}; }
   .stat-dot.orange { background: var(--warn); }
 
   .btn-row {
@@ -334,7 +335,7 @@ class AnalyticsDemo extends LoomElement {
             </div>
 
             <div class="action-card" onClick={() => { this.handleDelete(); this.refresh(); }}>
-              <div class="action-icon" style={{ background: "rgba(239,68,68,0.15)" }}><loom-icon name="trash-2" size={16} color="#ef4444"></loom-icon></div>
+              <div class="action-icon" style={{ background: "rgba(239,68,68,0.15)" }}><loom-icon name="trash-2" size={16} color={t.$value.thread}></loom-icon></div>
               <div class="action-info">
                 <div class="action-label">Delete Item</div>
                 <div class="action-event">@track("button.delete")</div>
@@ -368,7 +369,7 @@ class AnalyticsDemo extends LoomElement {
             </h3>
 
             <div class="action-card">
-              <div class="action-icon" style={{ background: "rgba(251,191,36,0.15)" }}><loom-icon name="palette" size={16} color="#fbbf24"></loom-icon></div>
+              <div class="action-icon" style={{ background: "rgba(251,191,36,0.15)" }}><loom-icon name="palette" size={16} color={t.$value.warn}></loom-icon></div>
               <div class="action-info">
                 <div class="action-label">Theme</div>
                 <div class="action-event">@track("theme.change")</div>
@@ -379,15 +380,15 @@ class AnalyticsDemo extends LoomElement {
 
             <div class="stats-row">
               <span class="stat">
-                <span class="stat-dot green"></span>
+                <span class="stat-dot green"></span>{" "}
                 Methods: {methodEvents}
               </span>
               <span class="stat">
-                <span class="stat-dot blue"></span>
+                <span class="stat-dot blue"></span>{" "}
                 Accessors: {accessorEvents}
               </span>
               <span class="stat">
-                <span class="stat-dot orange"></span>
+                <span class="stat-dot orange"></span>{" "}
                 Classes: {classEvents}
               </span>
             </div>

@@ -17,6 +17,7 @@
  */
 
 import { LoomElement, component, css, styles } from "@toyz/loom";
+import { t } from "../tokens";
 import { prop } from "@toyz/loom/store";
 
 const notifStyles = css`
@@ -24,60 +25,60 @@ const notifStyles = css`
     display: block;
     border-radius: 0;
     background: transparent;
-    padding: var(--space-3, 0.75rem) 0 var(--space-3, 0.75rem) var(--space-4, 1rem);
-    margin: 0 0 var(--space-4, 1rem);
-    font-size: var(--text-sm, 0.8125rem);
+    padding: ${t.space3} 0 ${t.space3} ${t.space4};
+    margin: 0 0 ${t.space4};
+    font-size: ${t.textSm};
     line-height: 1.65;
-    color: var(--text-secondary, #a09a88);
+    color: ${t.textSecondary};
   }
 
   /* The printed level label. Replaces the coloured icon that used to sit in
      a flex row to the left of the text. */
   .label {
     display: block;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.625rem;
     font-weight: 600;
     letter-spacing: 0.12em;
-    margin-bottom: var(--space-1, 0.25rem);
+    margin-bottom: ${t.space1};
   }
 
-  :host([type="note"]) { border-left: 1px solid var(--indigo-dim, #47607a); }
-  :host([type="note"]) .label { color: var(--indigo, #6b8cae); }
+  :host([type="note"]) { border-left: 1px solid ${t.indigoDim}; }
+  :host([type="note"]) .label { color: ${t.indigo}; }
 
-  :host([type="tip"]) { border-left: 1px solid var(--ok, #7f9c5a); }
-  :host([type="tip"]) .label { color: var(--ok, #7f9c5a); }
+  :host([type="tip"]) { border-left: 1px solid ${t.ok}; }
+  :host([type="tip"]) .label { color: ${t.ok}; }
 
-  :host([type="warning"]) { border-left: 1px solid var(--warn, #c99a3d); }
-  :host([type="warning"]) .label { color: var(--warn, #c99a3d); }
+  :host([type="warning"]) { border-left: 1px solid ${t.warn}; }
+  :host([type="warning"]) .label { color: ${t.warn}; }
 
   /* Caution is the strongest level: a data-loss or security footgun, and the
      only one that earns a fill. */
   :host([type="caution"]) {
-    border-left: 2px solid var(--thread, #c4472f);
-    background: var(--thread-wash, rgba(196, 71, 47, 0.1));
-    padding-right: var(--space-4, 1rem);
+    border-left: 2px solid ${t.thread};
+    background: ${t.threadWash};
+    padding-right: ${t.space4};
   }
-  :host([type="caution"]) .label { color: var(--thread, #c4472f); }
+  :host([type="caution"]) .label { color: ${t.thread}; }
 
   /* Slotted content matches docStyles exactly. Inline code is underlined,
      not boxed — a chip per identifier turns prose into a field of buttons. */
   ::slotted(.ic),
   ::slotted(code) {
     display: inline !important;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.875em;
     padding: 0;
     border: none;
     border-radius: 0;
     background: transparent;
-    border-bottom: 1px solid var(--thread-dim, #8f3423);
-    color: var(--text-primary, #e6e1d3);
+    border-bottom: 1px solid ${t.threadDim};
+    color: ${t.textPrimary};
     overflow-wrap: break-word;
   }
 
   ::slotted(strong) {
-    color: var(--text-primary, #e6e1d3);
+    color: ${t.textPrimary};
     font-weight: 600;
   }
 

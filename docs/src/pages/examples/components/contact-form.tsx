@@ -4,6 +4,7 @@
  * Demonstrates: @component, @form, @styles, toTrimmed, FormState<T>
  */
 import { LoomElement, component, css, styles } from "@toyz/loom";
+import { t } from "../../../tokens";
 import { form } from "@toyz/loom/element";
 import type { FormState } from "@toyz/loom/element";
 
@@ -25,25 +26,25 @@ const sheet = css`
   }
   .field label {
     font-size: 0.82rem; font-weight: 600;
-    color: var(--text-secondary, var(--text-secondary));
+    color: ${t.textSecondary};
     text-transform: uppercase; letter-spacing: 0.06em;
   }
   .field input,
   .field textarea {
     padding: 0.75rem 1rem;
-    border: 1px solid var(--border, var(--warp-lit)); border-radius: 0;
-    background: var(--surface-2, #16161e); color: var(--text, var(--text-primary));
+    border: 1px solid ${t.border}; border-radius: 0;
+    background: ${t.surface2}; color: ${t.text};
     font-size: 0.95rem; font-family: inherit; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
     resize: vertical;
   }
   .field input::placeholder,
   .field textarea::placeholder {
-    color: var(--text-muted, var(--text-muted));
+    color: ${t.textMuted};
   }
   .field input:focus,
   .field textarea:focus {
-    border-color: var(--accent, var(--thread));
+    border-color: ${t.accent};
     box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
   }
   .field textarea { min-height: 100px; }
@@ -64,7 +65,7 @@ const sheet = css`
   .submit-btn {
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 0.7rem 1.5rem; border: none; border-radius: 0;
-    background: var(--accent, var(--thread)); color: var(--text-primary);
+    background: ${t.accent}; color: var(--text-primary);
     font-weight: 600; font-size: 0.92rem;
     cursor: pointer; transition: opacity 0.15s, transform 0.1s;
   }
@@ -75,23 +76,23 @@ const sheet = css`
   }
 
   .reset-btn {
-    padding: 0.7rem 1.25rem; border: 1px solid var(--border, var(--warp-lit));
+    padding: 0.7rem 1.25rem; border: 1px solid ${t.border};
     border-radius: 0; background: transparent;
-    color: var(--text-muted, #888); font-size: 0.85rem;
+    color: ${t.textMuted}; font-size: 0.85rem;
     cursor: pointer; transition: all 0.15s;
   }
   .reset-btn:hover {
-    border-color: var(--text-secondary, var(--text-secondary));
-    color: var(--text, var(--text-primary));
+    border-color: ${t.textSecondary};
+    color: ${t.text};
   }
 
   .status {
     display: flex; gap: 1rem; flex-wrap: wrap;
     padding: 0.75rem 1rem;
     border-radius: 0; background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border-subtle, var(--warp));
-    font-size: 0.82rem; color: var(--text-muted, var(--text-muted));
-    font-family: var(--font-mono, monospace);
+    border: 1px solid ${t.borderSubtle};
+    font-size: 0.82rem; color: ${t.textMuted};
+    font-family: ${t.fontMono};
   }
   .status .tag {
     display: inline-flex; align-items: center; gap: 0.35rem;
@@ -103,7 +104,7 @@ const sheet = css`
     display: inline-block;
   }
   .status .dot.on { background: var(--ok); }
-  .status .dot.off { background: #6b7280; }
+  .status .dot.off { background: ${t.textMuted}; }
 
   .toast {
     padding: 0.75rem 1rem; border-radius: 0;
@@ -233,11 +234,11 @@ class ContactForm extends LoomElement {
 
         <div class="status">
           <span class="tag">
-            <span class={`dot ${c?.valid ? "on" : "off"}`}></span>
+            <span class={`dot ${c?.valid ? "on" : "off"}`}></span>{" "}
             valid: {String(c?.valid ?? false)}
           </span>
           <span class="tag">
-            <span class={`dot ${c?.dirty ? "on" : "off"}`}></span>
+            <span class={`dot ${c?.dirty ? "on" : "off"}`}></span>{" "}
             dirty: {String(c?.dirty ?? false)}
           </span>
         </div>

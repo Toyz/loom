@@ -5,6 +5,7 @@
  *        Mouse Track (@throttle), Bounce (@animationFrame)
  */
 import { LoomElement, component, reactive, css, styles, interval, timeout, debounce, throttle, animationFrame, query } from "@toyz/loom";
+import { t } from "../../../tokens";
 
 /* ─── Styles ─── */
 const sheet = css`
@@ -15,8 +16,8 @@ const sheet = css`
     gap: 1.25rem;
   }
   .card {
-    background: var(--surface-2, #1e1e2e);
-    border: 1px solid var(--border, #333);
+    background: ${t.surface2};
+    border: 1px solid ${t.border};
     border-radius: 0;
     padding: 1.25rem;
     display: flex;
@@ -26,11 +27,11 @@ const sheet = css`
   .card h3 {
     margin: 0;
     font-size: 1rem;
-    color: var(--accent, #a78bfa);
+    color: ${t.accent};
   }
   .card .desc {
     font-size: 0.82rem;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
     line-height: 1.4;
   }
   .card .demo {
@@ -46,31 +47,31 @@ const sheet = css`
   /* shared button */
   button {
     padding: 0.45rem 1rem;
-    border: 1px solid var(--border, #333);
+    border: 1px solid ${t.border};
     border-radius: 0;
-    background: var(--surface-2, #1e1e2e);
-    color: var(--text, #ccc);
+    background: ${t.surface2};
+    color: ${t.text};
     cursor: pointer;
     font-size: 0.82rem;
     transition: border-color 0.15s;
   }
-  button:hover { border-color: var(--accent, #a78bfa); }
+  button:hover { border-color: ${t.accent}; }
 
   /* stopwatch */
   .big-num {
     font-size: 2.5rem;
     font-weight: 200;
     font-variant-numeric: tabular-nums;
-    color: var(--accent, #a78bfa);
+    color: ${t.accent};
   }
 
   /* toast */
   .toast {
     padding: 0.6rem 1rem;
     border-radius: 0;
-    background: var(--accent-glow, #2a1f4e);
-    color: var(--accent, #a78bfa);
-    border: 1px solid var(--accent-dim, #444);
+    background: ${t.accentGlow};
+    color: ${t.accent};
+    border: 1px solid ${t.accentDim};
     font-size: 0.82rem;
     animation: fade-in 0.2s ease;
   }
@@ -79,20 +80,20 @@ const sheet = css`
   /* debounce */
   input {
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border, #333);
+    border: 1px solid ${t.border};
     border-radius: 0;
-    background: var(--surface, #121212);
-    color: var(--text, #ccc);
+    background: ${t.surface};
+    color: ${t.text};
     font-size: 0.85rem;
     width: 100%;
     box-sizing: border-box;
   }
-  input:focus { outline: none; border-color: var(--accent, #a78bfa); }
+  input:focus { outline: none; border-color: ${t.accent}; }
   .stat-row {
     display: flex;
     justify-content: space-between;
     font-size: 0.78rem;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
     width: 100%;
   }
 
@@ -100,13 +101,13 @@ const sheet = css`
   .track-area {
     width: 100%;
     height: 100px;
-    border: 1px dashed var(--border, #333);
+    border: 1px dashed ${t.border};
     border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.8rem;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
     cursor: crosshair;
     position: relative;
     overflow: hidden;
@@ -115,7 +116,7 @@ const sheet = css`
   .dot {
     width: 12px; height: 12px;
     border-radius: 50%;
-    background: var(--accent, #a78bfa);
+    background: ${t.accent};
     position: absolute;
     pointer-events: none;
     transition: left 0.05s, top 0.05s;
@@ -126,14 +127,14 @@ const sheet = css`
     width: 100%;
     height: 120px;
     position: relative;
-    border: 1px dashed var(--border, #333);
+    border: 1px dashed ${t.border};
     border-radius: 0;
     overflow: hidden;
   }
   .ball {
     width: 24px; height: 24px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #a78bfa, var(--thread));
+    background: ${t.thread};
     position: absolute;
     will-change: transform;
     box-shadow: 0 0 12px rgba(167, 139, 250, 0.4);
@@ -143,7 +144,7 @@ const sheet = css`
     top: 6px; right: 8px;
     font-size: 0.7rem;
     font-family: monospace;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
   }
 `;
 

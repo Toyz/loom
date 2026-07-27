@@ -64,7 +64,7 @@ export default class PageJsx extends LoomElement {
         <doc-section heading="SVG Support">
             <p>
               SVG elements are created with the correct namespace automatically. Loom recognizes all standard SVG tags
-              (<span class="ic">svg</span>, <span class="ic">path</span>, <span class="ic">circle</span>,
+              (<span class="ic">svg</span>, <span class="ic">path</span>, <span class="ic">circle</span>,{" "}
               <span class="ic">g</span>, etc.).
             </p>
             <code-block lang="ts" code={`update() {

@@ -53,7 +53,7 @@ teardown() {
         <doc-section heading="@catch_">
           <api-entry sig="@catch_(handler)">
             <p>
-              Error boundary. Class decorator that wraps <span class="ic">update()</span> and
+              Error boundary. Class decorator that wraps <span class="ic">update()</span> and{" "}
               <span class="ic">connectedCallback()</span> with try/catch.
             </p>
             <code-block lang="ts" code={`@component("my-widget")

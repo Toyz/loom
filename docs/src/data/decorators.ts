@@ -95,6 +95,24 @@ export const DECORATOR_LIST: DecoratorEntry[] = [
   { name: "@guard", id: "guard", color: "var(--cyan)", category: "Router" },
   { name: "@onRouteEnter", id: "onrouteenter", color: "var(--cyan)", category: "Router" },
   { name: "@onRouteLeave", id: "onrouteleave", color: "var(--cyan)", category: "Router" },
+
+  // Platform APIs (0.23.0)
+  { name: "@state", id: "state", color: "var(--accent)", category: "Component" },
+  { name: "@aria", id: "aria", color: "var(--accent)", category: "Component" },
+  { name: "@formValue", id: "formvalue", color: "var(--rose)", category: "Data" },
+  { name: "@validity", id: "validity", color: "var(--rose)", category: "Data" },
+  { name: "@viewTransition", id: "viewtransition", color: "var(--accent)", category: "Component" },
+  { name: "@popover", id: "popover", color: "var(--accent)", category: "DOM" },
+  { name: "@dialog", id: "dialog", color: "var(--accent)", category: "DOM" },
+  { name: "@visible", id: "visible", color: "var(--cyan)", category: "Platform" },
+  { name: "@online", id: "online", color: "var(--cyan)", category: "Platform" },
+  { name: "@idle", id: "idle", color: "var(--amber)", category: "Timing" },
+  { name: "@animate", id: "animate", color: "var(--accent)", category: "DOM" },
+  { name: "@sse", id: "sse", color: "var(--rose)", category: "Data" },
+  { name: "@socket", id: "socket", color: "var(--rose)", category: "Data" },
+  { name: "@geolocation", id: "geolocation", color: "var(--cyan)", category: "Platform" },
+  { name: "@wakeLock", id: "wakeLock", color: "var(--cyan)", category: "Platform" },
+  { name: "@selection", id: "selection", color: "var(--cyan)", category: "DOM" },
 ];
 
 /**

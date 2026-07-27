@@ -5,6 +5,7 @@
  * Adjust color, size, and format in real time to see the component react.
  */
 import { LoomElement, component, reactive, css, styles, app } from "@toyz/loom";
+import { t } from "../../../tokens";
 import {
   PlaceholderProvider,
   RgbaPlaceholder,
@@ -38,7 +39,7 @@ const demoStyles = css`
   .panel h3 {
     margin: 0 0 1rem;
     font-size: 0.95rem;
-    color: #a78bfa;
+    color: ${t.thread};
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -49,7 +50,7 @@ const demoStyles = css`
     padding: 0.15rem 0.5rem;
     border-radius: 0;
     background: rgba(167,139,250,0.15);
-    color: #c4b5fd;
+    color: ${t.thread};
     font-weight: 600;
   }
 
@@ -73,7 +74,7 @@ const demoStyles = css`
 
   input[type="range"] {
     flex: 1;
-    accent-color: #a78bfa;
+    accent-color: ${t.thread};
     cursor: pointer;
   }
 
@@ -116,10 +117,10 @@ const demoStyles = css`
     box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     background-image:
-      linear-gradient(45deg, #444 25%, transparent 25%),
-      linear-gradient(-45deg, #444 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #444 75%),
-      linear-gradient(-45deg, transparent 75%, #444 75%);
+      linear-gradient(45deg, ${t.warpLit} 25%, transparent 25%),
+      linear-gradient(-45deg, ${t.warpLit} 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, ${t.warpLit} 75%),
+      linear-gradient(-45deg, transparent 75%, ${t.warpLit} 75%);
     background-size: 16px 16px;
     background-position: 0 0, 0 8px, 8px -8px, -8px 0;
     background-color: #666;
@@ -132,7 +133,7 @@ const demoStyles = css`
     border-radius: 0;
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-size: 0.75rem;
-    color: #6ee7b7;
+    color: ${t.ok};
     word-break: break-all;
     border: 1px solid rgba(52,211,153,0.15);
   }
@@ -160,7 +161,7 @@ const demoStyles = css`
   }
 
   .preset.active {
-    border-color: #a78bfa;
+    border-color: ${t.thread};
     box-shadow: 0 0 0 2px rgba(167,139,250,0.3);
   }
 
@@ -266,10 +267,15 @@ class PlaceholderDemo extends LoomElement {
 
             <div class="control-row">
               <span class="control-label">Format</span>
-              <select onChange={(e: Event) => { this.format = (e.target as HTMLSelectElement).value as "png" | "svg"; }}>
-                <option value="png" selected={this.format === "png"}>PNG</option>
-                <option value="svg" selected={this.format === "svg"}>SVG</option>
-              </select>
+              <doc-select
+                label="Format"
+                value={this.format}
+                options={[
+                  { value: "png", label: "PNG", note: "raster" },
+                  { value: "svg", label: "SVG", note: "vector" },
+                ]}
+                onSelect={(v: string) => { this.format = v as "png" | "svg"; }}
+              ></doc-select>
             </div>
           </div>
 

@@ -41,7 +41,7 @@ LoomIcon.registerAll({
   close:  '<path d="M18 6L6 18M6 6l12 12" />',
 });`}></code-block>
           <doc-notification type="note">
-            Register icons early in your app's entry point — before any component that uses
+            Register icons early in your app's entry point — before any component that uses{" "}
             <span class="ic">&lt;loom-icon&gt;</span> renders.
           </doc-notification>
         </doc-section>

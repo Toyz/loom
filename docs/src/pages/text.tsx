@@ -18,7 +18,7 @@ export default class PageText extends LoomElement {
 
         <doc-section heading="Overview">
             <p>
-              Decodes common HTML entities (<span class="ic">&amp;lt;</span>, <span class="ic">&amp;gt;</span>,
+              Decodes common HTML entities (<span class="ic">&amp;lt;</span>, <span class="ic">&amp;gt;</span>,{" "}
               <span class="ic">&amp;amp;</span>, etc.) back to their literal characters. Use when rendering
               server-escaped strings in JSX.
             </p>

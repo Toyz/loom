@@ -4,6 +4,7 @@
  * Demonstrates: @component, @store, @computed, @query, @watch, @styles, @css, css, loom-icon, $reset
  */
 import { LoomElement, component, computed, query, css, styles, store, watch, dynamicCss } from "@toyz/loom";
+import { t } from "../../../tokens";
 import { LocalAdapter } from "@toyz/loom/store";
 
 interface Todo { id: number; text: string; done: boolean; }
@@ -19,20 +20,20 @@ const sheet = css`
   }
   .todo-input input {
     flex: 1; padding: 0.75rem 1rem;
-    border: 1px solid var(--border, #333); border-radius: 0;
-    background: var(--surface-2, #1e1e2e); color: var(--text, var(--text-primary));
+    border: 1px solid ${t.border}; border-radius: 0;
+    background: ${t.surface2}; color: ${t.text};
     font-size: 0.95rem; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .todo-input input::placeholder { color: var(--text-muted, #666); }
+  .todo-input input::placeholder { color: ${t.textMuted}; }
   .todo-input input:focus {
-    border-color: var(--accent, #a78bfa);
+    border-color: ${t.accent};
     box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
   }
   .add-btn {
     display: inline-flex; align-items: center; gap: 0.35rem;
     padding: 0.65rem 1.25rem; border: none; border-radius: 0;
-    background: var(--accent, #a78bfa); color: var(--text-primary);
+    background: ${t.accent}; color: var(--text-primary);
     font-weight: 600; font-size: 0.9rem;
     cursor: pointer; transition: opacity 0.15s, transform 0.1s;
     white-space: nowrap;
@@ -45,44 +46,44 @@ const sheet = css`
     display: flex; gap: 0.35rem; margin-bottom: 1.25rem;
   }
   .filters button {
-    padding: 0.35rem 0.85rem; border: 1px solid var(--border, #333);
+    padding: 0.35rem 0.85rem; border: 1px solid ${t.border};
     border-radius: 0; background: transparent;
-    color: var(--text-muted, #888); font-size: 0.8rem;
+    color: ${t.textMuted}; font-size: 0.8rem;
     cursor: pointer; transition: all 0.15s;
   }
   .filters button:hover {
-    border-color: var(--accent, #a78bfa);
-    color: var(--text, var(--text-primary));
+    border-color: ${t.accent};
+    color: ${t.text};
   }
   .filters button.active {
-    background: var(--accent, #a78bfa); color: var(--text-primary);
-    border-color: var(--accent, #a78bfa);
+    background: ${t.accent}; color: var(--text-primary);
+    border-color: ${t.accent};
   }
 
   /* ── Todo items ── */
   .todo-item {
     display: flex; align-items: center; gap: 0.75rem;
     padding: 0.75rem 0.85rem; margin-bottom: 0.35rem;
-    border-radius: 0; background: var(--surface-2, #1e1e2e);
-    border: 1px solid var(--border, #333);
+    border-radius: 0; background: ${t.surface2};
+    border: 1px solid ${t.border};
     transition: border-color 0.15s, background 0.15s;
   }
   .todo-item:hover {
-    border-color: var(--accent, #a78bfa);
+    border-color: ${t.accent};
     background: rgba(167, 139, 250, 0.04);
   }
 
   /* ── Custom checkbox ── */
   .check {
     width: 20px; height: 20px; flex-shrink: 0;
-    border: 2px solid var(--border, #444); border-radius: 0;
+    border: 2px solid ${t.border}; border-radius: 0;
     cursor: pointer; display: grid; place-items: center;
     transition: background 0.15s, border-color 0.15s;
     background: transparent;
   }
   .todo-item.done .check {
-    background: var(--accent, #a78bfa);
-    border-color: var(--accent, #a78bfa);
+    background: ${t.accent};
+    border-color: ${t.accent};
   }
   .check loom-icon { opacity: 0; transition: opacity 0.15s; }
   .todo-item.done .check loom-icon { opacity: 1; }
@@ -102,7 +103,7 @@ const sheet = css`
   .del {
     opacity: 0; width: 28px; height: 28px;
     border: none; border-radius: 0; cursor: pointer;
-    background: transparent; color: var(--text-muted, #888);
+    background: transparent; color: ${t.textMuted};
     display: grid; place-items: center;
     transition: opacity 0.15s, color 0.15s, background 0.15s;
   }
@@ -116,15 +117,15 @@ const sheet = css`
   .footer {
     display: flex; justify-content: space-between; align-items: center;
     margin-top: 0.75rem; padding-top: 0.75rem;
-    border-top: 1px solid var(--border, #333);
+    border-top: 1px solid ${t.border};
   }
   .count {
-    color: var(--text-muted, #888); font-size: 0.8rem;
+    color: ${t.textMuted}; font-size: 0.8rem;
   }
   .clear-btn {
     display: inline-flex; align-items: center; gap: 0.35rem;
     padding: 0.3rem 0.7rem; border: none; border-radius: 0;
-    background: transparent; color: var(--text-muted, #888);
+    background: transparent; color: ${t.textMuted};
     font-size: 0.8rem; cursor: pointer;
     transition: color 0.15s, background 0.15s;
   }
@@ -135,7 +136,7 @@ const sheet = css`
   /* ── Empty state ── */
   .empty {
     text-align: center; padding: 2rem 1rem;
-    color: var(--text-muted, #666);
+    color: ${t.textMuted};
   }
   .empty loom-icon { opacity: 0.4; margin-bottom: 0.5rem; }
   .empty-text { font-size: 0.9rem; font-style: italic; }

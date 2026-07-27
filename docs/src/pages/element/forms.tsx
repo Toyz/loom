@@ -96,7 +96,7 @@ class LoginPage extends LoomElement {
         </doc-section>
         <doc-section heading="Explicit Binding">
             <p>
-              Instead of magic DOM queries, you explicitly wire each input using <code>.bind(field)</code> and
+              Instead of magic DOM queries, you explicitly wire each input using <code>.bind(field)</code> and{" "}
               <code>.data.field</code> for controlled inputs:
             </p>
             <code-block lang="tsx" code={`// Each input is explicitly bound in the template:

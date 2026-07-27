@@ -97,6 +97,13 @@ class AnalyticsTracker extends LoomElement {
               Async methods are awaited. Resolve what the factory needs from the container —
               parameters cannot be decorated.
             </p>
+            <p class="note">
+              A <span class="ic">@service</span> or <span class="ic">@factory</span> declared in a
+              lazily-loaded module registers long after <span class="ic">app.start()</span> has
+              run. Both are wired on registration in that case, so a route module that pulls in
+              its own services works with no second <span class="ic">start()</span> and no
+              container of forward declarations. Each factory still runs exactly once.
+            </p>
             <code-block lang="ts" code={`import { app } from "@toyz/loom";
 
 @service
@@ -116,8 +123,8 @@ class Boot {
               whether you pass a string (local field), a <span class="ic">Reactive</span> instance,
               or a <strong>class constructor</strong> (DI lookup) and does the right thing.
               With a second argument it watches one field on that service, and that field can be
-              an ordinary <span class="ic">@reactive</span>, <span class="ic">@store</span> or
-              <span class="ic">@signal</span> accessor — not only a property holding a
+              an ordinary <span class="ic">@reactive</span>, <span class="ic">@store</span> or{" "}
+              <span class="ic">@signal</span> accessor — not only a property holding a{" "}
               <span class="ic">Reactive</span> instance.
             </p>
             <code-block lang="ts" code={`import { watch } from "@toyz/loom";

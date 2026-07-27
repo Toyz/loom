@@ -12,11 +12,11 @@ export default class PageRouterRoutes extends LoomElement {
 
         <section>
           <p>A route is a pattern and a component. The pattern's job is to be unambiguous, which is harder than it looks the moment two of them can match the same URL — <span class="ic">/user/:id</span> and <span class="ic">/user/new</span> both match <span class="ic">/user/new</span>.</p>
-          <p>Loom matches in registration order, first match wins. That is worth knowing because it makes the outcome depend on import order: whichever module was imported first gets asked first. Declare the specific pattern before the general one.</p>
+          <p>Loom picks the most specific pattern that matches, not the first one declared. Specificity is compared segment by segment: an exact segment beats a partial match like <span class="ic">*.png</span>, which beats a named param, which beats a splat. So <span class="ic">/user/new</span> wins over <span class="ic">/user/:id</span> whichever file imported first, and there is no ordering to maintain.</p>
           <punch-matrix
             columns="MATCHES EXACTLY,CAPTURES A VALUE,SPANS MANY SEGMENTS"
             rows={[
-              { name: `"/users"`, punches: "MATCHES EXACTLY", note: "Static, and declared before the dynamic one" },
+              { name: `"/users"`, punches: "MATCHES EXACTLY", note: "Static, and preferred over any dynamic one" },
               { name: `"/users/:id"`, punches: "CAPTURES A VALUE", note: "One segment, bound to a route prop" },
               { name: `"/files/*"`, punches: "SPANS MANY SEGMENTS", note: "Wildcard, value discarded" },
               { name: `"/files/*path"`, punches: "CAPTURES A VALUE,SPANS MANY SEGMENTS", note: "Wildcard, captured under a name" },
@@ -50,17 +50,35 @@ class PageNotFound extends LoomElement { }`}></code-block>
         </doc-section>
         <doc-section heading="Pattern Matching">
             <p>
-              Routes are matched in registration order. Wildcards (<span class="ic">*</span>) are always checked last.
-              The first match wins — order your routes from most to least specific:
+              The most specific matching pattern wins. Patterns are compared one
+              segment at a time, and the first segment they disagree on decides it —
+              which is how a reader would compare them, and why a single
+              "count the params" score cannot do the job:
             </p>
-            <code-block lang="ts" code={`// Matched first (more specific)
-@route("/users/:id/posts/:slug")
+            <api-table
+              head={["Segment", "Beats", "Example"]}
+              rows={[
+                ["Exact", "everything below", <code>/user/new</code>],
+                ["Partial wildcard", "param, splat", <code>/files/*.png</code>],
+                ["Named param", "splat", <code>/user/:id</code>],
+                ["Splat", "nothing", <code>/files/*</code>],
+              ]}
+            ></api-table>
+            <code-block lang="ts" code={`// Any import order. /user/new reaches PageNewUser, /user/42 reaches PageUser.
+@route("/user/:id")
+@route("/user/new")
 
-// Matched second
-@route("/users/:id")
+// Segment 1 settles it: "new" is exact, ":id" is not. The params
+// in segment 2 never come into it.
+@route("/user/:id/edit")
+@route("/user/new/:tab")
 
-// Matched last (catch-all)
+// The bare catch-all is last by definition.
 @route("*")`}></code-block>
+            <p class="note">
+              Two patterns of equal specificity keep registration order, so an
+              exact duplicate still resolves to whichever registered first.
+            </p>
         </doc-section>
         <doc-section heading="Typed Route Data">
             <p>

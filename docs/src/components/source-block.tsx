@@ -9,6 +9,7 @@
  *   <source-block file="src/element/image.ts" lang="ts"></source-block>
  */
 import { LoomElement, component, prop, css, styles, mount } from "@toyz/loom";
+import { t } from "../tokens";
 import { api, intercept } from "@toyz/loom/query";
 import type { ApiState, ApiCtx } from "@toyz/loom/query";
 
@@ -17,12 +18,12 @@ const sheet = css`
   .loading {
     padding: 2rem;
     text-align: center;
-    color: var(--text-muted, #666);
+    color: ${t.textMuted};
     font-size: 0.85rem;
-    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    font-family: ${t.fontMono};
     background: var(--ground-sunk);
-    border: 1px solid var(--border-subtle, var(--warp));
-    border-radius: var(--radius-md, 8px);
+    border: 1px solid ${t.borderSubtle};
+    border-radius: ${t.radiusMd};
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {

@@ -20,17 +20,18 @@
  */
 
 import { LoomElement, component, prop, css, styles } from "@toyz/loom";
+import { t } from "../tokens";
 
 const demoStyles = css`
   :host {
     display: block;
-    margin-bottom: var(--space-5, 1.25rem);
+    margin-bottom: ${t.space5};
   }
 
   /* The same object a <code-block> is. */
   .frame {
-    background: var(--ground-sunk, #100f0b);
-    border: 1px solid var(--warp-lit, #4a4839);
+    background: ${t.groundSunk};
+    border: 1px solid ${t.warpLit};
     clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
   }
 
@@ -38,13 +39,13 @@ const demoStyles = css`
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: var(--space-4, 1rem);
+    gap: ${t.space4};
     padding: 9px 20px 9px 16px;
-    border-bottom: 1px solid var(--warp, #33322a);
-    font-family: var(--font-mono, monospace);
+    border-bottom: 1px solid ${t.warp};
+    font-family: ${t.fontMono};
     font-size: 0.6875rem;
     letter-spacing: 0.06em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
 
   /* The one element allowed to claim it is running. */
@@ -55,28 +56,28 @@ const demoStyles = css`
     flex: 0 0 auto;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--thread, #c4472f);
+    color: ${t.thread};
   }
   .live::before {
     content: '';
     width: 6px;
     height: 6px;
-    background: var(--thread, #c4472f);
+    background: ${t.thread};
   }
 
-  .label { color: var(--text-secondary, #a09a88); }
+  .label { color: ${t.textSecondary}; }
 
-  .body { padding: var(--space-5, 1.25rem) var(--space-5, 1.25rem); }
+  .body { padding: ${t.space5} ${t.space5}; }
 
   /* A one-line instruction, printed on the frame rather than floating above
      it in the prose where it read as part of the article. */
   .note {
     padding: 10px 16px;
-    border-top: 1px solid var(--warp, #33322a);
-    font-family: var(--font-mono, monospace);
+    border-top: 1px solid ${t.warp};
+    font-family: ${t.fontMono};
     font-size: 0.6875rem;
     line-height: 1.5;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
 `;
 

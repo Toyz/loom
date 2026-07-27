@@ -5,6 +5,7 @@
  *   <code-block lang="ts" code={`const x = 1;`}></code-block>
  */
 import { LoomElement, component, prop, reactive, debounce, css, mount } from "@toyz/loom";
+import { t } from "../tokens";
 import { DECORATOR_HELP } from "../data/decorator-help";
 
 /* ── Per-language tokenizer rules ── */
@@ -152,15 +153,15 @@ function highlight(code: string, lang = "ts"): string {
 const styles = css`
   :host {
     display: block;
-    margin-bottom: var(--space-4, 1rem);
+    margin-bottom: ${t.space4};
   }
 
   /* Every code block is a punched card: the same treatment the landing page
      uses, so the motif is one thing used everywhere rather than a one-off. */
   .block {
     position: relative;
-    background: var(--ground-sunk, #100f0b);
-    border: 1px solid var(--warp-lit, #4a4839);
+    background: ${t.groundSunk};
+    border: 1px solid ${t.warpLit};
     border-radius: 0;
     overflow: hidden;
     font-size: 13px;
@@ -174,25 +175,25 @@ const styles = css`
   }
 
   .caption {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.6875rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--text-muted, #6d6858);
-    margin-bottom: var(--space-3, 0.75rem);
+    color: ${t.textMuted};
+    margin-bottom: ${t.space3};
   }
 
   /* Printed spec strip along the card's foot. */
   .foot {
     display: flex;
-    gap: var(--space-6, 1.5rem);
+    gap: ${t.space6};
     flex-wrap: wrap;
     padding: 11px 20px 11px 16px;
-    border-top: 1px solid var(--warp, #33322a);
-    font-family: var(--font-mono, monospace);
+    border-top: 1px solid ${t.warp};
+    font-family: ${t.fontMono};
     font-size: 0.6875rem;
     letter-spacing: 0.06em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
 
   /* The punch gutter — one position per line of code, punched where that line
@@ -219,10 +220,10 @@ const styles = css`
     margin: 0;
     padding: 14px 9px;
     border: none;
-    border-right: 1px solid var(--warp, #33322a);
+    border-right: 1px solid ${t.warp};
     border-radius: 0;
     background: rgba(0, 0, 0, 0.22);
-    color: color-mix(in srgb, var(--text-muted, #6d6858) 55%, transparent);
+    color: color-mix(in srgb, ${t.textMuted} 55%, transparent);
     user-select: none;
     overflow: visible;
   }
@@ -234,7 +235,7 @@ const styles = css`
     height: 22px;
   }
   .gutter .pos loom-icon { display: flex; }
-  .gutter .pos.on { color: var(--thread, #c4472f); }
+  .gutter .pos.on { color: ${t.thread}; }
 
   /* Only the code column flexes; min-width lets it shrink so long lines
      scroll inside the block instead of widening the page. */
@@ -249,14 +250,14 @@ const styles = css`
     justify-content: space-between;
     padding: 5px 12px 5px 16px;
     background: transparent;
-    border-bottom: 1px solid var(--warp, #33322a);
+    border-bottom: 1px solid ${t.warp};
   }
 
   .lang-label {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 10px;
     font-weight: 500;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
@@ -271,24 +272,24 @@ const styles = css`
     border-radius: 0;
     padding: 2px 8px;
     cursor: pointer;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 10px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     transition: color 0.15s ease, border-color 0.15s ease;
   }
   .copy-btn:hover {
-    color: var(--text-primary, #e6e1d3);
-    border-color: var(--warp-lit, #4a4839);
+    color: ${t.textPrimary};
+    border-color: ${t.warpLit};
   }
   .copy-btn.ok {
-    color: var(--ok, #7f9c5a);
-    border-color: var(--ok, #7f9c5a);
+    color: ${t.ok};
+    border-color: ${t.ok};
   }
   .copy-btn.fail {
-    color: var(--thread, #c4472f);
-    border-color: var(--thread, #c4472f);
+    color: ${t.thread};
+    border-color: ${t.thread};
   }
 
   pre {
@@ -297,20 +298,20 @@ const styles = css`
        the two columns built different line-box struts — 23px here against
        22px there — and the holes walked one pixel further off their line with
        every row. */
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 13px;
     line-height: 22px;
     padding: 14px 20px;
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--warp-lit, #4a4839) transparent;
+    scrollbar-color: ${t.warpLit} transparent;
   }
 
   code {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 13px;
     line-height: 22px;
-    color: var(--text-primary, #e6e1d3);
+    color: ${t.textPrimary};
   }
   /* No token may alter the line box. */
   code [class^="tok-"] { font-size: inherit; line-height: inherit; }

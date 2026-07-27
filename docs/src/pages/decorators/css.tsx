@@ -53,7 +53,7 @@ class ThemedCard extends LoomElement {
             On connect, <span class="ic">@css</span> creates a new <span class="ic">CSSStyleSheet</span>,
             evaluates the method, calls <span class="ic">replaceSync()</span> with the result,
             and adopts the sheet into the shadow root. It then subscribes to all reactive
-            fields on the component. When any change, re-evaluation is debounced to one
+            fields on the component. When any change, re-evaluation is debounced to one{" "}
             <span class="ic">replaceSync()</span> per microtask.
           </p>
 

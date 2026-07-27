@@ -19,6 +19,7 @@
  */
 
 import { LoomElement, component, reactive, css, styles, interval } from "@toyz/loom";
+import { t } from "../tokens";
 import { api } from "@toyz/loom/query";
 import "@toyz/loom/element/canvas"; // side effect: defines <loom-canvas>
 import type { ApiState } from "@toyz/loom/query";
@@ -58,8 +59,8 @@ const cardStyles = css`
   :host { display: block; margin-top: 28px; }
 
   .frame {
-    background: var(--ground-sunk, #100f0b);
-    border: 1px solid var(--warp, #33322a);
+    background: ${t.groundSunk};
+    border: 1px solid ${t.warp};
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
     padding: 9px 10px 10px;
   }
@@ -67,10 +68,10 @@ const cardStyles = css`
   .head {
     display: flex;
     justify-content: space-between;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.5rem;
     letter-spacing: 0.14em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     margin-bottom: 7px;
   }
 
@@ -83,10 +84,10 @@ const cardStyles = css`
   }
 
   .value {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--text-primary, #e6e1d3);
+    color: ${t.textPrimary};
     margin-top: 7px;
   }
 `;

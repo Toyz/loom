@@ -44,8 +44,8 @@ router.start();`}></code-block>
             ]}
           ></api-table>
             <p>
-              <span class="ic">hash</span> mode is zero-config and works on static hosts.
-              <span class="ic">history</span> mode gives clean URLs but requires your server to serve
+              <span class="ic">hash</span> mode is zero-config and works on static hosts.{" "}
+              <span class="ic">history</span> mode gives clean URLs but requires your server to serve{" "}
               <span class="ic">index.html</span> for all routes.
             </p>
         </doc-section>

@@ -5,6 +5,7 @@
  * @observer on a controller, and update() rendering as a portal with @styles.
  */
 import { LoomElement, component, reactive, prop, styles, css, LoomAttribute, attribute, observer } from "@toyz/loom";
+import { t } from "../../../tokens";
 
 // Type the demo attributes so they check on every element.
 declare module "@toyz/loom/jsx-runtime" {
@@ -36,13 +37,13 @@ const bubbleSheet = css`
   .bubble {
     position: fixed;
     transform: translateX(-50%);
-    background: var(--surface-2, #1e1e2e);
-    color: var(--text, var(--text-primary));
-    border: 1px solid var(--accent, #a78bfa);
+    background: ${t.surface2};
+    color: ${t.text};
+    border: 1px solid ${t.accent};
     padding: 4px 10px;
     border-radius: 0;
     font-size: 12px;
-    font-family: -apple-system, system-ui, sans-serif;
+    font-family: ${t.fontSans};
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     pointer-events: none;
     white-space: nowrap;
@@ -85,12 +86,12 @@ const sheet = css`
   .demo { display: grid; gap: 16px; }
   .row {
     padding: 16px;
-    background: var(--surface-2, #1e1e2e);
-    border: 1px solid var(--border, #333);
+    background: ${t.surface2};
+    border: 1px solid ${t.border};
     border-radius: 0;
   }
   .tip {
-    color: var(--accent, #a78bfa);
+    color: ${t.accent};
     text-decoration: underline dotted;
     cursor: help;
     font-weight: 600;
@@ -99,18 +100,18 @@ const sheet = css`
     width: 100%;
     padding: 8px 10px;
     border-radius: 0;
-    border: 1px solid var(--border, #333);
-    background: var(--surface, #12121a);
-    color: var(--text, var(--text-primary));
+    border: 1px solid ${t.border};
+    background: ${t.surface};
+    color: ${t.text};
     box-sizing: border-box;
   }
   .reveal {
     text-align: center;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
     transition: color 0.3s;
   }
-  .reveal.seen { color: var(--emerald, var(--ok)); }
-  .count { color: var(--accent, #a78bfa); font-variant-numeric: tabular-nums; }
+  .reveal.seen { color: ${t.emerald}; }
+  .count { color: ${t.accent}; font-variant-numeric: tabular-nums; }
 `;
 
 @component("attributes-showcase")

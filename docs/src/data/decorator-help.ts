@@ -88,4 +88,22 @@ export const DECORATOR_HELP: Record<string, DecoratorHelp> = {
   api: { summary: "Declarative async fetch with loading, error, retry and abort-on-unmount.", to: "/store/api" },
   fetch: { summary: "@api for a URL: interceptors apply, non-2xx throws, and the cache key is the resolved URL.", to: "/store/api" },
   intercept: { summary: "Runs before or after an @api request to modify the context or the response.", to: "/store/api" },
+
+  // Platform APIs (0.23.0)
+  state: { summary: "Mirrors a boolean field into a CSS custom state, selectable as :state(name).", to: "/decorators/internals" },
+  aria: { summary: "Gives a component a default role and ARIA properties without host attributes.", to: "/decorators/internals" },
+  formValue: { summary: "Submits a field's value with the surrounding native form.", to: "/decorators/internals" },
+  validity: { summary: "Attaches a validator that reports through the browser's own constraint validation.", to: "/decorators/internals" },
+  viewTransition: { summary: "Runs full renders inside document.startViewTransition. Fast-patches are not wrapped.", to: "/decorators/view-transition" },
+  popover: { summary: "Drives a [popover] element from a boolean, on the browser's top layer.", to: "/decorators/overlay" },
+  dialog: { summary: "Drives a <dialog> from a boolean. Modal by default, so the page behind is inert.", to: "/decorators/overlay" },
+  visible: { summary: "True while the page is visible. Use it to stop work nobody is looking at.", to: "/decorators/environment" },
+  online: { summary: "True while the browser believes it is online. False is reliable, true is a hint.", to: "/decorators/environment" },
+  idle: { summary: "Runs a method when the browser is idle. Pass a timeout or it may never run.", to: "/decorators/timing" },
+  animate: { summary: "Runs keyframes on an element, cancelled when the component disconnects.", to: "/decorators/animate" },
+  sse: { summary: "Subscribes a method to Server-Sent Events, with backoff and cleanup.", to: "/decorators/streams" },
+  socket: { summary: "Subscribes a method to a WebSocket, closed on disconnect so it cannot leak.", to: "/decorators/streams" },
+  geolocation: { summary: "Watches device position and clears the watch on disconnect.", to: "/decorators/device" },
+  wakeLock: { summary: "Holds a screen wake lock, re-acquired after the page is hidden.", to: "/decorators/device" },
+  selection: { summary: "Reports the document selection, with the document listener cleaned up.", to: "/decorators/selection" },
 };

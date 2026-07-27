@@ -5,6 +5,7 @@
  * Shows @rpc queries, @mutate mutations, @stream events, loading states, and error handling.
  */
 import { LoomElement, component, css, reactive, styles, app } from "@toyz/loom";
+import { t } from "../../../tokens";
 import type { ApiState } from "@toyz/loom/query";
 import { rpc, mutate, stream, onStream, RpcTransport, service } from "@toyz/loom-rpc";
 import type { RpcMutator, RpcStream } from "@toyz/loom-rpc";
@@ -129,7 +130,7 @@ const demoStyles = css`
   .panel h3 {
     margin: 0 0 1rem;
     font-size: 0.95rem;
-    color: #a78bfa;
+    color: ${t.thread};
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -140,7 +141,7 @@ const demoStyles = css`
     padding: 0.15rem 0.5rem;
     border-radius: 0;
     background: rgba(167,139,250,0.15);
-    color: #c4b5fd;
+    color: ${t.thread};
     font-weight: 600;
   }
 
@@ -248,7 +249,7 @@ const demoStyles = css`
     align-items: center;
     justify-content: center;
     height: 180px;
-    color: #475569;
+    color: ${t.textMuted};
     font-size: 0.85rem;
     font-style: italic;
   }
@@ -294,7 +295,7 @@ const demoStyles = css`
 
   button {
     background: rgba(167,139,250,0.12);
-    color: #c4b5fd;
+    color: ${t.thread};
     border: 1px solid rgba(167,139,250,0.2);
     padding: 0.4rem 0.85rem;
     border-radius: 0;
@@ -332,7 +333,7 @@ const demoStyles = css`
   .status-bar {
     margin-top: 1rem;
     font-size: 0.75rem;
-    color: #475569;
+    color: ${t.textMuted};
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
@@ -367,9 +368,9 @@ const demoStyles = css`
   }
 
   .log-entry { color: var(--text-muted); }
-  .log-entry .method { color: #a78bfa; }
+  .log-entry .method { color: ${t.thread}; }
   .log-entry .args { color: var(--ok); }
-  .log-entry .time { color: #475569; }
+  .log-entry .time { color: ${t.textMuted}; }
 
   /* ── Stream panel ── */
   .stream-panel { grid-column: 1 / -1; }
@@ -394,7 +395,7 @@ const demoStyles = css`
     to   { opacity: 1; transform: translateX(0); }
   }
 
-  .stream-user { color: #a78bfa; font-weight: 600; min-width: 70px; }
+  .stream-user { color: ${t.thread}; font-weight: 600; min-width: 70px; }
   .stream-text { color: var(--text-secondary); }
 
   .stream-status {
@@ -414,7 +415,7 @@ const demoStyles = css`
   @keyframes sdot { 0%,100%{opacity:1} 50%{opacity:0.3} }
 `;
 
-const COLORS = ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444"];
+const COLORS = [t.$value.thread, "#ec4899", t.$value.warn, t.$value.ok, "#3b82f6", t.$value.thread];
 
 @component("rpc-demo")
 @styles(demoStyles, scrollbar)
@@ -605,7 +606,7 @@ class RpcDemo extends LoomElement {
             </h3>
             <div class="stream-feed">
               {this.streamMsgs.length === 0 ? (
-                <span style={{ color: "#475569", fontStyle: "italic" }}>Waiting for events…</span>
+                <span style={{ color: t.$value.textMuted, fontStyle: "italic" }}>Waiting for events…</span>
               ) : (
                 this.streamMsgs.map(m => (
                   <div class="stream-msg">

@@ -4,6 +4,7 @@
  * Live demo of @api fetching /api/team.json
  */
 import { LoomElement, component, css, styles, catch_ } from "@toyz/loom";
+import { t } from "../../../tokens";
 import { api, intercept } from "@toyz/loom/query";
 import type { ApiState, ApiCtx } from "@toyz/loom/query";
 
@@ -16,7 +17,7 @@ interface TeamMember {
 const sheet = css`
   :host {
     display: block;
-    font-family: "Inter", sans-serif;
+    font-family: ${t.fontSans};
   }
 
   .toolbar {
@@ -62,7 +63,7 @@ const sheet = css`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--accent, var(--thread));
+    background: ${t.accent};
     animation: pulse 1s infinite ease-in-out;
   }
 
@@ -98,7 +99,7 @@ const sheet = css`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--accent, var(--thread));
+    background: ${t.accent};
     color: white;
     display: inline-flex;
     align-items: center;

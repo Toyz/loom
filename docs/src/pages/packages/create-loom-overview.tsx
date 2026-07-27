@@ -33,14 +33,18 @@ npm run dev`}></code-block>
         </doc-section>
         <doc-section heading="What You Get">
           <code-block lang="text" code={`my-app/
-├── index.html            5 lines
-├── package.json          1 dep, 2 devDeps
+├── index.html            mounts <my-app>
+├── package.json          1 dep, 3 devDeps
 ├── tsconfig.json         Loom JSX pre-configured
 ├── vite.config.ts        esbuild JSX wired to Loom
+├── vitest.config.ts      happy-dom, same JSX settings
+├── vitest.setup.ts       app.start(), so tags are defined in tests
+├── .gitignore
+├── README.md
 └── src/
     ├── main.tsx           app.start()
     ├── app.tsx            starter component
-    └── global.d.ts        CSS module types`}></code-block>
+    └── app.test.tsx       its test`}></code-block>
         </doc-section>
         <doc-section heading="Dependencies">
           <api-table
@@ -49,40 +53,31 @@ npm run dev`}></code-block>
               [<code>dependencies</code>, "@toyz/loom", "The framework (zero transitive deps)"],
               [<code>devDependencies</code>, "typescript", "Type checking"],
               [<code>devDependencies</code>, "vite", "Dev server + bundler"],
+              [<code>devDependencies</code>, "vitest", "Test runner"],
+              [<code>devDependencies</code>, "happy-dom", "A DOM for tests -- components are real custom elements"],
             ]}
           ></api-table>
-          <p>No other packages. No plugins. No polyfills.</p>
+          <p>No plugins. No polyfills.</p>
+          <p class="note">
+            <span class="ic">vitest.setup.ts</span> calls{" "}
+            <span class="ic">app.start()</span> before each test file.{" "}
+            <span class="ic">@component</span> only queues a tag; start is what
+            calls <span class="ic">customElements.define</span>. Without it a test
+            mounts an element the browser never upgrades, which renders nothing
+            and fails in a way that looks like a bug in the component.
+          </p>
         </doc-section>
         <doc-section heading="Starter Component">
           <p>
-            The generated <span class="ic">app.tsx</span> gives you a minimal Loom component
-            with reactive state, scoped CSS, and JSX:
+            The generated <span class="ic">app.tsx</span> is a minimal component with
+            reactive state, a derived value, and scoped CSS:
           </p>
-          <code-block lang="tsx" code={`import { LoomElement, component, reactive, css, styles } from "@toyz/loom";
-
-const appStyles = css\`
-  :host { display: block; padding: 2rem; text-align: center; }
-  h1 { font-size: 2rem; color: #c084fc; }
-  button { padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; }
-  span { font-weight: bold; margin-left: 0.5rem; }
-\`;
-
-@component("my-app")
-@styles(appStyles)
-export class App extends LoomElement {
-  @reactive accessor count = 0;
-
-  update() {
-    return (
-      \<div\>
-        \<h1\>Loom\</h1\>
-        \<button onClick={() => this.count++}\>
-          Clicks: \<span\>{this.count}\</span\>
-        \</button\>
-      \</div\>
-    );
-  }
-}`}></code-block>
+          <code-block lang="tsx" code={STARTER}></code-block>
+          <p>
+            And <span class="ic">app.test.tsx</span> beside it, so there is something to copy
+            rather than a blank file:
+          </p>
+          <code-block lang="tsx" code={STARTER_TEST}></code-block>
         </doc-section>
         <doc-section heading="TSConfig">
           <p>
@@ -106,3 +101,54 @@ export class App extends LoomElement {
     );
   }
 }
+
+const STARTER = `import { LoomElement, component, reactive, computed, css, styles } from "@toyz/loom";
+
+const appStyles = css\`
+  :host { display: grid; place-content: center; gap: 1rem; min-height: 100vh; }
+  h1 { margin: 0; font-size: 2.5rem; font-weight: 300; }
+  button { padding: 0.6rem 1.4rem; border: 1px solid currentColor; border-radius: 6px; }
+  .count { font-variant-numeric: tabular-nums; font-weight: 600; }
+\`;
+
+@component("my-app")
+@styles(appStyles)
+export class MyApp extends LoomElement {
+  /** Writing to this re-renders. No setState, no dependency array. */
+  @reactive accessor count = 0;
+
+  /** Recomputed only when count changes. */
+  @computed get parity() {
+    return this.count % 2 === 0 ? "even" : "odd";
+  }
+
+  update() {
+    return (
+      <div>
+        <h1>Loom</h1>
+        <button onClick={() => this.count++}>
+          Clicked <span class="count">{this.count}</span> times
+        </button>
+        <p>That is {this.parity}.</p>
+      </div>
+    );
+  }
+}`;
+
+const STARTER_TEST = `import { describe, it, expect, afterEach } from "vitest";
+import { fixture, cleanup } from "@toyz/loom/testing";
+import type { MyApp } from "./app";
+
+afterEach(() => cleanup());
+
+describe("my-app", () => {
+  it("counts clicks", async () => {
+    const el = await fixture<MyApp>("my-app");
+
+    el.shadowRoot?.querySelector("button")?.click();
+    await el.updateComplete;
+
+    expect(el.count).toBe(1);
+    expect(el.shadowRoot?.querySelector(".count")?.textContent).toBe("1");
+  });
+});`;

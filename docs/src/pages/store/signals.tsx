@@ -172,9 +172,9 @@ const loomReactive = fromSignal(externalSignal, (onChange) => {
         </doc-section>
         <doc-section heading="How It Works with Real DOM">
             <p>
-              Unlike VDOM frameworks, Loom patches the real DOM. The trace engine records which
+              Unlike VDOM frameworks, Loom patches the real DOM. The trace engine records which{" "}
               <span class="ic">Reactive</span> instances are read during <span class="ic">update()</span>.
-              Signals integrate seamlessly because <span class="ic">SignalState.get()</span> calls
+              Signals integrate seamlessly because <span class="ic">SignalState.get()</span> calls{" "}
               <span class="ic">Reactive.value</span> under the hood.
             </p>
             <code-block lang="ts" code={`// The rendering pipeline:

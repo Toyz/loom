@@ -331,8 +331,29 @@ class Page extends LoomElement {
           <p class="note">
             The classic form — your own constructor and your own fields — is unchanged and still
             the right choice when the event has behaviour or computed members. The type
-            parameter defaults to <span class="ic">void</span>, so nothing that already extends
-            <span class="ic"> LoomEvent</span> is affected.
+            parameter defaults to <span class="ic">void</span>, so nothing that already extends{" "}
+            <span class="ic">LoomEvent</span> is affected.
+          </p>
+
+          <h3>The payload is readonly</h3>
+          <p>
+            One event object reaches every handler, in registration order. So{" "}
+            <span class="ic">.data</span> is typed <span class="ic">Readonly</span>: a handler
+            that wrote to it — normalising a field, stashing a result on it — would change what
+            every later handler sees, and which handler won would depend on registration order,
+            which no line of either handler mentions.
+          </p>
+          <code-block lang="ts" code={READONLY_EVENT}></code-block>
+          <p class="note">
+            A compile-time guarantee, not <span class="ic">Object.freeze</span>. Freezing the
+            payload measured 15% off emit, and most of that was not the freeze call but what it
+            does afterwards: a frozen object reads slower for the rest of its life, and every
+            handler is a reader. An opt-in flag checked per construction still cost 7%, because
+            the check is per event while the mistake is per line of source.
+          </p>
+          <p class="note">
+            Shallow, the same way <span class="ic">Object.freeze</span> would have been — an
+            object nested inside the payload is still the caller's, and still shared.
           </p>
 
           <h3>Deriving the dedup key</h3>
@@ -352,7 +373,7 @@ class Page extends LoomElement {
           <p class="note">
             The derived key is namespaced by a per-class token rather than the class name,
             because the bus keeps one dedup set for every event type and a minifier rewrites
-            class names. That is the same hazard that makes <span class="ic">keepNames</span>
+            class names. That is the same hazard that makes <span class="ic">keepNames</span>{" "}
             matter at build time.
           </p>
         </doc-section>
@@ -373,6 +394,15 @@ bus.emit(new ThemeChanged({ theme: "dark" }));
 @on(ThemeChanged)
 onTheme(e: ThemeChanged) {
   document.documentElement.dataset.theme = e.data.theme;
+}`;
+
+const READONLY_EVENT = `@on(ThemeChanged)
+onTheme(e: ThemeChanged) {
+  e.data.theme = "light";        // Error: readonly
+  e.data = { theme: "light" };   // Error: readonly
+
+  // To send a changed payload, send a changed event.
+  bus.emit(e.clone({ data: { theme: "light" } }));
 }`;
 
 const DEDUPE_EVENT = `// Every field takes part

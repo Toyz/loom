@@ -17,6 +17,7 @@
  */
 
 import { LoomElement, component, reactive, css, styles, on } from "@toyz/loom";
+import { t } from "../tokens";
 import { RouteChanged } from "@toyz/loom/router";
 import { PageSections, ActiveSection, type PageSection } from "../events";
 
@@ -42,7 +43,7 @@ const railStyles = css`
     flex-direction: column;
     min-height: 0;
     /* The card's edge. Positions are punched along it. */
-    border-left: 1px solid var(--warp, #33322a);
+    border-left: 1px solid ${t.warp};
     padding: 0 0 0 14px;
   }
 
@@ -53,12 +54,12 @@ const railStyles = css`
   }
 
   .head {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.5625rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     margin-bottom: 10px;
     flex: 0 0 auto;
   }
@@ -71,7 +72,7 @@ const railStyles = css`
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: var(--warp-lit, #4a4839) transparent;
+    scrollbar-color: ${t.warpLit} transparent;
   }
 
   a {
@@ -79,10 +80,10 @@ const railStyles = css`
     align-items: flex-start;
     gap: 9px;
     padding: 4px 0;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
     line-height: 1.45;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     text-decoration: none;
   }
   /* Sits inside the edge rule with no negative margin. <ol> is the scroll
@@ -92,13 +93,13 @@ const railStyles = css`
     display: flex;
     flex: 0 0 auto;
     margin-top: 2px;
-    color: var(--warp-lit, #4a4839);
+    color: ${t.warpLit};
   }
-  a:hover { color: var(--text-secondary, #a09a88); }
-  a:hover loom-icon { color: var(--text-muted, #6d6858); }
+  a:hover { color: ${t.textSecondary}; }
+  a:hover loom-icon { color: ${t.textMuted}; }
 
-  li.on a { color: var(--text-primary, #e6e1d3); }
-  li.on a loom-icon { color: var(--thread, #c4472f); }
+  li.on a { color: ${t.textPrimary}; }
+  li.on a loom-icon { color: ${t.thread}; }
 
   /* A heading inside a section. Indented and set a step smaller, so the rail
      reads as an outline of the page rather than one flat list. */
@@ -111,7 +112,7 @@ const railStyles = css`
   spec-card { flex: 0 0 auto; }
 
   a:focus-visible {
-    outline: 1px solid var(--thread, #c4472f);
+    outline: 1px solid ${t.thread};
     outline-offset: 2px;
   }
 

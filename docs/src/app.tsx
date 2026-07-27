@@ -3,6 +3,7 @@
  */
 
 import { LoomElement, component, reactive, on, css, mount, query } from "@toyz/loom";
+import { t } from "./tokens";
 import { LoomLink, RouteChanged } from "@toyz/loom/router";
 import { docStyles } from "./styles/doc-page";
 import { scrollbar } from "./shared/scrollbar";
@@ -48,19 +49,27 @@ const sections: NavSection[] = [
     title: "Decorators",
     items: [
       { label: "Overview", to: "/decorators/overview", icon: "hash" },
-      { label: "Events", to: "/decorators/events", icon: "broadcast" },
-      { label: "Transform", to: "/decorators/transform", icon: "refresh" },
-      { label: "Hotkey", to: "/decorators/hotkey", icon: "command" },
-      { label: "Log", to: "/decorators/log", icon: "zap" },
+      { label: "Events", to: "/decorators/events", icon: "broadcast", divider: "Framework" },
       { label: "Context", to: "/decorators/context", icon: "thread" },
-      { label: "Portal", to: "/decorators/portal", icon: "external-link" },
       { label: "Typed Symbols", to: "/decorators/symbols", icon: "key" },
-      { label: "Media", to: "/decorators/media", icon: "monitor" },
-      { label: "Permission", to: "/decorators/permission", icon: "shield-check" },
-      { label: "Fullscreen", to: "/decorators/fullscreen", icon: "maximize" },
+      { label: "Transform", to: "/decorators/transform", icon: "refresh" },
+      { label: "Log", to: "/decorators/log", icon: "zap" },
+      { label: "Dynamic CSS", to: "/decorators/css", icon: "palette" },
+      { label: "Popover & Dialog", to: "/decorators/overlay", icon: "layers", divider: "Overlays & Motion" },
+      { label: "Portal", to: "/decorators/portal", icon: "external-link" },
+      { label: "View Transitions", to: "/decorators/view-transition", icon: "sparkles" },
+      { label: "Animate", to: "/decorators/animate", icon: "activity" },
+      { label: "Hotkey", to: "/decorators/hotkey", icon: "command", divider: "Input" },
       { label: "Clipboard", to: "/decorators/clipboard", icon: "clipboard" },
       { label: "Drag & Drop", to: "/decorators/dnd", icon: "move" },
-      { label: "Dynamic CSS", to: "/decorators/css", icon: "palette" },
+      { label: "Selection & Highlights", to: "/decorators/selection", icon: "type" },
+      { label: "Element Internals", to: "/decorators/internals", icon: "puzzle", divider: "Platform" },
+      { label: "Permission", to: "/decorators/permission", icon: "shield-check" },
+      { label: "Media", to: "/decorators/media", icon: "monitor" },
+      { label: "Visibility & Network", to: "/decorators/environment", icon: "radio" },
+      { label: "Fullscreen", to: "/decorators/fullscreen", icon: "maximize" },
+      { label: "Device APIs", to: "/decorators/device", icon: "cpu" },
+      { label: "SSE & WebSocket", to: "/decorators/streams", icon: "plug" },
     ],
   },
   {
@@ -153,8 +162,8 @@ const styles = css`
     right: 0;
     z-index: 150;
     height: 56px;
-    background: var(--bg-surface, var(--ground-sunk));
-    border-bottom: 1px solid var(--border-subtle, var(--warp));
+    background: ${t.bgSurface};
+    border-bottom: 1px solid ${t.borderSubtle};
     align-items: center;
     padding: 0 16px;
     gap: 12px;
@@ -163,7 +172,7 @@ const styles = css`
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent, var(--thread)), var(--rose, var(--thread)));
+    background: linear-gradient(135deg, ${t.accent}, ${t.rose});
     display: flex;
     align-items: center;
     justify-content: center;
@@ -183,7 +192,7 @@ const styles = css`
     font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: var(--text-primary, var(--text-primary));
+    color: ${t.textPrimary};
     margin: 0;
     flex: 1;
   }
@@ -194,7 +203,7 @@ const styles = css`
     border: none;
     border-radius: 8px;
     background: transparent;
-    color: var(--text-secondary, var(--text-secondary));
+    color: ${t.textSecondary};
     cursor: pointer;
     align-items: center;
     justify-content: center;
@@ -203,8 +212,8 @@ const styles = css`
     flex-shrink: 0;
   }
   .hamburger:hover {
-    background: var(--bg-hover, var(--ground-hover));
-    color: var(--text-primary, var(--text-primary));
+    background: ${t.bgHover};
+    color: ${t.textPrimary};
   }
   .hamburger svg {
     width: 20px;
@@ -224,7 +233,7 @@ const styles = css`
     border: none;
     border-radius: 8px;
     background: transparent;
-    color: var(--text-muted, var(--text-muted));
+    color: ${t.textMuted};
     cursor: pointer;
     align-items: center;
     justify-content: center;
@@ -233,8 +242,8 @@ const styles = css`
     transition: background 0.15s ease, color 0.15s ease;
   }
   .sidebar-close:hover {
-    background: var(--bg-hover, var(--ground-hover));
-    color: var(--text-primary, var(--text-primary));
+    background: ${t.bgHover};
+    color: ${t.textPrimary};
   }
   .sidebar-close svg {
     width: 18px;
@@ -267,13 +276,16 @@ const styles = css`
   /* ─────────── Sidebar ─────────── */
 
   aside {
+    /* Named so the browser holds it still, rather than cross-fading
+       persistent chrome on every route change. */
+    view-transition-name: doc-nav;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     width: 280px;
-    background: var(--bg-surface, var(--ground-sunk));
-    border-right: 1px solid var(--border-subtle, var(--warp));
+    background: ${t.bgSurface};
+    border-right: 1px solid ${t.borderSubtle};
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -291,7 +303,7 @@ const styles = css`
   .brand {
     display: block;
     padding: 26px 22px 18px;
-    border-bottom: 1px solid var(--warp, #33322a);
+    border-bottom: 1px solid ${t.warp};
     flex-shrink: 0;
   }
   .brand-row {
@@ -303,20 +315,20 @@ const styles = css`
      pre-paint DSD shell in index.html keeps its markup valid. */
   .brand-mark { display: none; }
   .brand h1 {
-    font-family: var(--font-display, sans-serif);
+    font-family: ${t.fontDisplay};
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0.01em;
     text-transform: uppercase;
-    color: var(--text-primary, #e6e1d3);
+    color: ${t.textPrimary};
     margin: 0;
     line-height: 1;
   }
   .brand-version {
     margin-left: auto;
     font-size: 0.625rem;
-    font-family: var(--font-mono, monospace);
-    color: var(--text-muted, #6d6858);
+    font-family: ${t.fontMono};
+    color: ${t.textMuted};
     border: none;
     padding: 0;
     border-radius: 0;
@@ -332,12 +344,12 @@ const styles = css`
   }
   .brand-punches i {
     display: flex;
-    color: var(--warp-lit, #4a4839);
+    color: ${t.warpLit};
   }
   /* Punched reads as a hole everywhere else in the system, so it reads as a
      hole here too — a dimmed thread fill, not five alarm-red blocks. */
   .brand-punches i.on {
-    color: var(--thread-dim, #8f3423);
+    color: ${t.threadDim};
   }
 
   /* ── Search ──
@@ -353,7 +365,7 @@ const styles = css`
     flex-shrink: 0;
     padding: 11px 22px;
     border: none;
-    border-bottom: 1px solid var(--warp, #33322a);
+    border-bottom: 1px solid ${t.warp};
     border-radius: 0;
     background: transparent;
     cursor: pointer;
@@ -362,23 +374,23 @@ const styles = css`
     transition: background 0.15s ease;
   }
   .search-trigger:hover {
-    background: var(--ground-hover, #24241b);
+    background: ${t.groundHover};
   }
   .search-trigger loom-icon {
     flex-shrink: 0;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
   .search-trigger-text {
     flex: 1;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
     letter-spacing: 0.04em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
   .search-trigger-kbd {
     font-size: 0.625rem;
-    font-family: var(--font-mono, monospace);
-    color: var(--text-muted, #6d6858);
+    font-family: ${t.fontMono};
+    color: ${t.textMuted};
     border: none;
     padding: 0;
     border-radius: 0;
@@ -394,7 +406,7 @@ const styles = css`
     overflow-x: hidden;
     padding: 8px 0 40px;
     scrollbar-width: thin;
-    scrollbar-color: var(--warp-lit, #4a4839) transparent;
+    scrollbar-color: ${t.warpLit} transparent;
   }
 
   .home-item { margin: 0; }
@@ -409,16 +421,16 @@ const styles = css`
     gap: 10px;
     padding: 8px 22px;
     border-radius: 0;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
     letter-spacing: 0.03em;
-    color: var(--text-secondary, #a09a88);
+    color: ${t.textSecondary};
     text-decoration: none;
     transition: color 0.15s ease, background 0.15s ease;
   }
   .home-item loom-link::part(anchor):hover {
-    background: var(--ground-hover, #24241b);
-    color: var(--text-primary, #e6e1d3);
+    background: ${t.groundHover};
+    color: ${t.textPrimary};
   }
 
   /* Section — a printed field label on the sleeve, not a collapsible widget
@@ -435,16 +447,16 @@ const styles = css`
     user-select: none;
   }
   .section-title {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.625rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.16em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     transition: color 0.15s;
   }
   .section-header:hover .section-title {
-    color: var(--text-secondary, #a09a88);
+    color: ${t.textSecondary};
   }
   /* The chevron restated what the open/closed state already showed. */
   .section-chevron { display: none; }
@@ -461,12 +473,12 @@ const styles = css`
   }
 
   .nav-divider {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.5625rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     opacity: 0.75;
     padding: 12px 22px 4px;
     margin-top: 2px;
@@ -476,9 +488,9 @@ const styles = css`
   }
   .divider-version {
     font-size: 0.5rem;
-    font-family: var(--font-mono, monospace);
-    color: var(--text-muted, #6d6858);
-    border: 1px solid var(--warp, #33322a);
+    font-family: ${t.fontMono};
+    color: ${t.textMuted};
+    border: 1px solid ${t.warp};
     padding: 1px 4px;
     border-radius: 0;
     text-transform: none;
@@ -499,21 +511,21 @@ const styles = css`
     gap: 0;
     padding: 5px 22px 5px 34px;
     border-radius: 0;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
     font-weight: 400;
     letter-spacing: 0.01em;
-    color: var(--text-secondary, #a09a88);
+    color: ${t.textSecondary};
     text-decoration: none;
     transition: color 0.12s ease, background 0.12s ease;
   }
   .nav-link loom-link::part(anchor):hover {
-    background: var(--ground-hover, #24241b);
-    color: var(--text-primary, #e6e1d3);
+    background: ${t.groundHover};
+    color: ${t.textPrimary};
   }
   .nav-link.active loom-link::part(anchor) {
     background: transparent;
-    color: var(--text-primary, #e6e1d3);
+    color: ${t.textPrimary};
     font-weight: 500;
   }
   /* Active is a punched position in the rail, matching the motif exactly —
@@ -526,7 +538,7 @@ const styles = css`
     width: 6px;
     height: 9px;
     transform: translateY(-50%);
-    background: var(--thread, #c4472f);
+    background: ${t.thread};
     border-radius: 0;
   }
 
@@ -575,11 +587,15 @@ const styles = css`
      Plex Sans, and ~92 columns of 13px mono, which is wider than any code
      sample in the docs. Text and code end on the same line. */
   .page {
-    max-width: var(--page-w, 832px);
+    max-width: ${t.pageW};
     margin: 0;
-    margin-left: var(--page-gap, min(6vw, 88px));
+    margin-left: ${t.pageGap};
     padding: 56px 56px 96px 56px;
     position: relative;
+    /* The only thing that animates across a navigation. Keyframes live in
+       styles.css, because ::view-transition-* pseudo-elements are on the
+       document root and cannot be reached from inside a shadow root. */
+    view-transition-name: doc-page;
   }
   loom-outlet {
     display: block;

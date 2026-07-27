@@ -9,6 +9,7 @@ import {
   LoomElement, component, computed, query, css, styles, store,
   watch, dynamicCss, type LoomHtmlQuery,
 } from "@toyz/loom";
+import { t } from "../../../tokens";
 import { draggable, dropzone, hotkey } from "@toyz/loom/element";
 import { LocalAdapter } from "@toyz/loom/store";
 
@@ -18,9 +19,9 @@ interface Card { id: number; text: string; column: ColumnId; }
 type ColumnId = "todo" | "progress" | "done";
 
 const COLUMNS: { id: ColumnId; label: string; icon: string; color: string }[] = [
-  { id: "todo",     label: "To Do",       icon: "circle",       color: "#a78bfa" },
-  { id: "progress", label: "In Progress", icon: "loader",       color: "#f59e0b" },
-  { id: "done",     label: "Done",        icon: "check-circle", color: "#10b981" },
+  { id: "todo",     label: "To Do",       icon: "circle",       color: t.$value.thread },
+  { id: "progress", label: "In Progress", icon: "loader",       color: t.$value.warn },
+  { id: "done",     label: "Done",        icon: "check-circle", color: t.$value.ok },
 ];
 
 interface KanbanData {
@@ -43,8 +44,8 @@ const sheet = css`
   }
 
   .column {
-    background: var(--surface-2, #1e1e2e);
-    border: 1px solid var(--border, #333);
+    background: ${t.surface2};
+    border: 1px solid ${t.border};
     border-radius: 0;
     padding: 0.75rem;
     display: flex;
@@ -53,7 +54,7 @@ const sheet = css`
   }
 
   .column.drag-over {
-    border-color: var(--accent, #a78bfa);
+    border-color: ${t.accent};
     box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.12);
   }
 
@@ -67,7 +68,7 @@ const sheet = css`
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
   }
 
   .col-header .count {
@@ -88,8 +89,8 @@ const sheet = css`
   }
 
   .card {
-    background: var(--surface, #16161e);
-    border: 1px solid var(--border, #333);
+    background: ${t.surface};
+    border: 1px solid ${t.border};
     border-radius: 0;
     padding: 0.6rem 0.75rem;
     cursor: grab;
@@ -101,7 +102,7 @@ const sheet = css`
   }
 
   .card:hover {
-    border-color: var(--accent, #a78bfa);
+    border-color: ${t.accent};
   }
 
   .card.dragging {
@@ -119,7 +120,7 @@ const sheet = css`
     width: 24px; height: 24px;
     border: none; border-radius: 0;
     cursor: pointer; background: transparent;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
     display: grid; place-items: center;
     transition: opacity 0.15s, color 0.15s, background 0.15s;
   }
@@ -137,22 +138,22 @@ const sheet = css`
 
   .add-row input {
     flex: 1; padding: 0.45rem 0.65rem;
-    border: 1px solid var(--border, #333); border-radius: 0;
-    background: var(--surface, #16161e); color: var(--text, var(--text-primary));
+    border: 1px solid ${t.border}; border-radius: 0;
+    background: ${t.surface}; color: ${t.text};
     font-size: 0.8rem; outline: none;
     transition: border-color 0.2s;
   }
 
-  .add-row input::placeholder { color: var(--text-muted, #555); }
+  .add-row input::placeholder { color: ${t.textMuted}; }
   .add-row input:focus {
-    border-color: var(--accent, #a78bfa);
+    border-color: ${t.accent};
   }
 
   .add-btn {
     display: inline-flex; align-items: center; justify-content: center;
     width: 30px; height: 30px;
     border: none; border-radius: 0;
-    background: var(--accent, #a78bfa); color: var(--text-primary);
+    background: ${t.accent}; color: var(--text-primary);
     cursor: pointer; transition: opacity 0.15s;
   }
   .add-btn:hover { opacity: 0.85; }
@@ -160,7 +161,7 @@ const sheet = css`
   /* ── Empty state ── */
   .empty {
     text-align: center; padding: 1.5rem 0.5rem;
-    color: var(--text-muted, #555);
+    color: ${t.textMuted};
     font-size: 0.8rem; font-style: italic;
     opacity: 0.6;
   }
@@ -169,15 +170,15 @@ const sheet = css`
   .footer {
     display: flex; justify-content: space-between; align-items: center;
     margin-top: 1rem; padding-top: 0.75rem;
-    border-top: 1px solid var(--border, #333);
+    border-top: 1px solid ${t.border};
   }
   .footer-text {
-    color: var(--text-muted, #888); font-size: 0.8rem;
+    color: ${t.textMuted}; font-size: 0.8rem;
   }
   .reset-btn {
     display: inline-flex; align-items: center; gap: 0.35rem;
     padding: 0.3rem 0.7rem; border: none; border-radius: 0;
-    background: transparent; color: var(--text-muted, #888);
+    background: transparent; color: ${t.textMuted};
     font-size: 0.8rem; cursor: pointer;
     transition: color 0.15s, background 0.15s;
   }

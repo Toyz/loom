@@ -90,7 +90,7 @@ accessor routeParams!: UserParams;`}></code-block>
 
         <doc-section heading="Built-in Transformers">
             <p>
-              Loom ships with common value transformers you can use with <span class="ic">@transform</span>
+              Loom ships with common value transformers you can use with <span class="ic">@transform</span>{" "}
               or compose into custom pipelines:
             </p>
             <table class="api-table">

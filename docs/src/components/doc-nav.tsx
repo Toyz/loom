@@ -6,6 +6,7 @@
  * Includes page icons with matching colors for a polished feel.
  */
 import { LoomElement, component, reactive, on, css, styles as applyStyles, mount } from "@toyz/loom";
+import { t } from "../tokens";
 import { RouteChanged } from "@toyz/loom/router";
 import { navOrder, type NavEntry } from "../data/nav-order";
 
@@ -13,7 +14,7 @@ const styles = css`
   :host {
     display: block;
     margin-top: 4rem;
-    border-top: 1px solid var(--warp-lit, #4a4839);
+    border-top: 1px solid ${t.warpLit};
   }
 
   .nav-bar { display: block; }
@@ -27,13 +28,13 @@ const styles = css`
     gap: 16px;
     width: 100%;
     padding: 20px 16px;
-    border-bottom: 1px solid var(--warp, #33322a);
+    border-bottom: 1px solid ${t.warp};
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s ease;
   }
   loom-link::part(anchor):hover {
-    background: var(--ground-raised, #1c1c15);
+    background: ${t.groundRaised};
   }
   /* Next reads right-to-left: text first, arrow last, everything flush right. */
   loom-link.next::part(anchor) {
@@ -41,10 +42,10 @@ const styles = css`
   }
 
   .nav-arrow {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 1rem;
     line-height: 1;
-    color: var(--thread, #c4472f);
+    color: ${t.thread};
     flex-shrink: 0;
     transition: transform 0.15s ease;
   }
@@ -61,31 +62,31 @@ const styles = css`
   .next .nav-text { align-items: flex-end; text-align: right; }
 
   .nav-direction {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.625rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
 
   .nav-title {
-    font-family: var(--font-display, sans-serif);
+    font-family: ${t.fontDisplay};
     font-size: 1.125rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.01em;
-    color: var(--text-primary, #e6e1d3);
+    color: ${t.textPrimary};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .nav-section {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.625rem;
     letter-spacing: 0.08em;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
 
   .nav-icon { display: none; }

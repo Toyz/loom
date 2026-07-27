@@ -4,6 +4,7 @@
  * Live demo: 10,000 items rendered via <loom-virtual>
  */
 import { LoomElement, component, reactive, css, styles } from "@toyz/loom";
+import { t } from "../../../tokens";
 import "@toyz/loom/element/virtual";
 import "./person-row";
 import { scrollbar } from "../../../shared/scrollbar";
@@ -26,7 +27,7 @@ const sheet = css`
   }
   .controls button:hover {
     border-color: var(--accent);
-    background: var(--surface-3, #222);
+    background: ${t.surface3};
   }
   .count {
     font-size: 0.8rem; color: var(--text-muted);
@@ -45,15 +46,15 @@ const sheet = css`
     align-items: center;
     gap: 1rem;
     padding: 0.65rem 1rem;
-    border-bottom: 1px solid var(--border, #1a1a2e);
+    border-bottom: 1px solid ${t.border};
     font-size: 0.9rem;
     transition: background 0.15s;
   }
-  .row:hover { background: var(--surface-2, #1a1a2e); }
+  .row:hover { background: ${t.surface2}; }
   .idx {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
-    color: var(--text-muted, #666);
+    color: ${t.textMuted};
     min-width: 4ch;
     text-align: right;
   }
@@ -62,9 +63,9 @@ const sheet = css`
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
     border-radius: 0;
-    background: var(--accent-glow, #1a1a2e);
-    color: var(--accent, var(--thread));
-    border: 1px solid var(--accent-dim, #333);
+    background: ${t.accentGlow};
+    color: ${t.accent};
+    border: 1px solid ${t.accentDim};
   }
 `;
 

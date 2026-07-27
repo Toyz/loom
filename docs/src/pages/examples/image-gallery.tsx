@@ -42,7 +42,7 @@ export default class PageExampleImageGallery extends LoomElement {
               margin-top: 1rem;
             }
             .image-grid loom-image {
-              border-radius: 12px;
+              border-radius: 2px;
               aspect-ratio: 1;
               width: 100%;
             }

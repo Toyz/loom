@@ -96,8 +96,8 @@ const cards = this.cardsIn("featured"); // → querySelectorAll(".card-featured"
         </doc-section>
         <doc-section heading="How They Work">
             <p>
-              Both decorators replace the property with a getter that calls
-              <span class="ic">this.shadow.querySelector()</span> or <span class="ic">this.shadow.querySelectorAll()</span>
+              Both decorators replace the property with a getter that calls{" "}
+              <span class="ic">this.shadow.querySelector()</span> or <span class="ic">this.shadow.querySelectorAll()</span>{" "}
               on each access. This means:
             </p>
           <api-table

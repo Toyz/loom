@@ -15,6 +15,7 @@
 
 import { LoomAttribute, attribute, styles } from "@toyz/loom/element";
 import { reactive, css } from "@toyz/loom";
+import { t } from "../tokens";
 import { DECORATOR_HELP } from "../data/decorator-help";
 
 const tipStyles = css`
@@ -24,9 +25,9 @@ const tipStyles = css`
     max-width: 21rem;
     /* Same surface as a code block and a punch matrix. A popover that appears
        under the cursor is the worst possible place for a bright panel. */
-    background: var(--ground-sunk, #100f0b);
-    color: var(--text-primary, #e6e1d3);
-    border: 1px solid var(--warp-lit, #4a4839);
+    background: ${t.groundSunk};
+    color: ${t.textPrimary};
+    border: 1px solid ${t.warpLit};
     /* Clipped corner: it is a small card, like everything else in this system. */
     clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
     padding: 10px 13px 11px;
@@ -34,27 +35,27 @@ const tipStyles = css`
     pointer-events: none;
   }
   .name {
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     margin-bottom: 3px;
   }
   .summary {
-    font-family: var(--font-sans, sans-serif);
+    font-family: ${t.fontSans};
     font-size: 0.8125rem;
     line-height: 1.45;
-    color: var(--text-secondary, #a09a88);
+    color: ${t.textSecondary};
   }
   /* The path, not a sentence telling you to go read it. */
   .more {
     display: block;
     margin-top: 6px;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.625rem;
     letter-spacing: 0.06em;
     white-space: nowrap;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
   }
 `;
 

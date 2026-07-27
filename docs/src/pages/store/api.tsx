@@ -81,9 +81,9 @@ export default class PageFetch extends LoomElement {
           </p>
           <api-entry sig="@fetch(url | options)">
             <p>
-              Takes a URL, a function of the host, or an options object. Everything
-              <span class="ic">@api</span> understands passes through — including
-              <span class="ic">enabled</span>, <span class="ic">retry</span>,
+              Takes a URL, a function of the host, or an options object. Everything{" "}
+              <span class="ic">@api</span> understands passes through — including{" "}
+              <span class="ic">enabled</span>, <span class="ic">retry</span>,{" "}
               <span class="ic">use</span> and <span class="ic">pipe</span>.
             </p>
             <code-block lang="ts" code={FETCH_EXAMPLE}></code-block>
@@ -112,14 +112,26 @@ export default class PageFetch extends LoomElement {
           </table>
 
           <doc-notification type="caution">
-            The export is named <span class="ic">fetch</span>, so importing it shadows the global
-            <span class="ic"> fetch</span> in that module. If you need both, import it as
+            The derived key is the resolved URL plus the names of the{" "}
+            <span class="ic">use</span> interceptors, so swapping the interceptor set refetches.
+            What it cannot see is an interceptor whose <em>contribution</em> varies at runtime —
+            a tenant header, an acting-user param — because interceptors run inside the request,
+            after the key has been compared. Put that dimension in{" "}
+            <span class="ic">key</span> explicitly. Nothing is leaked between components either
+            way: the state is per component instance, never a shared cache. What goes wrong is
+            that a component which stays mounted across a tenant switch keeps showing the first
+            tenant's data.
+          </doc-notification>
+
+          <doc-notification type="caution">
+            The export is named <span class="ic">fetch</span>, so importing it shadows the global{" "}
+            <span class="ic">fetch</span> in that module. If you need both, import it as{" "}
             <span class="ic">{`{ fetch as fetchJson }`}</span>.
           </doc-notification>
 
           <p class="note">
-            <span class="ic">as: "text"</span> returns the body as a string and
-            <span class="ic">as: "response"</span> hands back the raw
+            <span class="ic">as: "text"</span> returns the body as a string and{" "}
+            <span class="ic">as: "response"</span> hands back the raw{" "}
             <span class="ic">Response</span> — useful for a HEAD request or a blob, where
             parsing is the caller's business.
           </p>
@@ -146,6 +158,15 @@ export default class PageFetch extends LoomElement {
             fetch; the key decides <em>when to fetch again</em>. A query that is gated on an id
             and keyed by it will fetch once when the id appears and again whenever it changes.
           </doc-notification>
+          <p>
+            A gate that shuts and reopens fetches again. Reopening is the interesting case —
+            switching away from a tab and back, logging out and back in — and the data on hand
+            is from the last time the gate was open, which may be a different session
+            altogether. Whether that fetch actually goes out is{" "}
+            <span class="ic">staleTime</span>'s call, the same question it answers everywhere
+            else: at the default of 0 the data was never fresh, so reopening refetches; set it,
+            and a gate that reopens inside the window serves what it has.
+          </p>
         </doc-section>
 
         {/* ── loading vs fetching ── */}
@@ -177,7 +198,7 @@ export default class PageFetch extends LoomElement {
           </p>
           <p>
             So the transition is announced on the bus, and you subscribe the same way you
-            subscribe to anything else. The event carries the resolved cache key, which for
+            subscribe to anything else. The event carries the resolved cache key, which for{" "}
             <span class="ic">@fetch</span> is the requested URL, so matching on a path prefix
             works.
           </p>
@@ -197,7 +218,7 @@ export default class PageFetch extends LoomElement {
           </doc-notification>
           <p class="caution">
             The event is emitted from a microtask, never synchronously from the getter. A
-            handler that reads <span class="ic">.data</span> or calls
+            handler that reads <span class="ic">.data</span> or calls{" "}
             <span class="ic">scheduleUpdate()</span> would otherwise run inside the render that
             triggered it, and re-enter it.
           </p>

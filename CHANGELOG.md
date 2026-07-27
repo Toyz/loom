@@ -1,5 +1,177 @@
 # Changelog
 
+## 0.23.0
+
+Platform APIs. Loom builds custom elements and had never touched
+`attachInternals()`, which is the one browser API a web-components framework
+cannot skip -- and the reason a Loom component was second-class in a plain HTML
+page. That, plus the modern DOM features that were being hand-rolled around it.
+
+### Added
+
+- **Form-associated custom elements.** `@component(tag, { formAssociated: true })`
+  plus `@formValue` and `@validity`. A component inside a `<form>` was furniture:
+  it submitted nothing, `form.elements` did not list it, validation skipped it,
+  and reset left it alone. `@form` manages state but is deliberately
+  DOM-independent, so nothing in Loom ever made a component visible to the form
+  it was sitting in. Values submit under the host's `name` (booleans use
+  checkbox semantics), validators report through `internals.setValidity` so
+  `form.checkValidity()`, `:invalid` and the browser's own validation bubble all
+  work, and reset restores the constructed value.
+- **`@state` -- CSS `:state()`.** Mirrors a boolean accessor into a custom
+  state, selectable as `my-el:state(loading)` from anywhere including outside
+  the shadow root. The sanctioned replacement for toggling a class on the host,
+  which is public markup anything can overwrite; a custom state cannot be
+  written from outside the component.
+- **`@aria`** -- a default role and ARIA properties that live on the element
+  rather than in its attributes, so they cannot be lost when someone writes the
+  tag without them. `setAria()` for values that change.
+- **`@viewTransition`** -- full renders run inside
+  `document.startViewTransition`. View transitions want one synchronous DOM
+  mutation between two snapshots, which is exactly what `morph` already is: a
+  single entry point applying the whole update in one pass. Fast-patches are
+  not wrapped -- a text or attribute write is not the structural change this
+  exists to animate, and snapshotting the page to cross-fade a counter costs
+  more than it shows.
+- **`@popover` and `@dialog`** -- the browser's top layer, driven by a boolean.
+  An element there paints above everything regardless of tree position, so it
+  does not need relocating out of its shadow root to escape a stacking context
+  -- which is what `@portal` exists for and why it is usually no longer
+  necessary. Light dismiss, Escape, `::backdrop`, focus handling and (for
+  modals) making the page inert all come from the platform. Escape or a click
+  outside writes `false` back to the accessor, so state and DOM cannot drift.
+- **`@visible` / `@online`**, over one shared listener each rather than one per
+  component, attached only while something is subscribed. Also exported as
+  `isVisible()`, `onVisibilityChange()`, `isOnline()`, `onOnlineChange()`.
+- **`@idle`** -- `requestIdleCallback` with cleanup, falling back to a timer on
+  Safari, which has never shipped it.
+- **`@animate`** -- Web Animations keyframes, cancelled on disconnect. An
+  `Animation` outlives the element it was started on, so a component that
+  starts one per connect leaks a live animation on every mount. Starts after
+  the first render, since the target does not exist before it.
+- **`@sse` and `@socket`** -- long-lived connections with exponential capped
+  backoff, closed on disconnect. A socket opened in `connectedCallback` keeps
+  its handlers, and therefore the component and its whole DOM subtree,
+  reachable after the element is gone, while a reconnect timer keeps firing at
+  a detached host.
+- **`@geolocation`, `@wakeLock`, `share()`** -- each releases what it acquires.
+  A `watchPosition` left running keeps the GPS on; a wake lock is dropped
+  whenever the page hides and is re-acquired on return, without which it
+  survives exactly one tab switch.
+- **`@selection` and the CSS Custom Highlight API.** `highlight()` styles text
+  ranges without wrapping them in elements -- the wrapping approach destroys
+  the user's selection, moves focus, invalidates held node references and
+  re-lays out the block. `findRanges()` finds occurrences to feed it.
+- **`IndexedDBAdapter`** for `@persist`: an in-memory mirror serving the
+  synchronous `StorageAdapter` contract, with writes behind it. No practical
+  size limit, against localStorage's ~5MB. Await `ready` before `app.start()`.
+- **`PersistOptions.sync`** -- adopt writes made to the same key by another
+  tab. Without it two tabs diverge the moment either writes: each holds its own
+  copy and only reads storage once, at construction, so the last writer wins the
+  stored value while both keep rendering something else. Opt-in, because turning
+  it on changes what an existing app does.
+### Documentation
+
+- The element decorator reference had drifted **24 decorators** behind the
+  exports. It is now generated against `src/element/index.ts` and grouped by
+  what each decorator does, rather than ending in a "Miscellaneous" bucket, and
+  uses the shared `<api-table>` instead of hand-written markup.
+- Fixed **144 lost spaces**. JSX drops a newline sitting between a tag and
+  text, so `<span>keepNames</span>` followed by a line break rendered as
+  "keepNamesmatter". 33 of those had been papered over with a space *inside*
+  the code chip, which the chip's background then painted. Both are now
+  explicit `{" "}`.
+- The example components were rendering in a different design system: an older
+  purple accent, a generic utility palette, `Inter`, and 6-12px radii against a
+  system that specifies die-cut 2px. Mapped onto the docs tokens -- including
+  `t.$value` for the canvas demo and icon colours, where `var()` cannot reach.
+
+- **`tokens()` — design tokens declared once.** A component stylesheet's
+  loudest line is usually `var(--text-muted, #6d6858)`, repeated for every
+  property that wants a colour. The repetition is not just noise: each copy is
+  hand-written so the fallbacks drift, and a fallback only renders when the
+  token is undefined -- exactly when nobody is looking. What accumulates is a
+  second, contradictory palette behind the real one. These docs carried 479 of
+  them, with `--text-muted` on five different fallbacks and `--accent` on two
+  unrelated purples. `tokens({ textMuted: "#6d6858" })` gives `t.textMuted`,
+  and `t.$sheet` emits the declarations from the same literals, so the
+  definition and the fallback cannot disagree. `t.$value` exposes the raw
+  values for a canvas or anywhere else `var()` cannot go.
+- **`css` sheets compose.** A sheet can be interpolated into another
+  (`css`${base} .x { ... }``), so a shared block is written once rather than
+  pasted. `cssText(sheet)` returns the source a sheet was built from.
+- **`@sse` and `@socket` are generic.** `@sse<Price>(url)` types the handler's
+  `MessageEvent<Price>`, and the type argument is now a real constraint -- the
+  decorator returns a narrowed decorator type, where before the method was
+  typed `Function` and any payload type written at the call site was accepted
+  and never checked. A `json: true` option parses `event.data` first, so the
+  declared type describes what arrives rather than an intention; a frame that
+  fails to parse goes to `onError` instead of reaching the handler.
+- **`RouterOptions.transitions`** -- animate navigations through
+  `document.startViewTransition`. A route change swaps the outlet in one
+  synchronous DOM mutation, which is the shape a view transition wants; wiring
+  it on the router rather than at each `router.go()` means back/forward and
+  guard redirects animate too, since they reach the same swap without passing
+  through a call site an app could wrap.
+- **JSX knows about the top layer.** `popover`, `popoverTarget`,
+  `popoverTargetAction`, `inert` and `open` are typed on intrinsic elements --
+  without them `@popover` shipped with no way to declare its own target in a
+  template.
+- **`ApiOptions.pauseWhenHidden`** (default true) -- stale revalidation is
+  deferred while the page is hidden and runs when it returns, if still stale. A
+  background tab refreshing on a timer spends requests, and on a phone radio
+  wake-ups, to update pixels nobody is looking at.
+
+### Fixed
+
+- View transitions no longer leak unhandled rejections or wedge the page. A
+  `ViewTransition` exposes three promises -- `ready`, `finished` and
+  `updateCallbackDone` -- and all three reject when one is skipped; only
+  `finished` was caught, so a skipped transition surfaced as "Uncaught (in
+  promise) AbortError" or "InvalidStateError: Transition was aborted because of
+  invalid state". Starting one while another is live now skips the outgoing one
+  explicitly instead of leaving the browser to abort whichever it likes, a
+  hidden document is never asked to snapshot (it throws), and a watchdog skips
+  anything still running after 3s. The last one matters most: while a
+  transition is live the document paints from snapshots and its pseudo-element
+  tree sits above everything, so one that never settles leaves an overlay that
+  swallows every click -- a page that is not hung, just covered.
+- **Reconciliation only removes attributes the template declared.** It removed
+  anything on the element that the new tree did not have, which tore off state
+  no template ever set: `showModal()` sets `open` on a `<dialog>`, and a user
+  clicking a `<summary>` sets `open` on a `<details>`. For a modal that is the
+  documented way to strand one -- it disappears, the page stays inert behind
+  it, and no `close` event fires, so bound state stays stuck on "open". For a
+  disclosure it snapped shut under the reader on the next unrelated render.
+  JSX now records which attributes it set, and only those are removable --
+  the same rule `value` and `checked` already followed, rather than a list of
+  special-cased elements. Elements Loom did not create (hydrated markup) keep
+  the previous behaviour, since there is no declaration to compare against.
+- **`@dialog` detects a close that fires no event.** A
+  `<form method="dialog">` submit closes a dialog inside a shadow root
+  *without* dispatching `close` in Chrome -- confirmed against identical markup
+  in both trees, where the light DOM fires it and the shadow DOM does not.
+  Every component renders into a shadow root, so that was the normal path, and
+  it left the accessor reading "open" for a dialog that had gone. The `open`
+  attribute is now observed as well, which catches every way a dialog closes.
+- `@dialog` closes an overlay element that a render replaced. A modal whose
+  node was swapped kept the top layer, leaving the page inert behind a dialog
+  no longer in the document.
+- `LoomElement.emit()` accepts payload events. Its constraint was a bare
+  `LoomEvent`, meaning `LoomEvent<void>`, so no `LoomEvent<T>` subclass was
+  assignable.
+
+### Notes
+
+Every one of these is feature-detected and degrades rather than throws.
+`attachInternals` is absent before Safari 16.4, view transitions are absent in
+Firefox, the popover API predates Firefox 125, `requestIdleCallback` has never
+shipped in Safari, and `CSS.highlights` predates Firefox 140. Where an API is
+missing the component still renders and the state still works; only the
+corresponding browser behaviour is lost. `supportsInternals()`,
+`supportsViewTransitions()`, `supportsAnimations()` and `supportsHighlights()`
+report support where a caller needs to branch.
+
 ## 0.22.0
 
 A correctness and hardening pass over the whole framework. Several features in
@@ -176,6 +348,43 @@ existing suite could not see.
 
 ### Breaking
 
+- **Relative imports in the published output now carry file extensions, and
+  `moduleResolution` is `nodenext`.** All five packages are `"type": "module"`
+  and shipped 250+ extensionless relative imports. Bundlers resolve those, so
+  every browser build, the docs site and the whole test suite were fine --
+  and Node was not. `import "@toyz/loom"` from Node, or from Vitest resolving
+  it as a dependency, died on `Cannot find module .../dist/app`. Nothing in the
+  repo imported `dist` under Node, so nothing caught it. Anyone patching around
+  it with a bundler alias can drop the alias. `npm run check:dist` now fails
+  the build if it comes back.
+
+- **Routes match by specificity, not registration order.** Matching took the
+  first pattern that matched and the table was in import order, so whether
+  `@route("/user/new")` was reachable at all depended on which module happened
+  to be imported before `@route("/user/:id")` -- and nothing about either
+  declaration said so. Patterns are now compared segment by segment (exact
+  beats a partial wildcard, beats a named param, beats a splat), first
+  disagreement decides, and the bare `*` catch-all is last by definition. Ties
+  keep registration order. An app that was relying on a *less* specific route
+  winning will now resolve to the more specific one.
+- **A payload's `data` is `Readonly`.** One event object reaches every handler
+  in registration order, so a handler that wrote to `e.data` changed what
+  every later handler saw, and which handler won depended on registration
+  order. Handlers that mutate the payload will now fail to compile; send
+  `e.clone({ data: ... })` instead. Runtime behaviour is unchanged -- this is
+  a compile-time guarantee, not `Object.freeze` (see Performance).
+- **A gate that reopens refetches.** `enabled` flipping back to true only
+  fetched when `data` was still `undefined`, so a query whose gate shut and
+  reopened -- a tab switched away from and back, a re-login -- went on serving
+  whatever it had loaded the first time, and could never fetch again because
+  the gate stayed unarmed. Reopening now refetches unless `staleTime` says the
+  data is still fresh.
+- **`@rpc` revalidates on `staleTime`.** It marked `.stale` and stopped there,
+  so stale-while-revalidate was only its first half and a query with
+  `staleTime` set behaved like one without. It now refetches in the background
+  and emits `ApiStale`, matching `@api` and `@fetch`. Set `revalidate: false`
+  for the old behaviour. Requires `@toyz/loom` 0.22.0.
+
 - **Guards returning `LoomResult.err(new Error(...))` now block navigation.**
   They previously *allowed* it: `result.error as string ?? false` parses as
   `(result.error as string) ?? false`, so the `Error` object was returned and
@@ -221,6 +430,30 @@ existing suite could not see.
 
 ### Fixed
 
+- `@toyz/loom` and every sibling import cleanly under Node, so a Loom app can
+  finally have a test runner. All 16 export subpaths are verified.
+- Sibling packages declared `@toyz/loom` `^0.12.8` against a core at `0.22.0`.
+  Each builds against a linked local checkout in CI, so nothing ever resolved
+  the declared range and the drift was invisible; installing
+  `@toyz/loom-flags` pulled a ten-minor-versions-old core alongside it.
+  `npm run check:versions` now fails on it.
+- A `@factory` registered after `app.start()` now runs. `start()` invoked the
+  queued factories once and never looked again, so a factory declared in a
+  lazily-loaded module produced no provider at all and the class it built
+  stayed unresolvable for the life of the app -- the same gap late `@service`
+  registration had, one level down. Each factory still runs exactly once, and
+  the late path is deferred to a microtask so the method is bound to its
+  owning service first.
+- `bus.emit()` and `@on` accept payload events. Every signature constrained on
+  a bare `LoomEvent`, which means `LoomEvent<void>`, so no `LoomEvent<T>`
+  subclass was assignable -- the payload form did not typecheck at its main
+  call site. Constraints are now `LoomEvent<any>`.
+- `@fetch`'s derived key includes the names of its `use` interceptors, so
+  swapping the interceptor set refetches. An interceptor whose contribution
+  varies at runtime (a tenant header, an acting-user param) still has to go in
+  `key` explicitly -- interceptors run inside the request, after the key has
+  been compared. Nothing is shared between components either way; the state is
+  per instance.
 - Decorator metadata is now per-class. `PROPS`, `REACTIVES`, `ROUTE_PROPS`,
   `TRANSFORMS`, `COMPUTED_DIRTY`, `ROUTE_ENTER` and `ROUTE_LEAVE` were read
   through the static prototype chain and mutated in place, so sibling
@@ -271,6 +504,44 @@ existing suite could not see.
   overrides ran twice.
 - In-segment route wildcards (`/files/*.png`) matched only the literal URL.
 
+### Tooling
+
+- **`@toyz/create-loom` 0.3.0.** It had no gate of any kind -- its workflow was
+  `npm publish` and nothing else -- and had drifted from what the docs promised.
+  - Ships a test runner, which the getting-started page already claimed:
+    vitest, happy-dom, a `vitest.setup.ts` that calls `app.start()` (without it
+    a test mounts an element the browser never upgrades), and a first test.
+  - Ships a `.gitignore`. It could not have before: npm strips a literal
+    `.gitignore` from a published tarball, so it ships as `_gitignore` and the
+    CLI renames it -- the standard fix, and one the template was missing.
+  - `tsc` no longer emits into `dist/` just for Vite to delete it (`noEmit`,
+    and `vite/client` types so `import.meta.env` typechecks).
+  - The usage message said `npm create loom`, which resolves to an unscoped
+    package belonging to somebody else. It is `npm create @toyz/loom`.
+  - Scaffolding into `.` skipped every safety check and would overwrite an
+    existing project without a word.
+  - A directory name is normalised into a legal npm package name, instead of
+    writing `My-App` into a `package.json` npm refuses to publish.
+  - The template pins a real `@toyz/loom` version rather than `latest`.
+
+- **One release workflow replaces six.** `publish.yml` and its five siblings
+  were near-identical copies with six tag prefixes and 124 tags to show for it.
+  Three published without running tests, one published without building, one
+  skipped `--provenance`, and nothing checked the tag against the version in
+  `package.json`. Releasing is now Actions -> Release -> pick `changed`, `all`,
+  or one package, and a bump. Tags are pushed after a successful publish, so a
+  tag records what shipped rather than triggering it. See
+  [RELEASING.md](RELEASING.md).
+
+- **CI covers every package.** It gated core and loom-rpc; analytics, flags,
+  placeholder, create-loom and the docs site had none -- which is how the stale
+  version ranges and the broken scaffolder both went unnoticed. One matrix job
+  now reads [`scripts/packages.mjs`](scripts/packages.mjs), so adding a package
+  is a manifest entry rather than another copied workflow.
+
+- `npm run verify` runs the full local gate; `npm run changed` shows what a
+  `changed` release would pick and why.
+
 ### Performance
 
 Measured with interleaved A/B runs against the previous tree.
@@ -288,6 +559,12 @@ Measured with interleaved A/B runs against the previous tree.
 - `Reactive.set` on a NaN value +318%. Multi-subscriber dispatch is 5–6% slower:
   the value is re-read per subscriber, which is the ordering fix itself.
 - `<loom-virtual>` keeps measured row heights across a `push()`.
+- Event emit is unchanged. Making a payload immutable at runtime cost 15% of
+  emit, and most of that was not `Object.freeze` itself -- a frozen object
+  reads slower for the rest of its life, and every handler is a reader. An
+  opt-in flag checked per construction still cost 7%, because the check is per
+  event while the mistake is per line of source. `Readonly<T>` on the field
+  catches it where catching it is free and emits identical JavaScript.
 
 New benchmark suites for the reactive core and the JSX runtime, neither of
 which had any coverage.

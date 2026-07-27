@@ -98,10 +98,10 @@ export default class PageDecoratorPermission extends LoomElement {
           </p>
           <code-block lang="ts" code={NAMES_EXAMPLE}></code-block>
           <p>
-            The first group is everything in TypeScript's own
-            <span class="ic"> PermissionName</span> union. The second is implemented by engines
-            but absent from it, which is the reason the parameter is not typed as
-            <span class="ic">PermissionName</span> — doing so would reject
+            The first group is everything in TypeScript's own{" "}
+            <span class="ic">PermissionName</span> union. The second is implemented by engines
+            but absent from it, which is the reason the parameter is not typed as{" "}
+            <span class="ic">PermissionName</span> — doing so would reject{" "}
             <span class="ic">"clipboard-read"</span>, which browsers do support.
           </p>
           <api-table
@@ -168,8 +168,8 @@ export default class PageDecoratorPermission extends LoomElement {
           <p>
             Two browsers can fail to answer for different reasons, and the two call for
             different UI. <span class="ic">navigator.permissions</span> is missing entirely in
-            some engines, and <span class="ic">query()</span> rejects with a
-            <span class="ic"> TypeError</span> for names a given engine does not implement —
+            some engines, and <span class="ic">query()</span> rejects with a{" "}
+            <span class="ic">TypeError</span> for names a given engine does not implement —
             <span class="ic">"camera"</span> in Firefox, for one.
           </p>
           <p>
@@ -183,8 +183,8 @@ export default class PageDecoratorPermission extends LoomElement {
         <doc-section heading="What it does not do">
           <p class="caution">
             Querying never grants anything and never suppresses a prompt. It tells you which of
-            three conversations you are about to have — and the useful one is
-            <span class="ic"> "prompt"</span>, where explaining why you are asking, before the
+            three conversations you are about to have — and the useful one is{" "}
+            <span class="ic">"prompt"</span>, where explaining why you are asking, before the
             browser asks, is the difference between a granted permission and a dismissed one.
           </p>
         </doc-section>

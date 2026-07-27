@@ -154,8 +154,93 @@ class ThemeCard extends LoomElement {
             ]}
           ></api-table>
         </doc-section>
+        <doc-section heading="Tokens">
+          <p>
+            The loudest thing in most component stylesheets is not the CSS. It is{" "}
+            <span class="ic">var(--text-muted, #6d6858)</span> written out again for every
+            property that wants a colour, with the fallback repeated each time.
+          </p>
+          <p>
+            The repetition is not only noise. Each copy is written by hand, so the fallbacks
+            drift — and a fallback <em>only</em> renders when the token is undefined, which is
+            exactly when nobody is looking. What accumulates is a second, contradictory palette
+            behind the real one.
+          </p>
+          <doc-notification type="caution">
+            These docs had 479 hand-written <span class="ic">var(--token, fallback)</span> pairs.{" "}
+            <span class="ic">--text-muted</span> had picked up five different fallbacks
+            (<span class="ic">#555</span>, <span class="ic">#666</span>,{" "}
+            <span class="ic">#6d6858</span>, <span class="ic">#888</span>) and{" "}
+            <span class="ic">--accent</span> two unrelated purples. Whichever file you happened
+            to render decided what a missing token looked like.
+          </doc-notification>
+          <code-block lang="ts" code={TOKENS}></code-block>
+          <api-table
+            head={["", "Gives you"]}
+            rows={[
+              [<code>t.textMuted</code>, <><code>"var(--text-muted, #6d6858)"</code> — the fallback, written once</>],
+              [<code>t.$sheet</code>, "A stylesheet declaring the properties, generated from the same literals"],
+              [<code>t.$sheetFor(sel)</code>, <>The same on a selector you choose, e.g. <code>:root</code></>],
+              [<code>t.$value.thread</code>, <>The raw value, for a canvas or anywhere <code>var()</code> cannot go</>],
+              [<code>t.$name("thread")</code>, <><code>"--thread"</code>, the property name</>],
+            ]}
+          ></api-table>
+          <p class="note">
+            Names are camelCase and become kebab-case, with digits starting a new part:{" "}
+            <span class="ic">textMuted</span> is <span class="ic">--text-muted</span> and{" "}
+            <span class="ic">space1</span> is <span class="ic">--space-1</span>. Because{" "}
+            <span class="ic">$sheet</span> is generated from the same literals as the fallbacks,
+            the declaration and the fallback cannot disagree.
+          </p>
+          <p class="tip">
+            Converting these docs turned up a token that was never declared at all —
+            <span class="ic">--space-7</span>, on a scale that skips 7. It had always been
+            rendering its fallback, and nothing said so. That is the failure mode this is for:
+            not ugly CSS, but CSS that is quietly wrong.
+          </p>
+        </doc-section>
+
+        <doc-section heading="Composing stylesheets">
+          <p>
+            A <span class="ic">css</span> sheet can be interpolated into another, so a shared
+            block of rules is written once instead of pasted.
+          </p>
+          <code-block lang="ts" code={COMPOSE}></code-block>
+          <p class="note">
+            The fragment's text is inlined, so the result is a single sheet. Adopt the composed
+            sheet, not both — adopting the fragment as well would apply its rules twice.
+          </p>
+        </doc-section>
+
         <doc-nav></doc-nav>
       </div>
     );
   }
 }
+
+const TOKENS = `import { tokens, css } from "@toyz/loom";
+
+export const t = tokens({
+  ground:    "#14140f",
+  thread:    "#c4472f",
+  textMuted: "#6d6858",
+  space1:    "0.25rem",
+});
+
+const styles = css\`
+  :host  { background: \${t.ground}; color: \${t.textMuted}; }
+  button { border: 1px solid \${t.thread}; padding: \${t.space1}; }
+\`;
+
+// Declare the properties themselves, once, at the root of the app:
+@styles(t.$sheetFor(":root"))
+class AppShell extends LoomElement {}`;
+
+const COMPOSE = `const control = css\`
+  .control { font: inherit; border-radius: 2px; }
+\`;
+
+const styles = css\`
+  \${control}
+  .control:hover { border-color: \${t.thread}; }
+\`;`;

@@ -34,7 +34,7 @@ export default class PageRouterGuards extends LoomElement {
         <doc-section heading="@guard">
           <api-entry sig="@guard(name?)">
             <p>
-              Mark a method as a named route guard. Return <span class="ic">true</span> to allow,
+              Mark a method as a named route guard. Return <span class="ic">true</span> to allow,{" "}
               <span class="ic">false</span> to block, or a <span class="ic">string</span> to redirect.
               Async guards are awaited:
             </p>
@@ -83,7 +83,7 @@ class PageBilling extends LoomElement { }`}></code-block>
             <p>Guards are resolved in two phases:</p>
             <ol>
               <li>
-                <strong>Global registry</strong> — guards registered via <span class="ic">@guard()</span> on
+                <strong>Global registry</strong> — guards registered via <span class="ic">@guard()</span> on{" "}
                 <span class="ic">@service</span> classes are checked first.
               </li>
               <li>

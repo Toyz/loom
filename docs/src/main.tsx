@@ -10,7 +10,8 @@ import "./components/doc-nav";
 import "./components/doc-rail";      // right-hand punched index
 import "./components/spec-card";     // the card in the reader, at the foot of the rail      // prev/next page navigation
 import "./components/doc-notification"; // callout/alert banners
-import "./components/api-table";      // reference tables
+import "./components/api-table";
+import "./components/doc-select";   // custom select — native ones cannot be styled      // reference tables
 import "./components/doc-demo";       // live-demo frame
 import "./components/doc-section";     // <doc-section> + <api-entry> page skeleton
 import "./components/punch-matrix";     // the punch matrix (signature element)
@@ -37,6 +38,10 @@ if (import.meta.env.DEV) {
 }
 
 // Boot
-const router = new LoomRouter({ mode: "hash" });
+// Navigations animate through document.startViewTransition. The outlet swap
+// is one synchronous DOM mutation, which is the shape a view transition wants;
+// wiring it on the router rather than at each call site means the back button
+// and guard redirects animate too. See styles.css for the keyframes.
+const router = new LoomRouter({ mode: "hash", transitions: true });
 app.use(router);
 app.start();

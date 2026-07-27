@@ -15,6 +15,7 @@ import {
   type Constructor,
   type LoomEvent,
 } from "@toyz/loom";
+import { t } from "../../../tokens";
 import { FlagProvider, flag, FlagChanged } from "@toyz/loom-flags";
 import { MockFlags } from "@toyz/loom-flags/testing";
 import { scrollbar } from "../../../shared/scrollbar";
@@ -46,7 +47,7 @@ const demoStyles = css`
   .panel h3 {
     margin: 0 0 1rem;
     font-size: 0.95rem;
-    color: #a78bfa;
+    color: ${t.thread};
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -57,7 +58,7 @@ const demoStyles = css`
     padding: 0.15rem 0.5rem;
     border-radius: 0;
     background: rgba(167,139,250,0.15);
-    color: #c4b5fd;
+    color: ${t.thread};
     font-weight: 600;
   }
 
@@ -119,7 +120,7 @@ const demoStyles = css`
 
   .toggle-btn.on {
     background: rgba(52,211,153,0.15);
-    color: #6ee7b7;
+    color: ${t.ok};
     border-color: rgba(52,211,153,0.3);
   }
 
@@ -133,7 +134,7 @@ const demoStyles = css`
 
   button {
     background: rgba(167,139,250,0.12);
-    color: #c4b5fd;
+    color: ${t.thread};
     border: 1px solid rgba(167,139,250,0.2);
     padding: 0.4rem 0.85rem;
     border-radius: 0;
@@ -191,7 +192,7 @@ const demoStyles = css`
     align-items: center;
     justify-content: center;
     height: 80px;
-    color: #475569;
+    color: ${t.textMuted};
     font-size: 0.85rem;
     font-style: italic;
   }
@@ -298,7 +299,7 @@ class FlagsDemo extends LoomElement {
               <button onClick={() => this.doSearch()}>
                 Run Search v2
               </button>
-              <button style={{ background: "rgba(239,68,68,0.1)", color: "#fca5a5", borderColor: "rgba(239,68,68,0.2)" }} onClick={() => this.clearLog()}>
+              <button style={{ background: "rgba(239,68,68,0.1)", color: t.$value.thread, borderColor: "rgba(239,68,68,0.2)" }} onClick={() => this.clearLog()}>
                 Clear Log
               </button>
             </div>
@@ -325,9 +326,9 @@ class FlagsDemo extends LoomElement {
               {flagList.map(f => (
                 <div class="result-item">
                   <span class={`dot ${this.isOn(f.key) ? "green" : "red"}`}></span>
-                  <span style={{ color: "#a78bfa", fontWeight: "600" }}>{f.key}</span>
-                  <span style={{ color: "#64748b" }}>→</span>
-                  <span style={{ color: this.isOn(f.key) ? "#6ee7b7" : "#fca5a5" }}>
+                  <span style={{ color: t.$value.thread, fontWeight: "600" }}>{f.key}</span>
+                  <span style={{ color: t.$value.textMuted }}>→</span>
+                  <span style={{ color: this.isOn(f.key) ? t.$value.ok : t.$value.thread }}>
                     {this.isOn(f.key) ? "enabled" : "disabled"}
                   </span>
                 </div>

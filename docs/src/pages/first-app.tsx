@@ -202,8 +202,8 @@ export default class PageFirstApp extends LoomElement {
           <h3>peek() is the one to be careful with</h3>
           <p class="caution">
             <span class="ic">todos.peek()</span> reads the same value <em>without</em> recording the dependency. That
-            is what you want inside an event handler, and exactly what you do not want inside
-            <span class="ic"> update()</span> — a component that reads with peek renders once and then never again.
+            is what you want inside an event handler, and exactly what you do not want inside{" "}
+            <span class="ic">update()</span> — a component that reads with peek renders once and then never again.
           </p>
         </doc-section>
 

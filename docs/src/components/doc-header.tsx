@@ -10,6 +10,7 @@
  * TOC is collapsible — starts expanded, click header to toggle.
  */
 import { LoomElement, component, prop, reactive, css, styles as applyStyles, mount, observer, on } from "@toyz/loom";
+import { t } from "../tokens";
 import { PageSections, ActiveSection, type PageSection } from "../events";
 import { navOrder } from "../data/nav-order";
 import { ICON_COLORS } from "../data/icon-colors";
@@ -41,18 +42,18 @@ const styles = css`
   .title-row loom-icon { display: none; }
 
   h1 {
-    font-family: var(--font-display, sans-serif);
+    font-family: ${t.fontDisplay};
     font-size: 2.75rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.05;
     text-transform: uppercase;
     margin: 0 0 0.5rem 0;
-    color: var(--text-primary, #e6e1d3);
+    color: ${t.textPrimary};
   }
 
   .subtitle {
-    color: var(--text-secondary, #a09a88);
+    color: ${t.textSecondary};
     font-size: 1.0625rem;
     line-height: 1.55;
     margin: 0;
@@ -66,7 +67,7 @@ const styles = css`
     width: 100%;
     height: 1px;
     border-radius: 0;
-    background: var(--warp, #33322a);
+    background: ${t.warp};
     opacity: 1;
   }
 
@@ -96,7 +97,7 @@ const styles = css`
     user-select: none;
     -webkit-user-select: none;
   }
-  .toc-toggle:hover .toc-title { color: var(--text-secondary, #a09a88); }
+  .toc-toggle:hover .toc-title { color: ${t.textSecondary}; }
 
   .toc-toggle-left {
     display: flex;
@@ -109,14 +110,14 @@ const styles = css`
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--text-muted, var(--text-muted));
+    color: ${t.textMuted};
     margin: 0;
   }
 
   .toc-count {
     font-size: 0.6rem;
     font-weight: 600;
-    color: var(--text-muted, var(--text-muted));
+    color: ${t.textMuted};
     background: rgba(255, 255, 255, 0.04);
     padding: 1px 6px;
     border-radius: 8px;
@@ -125,7 +126,7 @@ const styles = css`
 
   .toc-chevron {
     font-size: 0.7rem;
-    color: var(--text-muted, var(--text-muted));
+    color: ${t.textMuted};
     transition: transform 0.25s ease;
     line-height: 1;
   }
@@ -166,10 +167,10 @@ const styles = css`
     gap: 6px;
     padding: 3px 0;
     border-radius: 0;
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
     font-weight: 400;
-    color: var(--text-muted, #6d6858);
+    color: ${t.textMuted};
     text-decoration: none;
     cursor: pointer;
     border-left: none;
@@ -179,8 +180,8 @@ const styles = css`
   }
   .toc-item a:hover {
     background: transparent;
-    color: var(--text-primary, #e6e1d3);
-    border-bottom-color: var(--thread, #c4472f);
+    color: ${t.textPrimary};
+    border-bottom-color: ${t.thread};
   }
   .toc-item a loom-icon { display: none; }
   .toc-item a:hover loom-icon {

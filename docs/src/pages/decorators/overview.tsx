@@ -117,7 +117,7 @@ onTheme(val: string, prev: string) { }`}></code-block>
             <p>
               Composable immutability. Freezes the value after the first set — subsequent
               assignments throw. Objects and arrays are <span class="ic">Object.freeze()</span>'d
-              in the getter. Stack with <span class="ic">@reactive</span> or <span class="ic">@prop</span>
+              in the getter. Stack with <span class="ic">@reactive</span> or <span class="ic">@prop</span>{" "}
               by placing <span class="ic">@readonly</span> first (outermost).
             </p>
             <code-block lang="ts" code={`// Set once, locked forever

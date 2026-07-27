@@ -40,7 +40,7 @@ export default class PageElementAttributes extends LoomElement {
           <api-entry sig="@attribute(name)">
             <p>
               Registers a class as a controller for the attribute <span class="ic">name</span>.
-              The name is arbitrary — <span class="ic">data-tooltip</span>, <span class="ic">sticky</span>,
+              The name is arbitrary — <span class="ic">data-tooltip</span>, <span class="ic">sticky</span>,{" "}
               <span class="ic">shortcut</span> all work.
             </p>
             <code-block lang="ts" code={`import { LoomAttribute, attribute } from "@toyz/loom";
@@ -66,7 +66,7 @@ class Tooltip extends LoomAttribute {
 valueChanged(old, next)      // attribute value was patched
 disconnect()                 // attribute removed, or element left the DOM`}></code-block>
             <p>
-              The base also gives you <span class="ic">this.el</span>, <span class="ic">this.name</span>,
+              The base also gives you <span class="ic">this.el</span>, <span class="ic">this.name</span>,{" "}
               <span class="ic">this.value</span>, plus the same <span class="ic">on</span> /
               <span class="ic">emit</span> / <span class="ic">track</span> / <span class="ic">app</span> helpers
               as LoomElement. Anything you <span class="ic">track()</span> is cleaned up on disconnect.
@@ -74,7 +74,7 @@ disconnect()                 // attribute removed, or element left the DOM`}></c
         </doc-section>
         <doc-section heading="Passing args as props">
             <p>
-              HTML attributes are strings, but JSX lets you pass anything. When you write
+              HTML attributes are strings, but JSX lets you pass anything. When you write{" "}
               <span class="ic">{`intersect={load}`}</span>, Loom sets a marker attribute (so it is
               observed and morphed) and stashes the raw value on <span class="ic">this.arg</span>.
               Every element decorator works on a controller and targets <span class="ic">this.el</span>,
@@ -88,7 +88,7 @@ class Intersect extends LoomAttribute<() => void> {
   }
 }`}></code-block>
             <p>
-              For plain string attributes (<span class="ic">shortcut="j"</span>) or hand-written HTML,
+              For plain string attributes (<span class="ic">shortcut="j"</span>) or hand-written HTML,{" "}
               <span class="ic">this.arg</span> equals <span class="ic">this.value</span>. Bare attributes
               (<span class="ic">sticky</span>) give <span class="ic">this.arg === true</span>.
             </p>
@@ -107,7 +107,7 @@ class Tooltip extends LoomAttribute {
         </doc-section>
         <doc-section heading="Rendering — attributes as portals">
             <p>
-              A controller is a full component wrapped onto a foreign element. Override
+              A controller is a full component wrapped onto a foreign element. Override{" "}
               <span class="ic">update()</span> to render JSX; Loom mounts it into a target
               location and re-morphs it whenever a reactive field changes — a smart portal.
             </p>
@@ -166,15 +166,15 @@ observeAttributes(myCustomRoot); // scans now, reacts to changes, returns an uno
         <doc-section heading="Which decorators work">
             <p>
               Decorators that route through connect hooks work on controllers.
-              DOM-targeting ones auto-target <span class="ic">this.el</span>:
-              <span class="ic">@observer</span>, <span class="ic">@hotkey</span>, and
-              <span class="ic">@on("click")</span> (bare event name binds to the host element).
+              DOM-targeting ones auto-target <span class="ic">this.el</span>:{" "}
+              <span class="ic">@observer</span>, <span class="ic">@hotkey</span>, and{" "}
+              <span class="ic">@on("click")</span> (bare event name binds to the host element).{" "}
               <span class="ic">@mount</span> / <span class="ic">@unmount</span> fire on connect / removal.
-              The rest are element-agnostic:
-              <span class="ic">@interval</span>, <span class="ic">@timeout</span>,
-              <span class="ic">@debounce</span>, <span class="ic">@throttle</span>,
-              <span class="ic">@watch</span>, <span class="ic">@on(BusEvent)</span>, <span class="ic">@log</span>,
-              <span class="ic">@prop</span> / <span class="ic">@reactive</span> (drive
+              The rest are element-agnostic:{" "}
+              <span class="ic">@interval</span>, <span class="ic">@timeout</span>,{" "}
+              <span class="ic">@debounce</span>, <span class="ic">@throttle</span>,{" "}
+              <span class="ic">@watch</span>, <span class="ic">@on(BusEvent)</span>, <span class="ic">@log</span>,{" "}
+              <span class="ic">@prop</span> / <span class="ic">@reactive</span> (drive{" "}
               <span class="ic">update()</span> re-renders).
             </p>
             <code-block lang="ts" code={`@attribute("data-ticker")
@@ -183,16 +183,16 @@ class Ticker extends LoomAttribute {
   tick() { console.log("tick", this.el); }
 }`}></code-block>
             <p>
-              Once a controller renders (<span class="ic">update()</span> overridden or
+              Once a controller renders (<span class="ic">update()</span> overridden or{" "}
               <span class="ic">@styles</span> present) it gets its own shadow root, so the shadow-scoped
               decorators work too: <span class="ic">@styles</span>, <span class="ic">@query</span> /
-              <span class="ic">@queryAll</span>, <span class="ic">@dynamicCss</span>, and the
+              <span class="ic">@queryAll</span>, <span class="ic">@dynamicCss</span>, and the{" "}
               <span class="ic">css()</span> / <span class="ic">$()</span> helpers — same as LoomElement.
               Global (<span class="ic">:root</span>) theme variables inherit into it.
             </p>
             <p>
-              Only decorators tied to a host custom element don't apply:
-              <span class="ic">@component</span>, <span class="ic">@slot</span>, <span class="ic">@form</span>,
+              Only decorators tied to a host custom element don't apply:{" "}
+              <span class="ic">@component</span>, <span class="ic">@slot</span>, <span class="ic">@form</span>,{" "}
               <span class="ic">@portal</span>.
             </p>
         </doc-section>

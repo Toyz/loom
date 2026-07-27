@@ -87,7 +87,7 @@ export default class PageElementHotkey extends LoomElement {
                         A shortcut usually has to appear somewhere in the UI, and typing that
                         hint out by hand creates a second copy of the binding that nothing keeps
                         in step. It also cannot be right on both platforms at once —
-                        <span class="ic"> mod+k</span> is Cmd on a Mac and Ctrl everywhere else, and a hardcoded
+                        <span class="ic">mod+k</span> is Cmd on a Mac and Ctrl everywhere else, and a hardcoded
                         hint has to pick one.
                     </p>
                     <p>
@@ -113,17 +113,17 @@ export default class PageElementHotkey extends LoomElement {
                     </table>
                     <doc-notification type="note">
                         On a Mac the label uses Apple's modifier order and no separators
-                        (<span class="ic">\u2303\u2325\u21e7\u2318K</span>); everywhere else it is joined with
-                        <span class="ic"> +</span>. Named keys are printed rather than passed through, so
-                        <span class="ic"> escape</span> becomes <span class="ic">Esc</span> and
-                        <span class="ic"> arrowup</span> becomes <span class="ic">\u2191</span>.
+                        (<span class="ic">\u2303\u2325\u21e7\u2318K</span>); everywhere else it is joined with{" "}
+                        <span class="ic">+</span>. Named keys are printed rather than passed through, so{" "}
+                        <span class="ic">escape</span> becomes <span class="ic">Esc</span> and{" "}
+                        <span class="ic">arrowup</span> becomes <span class="ic">\u2191</span>.
                     </doc-notification>
                 </doc-section>
                 <doc-section heading="Live Demo">
                         <p>
                             Press the shortcut shown in the sidebar search field right now — this
-                            site's palette is bound with <span class="ic">@hotkey</span>, and that hint is
-                            <span class="ic"> hotkeyLabel()</span> reading the binding rather than a string
+                            site's palette is bound with <span class="ic">@hotkey</span>, and that hint is{" "}
+                            <span class="ic">hotkeyLabel()</span> reading the binding rather than a string
                             somebody typed:
                         </p>
                         <code-block lang="ts" code={LIVE_DEMO}></code-block>

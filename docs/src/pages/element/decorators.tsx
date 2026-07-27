@@ -1,129 +1,186 @@
 /**
  * Element — Decorators Quick Reference  /element/decorators
  *
- * Cheat sheet linking to dedicated pages for each decorator.
+ * Every decorator that applies to a component, grouped by what it does.
+ *
+ * The list is diffed against src/element/index.ts rather than written from
+ * memory: the previous version had drifted 24 decorators behind the exports,
+ * which is the one failure a cheat sheet cannot survive -- it is only useful
+ * if a name missing from it is known not to exist.
  */
 import { LoomElement } from "@toyz/loom";
+
+/** Link to the page documenting a decorator in full. */
+const to = (label: string, path: string) => (
+  <loom-link to={path} class="ref">{label}</loom-link>
+);
 
 export default class PageElementDecorators extends LoomElement {
   update() {
     return (
       <div>
-        <doc-header title="Decorators" subtitle="Quick reference for all element decorators. Click any decorator for full documentation."></doc-header>
+        <doc-header
+          title="Decorators"
+          subtitle="Every decorator that applies to a component, grouped by what it does."
+        ></doc-header>
 
         <section>
-          <p>Every decorator that applies to a component, on one page, grouped by what it does rather than alphabetically. Use it to find the name you half-remember; each entry links to the page that documents the behaviour and the footguns.</p>
-          <p>Two things are worth knowing before you scan the list. What a decorator attaches to — class, field, <span class="ic">accessor</span> or method — is part of its contract and not interchangeable. And a decorator that wraps your method only runs when you call it, while one that registers a hook runs on its own.</p>
+          <p>Use this to find the name you half-remember. Each entry links to the page that documents the behaviour and the footguns.</p>
+          <p>Two things are worth knowing before you scan. What a decorator attaches to — class, field, accessor or method — is part of its contract and not interchangeable. And a decorator that <em>wraps</em> your method only runs when you call it, while one that <em>registers a hook</em> runs on its own.</p>
         </section>
 
-        {/* ═══════════ Registration ═══════════ */}
-
         <doc-section heading="Registration">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@component(tag)</code></td><td>Class</td><td>Register custom element — <loom-link to="/element/overview" style="color: var(--accent)">Overview</loom-link></td></tr>
-              <tr><td><code>@styles(sheet, ...)</code></td><td>Class</td><td>Auto-adopt CSSStyleSheets — <loom-link to="/element/css" style="color: var(--accent)">CSS</loom-link></td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@component(tag, opts?)</code>, "Class", <>Register a custom element. <code>{"{ shadow: false }"}</code> for light DOM, <code>{"{ formAssociated: true }"}</code> to participate in a form — {to("Overview", "/element/overview")}</>],
+              [<code>@styles(sheet, ...)</code>, "Class", <>Adopt constructable stylesheets — {to("CSS", "/element/css")}</>],
+              [<code>@attribute(name)</code>, "Class", <>A controller that attaches to any element carrying the attribute, with no custom tag — {to("Attributes", "/element/attributes")}</>],
+              [<code>@lazy(loader)</code>, "Class", <>Load the implementation on demand — {to("Lazy Loading", "/element/lazy")}</>],
+            ]}
+          ></api-table>
         </doc-section>
-        {/* ═══════════ State ═══════════ */}
 
         <doc-section heading="State">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@reactive</code></td><td>Accessor</td><td>Internal reactive state, triggers <code>update()</code></td></tr>
-              <tr><td><code>@prop</code></td><td>Accessor</td><td>External attribute/property, auto-parsed</td></tr>
-              <tr><td><code>@computed</code></td><td>Getter</td><td>Cached derived value</td></tr>
-              <tr><td><code>@readonly</code></td><td>Accessor</td><td>Runtime immutability — freezes objects, throws on reassign</td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@reactive</code>, "Accessor", <>Internal state. Writing to it schedules <code>update()</code></>],
+              [<code>@prop</code>, "Accessor", "External attribute/property, parsed and reflected"],
+              [<code>@computed</code>, "Getter", "Derived value, recomputed only when a dependency changes"],
+              [<code>@readonly</code>, "Accessor", "Freezes objects and throws on reassignment"],
+              [<code>@transform(fn)</code>, "Accessor", <>Coerce a value on write — {to("Transform", "/decorators/transform")}</>],
+              [<code>@form&lt;T&gt;(schema)</code>, "Accessor", <>Form state with validation and dirty tracking, independent of the DOM — {to("Forms", "/element/forms")}</>],
+            ]}
+          ></api-table>
         </doc-section>
-        {/* ═══════════ Lifecycle ═══════════ */}
 
         <doc-section heading="Lifecycle">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@mount</code></td><td>Method</td><td>Run on connect — <loom-link to="/element/lifecycle" style="color: var(--accent)">Lifecycle</loom-link></td></tr>
-              <tr><td><code>@unmount</code></td><td>Method</td><td>Run on disconnect — <loom-link to="/element/lifecycle" style="color: var(--accent)">Lifecycle</loom-link></td></tr>
-              <tr><td><code>@catch_(handler)</code></td><td>Class/Method</td><td>Error boundary — <loom-link to="/element/lifecycle" style="color: var(--accent)">Lifecycle</loom-link></td></tr>
-              <tr><td><code>@suspend()</code></td><td>Method</td><td>Async suspense — <loom-link to="/element/lifecycle" style="color: var(--accent)">Lifecycle</loom-link></td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@mount</code>, "Method", <>Run on connect — {to("Lifecycle", "/element/lifecycle")}</>],
+              [<code>@unmount</code>, "Method", <>Run on disconnect — {to("Lifecycle", "/element/lifecycle")}</>],
+              [<code>@catch_(handler)</code>, "Class/Method", <>Error boundary — {to("Lifecycle", "/element/lifecycle")}</>],
+              [<code>@suspend()</code>, "Method", <>Async suspense — {to("Lifecycle", "/element/lifecycle")}</>],
+            ]}
+          ></api-table>
         </doc-section>
-        {/* ═══════════ DOM ═══════════ */}
 
-        <doc-section heading="DOM">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@query(sel)</code></td><td>Field</td><td>Shadow DOM querySelector — <loom-link to="/element/queries" style="color: var(--accent)">Queries</loom-link></td></tr>
-              <tr><td><code>@queryAll(sel)</code></td><td>Field</td><td>Shadow DOM querySelectorAll — <loom-link to="/element/queries" style="color: var(--accent)">Queries</loom-link></td></tr>
-              <tr><td><code>@slot(name?)</code></td><td>Field</td><td>Typed slot-assigned elements, auto-updates on slotchange</td></tr>
-            </tbody>
-          </table>
+        <doc-section heading="DOM access">
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@query(sel)</code>, "Field", <>querySelector in the shadow root — {to("Queries", "/element/queries")}</>],
+              [<code>@queryAll(sel)</code>, "Field", <>querySelectorAll in the shadow root — {to("Queries", "/element/queries")}</>],
+              [<code>@slot(name?)</code>, "Field", "Slot-assigned elements, updated on slotchange"],
+              [<code>@dynamicCss</code>, "Method", <>Styles recomputed from state — {to("Dynamic CSS", "/decorators/css")}</>],
+            ]}
+          ></api-table>
         </doc-section>
-        {/* ═══════════ Events & Interaction ═══════════ */}
 
-        <doc-section heading="Events & Interaction">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@event&lt;T&gt;()</code></td><td>Accessor</td><td>Typed callback prop — <loom-link to="/decorators/events" style="color: var(--accent)">Events</loom-link></td></tr>
-              <tr><td><code>@on(EventClass)</code></td><td>Method</td><td>Declarative event listener — <loom-link to="/decorators/events" style="color: var(--accent)">Events</loom-link></td></tr>
-              <tr><td><code>@emit(EventClass)</code></td><td>Method</td><td>Dispatch typed events — <loom-link to="/decorators/events" style="color: var(--accent)">Events</loom-link></td></tr>
-              <tr><td><code>@transition(opts)</code></td><td>Method</td><td>Enter/leave CSS animations for conditional DOM</td></tr>
-              <tr><td><code>@observer(type, opts?)</code></td><td>Method</td><td>Auto-managed Resize/Intersection/Mutation observer — <loom-link to="/element/observer" style="color: var(--accent)">Observer</loom-link></td></tr>
-            </tbody>
-          </table>
+        <doc-section heading="Element internals">
+          <p>What makes a component a first-class element rather than a tag the platform knows nothing about — {to("Element Internals", "/decorators/internals")}.</p>
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@formValue</code>, "Accessor", <>Submit this value with the surrounding <code>&lt;form&gt;</code></>],
+              [<code>@validity(fn)</code>, "Accessor", "Report through the browser's own constraint validation"],
+              [<code>@state(name?)</code>, "Accessor", <>Mirror a boolean into <code>:state(name)</code>, selectable from outside the shadow root</>],
+              [<code>@aria(props)</code>, "Class", "A default role and ARIA properties, without host attributes"],
+            ]}
+          ></api-table>
         </doc-section>
-        {/* ═══════════ Timing ═══════════ */}
+
+        <doc-section heading="Events &amp; interaction">
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@event&lt;T&gt;()</code>, "Accessor", <>Typed callback prop — {to("Events", "/decorators/events")}</>],
+              [<code>@on(EventClass)</code>, "Method", <>Listen on the bus, or to a DOM event — {to("Events", "/decorators/events")}</>],
+              [<code>@emit(EventClass)</code>, "Method", <>Dispatch the returned event — {to("Events", "/decorators/events")}</>],
+              [<code>@observer(type, opts?)</code>, "Method", <>Resize/Intersection/Mutation observer, disconnected for you — {to("Observer", "/element/observer")}</>],
+              [<code>@hotkey(combo)</code>, "Method", <>Keyboard shortcut, with a printable label — {to("Hotkey", "/decorators/hotkey")}</>],
+              [<code>@clipboard(mode)</code>, "Method", <>Copy and paste — {to("Clipboard", "/decorators/clipboard")}</>],
+              [<code>@draggable(opts?)</code>, "Method", <>Make it draggable — {to("Drag & Drop", "/decorators/dnd")}</>],
+              [<code>@dropzone(opts?)</code>, "Method", <>Accept a drop — {to("Drag & Drop", "/decorators/dnd")}</>],
+              [<code>@selection(opts?)</code>, "Method", <>Report the document selection — {to("Selection", "/decorators/selection")}</>],
+            ]}
+          ></api-table>
+        </doc-section>
+
+        <doc-section heading="Overlays &amp; motion">
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@popover(opts?)</code>, "Accessor", <>Drive a <code>[popover]</code> on the top layer — {to("Popover & Dialog", "/decorators/overlay")}</>],
+              [<code>@dialog(opts?)</code>, "Accessor", <>Drive a <code>&lt;dialog&gt;</code>, modal by default — {to("Popover & Dialog", "/decorators/overlay")}</>],
+              [<code>@portal(target)</code>, "Method", <>Render into a different part of the DOM — {to("Portal", "/decorators/portal")}</>],
+              [<code>@viewTransition(opts?)</code>, "Class", <>Wrap full renders in a view transition — {to("View Transitions", "/decorators/view-transition")}</>],
+              [<code>@transition(opts)</code>, "Method", "Enter/leave CSS animations for conditional DOM"],
+              [<code>@animate(sel, frames, opts?)</code>, "Field", <>Web Animations, cancelled on disconnect — {to("Animate", "/decorators/animate")}</>],
+            ]}
+          ></api-table>
+        </doc-section>
 
         <doc-section heading="Timing">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@interval(ms)</code></td><td>Method</td><td>Auto-cleaned setInterval — <loom-link to="/element/timing" style="color: var(--accent)">Timing</loom-link></td></tr>
-              <tr><td><code>@timeout(ms)</code></td><td>Method</td><td>Auto-cleaned setTimeout — <loom-link to="/element/timing" style="color: var(--accent)">Timing</loom-link></td></tr>
-              <tr><td><code>@debounce(ms)</code></td><td>Method</td><td>Debounced method calls — <loom-link to="/element/timing" style="color: var(--accent)">Timing</loom-link></td></tr>
-              <tr><td><code>@throttle(ms)</code></td><td>Method</td><td>Throttled method calls — <loom-link to="/element/timing" style="color: var(--accent)">Timing</loom-link></td></tr>
-              <tr><td><code>@animationFrame</code></td><td>Method</td><td>Auto-cleaned rAF loop — <loom-link to="/element/timing" style="color: var(--accent)">Timing</loom-link></td></tr>
-            </tbody>
-          </table>
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@interval(ms)</code>, "Method", <>setInterval, cleared on disconnect — {to("Timing", "/element/timing")}</>],
+              [<code>@timeout(ms)</code>, "Method", <>setTimeout, cleared on disconnect — {to("Timing", "/element/timing")}</>],
+              [<code>@debounce(ms)</code>, "Method", <>Debounce — {to("Timing", "/element/timing")}</>],
+              [<code>@throttle(ms)</code>, "Method", <>Throttle — {to("Timing", "/element/timing")}</>],
+              [<code>@animationFrame</code>, "Method", <>A shared rAF loop — {to("Timing", "/element/timing")}</>],
+              [<code>@idle(opts?)</code>, "Method", <>requestIdleCallback. Pass a <code>timeout</code>, or a page that never idles never runs it — {to("Timing", "/element/timing")}</>],
+            ]}
+          ></api-table>
         </doc-section>
-        {/* ═══════════ Data Fetching ═══════════ */}
 
-        <doc-section heading="Data Fetching">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@api&lt;T&gt;(fn)</code></td><td>Accessor</td><td>Declarative async fetch — <loom-link to="/store/api" style="color: var(--accent)">Fetch</loom-link></td></tr>
-              <tr><td><code>@fetch&lt;T&gt;(url)</code></td><td>Accessor</td><td>The URL case of <code>@api</code>: status-checked, interceptors applied — <loom-link to="/store/api" style="color: var(--accent)">Fetch</loom-link></td></tr>
-              <tr><td><code>@intercept()</code></td><td>Method</td><td>Pre/post-fetch interceptors — <loom-link to="/store/api" style="color: var(--accent)">Fetch</loom-link></td></tr>
-            </tbody>
-          </table>
+        <doc-section heading="Data &amp; connections">
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@api&lt;T&gt;(opts)</code>, "Accessor", <>Declarative async state — {to("Fetch", "/store/api")}</>],
+              [<code>@fetch&lt;T&gt;(url)</code>, "Accessor", <>The URL case of <code>@api</code>: status-checked, interceptors applied — {to("Fetch", "/store/api")}</>],
+              [<code>@intercept()</code>, "Method", <>Pre/post-fetch interceptors — {to("Fetch", "/store/api")}</>],
+              [<code>@sse&lt;T&gt;(url, opts?)</code>, "Method", <>Server-Sent Events with backoff — {to("SSE & WebSocket", "/decorators/streams")}</>],
+              [<code>@socket&lt;T&gt;(url, opts?)</code>, "Method", <>A WebSocket that closes on disconnect — {to("SSE & WebSocket", "/decorators/streams")}</>],
+            ]}
+          ></api-table>
         </doc-section>
-        {/* ═══════════ Misc ═══════════ */}
 
-        <doc-section heading="Miscellaneous">
-          <table class="api-table">
-            <thead><tr><th>Decorator</th><th>Target</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td><code>@transform(fn)</code></td><td>Accessor</td><td>Value transformation — <loom-link to="/decorators/transform" style="color: var(--accent)">Transform</loom-link></td></tr>
-              <tr><td><code>@hotkey(combo)</code></td><td>Method</td><td>Keyboard shortcuts — <loom-link to="/decorators/hotkey" style="color: var(--accent)">Hotkey</loom-link></td></tr>
-              <tr><td><code>@log(opts?)</code></td><td>Method</td><td>Structured logging — <loom-link to="/decorators/log" style="color: var(--accent)">Log</loom-link></td></tr>
-              <tr><td><code>@context(Key)</code></td><td>Accessor</td><td>Cross-shadow-DOM data sharing — <loom-link to="/decorators/context" style="color: var(--accent)">Context</loom-link></td></tr>
-              <tr><td><code>@portal(target)</code></td><td>Method</td><td>Teleport content — <loom-link to="/decorators/portal" style="color: var(--accent)">Portal</loom-link></td></tr>
-              <tr><td><code>@media(query)</code></td><td>Accessor</td><td>Reactive media queries — <loom-link to="/decorators/media" style="color: var(--accent)">Media</loom-link></td></tr>
-              <tr><td><code>@fullscreen()</code></td><td>Accessor</td><td>Toggle Fullscreen API — <loom-link to="/decorators/fullscreen" style="color: var(--accent)">Fullscreen</loom-link></td></tr>
-              <tr><td><code>@clipboard(mode)</code></td><td>Method</td><td>Declarative copy/paste — <loom-link to="/decorators/clipboard" style="color: var(--accent)">Clipboard</loom-link></td></tr>
-              <tr><td><code>@draggable(opts?)</code></td><td>Method</td><td>Make element draggable — <loom-link to="/decorators/dnd" style="color: var(--accent)">Drag & Drop</loom-link></td></tr>
-              <tr><td><code>@dropzone(opts?)</code></td><td>Method</td><td>Accept dropped content — <loom-link to="/decorators/dnd" style="color: var(--accent)">Drag & Drop</loom-link></td></tr>
-            </tbody>
-          </table>
+        <doc-section heading="Platform">
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@media(query)</code>, "Accessor", <>A media query as a boolean — {to("Media", "/decorators/media")}</>],
+              [<code>@visible</code>, "Accessor", <>True while the page is visible — {to("Visibility & Network", "/decorators/environment")}</>],
+              [<code>@online</code>, "Accessor", <>True while the browser thinks it is online — {to("Visibility & Network", "/decorators/environment")}</>],
+              [<code>@permission(name)</code>, "Accessor", <>Permission state, before you trigger the API — {to("Permission", "/decorators/permission")}</>],
+              [<code>@fullscreen()</code>, "Accessor", <>The Fullscreen API as a boolean — {to("Fullscreen", "/decorators/fullscreen")}</>],
+              [<code>@geolocation(opts?)</code>, "Method", <>Watch position, cleared on disconnect — {to("Device APIs", "/decorators/device")}</>],
+              [<code>@wakeLock</code>, "Class", <>Hold a screen wake lock — {to("Device APIs", "/decorators/device")}</>],
+            ]}
+          ></api-table>
         </doc-section>
+
+        <doc-section heading="Context &amp; services">
+          <api-table
+            head={["Decorator", "Target", "What it does"]}
+            rows={[
+              [<code>@context(Key)</code>, "Accessor", <>Share data across shadow boundaries — {to("Context", "/decorators/context")}</>],
+              [<code>@provide(Key)</code>, "Accessor", <>Provide a context value to descendants — {to("Context", "/decorators/context")}</>],
+              [<code>@consume(Key)</code>, "Accessor", <>Consume the nearest provided value — {to("Context", "/decorators/context")}</>],
+              [<code>@log(opts?)</code>, "Method", <>Structured logging — {to("Log", "/decorators/log")}</>],
+            ]}
+          ></api-table>
+          <p class="note">
+            <code>@inject</code>, <code>@service</code> and <code>@factory</code> come from the
+            container rather than the element — see {to("Services", "/di/decorators")}.
+          </p>
+        </doc-section>
+
         <doc-nav></doc-nav>
       </div>
     );

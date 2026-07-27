@@ -21,6 +21,7 @@ import {
   LoomElement, component, css, styles as applyStyles,
   reactive, debounce,
 } from "@toyz/loom";
+import { t } from "../tokens";
 import { clipboard } from "@toyz/loom/element";
 import { route } from "@toyz/loom/router";
 import { DECORATOR_COUNT } from "../data/decorators";
@@ -83,7 +84,7 @@ const linkStyle = css`a {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: var(--font-mono, monospace);
+  font-family: ${t.fontMono};
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
   text-decoration: none;
@@ -143,7 +144,9 @@ const styles = css`
     font-size: 1.125rem;
     line-height: 1.6;
     color: var(--text-secondary);
-    margin: 0 0 var(--space-7, 1.75rem);
+    /* 1.75rem, not a token: the space scale skips 7, so --space-7 was
+       never declared and this had always been rendering its fallback. */
+    margin: 0 0 1.75rem;
     max-width: 58ch;
   }
 

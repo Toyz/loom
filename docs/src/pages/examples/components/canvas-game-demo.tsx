@@ -6,6 +6,7 @@
  * bricks break on impact, score tracked via @reactive.
  */
 import { LoomElement, component, reactive, css, styles, query } from "@toyz/loom";
+import { t } from "../../../tokens";
 import "@toyz/loom/element/canvas";
 import type { DrawCallback } from "@toyz/loom/element/canvas";
 
@@ -25,12 +26,12 @@ const sheet = css`
     align-items: center;
     font-family: "JetBrains Mono", monospace;
     font-size: 0.9rem;
-    color: var(--text-secondary, var(--text-secondary));
+    color: ${t.textSecondary};
   }
-  .hud .label { color: var(--text-muted); font-family: var(--font-mono, monospace); font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em; }
+  .hud .label { color: var(--text-muted); font-family: ${t.fontMono}; font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em; }
   .hud .value {
     color: var(--text-primary);
-    font-family: var(--font-display, sans-serif);
+    font-family: ${t.fontDisplay};
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.1;
@@ -38,7 +39,7 @@ const sheet = css`
   /* Lives are punches, like every other countable thing in this design. */
   .hud .lives {
     color: var(--thread);
-    font-family: var(--font-mono, monospace);
+    font-family: ${t.fontMono};
     font-size: 0.875rem;
     letter-spacing: 0.15em;
   }
@@ -48,8 +49,8 @@ const sheet = css`
     aspect-ratio: 3 / 2;
     border-radius: 0;
     overflow: hidden;
-    border: 1px solid var(--border, var(--warp-lit));
-    background: #100f0b;
+    border: 1px solid ${t.border};
+    background: ${t.groundSunk};
     cursor: none;
   }
   loom-canvas {
@@ -64,22 +65,22 @@ const sheet = css`
   button {
     padding: 0.5rem 1.25rem;
     border-radius: 0;
-    border: 1px solid var(--border, var(--warp-lit));
-    background: var(--surface-2, #1a1a2e);
-    color: var(--text, var(--text-primary));
-    font-family: var(--font-mono, monospace);
+    border: 1px solid ${t.border};
+    background: ${t.surface2};
+    color: ${t.text};
+    font-family: ${t.fontMono};
     font-size: 0.75rem;
     letter-spacing: 0.06em;
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
   button:hover {
-    background: var(--accent, var(--thread));
-    border-color: var(--accent, var(--thread));
+    background: ${t.accent};
+    border-color: ${t.accent};
     color: var(--text-primary);
   }
   .msg {
-    color: var(--text-muted, var(--text-muted));
+    color: ${t.textMuted};
     font-size: 0.8rem;
   }
 `;
@@ -95,7 +96,7 @@ const BALL_SPEED = 320;
 
 /* One hue, five values. Five saturated colours read as a different product
    from the rest of the site; a ramp still tells you which row is worth more. */
-const BRICK_COLORS = ["#d9573b", "#c4472f", "#a83c27", "#8c311f", "#702717"];
+const BRICK_COLORS = ["#d9573b", t.$value.thread, "#a83c27", "#8c311f", "#702717"];
 /* A cleared brick leaves its position behind, the way a card shows an
    unpunched hole. The board reads as it empties. */
 const BRICK_GHOST = "rgba(74, 72, 57, 0.30)";
@@ -194,7 +195,7 @@ export class CanvasGameDemo extends LoomElement {
     ctx.clearRect(0, 0, this.W, this.H);
 
     // Background
-    ctx.fillStyle = "#100f0b";
+    ctx.fillStyle = t.$value.groundSunk;
     ctx.fillRect(0, 0, this.W, this.H);
 
     // Bricks. Square, because nothing else in this design is rounded, and a
@@ -214,18 +215,18 @@ export class CanvasGameDemo extends LoomElement {
     const pw = 80;
     const px = Math.max(0, Math.min(this.W - pw, this.paddleX - pw / 2));
     const py = this.H - 30;
-    ctx.fillStyle = "#e6e1d3";
+    ctx.fillStyle = t.$value.textPrimary;
     ctx.fillRect(px, py, pw, PADDLE_H);
 
     // Draw ball
-    ctx.fillStyle = "#c4472f";
+    ctx.fillStyle = t.$value.thread;
     ctx.beginPath();
     ctx.arc(this.ballX, this.ballY, BALL_R, 0, Math.PI * 2);
     ctx.fill();
 
     // Show start message if not running
     if (!this.running && !this.gameOver) {
-      ctx.fillStyle = "#a09a88";
+      ctx.fillStyle = t.$value.textSecondary;
       ctx.font = "12px 'IBM Plex Mono', monospace";
       ctx.textAlign = "center";
       ctx.fillText("CLICK TO START", this.W / 2, this.H / 2 + 40);
@@ -234,19 +235,19 @@ export class CanvasGameDemo extends LoomElement {
 
     // Game over
     if (this.gameOver) {
-      ctx.fillStyle = "#e6e1d3";
+      ctx.fillStyle = t.$value.textPrimary;
       ctx.font = "700 26px 'IBM Plex Sans Condensed', sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("GAME OVER", this.W / 2, this.H / 2);
       ctx.font = "12px 'IBM Plex Mono', monospace";
-      ctx.fillStyle = "#6d6858";
+      ctx.fillStyle = t.$value.textMuted;
       ctx.fillText(`SCORE ${this.score}`, this.W / 2, this.H / 2 + 28);
       return;
     }
 
     // Win check
     if (this.bricks.every(b => !b.alive)) {
-      ctx.fillStyle = "#c4472f";
+      ctx.fillStyle = t.$value.thread;
       ctx.font = "700 26px 'IBM Plex Sans Condensed', sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("CARD CLEARED", this.W / 2, this.H / 2);

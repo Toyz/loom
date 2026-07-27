@@ -200,3 +200,69 @@ code, pre {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--warp-lit); border-radius: 0; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Page transitions: the read station ────────────────────────────────────
+ *
+ * A card reader does not fade one card into the next. It draws a card past a
+ * fixed read head, sensing one column at a time, and drops it into the
+ * stacker as the next is pulled from the hopper. That is the motion here.
+ *
+ * The detail doing the work is `steps()`. A smooth clip-path wipe is a wipe --
+ * every site has one. Quantised into 12 increments it reads as a mechanism
+ * indexing through columns, which is the whole difference between "a
+ * transition" and "this machine is reading the page in".
+ *
+ * Timing is mechanical, not organic: linear inside each step, fast, and it
+ * stops dead. Card readers ran over a thousand cards a minute; nothing here
+ * should feel like it is easing into place.
+ *
+ * Only the content column moves. The nav and the rail carry their own
+ * view-transition-names so the browser holds them still instead of folding
+ * them into the root snapshot and cross-fading persistent chrome.
+ */
+
+::view-transition-old(doc-page) {
+  /* The spent card clears the read station to the left, in the same column
+     rhythm the next one is read in. */
+  animation: card-eject 140ms steps(8, end) both;
+}
+
+::view-transition-new(doc-page) {
+  animation: card-read 260ms steps(12, end) both;
+}
+
+@keyframes card-read {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes card-eject {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-2%); }
+}
+
+/* Chrome does not animate. A named element the browser can match on both
+   sides is held in place; without the name it would land in the root
+   snapshot and cross-fade on every navigation. */
+::view-transition-group(doc-nav),
+::view-transition-group(doc-rail) {
+  animation: none;
+}
+
+/* Everything unnamed lands in the root group. With the column and the chrome
+   both named, all that is left is the page background -- identical across
+   routes, so animating it can only ever produce a flash. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The decorator already skips the transition entirely at this setting; this
+     covers a browser that runs it anyway. Movement goes, the change stays. */
+  ::view-transition-old(doc-page),
+  ::view-transition-new(doc-page) {
+    animation: none;
+  }
+}

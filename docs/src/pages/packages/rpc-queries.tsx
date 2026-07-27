@@ -57,7 +57,8 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
             <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td><code>fn</code></td><td>(el) =&gt; Args</td><td><code>[]</code></td><td>Extract procedure args from element state. Re-evaluates on reactive changes.</td></tr>
-              <tr><td><code>staleTime</code></td><td>number</td><td><code>0</code></td><td>ms before <code>.stale</code> flips to true. Does not trigger a refetch on its own.</td></tr>
+              <tr><td><code>staleTime</code></td><td>number</td><td><code>0</code></td><td>ms before <code>.stale</code> flips to true and a background revalidation goes out.</td></tr>
+              <tr><td><code>revalidate</code></td><td>boolean</td><td><code>true</code></td><td>Whether staleness triggers that refetch. False keeps <code>.stale</code> advisory.</td></tr>
               <tr><td><code>eager</code></td><td>boolean</td><td><code>true</code></td><td>Whether to fetch immediately on connect. Set to <code>false</code> for on-demand queries.</td></tr>
               <tr><td><code>retry</code></td><td>number</td><td><code>0</code></td><td>Number of retries on failure with exponential backoff (200ms, 400ms, 800ms...).</td></tr>
             </tbody>
@@ -66,15 +67,25 @@ accessor user!: RpcQuery\<[string], User\>;`}></code-block>
         <doc-section heading="Staleness">
           <p>
             <span class="ic">staleTime</span> is how long data is considered fresh. Once it
-            has elapsed, the next read flips <span class="ic">.stale</span> to
+            has elapsed, the next read flips <span class="ic">.stale</span> to{" "}
             <span class="ic">true</span> and the cached data stays visible.
           </p>
+          <p>
+            Then it revalidates in the background, the same as{" "}
+            <span class="ic">@api</span> and <span class="ic">@fetch</span> — cached data stays
+            on screen while the new request is in flight. Set{" "}
+            <span class="ic">revalidate: false</span> to keep <span class="ic">.stale</span>{" "}
+            purely advisory: the flag still flips and an{" "}
+            <span class="ic">ApiStale</span> still goes out on the bus, but nothing refetches
+            until the arguments change or you call <span class="ic">.refetch()</span> or{" "}
+            <span class="ic">.invalidate()</span>.
+          </p>
           <p class="note">
-            <span class="ic">@rpc</span> marks data stale but does not revalidate on its own —
-            a query re-runs when its arguments change, or when you call
-            <span class="ic">.refetch()</span> or <span class="ic">.invalidate()</span>. This
-            differs from <span class="ic">@api</span> and <span class="ic">@fetch</span>, where
-            a stale read triggers a background refetch.
+            The stale transition is announced on the bus as{" "}
+            <span class="ic">ApiStale</span>, with <span class="ic">name</span> set to{" "}
+            <span class="ic">"Router.method"</span> and <span class="ic">key</span> to the
+            serialised arguments — so a toolbar indicator or a cache layer can react without a
+            reference to the component.
           </p>
           <code-block lang="ts" code={`@rpc(UserRouter, "listUsers", {
   staleTime: 60_000,  // cache for 1 minute
@@ -84,7 +95,7 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
         </doc-section>
         <doc-section heading="RpcQuery&lt;TArgs, TReturn&gt;">
           <p>
-            Every <span class="ic">@rpc</span> accessor is an <span class="ic">RpcQuery&lt;TArgs, TReturn&gt;</span> — a typed, reactive state container with pattern matching and Result combinators.
+            Every <span class="ic">@rpc</span> accessor is an <span class="ic">RpcQuery&lt;TArgs, TReturn&gt;</span> — a typed, reactive state container with pattern matching and Result combinators.{" "}
             <span class="ic">ApiState&lt;T&gt;</span> is also accepted for backwards compatibility.
           </p>
           <table class="api-table">
@@ -94,7 +105,7 @@ accessor users!: RpcQuery\<[number, number], User[]\>;`}></code-block>
               <tr><td><code>.data</code></td><td>The resolved data, or <code>undefined</code></td></tr>
               <tr><td><code>.error</code></td><td>The error from the last fetch, or <code>undefined</code></td></tr>
               <tr><td><code>.loading</code></td><td>True during fetch (false if cached data exists — SWR)</td></tr>
-              <tr><td><code>.stale</code></td><td>True when <code>staleTime</code> has elapsed</td></tr>
+              <tr><td><code>.stale</code></td><td>True when <code>staleTime</code> has elapsed. Reading it starts the revalidation.</td></tr>
               <tr><td><code>.refetch()</code></td><td>Force re-execute the query</td></tr>
               <tr><td><code>.invalidate()</code></td><td>Mark stale and trigger refetch</td></tr>
               <tr><td><code>.unwrap()</code></td><td>Return data or throw the error</td></tr>

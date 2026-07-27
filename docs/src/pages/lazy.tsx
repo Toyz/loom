@@ -329,6 +329,54 @@ class LazyDecoratorSymbols extends LoomElement { }
 @searchable({ title: "Permission", section: "Decorators", icon: "shield-check", to: "/decorators/permission", keywords: ["permission", "permissions", "geolocation", "notifications", "camera", "microphone", "clipboard"], summary: "Reactive browser permission state, before you trigger the API that needs it." })
 class LazyDecoratorPermission extends LoomElement { }
 
+@route("/internals", { group: DecoratorsGroup })
+@component("page-decorator-internals")
+@lazy(() => import("./decorators/internals"))
+@searchable({ title: "Element Internals", section: "Decorators", icon: "shield-check", to: "/decorators/internals", keywords: ["internals", "form", "formAssociated", "validity", "state", "aria", "accessibility", "constraint validation"], summary: "Form association, :state() and ARIA reflection via attachInternals." })
+class LazyDecoratorInternals extends LoomElement { }
+
+@route("/view-transition", { group: DecoratorsGroup })
+@component("page-decorator-view-transition")
+@lazy(() => import("./decorators/view-transition"))
+@searchable({ title: "View Transitions", section: "Decorators", icon: "sparkles", to: "/decorators/view-transition", keywords: ["view transition", "animation", "startViewTransition", "morph", "cross-fade", "route transition"], summary: "Animate a full render through document.startViewTransition." })
+class LazyDecoratorViewTransition extends LoomElement { }
+
+@route("/overlay", { group: DecoratorsGroup })
+@component("page-decorator-overlay")
+@lazy(() => import("./decorators/overlay"))
+@searchable({ title: "Popover & Dialog", section: "Decorators", icon: "layers", to: "/decorators/overlay", keywords: ["popover", "dialog", "modal", "top layer", "menu", "tooltip", "backdrop", "light dismiss"], summary: "Menus and modals on the browser's top layer, driven by a boolean." })
+class LazyDecoratorOverlay extends LoomElement { }
+
+@route("/environment", { group: DecoratorsGroup })
+@component("page-decorator-environment")
+@lazy(() => import("./decorators/environment"))
+@searchable({ title: "Visibility & Network", section: "Decorators", icon: "monitor", to: "/decorators/environment", keywords: ["visible", "online", "offline", "visibilitychange", "background tab", "navigator.onLine"], summary: "Page visibility and network reachability as accessors." })
+class LazyDecoratorEnvironment extends LoomElement { }
+
+@route("/animate", { group: DecoratorsGroup })
+@component("page-decorator-animate")
+@lazy(() => import("./decorators/animate"))
+@searchable({ title: "Animate", section: "Decorators", icon: "zap", to: "/decorators/animate", keywords: ["animate", "keyframes", "web animations", "waapi", "animation"], summary: "Web Animations keyframes, cancelled when the component disconnects." })
+class LazyDecoratorAnimate extends LoomElement { }
+
+@route("/streams", { group: DecoratorsGroup })
+@component("page-decorator-streams")
+@lazy(() => import("./decorators/streams"))
+@searchable({ title: "SSE & WebSocket", section: "Decorators", icon: "plug", to: "/decorators/streams", keywords: ["sse", "websocket", "EventSource", "stream", "realtime", "reconnect", "backoff"], summary: "Long-lived connections with backoff that actually close." })
+class LazyDecoratorStreams extends LoomElement { }
+
+@route("/device", { group: DecoratorsGroup })
+@component("page-decorator-device")
+@lazy(() => import("./decorators/device"))
+@searchable({ title: "Device APIs", section: "Decorators", icon: "cpu", to: "/decorators/device", keywords: ["geolocation", "wake lock", "share", "gps", "position", "battery"], summary: "Geolocation, wake lock and native sharing, each released on disconnect." })
+class LazyDecoratorDevice extends LoomElement { }
+
+@route("/selection", { group: DecoratorsGroup })
+@component("page-decorator-selection")
+@lazy(() => import("./decorators/selection"))
+@searchable({ title: "Selection & Highlights", section: "Decorators", icon: "search", to: "/decorators/selection", keywords: ["selection", "highlight", "CSS.highlights", "search", "range", "mark"], summary: "Read the selection, and style text ranges without wrapping them." })
+class LazyDecoratorSelection extends LoomElement { }
+
 @route("/media", { group: DecoratorsGroup })
 @component("page-decorator-media")
 @lazy(() => import("./decorators/media"))

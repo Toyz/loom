@@ -20,7 +20,7 @@ export default class PageDecoratorFullscreen extends LoomElement {
                 <doc-section heading="API">
                     <api-entry sig="@fullscreen(options?)">
                         <p>
-                            Accessor decorator. Setting to <code>true</code> calls <code>requestFullscreen()</code>,
+                            Accessor decorator. Setting to <code>true</code> calls <code>requestFullscreen()</code>,{" "}
                             <code>false</code> calls <code>exitFullscreen()</code>. Listens for <code>fullscreenchange</code> events to stay in sync.
                         </p>
                     </api-entry>

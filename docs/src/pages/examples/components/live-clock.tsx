@@ -4,6 +4,7 @@
  * Demonstrates: @component, @reactive, @interval, @mount, @unmount, @styles, css
  */
 import { LoomElement, component, reactive, css, styles, mount, unmount, interval } from "@toyz/loom";
+import { t } from "../../../tokens";
 
 const sheet = css`
   :host { display: block; }
@@ -12,16 +13,16 @@ const sheet = css`
     font-weight: 200;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.05em;
-    color: var(--accent, #a78bfa);
+    color: ${t.accent};
     text-align: center;
     padding: 2rem;
     border-radius: 0;
-    background: var(--surface-2, #1e1e2e);
-    border: 1px solid var(--border, #333);
+    background: ${t.surface2};
+    border: 1px solid ${t.border};
   }
   .label {
     text-align: center;
-    color: var(--text-muted, #888);
+    color: ${t.textMuted};
     margin-top: 0.75rem;
     font-size: 0.85rem;
   }

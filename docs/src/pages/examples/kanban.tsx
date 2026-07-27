@@ -20,7 +20,7 @@ export default class ExampleKanban extends LoomElement {
         <doc-section heading="Demo">
           <doc-demo>
             <p class="hint">
-            Drag cards between columns. Press <kbd style="background:var(--surface-2);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.75rem;">N</kbd> to focus input. Data persists via localStorage.
+            Drag cards between columns. Press <kbd style="background:var(--surface-2);padding:0.15rem 0.4rem;border-radius:2px;font-size:0.75rem;">N</kbd> to focus input. Data persists via localStorage.
             </p>
             <kanban-board></kanban-board>
           </doc-demo>

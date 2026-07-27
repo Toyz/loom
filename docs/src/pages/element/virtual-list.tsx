@@ -40,7 +40,7 @@ export default class PageVirtualList extends LoomElement {
         </doc-section>
         <doc-section heading="Styling">
             <p>
-              <span class="ic">&lt;loom-virtual&gt;</span> uses Shadow DOM internally. The host element must have
+              <span class="ic">&lt;loom-virtual&gt;</span> uses Shadow DOM internally. The host element must have{" "}
               <span class="ic">display: block</span> and a <strong>fixed height</strong> — without a constrained
               height, there's nothing to virtualize against.
             </p>

@@ -181,7 +181,7 @@ onLazyEnd(e: LazyLoadEnd) {
             <p>
               By default, <span class="ic">@lazy</span> loads the module as soon as the element is
               connected to the DOM. With <span class="ic">trigger: 'viewport'</span>, loading is
-              deferred until the element scrolls near the viewport — powered by
+              deferred until the element scrolls near the viewport — powered by{" "}
               <code>IntersectionObserver</code>.
             </p>
             <code-block lang="ts" code={`@component("heavy-chart")
@@ -203,7 +203,7 @@ class HeavyChart extends LoomElement {}`}></code-block>
             <h2>Prefetch</h2>
           </div>
             <p>
-              Every <span class="ic">@lazy</span> class exposes a static
+              Every <span class="ic">@lazy</span> class exposes a static{" "}
               <span class="ic">.prefetch()</span> method that warms the import cache before mount.
               Pairs naturally with hover states, route predictions, or idle callbacks.
             </p>
@@ -223,7 +223,7 @@ requestIdleCallback(() => {
               calling the loader again.
             </p>
           <doc-notification type="tip">
-            Combine <span class="ic">prefetch</span> with <span class="ic">trigger: 'viewport'</span>
+            Combine <span class="ic">prefetch</span> with <span class="ic">trigger: 'viewport'</span>{" "}
             for the best of both worlds: start downloading the chunk early, then mount instantly when
             the element scrolls into view. The observer is skipped entirely if the chunk is already
             cached.

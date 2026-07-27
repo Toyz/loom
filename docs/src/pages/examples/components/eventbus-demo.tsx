@@ -4,6 +4,7 @@
  * Demonstrates: EventBus, LoomEvent, @on, @on.once, bus.once, bus.waitFor, cancel, inheritance
  */
 import { LoomElement, component, reactive, css, styles, store, LoomEvent, bus, on, emit } from "@toyz/loom";
+import { t } from "../../../tokens";
 
 // ── Events ──
 
@@ -28,8 +29,8 @@ const sheet = css`
   .demo {
     display: flex; flex-direction: column; gap: 1rem;
     padding: 1.25rem; border-radius: 0;
-    background: var(--surface-2, #1e1e2e);
-    border: 1px solid var(--border, #333);
+    background: ${t.surface2};
+    border: 1px solid ${t.border};
   }
   .row {
     display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
@@ -40,11 +41,11 @@ const sheet = css`
     color: #111;
   }
   button:hover { opacity: 0.85; }
-  .btn-ping    { background: var(--amber, var(--warn)); }
-  .btn-click   { background: var(--cyan, var(--indigo)); }
-  .btn-once    { background: var(--rose, var(--thread)); }
-  .btn-wait    { background: var(--emerald, var(--ok)); }
-  .btn-cancel  { background: var(--accent, var(--thread)); color: var(--text-primary); }
+  .btn-ping    { background: ${t.amber}; }
+  .btn-click   { background: ${t.cyan}; }
+  .btn-once    { background: ${t.rose}; }
+  .btn-wait    { background: ${t.emerald}; }
+  .btn-cancel  { background: ${t.accent}; color: var(--text-primary); }
   .btn-clear   { background: #444; color: #ccc; }
   .log {
     background: #111; border-radius: 0; padding: 0.75rem;
@@ -63,7 +64,7 @@ const sheet = css`
   .tag-cancel { background: rgba(129,140,248,0.2); color: var(--accent); }
   .tag-inherit { background: rgba(129,140,248,0.2); color: var(--accent); }
   .section-label {
-    font-size: 0.75rem; color: var(--text-muted, #888);
+    font-size: 0.75rem; color: ${t.textMuted};
     text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
   }
 `;
