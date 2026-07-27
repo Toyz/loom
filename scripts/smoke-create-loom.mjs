@@ -25,6 +25,9 @@ import { ROOT, CORE, byId, readManifest } from "./packages.mjs";
 const work = mkdtempSync(join(tmpdir(), "loom-smoke-"));
 let failed = false;
 
+/** Drop SGR escape sequences so the output can be matched on. */
+const stripAnsi = (text) => text.replace(/\u001B\[[0-9;]*m/g, "");
+
 const run = (cmd, args, cwd) =>
   execFileSync(cmd, args, { cwd, stdio: "pipe", encoding: "utf-8" });
 
@@ -106,8 +109,13 @@ try {
 
   step("npm run typecheck", () => run("npm", ["run", "typecheck"], app));
   step("npm test", () => {
-    const out = run("npm", ["test"], app);
-    const m = /Tests\s+(\d+) passed/.exec(out);
+    // Vitest colours its summary when it believes it is on a terminal, which
+    // it does on a CI runner. The escape codes land between "Tests" and the
+    // count, so a plain whitespace match succeeds locally and fails on CI --
+    // the scaffold's tests pass either way, only the assertion about them
+    // breaks, which is the worst kind of false alarm.
+    const out = stripAnsi(run("npm", ["test"], app));
+    const m = /Tests\s+(\d+)\s+passed/.exec(out);
     if (!m) throw new Error(`no passing tests reported:\n${out}`);
     return `${m[1]} passing`;
   });
