@@ -22,7 +22,9 @@ export default class ExampleApi extends LoomElement {
             the <span class="ic">@api</span> decorator. Use the buttons to
             refetch or invalidate the cache and see the state transitions.
           </p>
-          <api-demo></api-demo>
+          <doc-demo>
+            <api-demo></api-demo>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

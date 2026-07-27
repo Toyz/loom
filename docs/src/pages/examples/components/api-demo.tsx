@@ -26,13 +26,13 @@ const sheet = css`
     margin-bottom: 1rem;
     padding: 0.75rem 1rem;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
+    border-radius: 0;
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .toolbar button {
     padding: 0.4rem 0.8rem;
-    border-radius: 6px;
+    border-radius: 0;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.05);
     color: inherit;
@@ -82,7 +82,7 @@ const sheet = css`
 
   .card {
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.06);
     text-align: center;
@@ -114,7 +114,7 @@ const sheet = css`
   .error {
     color: var(--thread);
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(248, 113, 113, 0.08);
     border: 1px solid rgba(248, 113, 113, 0.2);
   }

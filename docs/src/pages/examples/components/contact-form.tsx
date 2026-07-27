@@ -31,7 +31,7 @@ const sheet = css`
   .field input,
   .field textarea {
     padding: 0.75rem 1rem;
-    border: 1px solid var(--border, var(--warp-lit)); border-radius: 8px;
+    border: 1px solid var(--border, var(--warp-lit)); border-radius: 0;
     background: var(--surface-2, #16161e); color: var(--text, var(--text-primary));
     font-size: 0.95rem; font-family: inherit; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -63,7 +63,7 @@ const sheet = css`
   }
   .submit-btn {
     display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.7rem 1.5rem; border: none; border-radius: 8px;
+    padding: 0.7rem 1.5rem; border: none; border-radius: 0;
     background: var(--accent, var(--thread)); color: var(--text-primary);
     font-weight: 600; font-size: 0.92rem;
     cursor: pointer; transition: opacity 0.15s, transform 0.1s;
@@ -76,7 +76,7 @@ const sheet = css`
 
   .reset-btn {
     padding: 0.7rem 1.25rem; border: 1px solid var(--border, var(--warp-lit));
-    border-radius: 8px; background: transparent;
+    border-radius: 0; background: transparent;
     color: var(--text-muted, #888); font-size: 0.85rem;
     cursor: pointer; transition: all 0.15s;
   }
@@ -88,14 +88,14 @@ const sheet = css`
   .status {
     display: flex; gap: 1rem; flex-wrap: wrap;
     padding: 0.75rem 1rem;
-    border-radius: 8px; background: rgba(255,255,255,0.02);
+    border-radius: 0; background: rgba(255,255,255,0.02);
     border: 1px solid var(--border-subtle, var(--warp));
     font-size: 0.82rem; color: var(--text-muted, var(--text-muted));
     font-family: var(--font-mono, monospace);
   }
   .status .tag {
     display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.2rem 0.6rem; border-radius: 4px;
+    padding: 0.2rem 0.6rem; border-radius: 0;
     background: rgba(255,255,255,0.04);
   }
   .status .dot {
@@ -106,7 +106,7 @@ const sheet = css`
   .status .dot.off { background: #6b7280; }
 
   .toast {
-    padding: 0.75rem 1rem; border-radius: 8px;
+    padding: 0.75rem 1rem; border-radius: 0;
     background: rgba(52, 211, 153, 0.1);
     border: 1px solid rgba(52, 211, 153, 0.3);
     color: var(--ok); font-size: 0.85rem;

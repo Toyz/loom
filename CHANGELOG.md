@@ -139,6 +139,20 @@ existing suite could not see.
   LCP both 0.7s, CLS 0) are labelled as coming from a production site rather
   than from the docs. The page also states the honest limit of TBT — it is a
   load metric and says nothing about interaction afterwards.
+- **`<doc-demo>`, and the demos restyled.** A code block on an examples page
+  was obviously an object — bounded, with a header strip and a punched gutter
+  — while the demo beside it floated in the prose with no frame at all, so
+  the one thing actually running read as less substantial than a static
+  listing of it. Every demo now sits in the same surface a code block uses,
+  with a LIVE strip and its instruction printed along the foot.
+  Three things made the demos look pasted in from another site, and all three
+  are fixed: 87 rounded corners and pill chips in a design that is square
+  everywhere else (circles kept, where the shape carries meaning); and
+  `--surface`, `--surface-2`, `--surface-3`, `--border` and `--text`, which
+  no longer exist as tokens — so all seventeen demo components had been
+  rendering their hardcoded blue-grey fallbacks against a warm olive ground.
+  Those are aliased into the system rather than rewritten, so a usage missed
+  in one component still lands in the palette.
 - **`<api-table>`.** There were 101 hand-written reference tables across the
   docs — table, thead, a row of th, then a tbody of tr/td — which is the same
   drift risk the page skeleton had before `<doc-section>`: a column count that

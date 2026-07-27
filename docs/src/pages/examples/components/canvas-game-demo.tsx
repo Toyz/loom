@@ -33,7 +33,7 @@ const sheet = css`
     width: 100%;
     max-width: 600px;
     aspect-ratio: 3 / 2;
-    border-radius: 12px;
+    border-radius: 0;
     overflow: hidden;
     border: 1px solid var(--border, var(--warp-lit));
     background: #0a0a14;
@@ -50,7 +50,7 @@ const sheet = css`
   }
   button {
     padding: 0.5rem 1.25rem;
-    border-radius: 8px;
+    border-radius: 0;
     border: 1px solid var(--border, var(--warp-lit));
     background: var(--surface-2, #1a1a2e);
     color: var(--text, var(--text-primary));

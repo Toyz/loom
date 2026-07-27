@@ -34,7 +34,7 @@ const demoStyles = css`
   .panel {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 1.25rem;
   }
 
@@ -50,7 +50,7 @@ const demoStyles = css`
   .panel h3 .badge {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: rgba(52,211,153,0.15);
     color: #6ee7b7;
     font-weight: 600;
@@ -61,7 +61,7 @@ const demoStyles = css`
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
     margin-bottom: 0.5rem;
@@ -76,7 +76,7 @@ const demoStyles = css`
   .action-icon {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -106,7 +106,7 @@ const demoStyles = css`
     color: #6ee7b7;
     border: 1px solid rgba(52,211,153,0.2);
     padding: 0.4rem 0.85rem;
-    border-radius: 8px;
+    border-radius: 0;
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -149,7 +149,7 @@ const demoStyles = css`
   .theme-badge {
     font-size: 0.75rem;
     padding: 0.2rem 0.6rem;
-    border-radius: 999px;
+    border-radius: 0;
     font-weight: 600;
     font-family: "JetBrains Mono", "Fira Code", monospace;
   }
@@ -175,14 +175,14 @@ const demoStyles = css`
     overflow-y: auto;
     padding: 0.75rem;
     background: rgba(0,0,0,0.3);
-    border-radius: 8px;
+    border-radius: 0;
     line-height: 1.6;
   }
 
   .event-entry {
     padding: 0.4rem 0.6rem;
     margin-bottom: 0.35rem;
-    border-radius: 6px;
+    border-radius: 0;
     background: rgba(255,255,255,0.02);
     border-left: 3px solid rgba(52,211,153,0.4);
     display: flex;

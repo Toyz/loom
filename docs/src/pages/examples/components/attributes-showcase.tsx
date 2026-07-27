@@ -40,7 +40,7 @@ const bubbleSheet = css`
     color: var(--text, var(--text-primary));
     border: 1px solid var(--accent, #a78bfa);
     padding: 4px 10px;
-    border-radius: 8px;
+    border-radius: 0;
     font-size: 12px;
     font-family: -apple-system, system-ui, sans-serif;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
@@ -87,7 +87,7 @@ const sheet = css`
     padding: 16px;
     background: var(--surface-2, #1e1e2e);
     border: 1px solid var(--border, #333);
-    border-radius: 10px;
+    border-radius: 0;
   }
   .tip {
     color: var(--accent, #a78bfa);
@@ -98,7 +98,7 @@ const sheet = css`
   input {
     width: 100%;
     padding: 8px 10px;
-    border-radius: 8px;
+    border-radius: 0;
     border: 1px solid var(--border, #333);
     background: var(--surface, #12121a);
     color: var(--text, var(--text-primary));

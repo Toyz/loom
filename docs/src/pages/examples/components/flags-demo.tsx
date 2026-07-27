@@ -39,7 +39,7 @@ const demoStyles = css`
   .panel {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 1.25rem;
   }
 
@@ -55,7 +55,7 @@ const demoStyles = css`
   .panel h3 .badge {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: rgba(167,139,250,0.15);
     color: #c4b5fd;
     font-weight: 600;
@@ -66,7 +66,7 @@ const demoStyles = css`
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
     margin-bottom: 0.5rem;
@@ -81,7 +81,7 @@ const demoStyles = css`
   .flag-icon {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -108,7 +108,7 @@ const demoStyles = css`
 
   .toggle-btn {
     padding: 0.35rem 0.75rem;
-    border-radius: 999px;
+    border-radius: 0;
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
@@ -136,7 +136,7 @@ const demoStyles = css`
     color: #c4b5fd;
     border: 1px solid rgba(167,139,250,0.2);
     padding: 0.4rem 0.85rem;
-    border-radius: 8px;
+    border-radius: 0;
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -154,7 +154,7 @@ const demoStyles = css`
 
   .result-box {
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(0,0,0,0.3);
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-size: 0.8rem;
@@ -164,7 +164,7 @@ const demoStyles = css`
   .result-item {
     padding: 0.4rem 0.6rem;
     margin-bottom: 0.35rem;
-    border-radius: 6px;
+    border-radius: 0;
     background: rgba(255,255,255,0.02);
     display: flex;
     align-items: center;

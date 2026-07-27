@@ -22,7 +22,9 @@ export default class ExampleAnalytics extends LoomElement {
             Click actions to fire <span class="ic">@track</span> events,
             toggle the theme accessor, and watch events stream into the log.
           </p>
-          <analytics-demo></analytics-demo>
+          <doc-demo>
+            <analytics-demo></analytics-demo>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

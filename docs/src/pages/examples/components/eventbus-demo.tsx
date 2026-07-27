@@ -27,7 +27,7 @@ const sheet = css`
   :host { display: block; }
   .demo {
     display: flex; flex-direction: column; gap: 1rem;
-    padding: 1.25rem; border-radius: 12px;
+    padding: 1.25rem; border-radius: 0;
     background: var(--surface-2, #1e1e2e);
     border: 1px solid var(--border, #333);
   }
@@ -35,7 +35,7 @@ const sheet = css`
     display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
   }
   button {
-    padding: 0.5rem 1rem; border-radius: 8px; border: none; cursor: pointer;
+    padding: 0.5rem 1rem; border-radius: 0; border: none; cursor: pointer;
     font-size: 0.85rem; font-weight: 500; transition: opacity 0.15s;
     color: #111;
   }
@@ -47,7 +47,7 @@ const sheet = css`
   .btn-cancel  { background: var(--accent, var(--thread)); color: var(--text-primary); }
   .btn-clear   { background: #444; color: #ccc; }
   .log {
-    background: #111; border-radius: 8px; padding: 0.75rem;
+    background: #111; border-radius: 0; padding: 0.75rem;
     font-family: "SF Mono", "Fira Code", monospace; font-size: 0.8rem;
     color: #ddd; max-height: 240px; overflow-y: auto;
     line-height: 1.6; min-height: 80px;
@@ -55,7 +55,7 @@ const sheet = css`
   .log .entry { border-bottom: 1px solid #222; padding: 2px 0; }
   .log .entry:last-child { border-bottom: none; }
   .time { color: #666; margin-right: 0.5rem; }
-  .tag { padding: 1px 6px; border-radius: 4px; font-size: 0.75rem; margin-right: 0.25rem; }
+  .tag { padding: 1px 6px; border-radius: 0; font-size: 0.75rem; margin-right: 0.25rem; }
   .tag-ping { background: rgba(251,191,36,0.2); color: var(--amber); }
   .tag-click { background: rgba(34,211,238,0.2); color: var(--cyan); }
   .tag-once { background: rgba(244,114,182,0.2); color: var(--rose); }

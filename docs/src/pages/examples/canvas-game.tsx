@@ -17,10 +17,9 @@ export default class ExampleCanvasGame extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <p class="hint">
-            Move your mouse over the canvas to control the paddle. Click to start.
-          </p>
-          <canvas-game-demo></canvas-game-demo>
+          <doc-demo note="Move your mouse over the canvas to control the paddle. Click to start.">
+            <canvas-game-demo></canvas-game-demo>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

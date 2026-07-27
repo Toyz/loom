@@ -17,7 +17,7 @@ const sheet = css`
   .card {
     background: var(--surface-2, #1e1e2e);
     border: 1px solid var(--border, #333);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
@@ -47,7 +47,7 @@ const sheet = css`
   button {
     padding: 0.45rem 1rem;
     border: 1px solid var(--border, #333);
-    border-radius: 8px;
+    border-radius: 0;
     background: var(--surface-2, #1e1e2e);
     color: var(--text, #ccc);
     cursor: pointer;
@@ -67,7 +67,7 @@ const sheet = css`
   /* toast */
   .toast {
     padding: 0.6rem 1rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: var(--accent-glow, #2a1f4e);
     color: var(--accent, #a78bfa);
     border: 1px solid var(--accent-dim, #444);
@@ -80,7 +80,7 @@ const sheet = css`
   input {
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--border, #333);
-    border-radius: 8px;
+    border-radius: 0;
     background: var(--surface, #121212);
     color: var(--text, #ccc);
     font-size: 0.85rem;
@@ -101,7 +101,7 @@ const sheet = css`
     width: 100%;
     height: 100px;
     border: 1px dashed var(--border, #333);
-    border-radius: 8px;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -127,7 +127,7 @@ const sheet = css`
     height: 120px;
     position: relative;
     border: 1px dashed var(--border, #333);
-    border-radius: 8px;
+    border-radius: 0;
     overflow: hidden;
   }
   .ball {

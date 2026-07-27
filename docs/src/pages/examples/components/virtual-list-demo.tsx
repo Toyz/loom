@@ -17,7 +17,7 @@ const sheet = css`
   .controls button {
     padding: 0.5rem 1rem;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 0;
     background: var(--surface-2);
     color: var(--text);
     cursor: pointer;
@@ -37,7 +37,7 @@ const sheet = css`
     display: block;
     height: 400px;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 0;
     overflow: hidden;
   }
   .row {
@@ -61,7 +61,7 @@ const sheet = css`
   .tag {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    border-radius: 0;
     background: var(--accent-glow, #1a1a2e);
     color: var(--accent, var(--thread));
     border: 1px solid var(--accent-dim, #333);

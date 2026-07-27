@@ -135,6 +135,18 @@
   --bg-active:     var(--ground-hover);
   --border-subtle: var(--warp);
   --border-muted:  var(--warp-lit);
+  /* Demo components were written against an earlier palette whose tokens no
+     longer exist, so every one of them was rendering its hardcoded fallback:
+     blue-grey surfaces and #a78bfa borders on a warm olive ground, which is
+     most of why the demos looked pasted in from another site. Aliased rather
+     than rewritten, so a usage missed in one of seventeen components still
+     lands in the system. */
+  --surface:       var(--ground-raised);
+  --surface-2:     var(--ground-raised);
+  --surface-3:     var(--ground-hover);
+  --border:        var(--warp);
+  --text:          var(--text-primary);
+
   --accent:        var(--thread);
   --accent-dim:    var(--thread-dim);
   --accent-glow:   var(--thread-wash);

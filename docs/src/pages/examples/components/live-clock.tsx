@@ -15,7 +15,7 @@ const sheet = css`
     color: var(--accent, #a78bfa);
     text-align: center;
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: 0;
     background: var(--surface-2, #1e1e2e);
     border: 1px solid var(--border, #333);
   }

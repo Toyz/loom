@@ -33,9 +33,7 @@ export default class PageExampleImageGallery extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <p class="hint">
-            Navigate away and come back — cached images load instantly.
-          </p>
+          <doc-demo note="Navigate away and come back — cached images load instantly.">
           <style>{`
             .image-grid {
               display: grid;
@@ -76,6 +74,7 @@ export default class PageExampleImageGallery extends LoomElement {
               </loom-image>
             ))}
           </div>
+          </doc-demo>
         </doc-section>
         <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/image-gallery.tsx"></source-block>

@@ -22,7 +22,9 @@ export default class ExampleStressTest extends LoomElement {
             hot cell's value ticks at 60fps via <span class="ic">@interval</span>. Watch
             the render counter to see how the framework handles rapid state changes.
           </p>
-          <stress-test></stress-test>
+          <doc-demo>
+            <stress-test></stress-test>
+          </doc-demo>
         </doc-section>
         <doc-section heading="Loom Decorators Used">
           <ul>

@@ -17,10 +17,9 @@ export default class ExampleTodo extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <p class="hint">
-            Try adding todos, then refresh — they persist via localStorage.
-          </p>
-          <todo-list></todo-list>
+          <doc-demo note="Try adding todos, then refresh — they persist via localStorage.">
+            <todo-list></todo-list>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

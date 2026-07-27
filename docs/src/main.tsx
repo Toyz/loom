@@ -11,6 +11,7 @@ import "./components/doc-rail";      // right-hand punched index
 import "./components/spec-card";     // the card in the reader, at the foot of the rail      // prev/next page navigation
 import "./components/doc-notification"; // callout/alert banners
 import "./components/api-table";      // reference tables
+import "./components/doc-demo";       // live-demo frame
 import "./components/doc-section";     // <doc-section> + <api-entry> page skeleton
 import "./components/punch-matrix";     // the punch matrix (signature element)
 import "./components/doc-tip";          // @attribute popover on decorator tokens

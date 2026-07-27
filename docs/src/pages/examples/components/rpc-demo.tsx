@@ -122,7 +122,7 @@ const demoStyles = css`
   .panel {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 1.25rem;
   }
 
@@ -138,7 +138,7 @@ const demoStyles = css`
   .panel h3 .badge {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: rgba(167,139,250,0.15);
     color: #c4b5fd;
     font-weight: 600;
@@ -149,7 +149,7 @@ const demoStyles = css`
     align-items: center;
     gap: 0.75rem;
     padding: 0.65rem 0.75rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
     margin-bottom: 0.5rem;
@@ -193,7 +193,7 @@ const demoStyles = css`
   .role-badge {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
-    border-radius: 999px;
+    border-radius: 0;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -220,7 +220,7 @@ const demoStyles = css`
     background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
-    border-radius: 8px;
+    border-radius: 0;
     height: 54px;
     margin-bottom: 0.5rem;
   }
@@ -232,7 +232,7 @@ const demoStyles = css`
 
   .error-box {
     padding: 0.75rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(239,68,68,0.1);
     border: 1px solid rgba(239,68,68,0.2);
     color: var(--thread);
@@ -297,7 +297,7 @@ const demoStyles = css`
     color: #c4b5fd;
     border: 1px solid rgba(167,139,250,0.2);
     padding: 0.4rem 0.85rem;
-    border-radius: 8px;
+    border-radius: 0;
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -362,7 +362,7 @@ const demoStyles = css`
     overflow-y: auto;
     padding: 0.75rem;
     background: rgba(0,0,0,0.3);
-    border-radius: 8px;
+    border-radius: 0;
     line-height: 1.6;
   }
 
@@ -382,7 +382,7 @@ const demoStyles = css`
     gap: 0.3rem;
     padding: 0.75rem;
     background: rgba(0,0,0,0.25);
-    border-radius: 8px;
+    border-radius: 0;
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-size: 0.75rem;
     line-height: 1.6;
@@ -400,7 +400,7 @@ const demoStyles = css`
   .stream-status {
     display: inline-flex; align-items: center; gap: 0.35rem;
     font-size: 0.7rem; padding: 0.15rem 0.55rem;
-    border-radius: 999px; font-weight: 600;
+    border-radius: 0; font-weight: 600;
   }
   .stream-status.idle      { background: rgba(100,116,139,0.15); color: var(--text-muted); }
   .stream-status.streaming { background: rgba(52,211,153,0.15);  color: var(--ok); }

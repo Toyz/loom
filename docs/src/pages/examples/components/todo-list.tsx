@@ -19,7 +19,7 @@ const sheet = css`
   }
   .todo-input input {
     flex: 1; padding: 0.75rem 1rem;
-    border: 1px solid var(--border, #333); border-radius: 8px;
+    border: 1px solid var(--border, #333); border-radius: 0;
     background: var(--surface-2, #1e1e2e); color: var(--text, var(--text-primary));
     font-size: 0.95rem; outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -31,7 +31,7 @@ const sheet = css`
   }
   .add-btn {
     display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.65rem 1.25rem; border: none; border-radius: 8px;
+    padding: 0.65rem 1.25rem; border: none; border-radius: 0;
     background: var(--accent, #a78bfa); color: var(--text-primary);
     font-weight: 600; font-size: 0.9rem;
     cursor: pointer; transition: opacity 0.15s, transform 0.1s;
@@ -46,7 +46,7 @@ const sheet = css`
   }
   .filters button {
     padding: 0.35rem 0.85rem; border: 1px solid var(--border, #333);
-    border-radius: 999px; background: transparent;
+    border-radius: 0; background: transparent;
     color: var(--text-muted, #888); font-size: 0.8rem;
     cursor: pointer; transition: all 0.15s;
   }
@@ -63,7 +63,7 @@ const sheet = css`
   .todo-item {
     display: flex; align-items: center; gap: 0.75rem;
     padding: 0.75rem 0.85rem; margin-bottom: 0.35rem;
-    border-radius: 8px; background: var(--surface-2, #1e1e2e);
+    border-radius: 0; background: var(--surface-2, #1e1e2e);
     border: 1px solid var(--border, #333);
     transition: border-color 0.15s, background 0.15s;
   }
@@ -75,7 +75,7 @@ const sheet = css`
   /* ── Custom checkbox ── */
   .check {
     width: 20px; height: 20px; flex-shrink: 0;
-    border: 2px solid var(--border, #444); border-radius: 6px;
+    border: 2px solid var(--border, #444); border-radius: 0;
     cursor: pointer; display: grid; place-items: center;
     transition: background 0.15s, border-color 0.15s;
     background: transparent;
@@ -101,7 +101,7 @@ const sheet = css`
   /* ── Delete button ── */
   .del {
     opacity: 0; width: 28px; height: 28px;
-    border: none; border-radius: 6px; cursor: pointer;
+    border: none; border-radius: 0; cursor: pointer;
     background: transparent; color: var(--text-muted, #888);
     display: grid; place-items: center;
     transition: opacity 0.15s, color 0.15s, background 0.15s;
@@ -123,7 +123,7 @@ const sheet = css`
   }
   .clear-btn {
     display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.3rem 0.7rem; border: none; border-radius: 6px;
+    padding: 0.3rem 0.7rem; border: none; border-radius: 0;
     background: transparent; color: var(--text-muted, #888);
     font-size: 0.8rem; cursor: pointer;
     transition: color 0.15s, background 0.15s;
@@ -174,7 +174,7 @@ export class TodoList extends LoomElement {
     const pct = total > 0 ? Math.round((done / total) * 100) : 0;
     return `
       .progress-bar {
-        height: 3px; border-radius: 2px;
+        height: 3px; border-radius: 0;
         background: var(--border, #333);
         margin-bottom: 1rem; overflow: hidden;
       }

@@ -45,7 +45,7 @@ const sheet = css`
   .column {
     background: var(--surface-2, #1e1e2e);
     border: 1px solid var(--border, #333);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 0.75rem;
     display: flex;
     flex-direction: column;
@@ -73,7 +73,7 @@ const sheet = css`
   .col-header .count {
     margin-left: auto;
     background: rgba(255,255,255,0.06);
-    border-radius: 999px;
+    border-radius: 0;
     padding: 0.1rem 0.5rem;
     font-size: 0.75rem;
     font-weight: 500;
@@ -90,7 +90,7 @@ const sheet = css`
   .card {
     background: var(--surface, #16161e);
     border: 1px solid var(--border, #333);
-    border-radius: 8px;
+    border-radius: 0;
     padding: 0.6rem 0.75rem;
     cursor: grab;
     display: flex;
@@ -117,7 +117,7 @@ const sheet = css`
   .card .del {
     opacity: 0;
     width: 24px; height: 24px;
-    border: none; border-radius: 6px;
+    border: none; border-radius: 0;
     cursor: pointer; background: transparent;
     color: var(--text-muted, #888);
     display: grid; place-items: center;
@@ -137,7 +137,7 @@ const sheet = css`
 
   .add-row input {
     flex: 1; padding: 0.45rem 0.65rem;
-    border: 1px solid var(--border, #333); border-radius: 6px;
+    border: 1px solid var(--border, #333); border-radius: 0;
     background: var(--surface, #16161e); color: var(--text, var(--text-primary));
     font-size: 0.8rem; outline: none;
     transition: border-color 0.2s;
@@ -151,7 +151,7 @@ const sheet = css`
   .add-btn {
     display: inline-flex; align-items: center; justify-content: center;
     width: 30px; height: 30px;
-    border: none; border-radius: 6px;
+    border: none; border-radius: 0;
     background: var(--accent, #a78bfa); color: var(--text-primary);
     cursor: pointer; transition: opacity 0.15s;
   }
@@ -176,7 +176,7 @@ const sheet = css`
   }
   .reset-btn {
     display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.3rem 0.7rem; border: none; border-radius: 6px;
+    padding: 0.3rem 0.7rem; border: none; border-radius: 0;
     background: transparent; color: var(--text-muted, #888);
     font-size: 0.8rem; cursor: pointer;
     transition: color 0.15s, background 0.15s;

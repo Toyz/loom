@@ -17,10 +17,9 @@ export default class ExampleVirtualList extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <p class="hint">
-            Switch between sizes — the list only renders what's visible. Scroll to see dynamic measurement in action.
-          </p>
-          <virtual-list-demo></virtual-list-demo>
+          <doc-demo note="Switch between sizes — the list only renders what's visible. Scroll to see dynamic measurement in action.">
+            <virtual-list-demo></virtual-list-demo>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

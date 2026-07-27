@@ -17,10 +17,9 @@ export default class ExampleEventBus extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <p class="hint">
-            Try emitting events, setting up once/waitFor listeners, and watching inheritance + cancellation in the log.
-          </p>
-          <eventbus-demo></eventbus-demo>
+          <doc-demo note="Try emitting events, setting up once/waitFor listeners, and watching inheritance + cancellation in the log.">
+            <eventbus-demo></eventbus-demo>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

@@ -21,7 +21,9 @@ export default class ExampleFlags extends LoomElement {
             Toggle flags on and off to see <span class="ic">@flag</span>-gated methods
             and <span class="ic">&lt;loom-flag&gt;</span> slots react in real time.
           </p>
-          <flags-demo></flags-demo>
+          <doc-demo>
+            <flags-demo></flags-demo>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

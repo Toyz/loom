@@ -17,7 +17,9 @@ export default class ExampleThemeSwitcher extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <theme-toggle></theme-toggle>
+          <doc-demo>
+            <theme-toggle></theme-toggle>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

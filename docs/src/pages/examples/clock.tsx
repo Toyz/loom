@@ -17,7 +17,9 @@ export default class ExampleClock extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <live-clock></live-clock>
+          <doc-demo>
+            <live-clock></live-clock>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

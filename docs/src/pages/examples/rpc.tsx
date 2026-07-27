@@ -22,7 +22,9 @@ export default class ExampleRpc extends LoomElement {
             Click users to load details, toggle roles with <span class="ic">@mutate</span>,
             and watch the transport log.
           </p>
-          <rpc-demo></rpc-demo>
+          <doc-demo>
+            <rpc-demo></rpc-demo>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

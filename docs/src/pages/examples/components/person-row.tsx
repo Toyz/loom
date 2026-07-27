@@ -26,7 +26,7 @@ const sheet = css`
   .tag {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    border-radius: 0;
     background: var(--accent-glow, #1a1a2e);
     color: var(--accent, var(--thread));
     border: 1px solid var(--accent-dim, #333);

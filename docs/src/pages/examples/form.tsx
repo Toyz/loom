@@ -21,7 +21,9 @@ export default class ExampleForm extends LoomElement {
             Type in the fields below — validation runs in real-time, and the
             status bar at the bottom shows <span class="ic">.valid</span> and <span class="ic">.dirty</span> state.
           </p>
-          <contact-form></contact-form>
+          <doc-demo>
+            <contact-form></contact-form>
+          </doc-demo>
         </doc-section>
         <doc-section heading="Source">
           <source-block file="docs/src/pages/examples/components/contact-form.tsx"></source-block>

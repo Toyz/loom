@@ -18,7 +18,7 @@ const cellSheet = css`
   .cell {
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 0;
     padding: 8px;
     text-align: center;
     font-variant-numeric: tabular-nums;
@@ -126,7 +126,7 @@ const parentSheet = css`
   }
   .controls button {
     padding: 0.4rem 1rem;
-    border-radius: 6px;
+    border-radius: 0;
     border: 1px solid var(--border);
     background: var(--surface-2);
     color: var(--text);
@@ -143,7 +143,7 @@ const parentSheet = css`
   }
   .info {
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: var(--surface-2);
     border: 1px solid var(--border);
     margin-top: 1rem;
@@ -160,7 +160,7 @@ const parentSheet = css`
   .decorators {
     margin-top: 1rem;
     padding: 0.75rem 1rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: oklch(0.2 0.02 150 / 0.5);
     border: 1px solid oklch(0.4 0.08 150 / 0.3);
     font-size: 0.75rem;

@@ -17,7 +17,9 @@ export default class ExampleAttributes extends LoomElement {
         </section>
 
         <doc-section heading="Demo">
-          <attributes-showcase></attributes-showcase>
+          <doc-demo>
+            <attributes-showcase></attributes-showcase>
+          </doc-demo>
         </doc-section>
         <doc-section heading="What This Shows">
           <ul>

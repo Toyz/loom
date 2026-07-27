@@ -31,7 +31,7 @@ const demoStyles = css`
   .panel {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 1.25rem;
   }
 
@@ -47,7 +47,7 @@ const demoStyles = css`
   .panel h3 .badge {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: rgba(167,139,250,0.15);
     color: #c4b5fd;
     font-weight: 600;
@@ -58,7 +58,7 @@ const demoStyles = css`
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    border-radius: 8px;
+    border-radius: 0;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
     margin-bottom: 0.5rem;
@@ -81,7 +81,7 @@ const demoStyles = css`
     width: 40px;
     height: 32px;
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 6px;
+    border-radius: 0;
     background: transparent;
     cursor: pointer;
     padding: 0;
@@ -106,12 +106,12 @@ const demoStyles = css`
     min-height: 200px;
     padding: 2rem;
     background: rgba(0,0,0,0.3);
-    border-radius: 8px;
+    border-radius: 0;
     position: relative;
   }
 
   .preview-area loom-placeholder {
-    border-radius: 8px;
+    border-radius: 0;
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
@@ -129,7 +129,7 @@ const demoStyles = css`
     margin-top: 0.75rem;
     padding: 0.75rem 1rem;
     background: rgba(0,0,0,0.4);
-    border-radius: 8px;
+    border-radius: 0;
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-size: 0.75rem;
     color: #6ee7b7;
@@ -147,7 +147,7 @@ const demoStyles = css`
   .preset {
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 8px;
+    border-radius: 0;
     cursor: pointer;
     border: 2px solid transparent;
     transition: all 0.2s;
@@ -168,7 +168,7 @@ const demoStyles = css`
     background: rgba(255,255,255,0.06);
     color: var(--text-primary);
     border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 6px;
+    border-radius: 0;
     padding: 0.35rem 0.5rem;
     font-size: 0.8rem;
     font-family: inherit;
