@@ -9,7 +9,7 @@
  *   app.provide(RpcTransport, new WsTransport(...));
  */
 
-import type { RpcRequest, RpcResponse } from "./types";
+import type { RpcRequest, RpcResponse } from "./types.js";
 
 /**
  * Abstract transport — implement this to control how RPC calls reach the server.

@@ -12,7 +12,7 @@
  */
 
 import { app, bus } from "@toyz/loom";
-import { FlagChanged } from "./events";
+import { FlagChanged } from "./events.js";
 
 export abstract class FlagProvider {
   /** Internal flag cache — providers maintain their own state */

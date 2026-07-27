@@ -35,7 +35,7 @@
     "prepublishOnly": "npm run clean && npm run build"
   },
   "dependencies": {
-    "@toyz/loom": "^0.17.0"
+    "@toyz/loom": "^0.23.0"
   },
   "devDependencies": {
     "happy-dom": "^17.4.4",

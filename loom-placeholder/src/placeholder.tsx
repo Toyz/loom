@@ -15,8 +15,8 @@
  */
 
 import { LoomElement, component, prop, css, styles, app } from "@toyz/loom";
-import { PlaceholderProvider } from "./provider";
-import type { RgbaOptions } from "./types";
+import { PlaceholderProvider } from "./provider.js";
+import type { RgbaOptions } from "./types.js";
 
 const placeholderStyles = css`
   :host {

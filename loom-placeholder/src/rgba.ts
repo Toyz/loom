@@ -15,8 +15,8 @@
  * ```
  */
 
-import { PlaceholderProvider } from "./provider";
-import type { PlaceholderOptions, RgbaOptions } from "./types";
+import { PlaceholderProvider } from "./provider.js";
+import type { PlaceholderOptions, RgbaOptions } from "./types.js";
 
 /** Convert 0-255 integer to zero-padded lowercase hex */
 function toHex(n: number): string {

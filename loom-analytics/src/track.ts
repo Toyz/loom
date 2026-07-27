@@ -23,7 +23,7 @@
  */
 
 import { app, createSymbol } from "@toyz/loom";
-import { AnalyticsTransport } from "./transport";
+import { AnalyticsTransport } from "./transport.js";
 
 /** Symbol for inspect() introspection */
 export const TRACK_META = createSymbol("analytics:track");

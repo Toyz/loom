@@ -14,8 +14,8 @@
  */
 
 import { LoomElement, component, prop, css, styles, reactive, app, on, mount } from "@toyz/loom";
-import { FlagProvider } from "./provider";
-import { FlagChanged } from "./events";
+import { FlagProvider } from "./provider.js";
+import { FlagChanged } from "./events.js";
 
 const flagStyles = css`
   :host { display: contents; }

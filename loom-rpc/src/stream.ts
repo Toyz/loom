@@ -30,9 +30,9 @@
 
 import { app, createSymbol } from "@toyz/loom";
 import { Reactive } from "@toyz/loom/store";
-import type { RpcMethods, RpcStream, RpcStreamOptions } from "./types";
-import { RpcTransport } from "./transport";
-import { resolveServiceName } from "./service";
+import type { RpcMethods, RpcStream, RpcStreamOptions } from "./types.js";
+import { RpcTransport } from "./transport.js";
+import { resolveServiceName } from "./service.js";
 
 /** Symbol for inspect() introspection */
 export const RPC_STREAMS = createSymbol("rpc:streams");

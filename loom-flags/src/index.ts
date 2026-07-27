@@ -6,7 +6,7 @@
  * @packageDocumentation
  */
 
-export { FlagProvider } from "./provider";
-export { flag } from "./flag";
-export { FlagChanged } from "./events";
+export { FlagProvider } from "./provider.js";
+export { flag } from "./flag.js";
+export { FlagChanged } from "./events.js";
 export { LoomFlagElement } from "./flag-component.js";

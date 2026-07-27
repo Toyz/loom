@@ -6,7 +6,7 @@
  */
 
 // Decorator
-export { track } from "./track";
+export { track } from "./track.js";
 
 // Transport
-export { AnalyticsTransport } from "./transport";
+export { AnalyticsTransport } from "./transport.js";

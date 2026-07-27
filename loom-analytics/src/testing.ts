@@ -15,7 +15,7 @@
  * ```
  */
 
-import { AnalyticsTransport } from "./transport";
+import { AnalyticsTransport } from "./transport.js";
 
 export interface TrackedEvent {
   event: string;

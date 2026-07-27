@@ -15,8 +15,8 @@
  * ```
  */
 
-import { RpcTransport } from "./transport";
-import { resolveServiceName } from "./service";
+import { RpcTransport } from "./transport.js";
+import { resolveServiceName } from "./service.js";
 
 type RouterIdent = string | (new (...args: any[]) => any);
 

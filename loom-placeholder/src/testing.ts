@@ -15,8 +15,8 @@
  * ```
  */
 
-import { PlaceholderProvider } from "./provider";
-import type { PlaceholderOptions } from "./types";
+import { PlaceholderProvider } from "./provider.js";
+import type { PlaceholderOptions } from "./types.js";
 
 export class MockPlaceholder extends PlaceholderProvider {
   /** Recorded calls to url() */

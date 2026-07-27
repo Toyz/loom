@@ -13,10 +13,10 @@
 
 import { app, createSymbol } from "@toyz/loom";
 import { Reactive } from "@toyz/loom/store";
-import type { RpcMethods, InferArgs, InferReturn, RpcMutator } from "./types";
-import { RpcTransport } from "./transport";
+import type { RpcMethods, InferArgs, InferReturn, RpcMutator } from "./types.js";
+import { RpcTransport } from "./transport.js";
 
-import { resolveServiceName } from "./service";
+import { resolveServiceName } from "./service.js";
 
 /** Symbol for inspect() introspection */
 export const RPC_MUTATIONS = createSymbol("rpc:mutations");

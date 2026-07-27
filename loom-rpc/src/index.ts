@@ -6,13 +6,13 @@
  */
 
 // Decorators
-export { rpc } from "./rpc";
-export { mutate } from "./mutate";
-export { stream, onStream, RPC_STREAMS } from "./stream";
-export { service, SERVICE_NAME } from "./service";
+export { rpc } from "./rpc.js";
+export { mutate } from "./mutate.js";
+export { stream, onStream, RPC_STREAMS } from "./stream.js";
+export { service, SERVICE_NAME } from "./service.js";
 
 // Transport
-export { RpcTransport, HttpTransport, RpcError } from "./transport";
+export { RpcTransport, HttpTransport, RpcError } from "./transport.js";
 
 // Types
 export type {
@@ -26,5 +26,5 @@ export type {
   RpcStream,
   RpcRequest,
   RpcResponse,
-} from "./types";
+} from "./types.js";
 

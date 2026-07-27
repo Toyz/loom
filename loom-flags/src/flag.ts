@@ -23,8 +23,8 @@
  */
 
 import { app, bus, createSymbol } from "@toyz/loom";
-import { FlagProvider } from "./provider";
-import { FlagChanged } from "./events";
+import { FlagProvider } from "./provider.js";
+import { FlagChanged } from "./events.js";
 
 /** Symbol for inspect() introspection */
 export const FLAG_META = createSymbol("flags:gated");

@@ -19,7 +19,7 @@
  * ```
  */
 
-import { FlagProvider } from "./provider";
+import { FlagProvider } from "./provider.js";
 
 export class MockFlags extends FlagProvider {
   /** Track which flags were checked (for assertions) */

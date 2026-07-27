@@ -6,7 +6,7 @@
  * @packageDocumentation
  */
 
-export { PlaceholderProvider } from "./provider";
-export { RgbaPlaceholder } from "./rgba";
+export { PlaceholderProvider } from "./provider.js";
+export { RgbaPlaceholder } from "./rgba.js";
 export { LoomImagePlaceholder } from "./placeholder.js";
-export type { PlaceholderOptions, RgbaOptions } from "./types";
+export type { PlaceholderOptions, RgbaOptions } from "./types.js";

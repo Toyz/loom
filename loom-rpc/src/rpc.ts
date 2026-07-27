@@ -16,13 +16,14 @@
  * so the router name survives TypeScript erasure.
  */
 
-import { app, createSymbol } from "@toyz/loom";
+import { app, bus, createSymbol } from "@toyz/loom";
+import { ApiStale } from "@toyz/loom/query";
 import { Reactive } from "@toyz/loom/store";
 import { LoomResult } from "@toyz/loom";
-import type { RpcMethods, InferArgs, InferReturn, RpcQueryOptions, RpcQuery } from "./types";
-import { RpcTransport } from "./transport";
+import type { RpcMethods, InferArgs, InferReturn, RpcQueryOptions, RpcQuery } from "./types.js";
+import { RpcTransport } from "./transport.js";
 
-import { resolveServiceName } from "./service";
+import { resolveServiceName } from "./service.js";
 
 /** Symbol for inspect() introspection */
 export const RPC_QUERIES = createSymbol("rpc:queries");
@@ -126,6 +127,7 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
   let controller: AbortController | null = null;
 
   const staleTime = opts?.staleTime ?? 0;
+  const revalidate = opts?.revalidate ?? true;
   const maxRetries = opts?.retry ?? 0;
   const eager = opts?.eager ?? true;
 
@@ -193,10 +195,26 @@ function createRpcState<TRouter, TMethod extends RpcMethods<TRouter>, TReturn>(
     }
   }
 
+  /**
+   * Mark data stale once staleTime has elapsed, and revalidate.
+   *
+   * Marking alone was the whole of the old behaviour, so "stale-while-
+   * revalidate" was only its first half: the flag sat true until the args
+   * happened to change. @api was fixed the same way; this keeps the two
+   * decorators honest about meaning the same thing by the same option.
+   *
+   * Deferred to a microtask because this runs inside a getter read during a
+   * traced render -- fetching or dispatching synchronously would re-enter it.
+   */
   function checkStale(): void {
     if (staleTime > 0 && lastFetchTime > 0 && !stale) {
       if (Date.now() - lastFetchTime > staleTime) {
         stale = true;
+        const shouldRefetch = revalidate && !fetching;
+        queueMicrotask(() => {
+          bus.emit(new ApiStale(`${routerName}.${String(method)}`, lastArgs, host));
+          if (shouldRefetch && !fetching) runFetch();
+        });
       }
     }
   }

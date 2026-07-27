@@ -9,7 +9,7 @@
  * changing any component code.
  */
 
-import type { PlaceholderOptions } from "./types";
+import type { PlaceholderOptions } from "./types.js";
 
 export abstract class PlaceholderProvider {
   /** Generate a placeholder URL for the given options */

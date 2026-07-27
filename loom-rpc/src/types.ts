@@ -44,6 +44,14 @@ export interface RpcQueryOptions<TRouter, TMethod extends RpcMethods<TRouter>> {
   fn?: (el: any) => InferArgs<TRouter, TMethod>;
   /** SWR cache duration in ms (default: 0 = always refetch) */
   staleTime?: number;
+  /**
+   * Revalidate in the background once `staleTime` has elapsed (default: true).
+   *
+   * Set false to keep `.stale` purely advisory -- the flag flips and an
+   * `ApiStale` still goes out on the bus, but nothing refetches until the args
+   * change or something calls `refetch()`.
+   */
+  revalidate?: boolean;
   /** Whether to fetch on connect (default: true) */
   eager?: boolean;
   /** Number of retries on failure with exponential backoff (default: 0) */
