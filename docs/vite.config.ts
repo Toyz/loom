@@ -135,7 +135,26 @@ if (testCount === 0) {
   throw new Error("[docs] counted 0 tests in tests/ — has the directory moved?");
 }
 
+/**
+ * Put the real version in the pre-paint shell.
+ *
+ * index.html carries a skeleton that paints before the app boots, and its
+ * version pill was typed in by hand -- so it silently said v0.22.0 while the
+ * package was on 0.24.0. The component in app.tsx reads __LOOM_VERSION__ and
+ * was always right; it just does not exist until the JS runs, so the stale
+ * number is what a visitor sees first.
+ *
+ * Vite's `define` does not reach index.html, hence the transform.
+ */
+const injectShellVersion = {
+  name: "loom-shell-version",
+  transformIndexHtml(html: string) {
+    return html.replace(/__LOOM_VERSION__/g, pkg.version);
+  },
+};
+
 export default defineConfig({
+  plugins: [injectShellVersion],
   base: process.env.CI ? "/loom/" : "/",
   server: {
     port: 5173,
