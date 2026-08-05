@@ -263,8 +263,8 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
    * listener, which resolves the route, which re-injects route data, which
    * sets the property that started this. Without the flag that is a cycle.
    *
-   * @param value `null` removes the key, which is how a prop back at its
-   *   default keeps the URL clean.
+   * @param value `null` or `""` removes the key, which is how a prop back at
+   *   its default -- or cleared to empty -- leaves the URL clean.
    */
   setQueryParam(key: string, value: string | null, history: "replace" | "push" = "replace"): void {
     if (typeof window === "undefined") return;
@@ -273,7 +273,11 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
     const [path, search = ""] = current.split("?");
     const params = new URLSearchParams(search);
 
-    if (value === null) params.delete(key);
+    // An empty value is an absent value. `?q=` says nothing that `` does not,
+    // and it survives every round trip -- it reads back as "", writes back as
+    // "", and sits in the URL forever looking like state. Treated as a removal
+    // so the address bar only ever carries keys that mean something.
+    if (value === null || value === "") params.delete(key);
     else params.set(key, value);
 
     const qs = params.toString();

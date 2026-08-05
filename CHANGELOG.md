@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.24.1
+
+### Fixed
+
+- `router.setQueryParam(key, "")` wrote `?key=` instead of removing the key.
+  An empty value is an absent value: it reads back as `""`, writes back as
+  `""`, and sits in the address bar looking like state that was set. A synced
+  `@prop` never hit it, because the accessor maps an empty value to a removal
+  before calling in -- so the router itself was only reachable this way by
+  calling it directly, and it wrote the dangling key.
+- The version in the docs' pre-paint shell was a literal, so the site read
+  v0.22.0 while the package was on 0.24.0. It is injected at build time now.
+- A release pushes its version bump with GITHUB_TOKEN, and GitHub does not let
+  such a push trigger workflows -- so the commit that bumps `package.json`
+  could never start the docs deploy, and the site stayed a release behind.
+  The release dispatches it explicitly.
+
 ## 0.24.0
 
 ### Added

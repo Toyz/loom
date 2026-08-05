@@ -123,3 +123,35 @@ describe("@prop({ query, sync })", () => {
     expect(writes.map((w) => w.value)).toEqual(["animated", null]);
   });
 });
+
+describe("empty values leave no key behind", () => {
+  it("removes the key when a synced prop is cleared to an empty string", () => {
+    class Page {
+      @prop({ query: "q", sync: true }) accessor query = "start";
+    }
+    const p = new Page();
+    p.query = "";
+    // `?q=` is not state. It reads back as "", writes back as "", and sits in
+    // the URL looking like something was set.
+    expect(writes).toEqual([{ key: "q", value: null, history: "replace" }]);
+  });
+
+  it("removes it for null and undefined too", () => {
+    class Page {
+      @prop({ query: "color", sync: true }) accessor color: string | null = "red";
+    }
+    const p = new Page();
+    p.color = null;
+    expect(writes.at(-1)!.value).toBeNull();
+  });
+
+  it("still removes when includeDefault is on", () => {
+    // includeDefault is about writing a *default*, not about writing nothing.
+    class Page {
+      @prop({ query: "q", sync: { includeDefault: true } }) accessor query = "x";
+    }
+    const p = new Page();
+    p.query = "";
+    expect(writes.at(-1)!.value).toBeNull();
+  });
+});
