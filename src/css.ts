@@ -163,16 +163,20 @@ export function adoptCSS(
 /**
  * A stylesheet that has not been built yet.
  *
- * `css` constructs a `CSSStyleSheet` immediately, which is what you want in a
- * browser and impossible anywhere else: `new CSSStyleSheet()` does not exist in
- * Node, so a module holding `const styles = css`...`` at the top level throws
- * on *import*. Since that is how every component declares its styles, the whole
- * module graph becomes browser-only -- awkward for a framework that renders
- * declarative shadow DOM on a server, and for testing a component's logic
- * without a DOM.
+ * `css` calls `new CSSStyleSheet()` as soon as the tag runs, so the sheet
+ * exists from the moment the module is evaluated. `css.lazy` holds the text
+ * and builds the sheet on first adopt instead.
  *
- * `css.lazy` defers construction to the first adopt. In Node the text is just
- * a string, so importing the module is inert.
+ * Narrow on purpose. It does **not** make a module importable outside a
+ * browser: `LoomElement extends HTMLElement` is evaluated when
+ * `element/element.js` is imported, and no deferral here reaches that. Loom is
+ * an SPA framework -- it *hydrates* declarative shadow DOM emitted by whatever
+ * you like, and does not render on a server, so there is no case where an
+ * inert import was the point.
+ *
+ * What it is actually for: deferring construction when a sheet may never be
+ * adopted, and keeping the text available (`.text`) without a DOM. If neither
+ * matters, use `css` -- it is simpler and returns a real sheet.
  */
 export interface LazyStyleSheet {
   /** Build (once) and return the real sheet. Requires a DOM. */
@@ -205,10 +209,10 @@ const lazyCache = new WeakMap<TemplateStringsArray, LazyStyleSheet>();
  * class MyEl extends LoomElement {}
  * ```
  *
- * Opt-in rather than the default: `css` returning a real `CSSStyleSheet` is
- * load-bearing for anyone who passes one to `adoptedStyleSheets` themselves,
- * and changing that under existing code to buy an import-time property most
- * apps never need would be the wrong trade.
+ * Opt-in rather than the default, and it should stay the rarer choice: `css`
+ * returning a real `CSSStyleSheet` is load-bearing for anyone handing one to
+ * `adoptedStyleSheets` themselves. Reach for this only when a sheet may never
+ * be adopted at all, or when you want its text without a DOM.
  */
 function lazy(strings: TemplateStringsArray, ...values: CSSValue[]): LazyStyleSheet {
   if (values.length === 0) {
