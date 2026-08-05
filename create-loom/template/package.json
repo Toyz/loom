@@ -12,7 +12,7 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
-    "@toyz/loom": "^0.23.0"
+    "@toyz/loom": "^0.24.0"
   },
   "devDependencies": {
     "happy-dom": "^20.0.0",
