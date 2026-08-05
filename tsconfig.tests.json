@@ -15,6 +15,7 @@
   "files": [
     "tests/event-payload-readonly.test.ts",
     "tests/permission.test.ts",
-    "tests/stream-types.test.ts"
+    "tests/stream-types.test.ts",
+    "tests/query-sync-types.test.ts"
   ]
 }

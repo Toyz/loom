@@ -25,3 +25,6 @@ export type { Signal, SignalOptions } from "./signal.js";
 
 // IndexedDB-backed persistence (async write-behind, sync reads)
 export { IndexedDBAdapter } from "./storage.js";
+
+// Two-way query binding options for @prop({ query, sync })
+export type { QuerySyncOptions } from "./decorators.js";

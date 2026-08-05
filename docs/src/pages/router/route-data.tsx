@@ -94,6 +94,48 @@ class PageSettings extends LoomElement {
   }
 }`}></code-block>
           </api-entry>
+          <doc-section heading="Writing the query back">
+            <p>
+              A query binding is one-way by default: the URL sets the property, and
+              setting the property does not touch the URL. That is right for a value the
+              page only reads, and wrong for anything the user changes — a filter, a
+              page number, a search box. The view updates, the address bar does not, and
+              the URL stops describing what is on screen: refresh, share and bookmark
+              all lose it, and Back does not undo the change.
+            </p>
+            <p><span class="ic">sync</span> makes that binding two-way.</p>
+            <code-block lang="ts" code={QUERY_SYNC}></code-block>
+            <api-table
+              head={["Option", "Default", "What it does"]}
+              rows={[
+                [<code>history</code>, <code>"replace"</code>, <>Rewrite the current entry, or <code>"push"</code> to add one</>],
+                [<code>debounce</code>, <code>0</code>, "Wait this long after the last write before touching the URL"],
+                [<code>includeDefault</code>, <code>false</code>, "Write the key even when the value equals the declared default"],
+              ]}
+            ></api-table>
+            <p class="note">
+              Defaults are omitted, so <span class="ic">accessor page = 1</span> leaves no{" "}
+              <span class="ic">?page=1</span> behind and a pristine view keeps a pristine URL.
+              Each key is written independently, so two synced props on one page cannot
+              clobber each other.
+            </p>
+            <p class="caution">
+              Use <span class="ic">replace</span> for anything that changes as fast as a
+              user can think. A search box on <span class="ic">push</span> is one Back press
+              per keystroke. <span class="ic">push</span> is for a change Back should undo,
+              like a page number — and pair a text input with{" "}
+              <span class="ic">debounce</span> regardless.
+            </p>
+            <p class="note">
+              Only available on a single query key. The type rejects it on{" "}
+              <span class="ic">param</span> (a path param cannot change without re-routing),
+              on <span class="ic">meta</span> (static config), and on{" "}
+              <span class="ic">routeQuery</span> (writing the whole object back would mean
+              diffing it). Sync also does nothing when no router is mounted — there is no
+              address bar to own.
+            </p>
+          </doc-section>
+
           <api-entry sig={`@prop({ query: routeQuery })`}>
             <p>
               Decompose <strong>all</strong> query params into a single object.
@@ -257,3 +299,18 @@ class PageUserPosts extends LoomElement {
     );
   }
 }
+
+const QUERY_SYNC = `@component("gallery-page")
+class GalleryPage extends LoomElement {
+  // Replace, and omit ?type=all when it sits at the default.
+  @prop({ query: "type", sync: true }) accessor filter = "all";
+
+  // A text input: one history entry, not one per keystroke.
+  @prop({ query: "q", sync: { debounce: 300 } }) accessor query = "";
+
+  // Back should step back a page.
+  @prop({ query: "page", sync: { history: "push" } }) accessor page = 1;
+}
+
+this.filter = "animated";   // -> /gallery?type=animated
+this.filter = "all";        // -> /gallery`;

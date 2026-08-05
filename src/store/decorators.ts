@@ -13,6 +13,7 @@ import { Reactive } from "./reactive.js";
 import { bus } from "../bus.js";
 import type { PersistOptions, StorageAdapter } from "./storage.js";
 import { LocalAdapter } from "./storage.js";
+import { writeQueryParam, isRouteSyncing } from "../query-sync.js";
 import type { Schedulable } from "../element/element.js";
 
 /**
@@ -108,14 +109,62 @@ interface RouteBinding {
   params?: symbol;
   query?: string | symbol;
   meta?: string | symbol;
+  sync?: QuerySync;
 }
 
-type PropRouteOpts = {
-  param?: string;
-  params?: symbol;
-  query?: string | symbol;
-  meta?: string | symbol;
-};
+/**
+ * How a query-bound prop writes itself back to the address bar.
+ *
+ * `@prop({ query })` was one-way: the URL set the property and nothing put it
+ * back. So a filter or a page number rendered correctly and then the URL no
+ * longer described what was on screen -- refresh, share and bookmark all lost
+ * it, and Back did not undo a filter change.
+ */
+export interface QuerySyncOptions {
+  /**
+   * `replace` (default) rewrites the current entry; `push` adds one.
+   *
+   * Replace is right for anything that changes as fast as a user can think --
+   * a search box on push means one Back press per keystroke. Push is for a
+   * change the user would expect Back to undo, like a page number.
+   */
+  history?: "replace" | "push";
+  /**
+   * Wait this many ms after the last write before touching the URL.
+   *
+   * For a text input this is the difference between one history operation and
+   * one per keystroke.
+   */
+  debounce?: number;
+  /**
+   * Write the key even when the value equals the property's declared default
+   * (default: false).
+   *
+   * Off, `page = 1` on `accessor page = 1` leaves the URL clean, and a
+   * pristine view has a pristine address bar.
+   */
+  includeDefault?: boolean;
+}
+
+type QuerySync = true | QuerySyncOptions;
+
+/**
+ * Route options for `@prop`.
+ *
+ * A discriminated union rather than one bag of optional keys, so `sync` is
+ * only reachable where it means something. It writes a *query* key back to the
+ * URL -- a path param cannot be written without changing the route, and route
+ * meta is static config -- so the type refuses it anywhere else instead of
+ * leaving it to be ignored at runtime.
+ */
+type PropRouteOpts =
+  | { param: string; params?: never; query?: never; meta?: never; sync?: never }
+  | { params: symbol; param?: never; query?: never; meta?: never; sync?: never }
+  | { meta: string | symbol; param?: never; params?: never; query?: never; sync?: never }
+  /** The whole query object. Two-way would mean diffing it; not supported. */
+  | { query: symbol; param?: never; params?: never; meta?: never; sync?: never }
+  /** A single query key -- the only binding that can be written back. */
+  | { query: string; sync?: QuerySync; param?: never; params?: never; meta?: never };
 
 /**
  * External attribute. Observed HTML attribute that auto-parses from strings.
@@ -132,6 +181,74 @@ type PropRouteOpts = {
  * @prop({params}) accessor params!: MyParamType;
  * ```
  */
+
+/** Per-instance state for a synced query prop. */
+const SYNC_STATE = localSymbol<Map<string, { timer: unknown; initial: unknown }>>("querySync");
+
+/**
+ * Wrap a reactive accessor so writing it also writes the address bar.
+ *
+ * Only the one query key is touched, so two synced props on a page do not
+ * clobber each other. The value is compared against what the property was
+ * declared with -- a prop sitting at its default writes nothing, which is what
+ * keeps a pristine view on a pristine URL.
+ */
+function wrapQuerySync<T extends object, V>(
+  base: ClassAccessorDecoratorResult<T, V>,
+  propKey: string,
+  queryKey: string,
+  sync: QuerySync,
+): ClassAccessorDecoratorResult<T, V> {
+  const opts: QuerySyncOptions = sync === true ? {} : sync;
+  const history = opts.history ?? "replace";
+  const debounce = opts.debounce ?? 0;
+
+  const stateFor = (host: object) => {
+    let map = SYNC_STATE.from(host);
+    if (!map) SYNC_STATE.set(host, (map = new Map()));
+    let entry = map.get(propKey);
+    if (!entry) map.set(propKey, (entry = { timer: null, initial: undefined }));
+    return entry;
+  };
+
+  const write = (host: object, value: V) => {
+    const entry = stateFor(host);
+    const atDefault = !opts.includeDefault && Object.is(value, entry.initial);
+    // null removes the key; a default-valued prop should leave no trace.
+    const encoded =
+      atDefault || value === undefined || value === null || value === ""
+        ? null
+        : String(value);
+
+    const send = () => writeQueryParam(queryKey, encoded, history);
+    if (debounce > 0) {
+      if (entry.timer !== null) clearTimeout(entry.timer as ReturnType<typeof setTimeout>);
+      entry.timer = setTimeout(send, debounce);
+    } else {
+      send();
+    }
+  };
+
+  return {
+    get(this: T) {
+      return base.get!.call(this);
+    },
+    set(this: T, value: V) {
+      base.set!.call(this, value);
+      // The outlet writes route data straight onto the property during
+      // resolution. Echoing that back would fight the navigation that caused
+      // it, so a write originating from the URL is skipped.
+      if (!isRouteSyncing()) write(this, value);
+    },
+    init(this: T, value: V) {
+      // Captured before any URL injection, so "is this the default" means the
+      // value the class declared, not whatever the first URL happened to set.
+      stateFor(this).initial = value;
+      return base.init ? base.init.call(this, value) : value;
+    },
+  };
+}
+
 export function prop<This extends object, V>(
   target: ClassAccessorDecoratorTarget<This, V>,
   context: ClassAccessorDecoratorContext<This, V>,
@@ -165,10 +282,15 @@ export function prop<This extends object, V>(
     ctx: ClassAccessorDecoratorContext<T2, V2>,
   ): ClassAccessorDecoratorResult<T2, V2> => {
     const propKey = String(ctx.name);
-    const result = reactive(
+    const base = reactive(
       target as unknown as ClassAccessorDecoratorTarget<T2, V2>,
       ctx,
     );
+
+    // Two-way for `@prop({ query: "k", sync })`. Everything else keeps the
+    // reactive accessor untouched, so nothing that exists today changes shape.
+    const syncKey = typeof opts.query === "string" && opts.sync ? opts.query : null;
+    const result = syncKey === null ? base : wrapQuerySync(base, propKey, syncKey, opts.sync!);
 
     // Store route binding metadata
     ctx.addInitializer(function () {
@@ -184,6 +306,7 @@ export function prop<This extends object, V>(
       if (opts.param) binding.param = opts.param;
       if (opts.query) binding.query = opts.query;
       if (opts.meta) binding.meta = opts.meta;
+      if (opts.sync) binding.sync = opts.sync;
       bindings.push(binding);
     });
 

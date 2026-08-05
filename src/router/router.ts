@@ -14,6 +14,7 @@ import { RouteChanged } from "./events.js";
 import { ROUTE_ENTER, ROUTE_LEAVE } from "../decorators/symbols.js";
 import { app } from "../app.js";
 import type { LoomLifecycle } from "../lifecycle.js";
+import { setQueryWriter, duringRouteSync } from "../query-sync.js";
 
 export interface RouterOptions {
   mode?: "hash" | "history";
@@ -88,6 +89,9 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   constructor(opts: RouterOptions = {}) {
     this.mode = opts.mode === "history" ? new HistoryMode() : new HashMode();
     this._transitions = opts.transitions ?? false;
+    // A synced @prop writes through this rather than importing the router,
+    // which would close a cycle with outlet.ts and link.ts.
+    setQueryWriter((key, value, history) => this.setQueryParam(key, value, history));
   }
 
   /** Current route info (read-only snapshot) */
@@ -98,7 +102,12 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
   /** Start listening for URL changes and resolve the initial route */
   start(): void {
     if (this._cleanup) return; // already started
-    this._cleanup = this.mode.listen(() => this._resolveWithGuards());
+    this._cleanup = this.mode.listen(() => {
+      // Our own write, echoed back. Re-resolving here would re-inject route
+      // data and stamp the property the user is currently editing.
+      if (this._syncing) return;
+      this._resolveWithGuards();
+    });
     this._resolveWithGuards();
   }
 
@@ -243,6 +252,55 @@ export class LoomRouter implements LoomLifecycle<"start" | "stop"> {
    * Accepts the resolved path directly to avoid re-reading mode
    * (which could have changed during async guard checks).
    */
+  /**
+   * Write a single query key into the address bar, leaving the route alone.
+   *
+   * Used by `@prop({ query, sync })`. It rewrites only the one key so two
+   * synced props on the same page cannot clobber each other -- each reads the
+   * current string, edits its own entry and writes back.
+   *
+   * `_syncing` is the loop guard. Touching the URL makes the mode fire its
+   * listener, which resolves the route, which re-injects route data, which
+   * sets the property that started this. Without the flag that is a cycle.
+   *
+   * @param value `null` removes the key, which is how a prop back at its
+   *   default keeps the URL clean.
+   */
+  setQueryParam(key: string, value: string | null, history: "replace" | "push" = "replace"): void {
+    if (typeof window === "undefined") return;
+
+    const current = this.mode.read();
+    const [path, search = ""] = current.split("?");
+    const params = new URLSearchParams(search);
+
+    if (value === null) params.delete(key);
+    else params.set(key, value);
+
+    const qs = params.toString();
+    const next = qs ? `${path}?${qs}` : path!;
+    if (next === current) return;   // nothing to say
+
+    this._syncing = true;
+    try {
+      if (history === "push") this.mode.write(next);
+      else this.mode.replace(next);
+      // The address bar is the only thing that changed. The route did not, and
+      // the element already holds the value -- re-resolving would rebuild the
+      // page under the user mid-interaction.
+      this._current = { ...this._current, path: this._normalizePath(next) };
+    } finally {
+      this._syncing = false;
+    }
+  }
+
+  /** True while setQueryParam is writing, so listeners can ignore their echo. */
+  private _syncing = false;
+
+  /** @internal — whether a URL change came from a synced prop. */
+  isSyncing(): boolean {
+    return this._syncing;
+  }
+
   private _doRender(path: string): void {
     if (!this._transitions) {
       this._resolve(path);

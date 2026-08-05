@@ -40,6 +40,7 @@ export type { RenderLoop } from "./render-loop.js";
 // ── Store (core only — adapters & route sentinels via @toyz/loom/store) ──
 
 export { reactive, prop, computed, watch, store, persist } from "./store/index.js";
+export type { QuerySyncOptions } from "./store/index.js";
 
 // ── Element: base class + core decorators ──
 

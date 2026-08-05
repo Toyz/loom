@@ -1,5 +1,36 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **`@prop({ query, sync })` writes the URL back.** A query binding was one-way:
+  the URL set the property, and setting the property left the address bar
+  behind. For anything the user changes -- a filter, a page number, a search
+  box -- that means the URL stops describing what is on screen, so refresh,
+  share and bookmark lose the state and Back does not undo the change.
+
+  Opt-in per binding, so nothing existing changes shape. `history` chooses
+  replace (default) or push, `debounce` keeps a text input from writing per
+  keystroke, and a value equal to the property's declared default removes the
+  key instead of writing it -- `accessor page = 1` leaves no `?page=1` behind.
+  Each key is written independently, so two synced props cannot clobber each
+  other.
+
+  `sync` is only reachable on a single query key. The type rejects it on
+  `param` (a path param cannot change without re-routing), on `meta` (static
+  config) and on `routeQuery` (writing the whole object back would mean
+  diffing it), rather than accepting it and ignoring it at runtime.
+
+### Fixed
+
+- `css.lazy`'s doc comment claimed it made a module importable outside a
+  browser, "for a framework that renders declarative shadow DOM on a server".
+  Loom hydrates DSD that something else emitted and does not render on a
+  server, and the claim was not even achievable -- `LoomElement extends
+  HTMLElement` is evaluated at import regardless. The rationale was written
+  around the feature rather than the other way round.
+
 ## 0.23.0
 
 Platform APIs. Loom builds custom elements and had never touched

@@ -14,6 +14,7 @@ import { component } from "../element/decorators.js";
 import { on } from "../decorators/events.js";
 import { prop } from "../store/decorators.js";
 import { ROUTE_PROPS, TRANSFORMS } from "../decorators/symbols.js";
+import { duringRouteSync } from "../query-sync.js";
 import { matchRoute } from "./route.js";
 import { RouteChanged } from "./events.js";
 import { params as paramsSentinel, routeQuery as querySentinel, routeMeta as metaSentinel } from "../store/decorators.js";
@@ -131,6 +132,13 @@ class LoomOutlet extends LoomElement {
    * falls back to setAttribute for backward compat.
    */
   private _injectRouteData(el: HTMLElement, params: Record<string, string>, meta: Record<string, unknown> = {}): void {
+    // Everything below assigns straight onto properties, and a synced
+    // `@prop({ query })` writes the URL when assigned. Marking the whole pass
+    // keeps a navigation from being rewritten by the props it just set.
+    duringRouteSync(() => this._injectRouteDataInner(el, params, meta));
+  }
+
+  private _injectRouteDataInner(el: HTMLElement, params: Record<string, string>, meta: Record<string, unknown> = {}): void {
     const ctor = el.constructor as object;
     const routeBindings = (ROUTE_PROPS.from(ctor) ?? []) as Array<{ propKey: string; param?: string; params?: symbol; query?: string | symbol; meta?: string | symbol }>;
     const transforms = TRANSFORMS.from(ctor) as Map<string, Function> | undefined;
