@@ -6,7 +6,7 @@
  */
 
 export interface RouterMode {
-  /** Read the current path */
+  /** Read the current path, query string included. */
   read(): string;
   /** Navigate to a path (pushes history) */
   write(path: string): void;
@@ -55,7 +55,16 @@ export class HashMode implements RouterMode {
 
 export class HistoryMode implements RouterMode {
   read(): string {
-    return location.pathname || "/";
+    // The query belongs to the returned string. Hash mode gets it for free --
+    // everything after `#` is one value -- and history mode used to drop it,
+    // which made `setQueryParam` read a URL with no parameters in it. Editing
+    // one key of nothing writes one key, so every synced `@prop({ query })`
+    // erased the ones written before it and the address bar only ever held
+    // whichever prop was set last.
+    //
+    // Safe to widen: the only other caller runs it through `_normalizePath`,
+    // which strips the query anyway.
+    return (location.pathname || "/") + location.search;
   }
 
   write(path: string): void {
