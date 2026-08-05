@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.24.2
+
+### Fixed
+
+- Several synced `@prop({ query })` accessors on one page clobbered each other
+  in history mode -- each write replaced the whole query string with its own
+  key, so only the prop assigned last survived and an inbound query was erased
+  by the first write. `setQueryParam` merges into the current URL, but the
+  history mode read `location.pathname` and dropped the query, so there was
+  nothing to merge into. It returns the query with the path now.
+
+  Hash mode was never affected: everything after `#` is one string, so the
+  query came back whether or not anyone meant it to -- which is also why every
+  existing test passed. The suite covers both modes now.
+
 ## 0.24.1
 
 ### Fixed
